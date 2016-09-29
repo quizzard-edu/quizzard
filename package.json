@@ -1,0 +1,23 @@
+{
+  "name": "quizzard",
+  "version": "0.0.1",
+  "description": "Quiz",
+  "main": "server.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/utmlarry/quizzard.git"
+  },
+  "author": "Alexei Frolov",
+  "license": "GPL-3.0",
+  "homepage": "https://bitbucket.org/utmlarry/quizzard#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
