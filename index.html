@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Quizzard - Login</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="container">
+      <img src="img/logo.png" class="img-circle" id="logo">
+      <form class="form-login" id="login">
+        <h2 class="form-login-heading">Quizzard</h2>
+        <p id="invalid"></p>
+        <label for="user" class="sr-only">Username</label>
+        <input type="text" id="user" name="user" class="form-control" placeholder="Username" required autofocus>
+        <label for="passwd" class="sr-only">Password</label>
+        <input type="password" id="passwd" name="passwd" class="form-control" placeholder="Password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+    </div>
+    <script src="lib/jquery/jquery-3.1.1.min.js"></script>
+    <script src="js/login.js"></script>
+  </body>
+</html>
