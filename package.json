@@ -18,6 +18,7 @@
   "license": "GPL-3.0",
   "homepage": "https://bitbucket.org/utmlarry/quizzard#readme",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "express": "^4.14.0"
   }
 }
