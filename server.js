@@ -10,10 +10,15 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(express.static(__dirname));
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.set('view engine', 'pug');
+
+app.get('/', function(req, res) {
+    res.render('login');
+});
 
 app.post('/login', function(req, res) {
     console.log('Attempted login by user ' + req.body.user);
@@ -27,6 +32,7 @@ app.post('/login', function(req, res) {
 });
 
 app.get('/home', function(req, res) {
+    res.render('home');
 });
 
 app.listen(port, function() {

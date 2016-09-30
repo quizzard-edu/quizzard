@@ -1,0 +1,25 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/login.css')
+
+block title
+  title Quizzard - Login
+
+block content
+  div(class='container')
+    img(src='img/logo.png' class='img-circle' id='logo')
+    form(class='form-login' id='login')
+      h2(class='form-login-heading') Quizzard
+      p(id='invalid')
+      label(for='user' class='sr-only') Username
+      input(type='text' id='user' name='user' class='form-control'
+            placeholder='Username' required autofocus)
+      label(for='passwd' class='sr-only') Password
+      input(type='password' id='passwd' name='passwd' class='form-control'
+            placeholder='Password' required)
+      button(class='btn btn-lg btn-primary btn-block' type='submit') Sign in
+
+block scripts
+  script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/js/login.js')
