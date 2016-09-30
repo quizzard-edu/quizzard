@@ -1,0 +1,11 @@
+2016-09-29:
+
+Started writing code for the project.
+Set up an Express server.
+Created a simple login page using Bootstrap.
+Added database authentication for login.
+
+2016-09-30:
+
+Changed login page from static HTML to Pug.
+Added session support.
