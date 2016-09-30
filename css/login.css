@@ -34,3 +34,8 @@ body {
   margin: 0 auto;
   display: block;
 }
+
+#invalid {
+  color: red;
+  text-align: center;
+}
