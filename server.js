@@ -1,7 +1,7 @@
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
-var db = require('./db.js');
+var db = require('./students.js');
 
 var app = express();
 var port = 65535;

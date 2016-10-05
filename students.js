@@ -34,6 +34,38 @@ exports.checkLogin = function(user, pass, callback) {
     });
 }
 
+exports.createAccount = function(account, callback) {
+    students.findOne({'id': account.id}, function(err, obj) {
+        if (err) {
+            console.log(err);
+            callback('failure');
+        } else if (obj) {
+            callback('failure');
+        } else {
+            bcrypt.hash(account.pass, 11, function(err, hash) {
+                if (err) {
+                    callback(null);
+                } else {
+                    account.pass = hash;
+                    account.ctime = Date.now() / 1000;
+                    account.answered = 0;
+                    account.attempted = 0;
+                    account.points = 0.0;
+                    account.level = 0;
+                    account.answeredIds = [];
+
+                    accounts.insert(account, function(err, res) {
+                        if (err)
+                            callback('failure');
+                        else
+                            callback(res);
+                    });
+                }
+            });
+        }
+    });
+}
+
 var validatePassword = function(userobj, pass, callback) {
     bcrypt.compare(pass, userobj.password, function(err, res) {
         callback(res);
