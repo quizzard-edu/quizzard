@@ -14,6 +14,10 @@ db.open(function(err, db) {
 
 var students = db.collection('students');
 
+/*
+ * Check if the account given by user and pass is valid.
+ * Return account object if it is or null otherwise.
+ */
 exports.checkLogin = function(user, pass, callback) {
     students.findOne({'id' : user}, function(err, obj) {
         if (err) {
@@ -34,6 +38,13 @@ exports.checkLogin = function(user, pass, callback) {
     });
 }
 
+/*
+ * Create a new account and insert it into the database.
+ * account object should contain id, password, first and last names
+ * and email address when passed to function.
+ * Call callback with the result of the insertion, or 'failure' if
+ * unsuccessful.
+ */
 exports.createAccount = function(account, callback) {
     students.findOne({'id': account.id}, function(err, obj) {
         if (err) {
@@ -44,7 +55,7 @@ exports.createAccount = function(account, callback) {
         } else {
             bcrypt.hash(account.pass, 11, function(err, hash) {
                 if (err) {
-                    callback(null);
+                    callback('failure');
                 } else {
                     account.pass = hash;
                     account.ctime = Date.now() / 1000;
@@ -66,6 +77,9 @@ exports.createAccount = function(account, callback) {
     });
 }
 
+/*
+ * Check the hash of pass against the password stored in userobj.
+ */
 var validatePassword = function(userobj, pass, callback) {
     bcrypt.compare(pass, userobj.password, function(err, res) {
         callback(res);

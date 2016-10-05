@@ -6,6 +6,7 @@ var db = require('./students.js');
 var app = express();
 var port = 65535;
 
+/* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
     console.log(req.url);
     next();
@@ -20,13 +21,16 @@ app.use(session({
     saveUninitialized: false
 }));
 
+/* main page */
 app.get('/', function(req, res) {
+    /* if the user has already logged in, redirect to home */
     if (req.session.user != null)
         res.redirect('home');
     else
         res.render('login');
 });
 
+/* check username and password and send appropriate response */
 app.post('/login', function(req, res) {
     console.log('Attempted login by user ' + req.body.user);
     db.checkLogin(req.body.user, req.body.passwd, function(obj) {
@@ -40,6 +44,7 @@ app.post('/login', function(req, res) {
 });
 
 app.get('/home', function(req, res) {
+    /* if the user has not yet logged in, redirect to login page */
     if (req.session.user == null)
         res.redirect('/')
     else
