@@ -1,7 +1,8 @@
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
-var db = require('./students.js');
+var students = require('./students.js');
+var questions = require('./questions.js');
 
 var app = express();
 var port = 65535;
@@ -33,7 +34,7 @@ app.get('/', function(req, res) {
 /* check username and password and send appropriate response */
 app.post('/login', function(req, res) {
     console.log('Attempted login by user ' + req.body.user);
-    db.checkLogin(req.body.user, req.body.passwd, function(obj) {
+    students.checkLogin(req.body.user, req.body.passwd, function(obj) {
         if (obj) {
             req.session.user = obj;
             res.status(200).send('success');
@@ -49,6 +50,16 @@ app.get('/home', function(req, res) {
         res.redirect('/')
     else
         res.render('home', { user: req.session.user });
+});
+
+app.get('/createuser', function(req,res) {
+    res.render('userform');
+});
+
+app.post('/useradd', function(req, res) {
+    console.log(req.body);
+    // students.createUser(req.body, function(obj) {
+    // });
 });
 
 app.listen(port, function() {

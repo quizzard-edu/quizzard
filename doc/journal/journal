@@ -9,3 +9,15 @@ Added database authentication for login.
 
 Changed login page from static HTML to Pug.
 Added session support.
+
+2016-10-05:
+Very busy week, not much time to work on Quizzard.
+Refactored some of the code I wrote last time and added comments.
+Most of it will still probably be rewritten in the future, but it's a start.
+Completed a basic account creation function which can be used to add students.
+
+2016-10-06:
+Extracted the database connection to its own file.
+Added questions.js file which will facilitate interaction with the questions
+collection in the database.
+Started work on an addQuestion function to insert questions into the database.
