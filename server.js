@@ -57,9 +57,13 @@ app.get('/createuser', function(req,res) {
 });
 
 app.post('/useradd', function(req, res) {
-    console.log(req.body);
-    // students.createUser(req.body, function(obj) {
-    // });
+    students.createAccount(req.body, function(result) {
+        if (result == 'failure')
+            res.status(500);
+        else
+            res.status(200);
+        res.send(result);
+    });
 });
 
 app.listen(port, function() {

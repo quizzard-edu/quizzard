@@ -40,25 +40,27 @@ exports.createAccount = function(account, callback) {
             console.log(err);
             callback('failure');
         } else if (obj) {
-            callback('failure');
+            callback('exists');
         } else {
-            bcrypt.hash(account.pass, 11, function(err, hash) {
+            bcrypt.hash(account.password, 11, function(err, hash) {
                 if (err) {
                     callback('failure');
                 } else {
-                    account.pass = hash;
-                    account.ctime = Date.now() / 1000;
+                    account.password = hash;
+                    account.ctime = (Date.now() / 1000) | 0;
                     account.answered = 0;
                     account.attempted = 0;
                     account.points = 0.0;
                     account.level = 0;
                     account.answeredIds = [];
 
-                    accounts.insert(account, function(err, res) {
-                        if (err)
+                    students.insert(account, function(err, res) {
+                        if (err) {
                             callback('failure');
-                        else
-                            callback(res);
+                        } else {
+                            console.log(res);
+                            callback('success');
+                        }
                     });
                 }
             });
