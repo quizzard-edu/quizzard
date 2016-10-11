@@ -1,0 +1,30 @@
+extends layout
+
+block styles
+  // link(rel='stylesheet' href='/css/login.css')
+
+block title
+  title Quizzard - Add Question
+
+block content
+  .container
+    form.form-user#questionform
+      h2.form-user-heading Add Question
+      p#result
+      label.sr-only(for='qtext') Question
+      input.form-control#qtext(type='text' name='text' placeholder='Question'
+                                required autofocus)
+      label.sr-only(for='qanswer') Answer
+      input.form-control#qanswer(type='text' name='answer' placeholder='Answer'
+                                 required)
+      label.sr-only(for='qtopic') Topic
+      input.form-control#qtopic(type='text' name='topic' placeholder='Topic'
+                                required)
+      label.sr-only(for='qpoints') Points
+      input.form-control#qpoints(type='number' name='basePoints'
+                                 placeholder='Base Points' required)
+      button(class='btn btn-lg btn-primary btn-block' type='submit') Create
+
+block scripts
+  script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/js/questioncreate.js')
