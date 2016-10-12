@@ -56,8 +56,25 @@ app.get('/createuser', function(req,res) {
     res.render('userform');
 });
 
+app.get('/createquestion', function(req,res) {
+    res.render('questionform');
+});
+
 app.post('/useradd', function(req, res) {
     students.createAccount(req.body, function(result) {
+        if (result == 'failure')
+            res.status(500);
+        else
+            res.status(200);
+        res.send(result);
+    });
+});
+
+app.post('/questionadd', function(req, res) {
+    req.body.basePoints = parseInt(req.body.basePoints);
+    req.body.type = questions.QUESTION_REGULAR;
+    req.body.hint = '';
+    questions.addQuestion(req.body, function(result) {
         if (result == 'failure')
             res.status(500);
         else
