@@ -1,12 +1,21 @@
 extends layout
 
 block styles
-  // link(rel='stylesheet' href='/css/home.css')
+  link(rel='stylesheet' href='/css/home.css')
 
 block title
   title Quizzard - Home
 
 block content
   .container
-    .sidebar
-      p.sidebar-item Welcome #{user.fname} #{user.lname}!
+    .row
+      .question-list.col-md-8
+        each q in questions
+          .row.question-block
+            .col-sm-8.text-center.title #{q.text}
+            .col-sm-4.qright
+              p.topic #{q.topic}
+              p.points #{q.basePoints}
+      .sidebar.col-md-4
+        h4.sidebar-item#name #{user.fname} #{user.lname}
+        h3.sidebar-item#points #{user.points}

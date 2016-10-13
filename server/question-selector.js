@@ -1,7 +1,10 @@
 var questions = require('./questions.js').questions;
 
+/* the field to sort by */
 var types = Object.freeze({
-    DEFAULT: 0
+    NOSORT: 0,
+    DEFAULT: 1,
+    RANDOM: 2
 });
 
 exports.sortTypes = types;
@@ -13,17 +16,41 @@ exports.sortTypes = types;
 exports.findQuestions = function(amount, sortType, callback) {
     var criteria;
 
-    if (sortType == types.DEFAULT) {
+    switch (sortType) {
+    case types.NOSORT:
+    case types.RANDOM:
+        criteria = {};
+        break;
+    case types.DEFAULT:
         criteria = {id: 1};
-    } else {
+        break;
+    default:
         callback('invalid-sort');
         return;
     }
 
     questions.find().sort(criteria).limit(amount).toArray(function(err, docs) {
-        if (err)
+        if (err) {
             callback(err);
-        else
+        } else {
+            if (sortType == types.RANDOM)
+                shuffle(docs);
             callback(docs);
+        }
     });
 };
+
+/* Classic Fisher-Yates shuffle. Nothing to see here. */
+var shuffle = function(arr) {
+    var curr, tmp, rnd;
+
+    curr = arr.length;
+    while (curr) {
+        rnd = Math.floor(Math.random() * curr);
+        --curr;
+
+        tmp = arr[curr];
+        arr[curr] = arr[rnd];
+        arr[rnd] = tmp;
+    }
+}

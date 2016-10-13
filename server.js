@@ -50,7 +50,7 @@ app.get('/home', function(req, res) {
     if (req.session.user == null) {
         res.redirect('/')
     } else {
-        selector.findQuestions(5, selector.sortTypes.DEFAULT, function(results) {
+        selector.findQuestions(10, selector.sortTypes.RANDOM, function(results) {
             res.render('home', { user: req.session.user, questions: results });
         });
     }
