@@ -3,6 +3,7 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var students = require('./server/students.js');
 var questions = require('./server/questions.js');
+var selector = require('./server/question-selector.js');
 
 var app = express();
 var port = 65535;
@@ -46,16 +47,21 @@ app.post('/login', function(req, res) {
 
 app.get('/home', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */
-    if (req.session.user == null)
+    if (req.session.user == null) {
         res.redirect('/')
-    else
-        res.render('home', { user: req.session.user });
+    } else {
+        selector.findQuestions(5, selector.sortTypes.DEFAULT, function(results) {
+            res.render('home', { user: req.session.user, questions: results });
+        });
+    }
 });
 
+/* temporary account creation form */
 app.get('/createuser', function(req,res) {
     res.render('userform');
 });
 
+/* temporary question creation form */
 app.get('/createquestion', function(req,res) {
     res.render('questionform');
 });

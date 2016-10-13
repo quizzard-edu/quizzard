@@ -1,6 +1,7 @@
 var db = require('./db.js').database;
 
 var questions = db.collection('questions');
+exports.questions = questions;
 
 exports.QUESTION_REGULAR    = 0;
 exports.QUESTION_MULTCHOICE = 1;
