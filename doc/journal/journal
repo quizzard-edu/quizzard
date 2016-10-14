@@ -21,3 +21,26 @@ Extracted the database connection to its own file.
 Added questions.js file which will facilitate interaction with the questions
 collection in the database.
 Started work on an addQuestion function to insert questions into the database.
+
+2016-10-11:
+Create a temporary question addition form which adds a question to the database.
+
+2016-10-13:
+Started work on the home page proper.
+Created a question selector module which fetches questions from the database,
+sorted by a given criterion.
+Created the main body of the home page, consisting of two sections: the
+question list and the sidebar.
+Populated the question list with questions from the database, displaying basic
+information about them.
+Added user's name and points total to sidebar display.
+Gave each question its question ID as its HTML ID, allowing the clicked question
+to be easily detected.
+
+2016-10-14:
+Added a sort button above the question list with a basic dropdown menu.
+Updated the question selector to allow sorting by topic or by point count.
+Moved the question list into a separate template file, allowing it to be
+re-rendered with new information without having to re-render the whole page.
+Implemented question list sorting through an AJAX request to the server to
+render a new question list with a given sort criterion.

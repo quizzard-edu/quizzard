@@ -1,16 +1,7 @@
-.question-list.col-md-8
-  .dropdown
-    button.btn.btn-default.dropdown-toggle(type='button' data-toggle='dropdown') Sort by
-      span.caret
-    ul.dropdown-menu
-      li
-        a#sort-topic(href='#') Topic
-      li
-        a#sort-point(href='#') Points
-  each q in questions
-    .row.question-block(id=q.id)
-      .col-sm-8.qleft
-        p.text-center.title #{q.text}
-      .col-sm-4.qright
-        p.topic #{q.topic}
-        p.points #{q.basePoints}
+each q in questions
+  .row.question-block(id=q.id)
+    .col-sm-8.qleft
+      p.text-center.title #{q.text}
+    .col-sm-4.qright
+      p.topic #{q.topic}
+      p.points #{q.basePoints}

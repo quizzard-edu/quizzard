@@ -2,9 +2,11 @@ var questions = require('./questions.js').questions;
 
 /* the field to sort by */
 var types = Object.freeze({
-    NOSORT: 0,
-    DEFAULT: 1,
-    RANDOM: 2
+    NOSORT:     0,
+    DEFAULT:    1,
+    RANDOM:     2,
+    TOPIC:      3,
+    POINTS:     4
 });
 
 exports.sortTypes = types;
@@ -24,6 +26,12 @@ exports.findQuestions = function(amount, sortType, callback) {
     case types.DEFAULT:
         criteria = {id: 1};
         break;
+    case types.TOPIC:
+        criteria = {topic: 1};
+        break;
+    case types.POINTS:
+        criteria = {basePoints: -1};
+        break;
     default:
         callback('invalid-sort');
         return;
@@ -31,7 +39,7 @@ exports.findQuestions = function(amount, sortType, callback) {
 
     questions.find().sort(criteria).limit(amount).toArray(function(err, docs) {
         if (err) {
-            callback(err);
+            callback('failure');
         } else {
             if (sortType == types.RANDOM)
                 shuffle(docs);

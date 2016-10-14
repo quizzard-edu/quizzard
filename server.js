@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var students = require('./server/students.js');
 var questions = require('./server/questions.js');
 var selector = require('./server/question-selector.js');
+var pug = require('pug');
 
 var app = express();
 var port = 65535;
@@ -54,6 +55,33 @@ app.get('/home', function(req, res) {
             res.render('home', { user: req.session.user, questions: results });
         });
     }
+});
+
+app.get('/sortlist', function(req, res) {
+    res.status(200).send(selector.sortTypes);
+});
+
+const questionList = pug.compileFile('views/questionlist.pug');
+
+app.post('/sortlist', function(req, res) {
+    var type;
+
+    for (type in selector.sortTypes) {
+        if (req.body.sort == selector.sortTypes[type])
+            break;
+    }
+
+    selector.findQuestions(10, selector.sortTypes[type], function(results) {
+        if (results == 'failure') {
+        } else if (results == 'invalid-sort') {
+            console.log('invalid sort requested');
+        } else {
+            var html = questionList({
+                questions: results
+            });
+            res.status(200).send(html);
+        }
+    });
 });
 
 /* temporary account creation form */
