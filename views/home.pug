@@ -11,7 +11,7 @@ block content
     .row
       .question-list.col-md-8
         each q in questions
-          .row.question-block
+          .row.question-block(id=q.id)
             .col-sm-8.text-center.title #{q.text}
             .col-sm-4.qright
               p.topic #{q.topic}
