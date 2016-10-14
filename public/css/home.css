@@ -1,3 +1,11 @@
+.dropdown {
+  margin-bottom: 10px;
+}
+
+.btn .caret {
+  margin-left: 4px;
+}
+
 .question-list {
   max-height: 800px;
 }
@@ -20,13 +28,15 @@
 }
 
 .question-block .title {
-  display: table-cell;
+  align-self: center;
   font-weight: bold;
-  height: 100%;
-  display: inline-block;
   vertical-align: middle;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  margin: 0 auto;
+}
+
+.question-block .qleft {
+  display: flex;
+  height: 100%;
 }
 
 .question-block .qright {

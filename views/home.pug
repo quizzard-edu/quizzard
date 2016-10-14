@@ -9,13 +9,12 @@ block title
 block content
   .container
     .row
-      .question-list.col-md-8
-        each q in questions
-          .row.question-block(id=q.id)
-            .col-sm-8.text-center.title #{q.text}
-            .col-sm-4.qright
-              p.topic #{q.topic}
-              p.points #{q.basePoints}
+      include questionlist
       .sidebar.col-md-4
         h4.sidebar-item#name #{user.fname} #{user.lname}
         h3.sidebar-item#points #{user.points}
+
+block scripts
+  script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/lib/bootstrap/js/bootstrap.min.js')
+  script(src='/js/home.js')
