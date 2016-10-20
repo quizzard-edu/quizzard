@@ -27,6 +27,7 @@ questions.count(function(err, num) {
         });
     }
 });
+
 /*
  * Insert a new question into the database.
  * The question object passed to the function should have
@@ -45,5 +46,15 @@ exports.addQuestion = function(question, callback) {
             console.log(res);
             callback('success');
         }
+    });
+}
+
+/* Extract a question object from the database using its ID. */
+exports.lookupQuestion = function(qid, callback) {
+    questions.findOne({id: qid}, function(err, q) {
+        if (err || !q)
+            callback('failure');
+        else
+            callback(q);
     });
 }

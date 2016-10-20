@@ -85,8 +85,24 @@ app.post('/sortlist', function(req, res) {
 });
 
 app.post('/questionreq', function(req, res) {
-    console.log(req.body.id);
-    res.status(200).send();
+    questions.lookupQuestion(parseInt(req.body.id), function(result) {
+        if (result == 'failure') {
+            res.status(500).send();
+        } else {
+            req.session.user.question = result;
+            res.status(200).send();
+        }
+    });
+});
+
+app.get('/question', function(req, res) {
+    /* if the user has not yet logged in, redirect to login page */
+    if (req.session.user == null)
+        res.redirect('/')
+    else if (req.session.user.question == null)
+        res.redirect('/home')
+    else
+        res.render('question', { question: req.session.user.question });
 });
 
 /* temporary account creation form */

@@ -53,16 +53,3 @@
   text-align: center;
   font-size: 18px;
 }
-
-.sidebar .sidebar-item {
-  display: block;
-  text-align: center;
-}
-
-.sidebar .sidebar-item#points {
-  font-size: 30px;
-}
-
-.sidebar h3, h4 {
-  font-weight: bold;
-}

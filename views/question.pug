@@ -1,0 +1,30 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/question.css')
+  link(rel='stylesheet' href='/css/sidebar.css')
+
+block title
+  title Quizzard - Question
+
+block content
+  .container
+    .row
+      .col-md-8
+        .form-question
+          h3.qtext #{question.text}
+          label.sr-only(for='answer') Answer
+          textarea.form-control(rows='3' id='answer')
+          button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+      .sidebar.col-md-4
+        h3.sidebar-item#topic #{question.topic}
+        h3.sidebar-item#points #{question.basePoints} Points
+        p.sidebar-item#attempts This question has been attempted #{question.attempts} times.
+        if question.correctAnswers == 0
+          p.sidebar-item#first-answer You could be the first person to correctly answer this question!
+        else
+          p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
+
+block scripts
+  script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/js/question.js')
