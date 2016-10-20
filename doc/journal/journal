@@ -44,3 +44,23 @@ Moved the question list into a separate template file, allowing it to be
 re-rendered with new information without having to re-render the whole page.
 Implemented question list sorting through an AJAX request to the server to
 render a new question list with a given sort criterion.
+
+2016-10-19:
+Send AJAX request to server when a question is clicked in the question list on
+the home page. The request contains the ID of the question that was clicked.
+Redirect browser to /question if the request was successful.
+
+2016-10-20:
+Added lookupQuestion function to questions module to find a single question
+object by its ID.
+When a question is clicked, server looks up the clicked question ID. If it is
+valid, stores the question object in the session's user object.
+Added a simple question view. Like the home view, it has a main area and a
+sidebar. The sidebar CSS from the homepage was extracted to a separate file so
+it could be shared between home and question views.
+In the main area of the question page, the question text, a text box for the
+answer and a submit button are displayed. The sidebar shows additional
+information such as the question topic, number of points and stats about how
+many times it has been attempted/answered. More information will be added to
+this in the future.
+Clicking submit doesn't do anything... yet.

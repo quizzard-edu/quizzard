@@ -8,18 +8,22 @@ $.ajax({
     }
 });
 
-$('.question-block').click(function(evt) {
-    var qid = this.id;
+var setupQuestionListeners = function() {
+    $('.question-block').click(function(evt) {
+        var qid = this.id;
 
-    $.ajax({
-        type: 'POST',
-        url: '/questionreq',
-        data: { id: qid },
-        success: function(data) {
-            window.location.href = '/question';
-        }
+        $.ajax({
+            type: 'POST',
+            url: '/questionreq',
+            data: { id: qid },
+            success: function(data) {
+                window.location.href = '/question';
+            }
+        });
     });
-});
+}
+
+setupQuestionListeners();
 
 $('#sort-topic').click(function(evt) {
     sortRequest(sortTypes.TOPIC);
@@ -50,6 +54,9 @@ var sortRequest = function(type) {
             }
             $('.question-list').html(data);
             $('#sort').html(s + '<span class="caret"></span>');
+
+            /* reset listeners for the new question elements */
+            setupQuestionListeners();
         }
     });
 };
