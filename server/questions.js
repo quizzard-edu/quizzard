@@ -51,6 +51,10 @@ exports.addQuestion = function(question, callback) {
 
 /* Extract a question object from the database using its ID. */
 exports.lookupQuestion = function(qid, callback) {
+    if (qid < 0 || qid > nextid - 1) {
+        callback('invalid');
+        return;
+    }
     questions.findOne({id: qid}, function(err, q) {
         if (err || !q)
             callback('failure');

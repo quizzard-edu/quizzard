@@ -86,7 +86,7 @@ app.post('/sortlist', function(req, res) {
 
 app.post('/questionreq', function(req, res) {
     questions.lookupQuestion(parseInt(req.body.id), function(result) {
-        if (result == 'failure') {
+        if (result == 'failure' || result == 'invalid') {
             res.status(500).send();
         } else {
             req.session.user.question = result;
