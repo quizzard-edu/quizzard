@@ -10,6 +10,15 @@ $.ajax({
 
 $('.question-block').click(function(evt) {
     var qid = this.id;
+
+    $.ajax({
+        type: 'POST',
+        url: '/questionreq',
+        data: { id: qid },
+        success: function(data) {
+            window.location.href = '/question';
+        }
+    });
 });
 
 $('#sort-topic').click(function(evt) {

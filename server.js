@@ -84,6 +84,11 @@ app.post('/sortlist', function(req, res) {
     });
 });
 
+app.post('/questionreq', function(req, res) {
+    console.log(req.body.id);
+    res.status(200).send();
+});
+
 /* temporary account creation form */
 app.get('/createuser', function(req,res) {
     res.render('userform');
