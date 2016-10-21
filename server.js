@@ -63,6 +63,7 @@ app.get('/sortlist', function(req, res) {
 
 const questionList = pug.compileFile('views/questionlist.pug');
 
+/* send back a sorted question list */
 app.post('/sortlist', function(req, res) {
     var type;
 
@@ -84,14 +85,31 @@ app.post('/sortlist', function(req, res) {
     });
 });
 
+/* user requests a question; look it up by id and store it in session */
 app.post('/questionreq', function(req, res) {
     questions.lookupQuestion(parseInt(req.body.id), function(result) {
         if (result == 'failure' || result == 'invalid') {
             res.status(500).send();
         } else {
-            req.session.user.question = result;
+            req.session.question = result;
             res.status(200).send();
         }
+    });
+});
+
+/* check if the submitted answer is correct */
+app.post('/submitanswer', function(req, res) {
+    questions.checkAnswer(req.session.question, req.body.answer,
+                          req.session.user, function(result) {
+        console.log(req.session.question);
+        if (result == 'failed-update') {
+            res.status(500).send();
+        } else if (result == 'correct') {
+            req.session.question = null;
+        } else {
+            /* do something */
+        }
+        res.status(200).send();
     });
 });
 
@@ -99,10 +117,10 @@ app.get('/question', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (req.session.user == null)
         res.redirect('/')
-    else if (req.session.user.question == null)
+    else if (req.session.question == null)
         res.redirect('/home')
     else
-        res.render('question', { question: req.session.user.question });
+        res.render('question', { question: req.session.question });
 });
 
 /* temporary account creation form */

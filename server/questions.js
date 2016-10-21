@@ -56,9 +56,40 @@ exports.lookupQuestion = function(qid, callback) {
         return;
     }
     questions.findOne({id: qid}, function(err, q) {
+        /* necessary for later database update */
+        delete q._id;
         if (err || !q)
             callback('failure');
         else
             callback(q);
+    });
+}
+
+/*
+ * Check if the provided answer matches the answer in the question object.
+ * Update the question object in the database and call the callback function
+ * with the result of the comparison and the new question object.
+ */
+exports.checkAnswer = function(question, answer, user, callback) {
+    var result;
+    question.attempts++;
+    if (question.answer.toLowerCase() === answer.toLowerCase()) {
+        if (question.correctAnswers == 0)
+            question.firstAnswer = user.id;
+        if (!question.studentsAnswered.includes(user.id)) {
+            question.correctAnswers++;
+            question.studentsAnswered.push(user.id);
+        }
+        result = 'correct';
+    } else {
+        result = 'incorrect';
+    }
+    questions.update({id: question.id}, question, function(err, res) {
+        if (err) {
+            console.log(err);
+            callback('failed-update');
+            return;
+        }
+        callback(result);
     });
 }
