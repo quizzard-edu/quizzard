@@ -64,3 +64,14 @@ information such as the question topic, number of points and stats about how
 many times it has been attempted/answered. More information will be added to
 this in the future.
 Clicking submit doesn't do anything... yet.
+
+2016-10-21:
+Fixed the form on the question page and added submit event listener.
+Send a HTTP POST with the user's answer when the submit button is clicked.
+Added checkAnswer function to questions.js which takes a question object
+and the user's submitted answer, compares the answers, updates the question
+object accordingly and replaces the old question object in the database with
+the new one.
+The answering functionality is not complete; the student's database entry
+still needs to be updated and the front end needs to respond to the result
+of the question attempt.
