@@ -23,7 +23,12 @@ block content
           include questionlist
       .sidebar.col-md-4
         h4.sidebar-item#name #{user.fname} #{user.lname}
-        h3.sidebar-item#points #{user.points}
+        h3.sidebar-item#points #{user.points} Points
+        h3.sidebar-item#level Level: #{user.level}
+        if user.attemped == 0
+          p.sidebar-item You have not yet attempted any questions.
+        else
+          p.sidebar-item You have a #{user.answered / user.attempted}% success rate.
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')

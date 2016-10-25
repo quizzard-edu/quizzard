@@ -12,10 +12,11 @@ block content
     .row
       .col-md-8
         form.form-question#answerform
-          h3.qtext #{question.text}
+          h2.qtext Question
+          h5.qtext #{question.text}
           label.sr-only(for='answer') Answer
-          textarea.form-control#answer(rows='3' placeholder='Enter your answer here'
-                                       required autofocus)
+          input.form-control#answer(placeholder='Enter your answer here'
+                                    required autofocus)
           button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
       .sidebar.col-md-4
         h3.sidebar-item#topic #{question.topic}
