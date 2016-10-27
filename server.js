@@ -46,6 +46,15 @@ app.post('/login', function(req, res) {
     });
 });
 
+app.get('/logout', function(req, res) {
+    if (req.session.user != null) {
+        req.session.destroy();
+        res.status(200).send();
+    } else {
+        res.status(500).send();
+    }
+});
+
 app.get('/home', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (req.session.user == null) {

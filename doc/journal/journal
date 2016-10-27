@@ -75,3 +75,12 @@ the new one.
 The answering functionality is not complete; the student's database entry
 still needs to be updated and the front end needs to respond to the result
 of the question attempt.
+
+2016-10-24:
+Added user's level and success rate to the sidebar on the home view.
+
+2016-10-26:
+Created a navbar. It is displayed at the top of the page in the home and
+question views. Added links for Home, Current Question, Leaderboard and About
+pages. Placed a logout button on the right side of the navbar and implemented
+logout functionality.
