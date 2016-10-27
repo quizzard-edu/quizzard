@@ -84,3 +84,5 @@ Created a navbar. It is displayed at the top of the page in the home and
 question views. Added links for Home, Current Question, Leaderboard and About
 pages. Placed a logout button on the right side of the navbar and implemented
 logout functionality.
+Questions now have separate text and title attributes. The title is displayed
+in the question list; the text appears on the question page itself.

@@ -48,6 +48,7 @@ app.post('/login', function(req, res) {
 
 app.get('/logout', function(req, res) {
     if (req.session.user != null) {
+        console.log('User %s logged out', req.session.user.id);
         req.session.destroy();
         res.status(200).send();
     } else {
@@ -61,6 +62,7 @@ app.get('/home', function(req, res) {
         res.redirect('/')
     } else {
         selector.findQuestions(10, selector.sortTypes.RANDOM, function(results) {
+            req.session.questions = results;
             res.render('home', { user: req.session.user, questions: results });
         });
     }
@@ -81,6 +83,7 @@ app.post('/sortlist', function(req, res) {
             break;
     }
 
+    /* TODO: rewrite this using req.session.questions instead of fetching new ones */
     selector.findQuestions(10, selector.sortTypes[type], function(results) {
         if (results == 'failure') {
         } else if (results == 'invalid-sort') {

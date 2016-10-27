@@ -11,6 +11,9 @@ block content
     form.form-user#questionform
       h2.form-user-heading Add Question
       p#result
+      label.sr-only(for='qtitle') Title
+      input.form-control#qtitle(type='text' name='title' placeholder='Title'
+                                required autofocus)
       label.sr-only(for='qtext') Question
       input.form-control#qtext(type='text' name='text' placeholder='Question'
                                 required autofocus)
