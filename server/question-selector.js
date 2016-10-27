@@ -55,6 +55,8 @@ exports.findQuestions = function(amount, findType, user, callback) {
         } else {
             if (checkMask(findType, types.RANDOM))
                 shuffle(docs);
+            for (q in docs)
+                delete docs[q]._id;
             callback(docs);
         }
     });

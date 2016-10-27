@@ -94,3 +94,7 @@ user attempts to answer a question.
 Upon answering a question, the user object now gets updated in the database
 with the new number of attempts, successes, point count, etc.
 Attempts and correct answers are now displayed in the sidebar.
+Rewrote the findQuestions function in the question-selector module. It now uses
+bitmasks to determine how questions are selected and sorted. By default,
+questions that the user has already successfully answered are not chosen.
+After a user answers a question, it gets removed from the question list.

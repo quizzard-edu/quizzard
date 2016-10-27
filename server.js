@@ -96,17 +96,17 @@ app.post('/sortlist', function(req, res) {
     }
 
     /* TODO: rewrite this using req.session.questions instead of fetching new ones */
-    selector.findQuestions(10, selector.findTypes[type], req.session.user, function(results) {
-        if (results == 'failure') {
-        } else if (results == 'invalid-sort') {
-            console.log('invalid sort requested');
-        } else {
-            var html = questionList({
-                questions: results
-            });
-            res.status(200).send(html);
-        }
-    });
+    // selector.findQuestions(10, selector.findTypes[type], req.session.user, function(results) {
+    //     if (results == 'failure') {
+    //     } else if (results == 'invalid-sort') {
+    //         console.log('invalid sort requested');
+    //     } else {
+    //         var html = questionList({
+    //             questions: results
+    //         });
+    //         res.status(200).send(html);
+    //     }
+    // });
 });
 
 /* user requests a question; look it up by id and store it in session */
@@ -134,8 +134,13 @@ app.post('/submitanswer', function(req, res) {
             res.status(500).send(data);
         } else if (result == 'correct') {
             data.points = req.session.question.basePoints;
+            /* remove question from questions list, TODO: fetch new one */
+            for (var ind in req.session.questions) {
+                if (req.session.questions[ind].id == req.session.question.id)
+                    break;
+            }
+            req.session.questions.splice(ind, 1);
             req.session.question = null;
-            /* TODO: remove question from req.session.questions list, fetch new one */
         } else {
             /* TODO: reload sidebar stats, save in data.html */
         }
