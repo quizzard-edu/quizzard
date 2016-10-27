@@ -113,15 +113,20 @@ app.post('/questionreq', function(req, res) {
 app.post('/submitanswer', function(req, res) {
     questions.checkAnswer(req.session.question, req.body.answer,
                           req.session.user, function(result) {
+        var data = {};
+
+        data.result = result;
         console.log(req.session.question);
         if (result == 'failed-update') {
-            res.status(500).send();
+            res.status(500).send(data);
         } else if (result == 'correct') {
+            data.points = req.session.question.basePoints;
             req.session.question = null;
+            /* TODO: remove question from req.session.questions list, fetch new one */
         } else {
-            /* do something */
+            /* TODO: reload sidebar stats, save in data.html */
         }
-        res.status(200).send();
+        res.status(200).send(data);
     });
 });
 

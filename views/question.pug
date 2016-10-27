@@ -1,6 +1,7 @@
 extends layout
 
 block styles
+  link(rel='stylesheet' href='/lib/sweetalert/sweetalert.css')
   link(rel='stylesheet' href='/css/question.css')
   link(rel='stylesheet' href='/css/sidebar.css')
   link(rel='stylesheet' href='/css/navbar.css')
@@ -18,7 +19,7 @@ block content
           h2.qtext #{question.title}
           h5.qtext #{question.text}
           label.sr-only(for='answer') Answer
-          input.form-control#answer(placeholder='Enter your answer here'
+          input.form-control#answer(name='answer' placeholder='Enter your answer here'
                                     required autofocus)
           button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
       .sidebar.col-md-4
@@ -32,5 +33,6 @@ block content
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/lib/sweetalert/sweetalert.min.js')
   script(src='/js/question.js')
   script(src='/js/navbar.js')

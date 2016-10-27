@@ -7,10 +7,18 @@ $('#answerform').submit(function(evt) {
     $.ajax({
         type: 'POST',
         url: '/submitanswer',
-        data: { answer: ans },
+        data: $('#answerform').serialize(),
         success: function(data) {
-            if (data == 'incorrect') {
-            } else if (data == 'correct') {
+            if (data.result == 'incorrect') {
+                swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
+            } else if (data.result == 'correct') {
+                swal({
+                    title: 'Correct',
+                    text: 'Congratulations! You gained ' + data.points + ' points!',
+                    type: 'success'
+                }, function () {
+                    window.location.href = '/home';
+                });
             }
         }
     });

@@ -73,6 +73,8 @@ exports.lookupQuestion = function(qid, callback) {
 exports.checkAnswer = function(question, answer, user, callback) {
     var result;
     question.attempts++;
+    console.log('User %s attempted to answer question %d with "%s"',
+                user.id, question.id, answer);
     if (question.answer.toLowerCase() === answer.toLowerCase()) {
         if (question.correctAnswers == 0)
             question.firstAnswer = user.id;
