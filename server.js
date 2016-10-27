@@ -63,7 +63,8 @@ app.get('/home', function(req, res) {
     } else {
         if (req.session.questions == null) {
             /* fetch some questions from the database if the user doesn't have any */
-            selector.findQuestions(10, selector.sortTypes.RANDOM, function(results) {
+            selector.findQuestions(10, selector.findTypes.SORT_RANDOM,
+                                   req.session.user, function(results) {
                 req.session.questions = results;
                 res.render('home', {
                     user: req.session.user,
@@ -80,7 +81,7 @@ app.get('/home', function(req, res) {
 });
 
 app.get('/sortlist', function(req, res) {
-    res.status(200).send(selector.sortTypes);
+    res.status(200).send(selector.findTypes);
 });
 
 const questionList = pug.compileFile('views/questionlist.pug');
@@ -89,13 +90,13 @@ const questionList = pug.compileFile('views/questionlist.pug');
 app.post('/sortlist', function(req, res) {
     var type;
 
-    for (type in selector.sortTypes) {
-        if (req.body.sort == selector.sortTypes[type])
+    for (type in selector.findTypes) {
+        if (req.body.sort == selector.findTypes[type])
             break;
     }
 
     /* TODO: rewrite this using req.session.questions instead of fetching new ones */
-    selector.findQuestions(10, selector.sortTypes[type], function(results) {
+    selector.findQuestions(10, selector.findTypes[type], req.session.user, function(results) {
         if (results == 'failure') {
         } else if (results == 'invalid-sort') {
             console.log('invalid sort requested');
