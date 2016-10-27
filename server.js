@@ -61,10 +61,21 @@ app.get('/home', function(req, res) {
     if (req.session.user == null) {
         res.redirect('/')
     } else {
-        selector.findQuestions(10, selector.sortTypes.RANDOM, function(results) {
-            req.session.questions = results;
-            res.render('home', { user: req.session.user, questions: results });
-        });
+        if (req.session.questions == null) {
+            /* fetch some questions from the database if the user doesn't have any */
+            selector.findQuestions(10, selector.sortTypes.RANDOM, function(results) {
+                req.session.questions = results;
+                res.render('home', {
+                    user: req.session.user,
+                    questions: results
+                });
+            });
+        } else {
+            res.render('home', {
+                user: req.session.user,
+                questions: req.session.questions
+            });
+        }
     }
 });
 
