@@ -3,11 +3,14 @@ extends layout
 block styles
   link(rel='stylesheet' href='/css/home.css')
   link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/css/navbar.css')
 
 block title
   title Quizzard - Home
 
 block content
+  include navbar
+
   .container
     .row
       .col-md-8
@@ -25,7 +28,7 @@ block content
         h4.sidebar-item#name #{user.fname} #{user.lname}
         h3.sidebar-item#points #{user.points} Points
         h3.sidebar-item#level Level: #{user.level}
-        if user.attemped == 0
+        if user.attempted == 0
           p.sidebar-item You have not yet attempted any questions.
         else
           p.sidebar-item You have a #{user.answered / user.attempted}% success rate.
@@ -34,3 +37,4 @@ block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
   script(src='/lib/bootstrap/js/bootstrap.min.js')
   script(src='/js/home.js')
+  script(src='/js/navbar.js')

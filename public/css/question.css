@@ -1,3 +1,7 @@
+body {
+  padding-top: 70px;
+}
+
 .form-question {
   max-width: 600px;
   padding: 15px;

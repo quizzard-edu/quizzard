@@ -25,6 +25,9 @@ var setupQuestionListeners = function() {
 
 setupQuestionListeners();
 
+/* set home as the active navbar element */
+$('#nav-home').addClass('active');
+
 $('#sort-topic').click(function(evt) {
     sortRequest(sortTypes.TOPIC);
 });

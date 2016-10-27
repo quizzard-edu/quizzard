@@ -3,11 +3,14 @@ extends layout
 block styles
   link(rel='stylesheet' href='/css/question.css')
   link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/css/navbar.css')
 
 block title
   title Quizzard - Question
 
 block content
+  include navbar
+
   .container
     .row
       .col-md-8
@@ -30,3 +33,4 @@ block content
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
   script(src='/js/question.js')
+  script(src='/js/navbar.js')
