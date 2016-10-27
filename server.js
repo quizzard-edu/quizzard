@@ -116,6 +116,7 @@ app.post('/submitanswer', function(req, res) {
         var data = {};
 
         data.result = result;
+        console.log(req.session.user);
         console.log(req.session.question);
         if (result == 'failed-update') {
             res.status(500).send(data);

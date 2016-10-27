@@ -86,3 +86,11 @@ pages. Placed a logout button on the right side of the navbar and implemented
 logout functionality.
 Questions now have separate text and title attributes. The title is displayed
 in the question list; the text appears on the question page itself.
+
+2016-10-27:
+Fixed questions to properly use input box instead of the original text box.
+Added sweetalert and used it to display a success or failure message when the
+user attempts to answer a question.
+Upon answering a question, the user object now gets updated in the database
+with the new number of attempts, successes, point count, etc.
+Attempts and correct answers are now displayed in the sidebar.

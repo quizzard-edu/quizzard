@@ -1,4 +1,5 @@
 var db = require('./db.js').database;
+var students = require('./students.js');
 
 var questions = db.collection('questions');
 exports.questions = questions;
@@ -73,6 +74,7 @@ exports.lookupQuestion = function(qid, callback) {
 exports.checkAnswer = function(question, answer, user, callback) {
     var result;
     question.attempts++;
+    user.attempted++;
     console.log('User %s attempted to answer question %d with "%s"',
                 user.id, question.id, answer);
     if (question.answer.toLowerCase() === answer.toLowerCase()) {
@@ -81,17 +83,27 @@ exports.checkAnswer = function(question, answer, user, callback) {
         if (!question.studentsAnswered.includes(user.id)) {
             question.correctAnswers++;
             question.studentsAnswered.push(user.id);
+            /* update the user */
+            user.answered++;
+            user.answeredIds.push(question.id);
+            user.points += question.basePoints;
         }
         result = 'correct';
     } else {
         result = 'incorrect';
     }
-    questions.update({id: question.id}, question, function(err, res) {
-        if (err) {
-            console.log(err);
+    students.updateAccount(user, function(res) {
+        if (res == 'failure') {
             callback('failed-update');
             return;
         }
-        callback(result);
+        questions.update({id: question.id}, question, function(err, res) {
+            if (err) {
+                console.log(err);
+                callback('failed-update');
+            } else {
+                callback(result);
+            }
+        });
     });
 }

@@ -15,6 +15,7 @@ exports.checkLogin = function(user, pass, callback) {
         } else if (obj) {
             validatePassword(obj, pass, function(valid) {
                 if (valid) {
+                    delete obj._id;
                     callback(obj);
                 } else {
                     console.log('invalid password provided for user ' + user);
@@ -64,6 +65,17 @@ exports.createAccount = function(account, callback) {
                     });
                 }
             });
+        }
+    });
+}
+
+exports.updateAccount = function(user, callback) {
+    students.update({id: user.id}, user, function(err, res) {
+        if (err) {
+            console.log(err);
+            callback('failure');
+        } else {
+            callback('success');
         }
     });
 }
