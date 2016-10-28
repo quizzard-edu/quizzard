@@ -31,11 +31,11 @@ exports.findTypes = types;
 exports.findQuestions = function(amount, findType, user, callback) {
     var criteria, query;
 
-    if (checkMask(findType, types.DEFAULT)) {
+    if (checkMask(findType, types.SORT_DEFAULT)) {
         criteria = {id: 1};
-    } else if (checkMask(findType, types.TOPIC)) {
+    } else if (checkMask(findType, types.SORT_TOPIC)) {
         critera = {topic : 1};
-    } else if (checkMask(findType, types.POINTS)) {
+    } else if (checkMask(findType, types.SORT_POINTS)) {
         critera = {basePoints : -1};
     } else {
         criteria = {};
@@ -53,14 +53,37 @@ exports.findQuestions = function(amount, findType, user, callback) {
         if (err) {
             callback('failure');
         } else {
-            if (checkMask(findType, types.RANDOM))
+            if (checkMask(findType, types.SORT_RANDOM))
                 shuffle(docs);
             for (q in docs)
                 delete docs[q]._id;
             callback(docs);
         }
     });
-};
+}
+
+exports.sortQuestions = function(qs, type, callback) {
+    var cmpfn;
+
+    if (checkMask(type, types.SORT_RANDOM)) {
+        shuffle(qs);
+        callback(qs);
+        return;
+    } else if (checkMask(type, types.SORT_TOPIC)) {
+        cmpfn = function(a, b) {
+            return a.topic < b.topic ? -1 : 1;
+        };
+    } else if (checkMask(type, types.SORT_POINTS)) {
+        cmpfn = function(a, b) {
+            return b.basePoints - a.basePoints;
+        };
+    } else {
+        cmpfn = function(a, b) { return -1; };
+    }
+
+    qs.sort(cmpfn);
+    callback(qs);
+}
 
 /* Classic Fisher-Yates shuffle. Nothing to see here. */
 var shuffle = function(arr) {

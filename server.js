@@ -95,18 +95,13 @@ app.post('/sortlist', function(req, res) {
             break;
     }
 
-    /* TODO: rewrite this using req.session.questions instead of fetching new ones */
-    // selector.findQuestions(10, selector.findTypes[type], req.session.user, function(results) {
-    //     if (results == 'failure') {
-    //     } else if (results == 'invalid-sort') {
-    //         console.log('invalid sort requested');
-    //     } else {
-    //         var html = questionList({
-    //             questions: results
-    //         });
-    //         res.status(200).send(html);
-    //     }
-    // });
+    selector.sortQuestions(req.session.questions, selector.findTypes[type],
+                           function(results) {
+        var html = questionList({
+            questions: results
+        });
+        res.status(200).send(html);
+    });
 });
 
 /* user requests a question; look it up by id and store it in session */

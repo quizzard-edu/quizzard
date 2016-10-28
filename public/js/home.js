@@ -29,11 +29,11 @@ setupQuestionListeners();
 $('#nav-home').addClass('active');
 
 $('#sort-topic').click(function(evt) {
-    sortRequest(sortTypes.TOPIC);
+    sortRequest(sortTypes.SORT_TOPIC);
 });
 
 $('#sort-point').click(function(evt) {
-    sortRequest(sortTypes.POINTS);
+    sortRequest(sortTypes.SORT_POINTS);
 });
 
 /*
@@ -48,10 +48,10 @@ var sortRequest = function(type) {
             var s;
 
             switch (type) {
-            case sortTypes.TOPIC:
+            case sortTypes.SORT_TOPIC:
                 s = 'Topic';
                 break;
-            case sortTypes.POINTS:
+            case sortTypes.SORT_POINTS:
                 s = 'Points';
                 break;
             }
