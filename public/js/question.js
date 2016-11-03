@@ -1,6 +1,3 @@
-/* set current question as the active navbar element */
-$('#nav-question').addClass('active');
-
 $('#answerform').submit(function(evt) {
     evt.preventDefault();
     var ans = $('#answer').val();
