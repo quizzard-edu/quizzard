@@ -60,6 +60,8 @@ app.get('/home', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (req.session.user == null) {
         res.redirect('/')
+    } else if (req.session.user.admin) {
+        res.redirect('/admin')
     } else {
         if (req.session.questions == null) {
             /* fetch some questions from the database if the user doesn't have any */
@@ -151,6 +153,15 @@ app.get('/question', function(req, res) {
         res.redirect('/home')
     else
         res.render('question', { question: req.session.question });
+});
+
+app.get('/admin', function(req,res) {
+    if (req.session.user == null)
+        res.redirect('/');
+    else if (!req.session.user.admin)
+        res.redirect('/home')
+    else
+        res.render('admin');
 });
 
 /* temporary account creation form */
