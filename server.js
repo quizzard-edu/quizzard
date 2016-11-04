@@ -82,6 +82,39 @@ app.get('/home', function(req, res) {
     }
 });
 
+app.get('/question', function(req, res) {
+    /* if the user has not yet logged in, redirect to login page */
+    if (req.session.user == null)
+        res.redirect('/')
+    else if (req.session.question == null)
+        res.redirect('/home')
+    else
+        res.render('question', {
+            user: req.session.user,
+            question: req.session.question
+        });
+});
+
+app.get('/admin', function(req,res) {
+    if (req.session.user == null)
+        res.redirect('/');
+    else if (!req.session.user.admin)
+        res.redirect('/home')
+    else
+        res.render('admin', { user: req.session.user });
+});
+
+const studentTable = pug.compileFile('views/account-table.pug');
+
+app.get('/studentlist', function(req, res) {
+    students.getAll(function(studentlist) {
+        var html = studentTable({
+            students: studentlist
+        });
+        res.status(200).send(html);
+    });
+});
+
 app.get('/sortlist', function(req, res) {
     res.status(200).send(selector.findTypes);
 });
@@ -143,25 +176,6 @@ app.post('/submitanswer', function(req, res) {
         }
         res.status(200).send(data);
     });
-});
-
-app.get('/question', function(req, res) {
-    /* if the user has not yet logged in, redirect to login page */
-    if (req.session.user == null)
-        res.redirect('/')
-    else if (req.session.question == null)
-        res.redirect('/home')
-    else
-        res.render('question', { question: req.session.question });
-});
-
-app.get('/admin', function(req,res) {
-    if (req.session.user == null)
-        res.redirect('/');
-    else if (!req.session.user.admin)
-        res.redirect('/home')
-    else
-        res.render('admin');
 });
 
 /* temporary account creation form */

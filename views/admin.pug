@@ -9,3 +9,40 @@ block title
 
 block content
   include navbar
+  .modal.fade#modal-accounts(tabindex='-1' role='dialog' aria-labelledby='modal-label' aria-hidden='true')
+    .modal-dialog.modal-lg
+      .modal-content
+        .modal-header
+          button.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') &times;
+          h4.modal-title#modal-label Manage Accounts
+        .modal-body#account-table
+        .modal-footer
+          button.btn.btn-primary(type='button') Create new user
+  .container
+    .row
+      .col-md-8
+        .list-group
+          a.list-group-item#option-accounts(href='#')
+            h4.list-group-item-heading Manage Accounts
+            p.list-group-item-text Add, modify or delete students' accounts.
+          a.list-group-item#option-questions(href='#')
+            h4.list-group-item-heading Manage Questions
+            p.list-group-item-text Add, modify or delete questions.
+          a.list-group-item#option-stats(href='#')
+            h4.list-group-item-heading View Statistics
+            p.list-group-item-text Examine information about application usage.
+          a.list-group-item#option-settings(href='#')
+            h4.list-group-item-heading Global Settings
+            p.list-group-item-text Change application settings.
+      .sidebar.col-md-4
+        h4.sidebar-item#name #{user.fname} #{user.lname}
+        p.sidebar-item
+          | This is the administration page. You can add and modify accounts
+          | and questions, or check how students are performing.
+
+block scripts
+  script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/lib/bootstrap/js/bootstrap.min.js')
+  script(src='/js/admin.js')
+  script(src='/js/navbar.js')

@@ -3,6 +3,16 @@ var db = require('./db.js').database;
 
 var students = db.collection('students');
 
+/* Return an array of all students in the database (users without admin flag) */
+exports.getAll = function(callback) {
+    students.find({admin: false}).sort({id: 1}).toArray(function(err, docs) {
+        if (err)
+            callback([]);
+        else
+            callback(docs);
+    });
+}
+
 /*
  * Check if the account given by user and pass is valid.
  * Return account object if it is or null otherwise.
@@ -54,6 +64,7 @@ exports.createAccount = function(account, callback) {
                     account.points = 0.0;
                     account.level = 0;
                     account.answeredIds = [];
+                    account.admin = false;
 
                     students.insert(account, function(err, res) {
                         if (err) {

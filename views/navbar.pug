@@ -4,10 +4,14 @@ nav.navbar.navbar-default.navbar-fixed-top
       .navbar-brand Quizzard
     .collapse.navbar-collapse
       ul.nav.navbar-nav
-        li#nav-home
-          a(href='/home') Questions
-        li#nav-leaderboard
-          a(href='#') Leaderboard
+        if user.admin
+          li#nav-home
+            a(href='/admin') Administration
+        else
+          li#nav-home
+            a(href='/home') Questions
+          li#nav-leaderboard
+            a(href='#') Leaderboard
         li#nav-about
           a(href='#') About
       ul.nav.navbar-nav.navbar-right
