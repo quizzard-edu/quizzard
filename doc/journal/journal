@@ -102,3 +102,23 @@ After a user answers a question, it gets removed from the question list.
 2016-10-27:
 The sort options on the home page now sort the user's stored question list
 instead of fetching new questions from the database.
+
+2016-11-03:
+Started work on the administration page.
+Added an 'admin' flag to user objects in the database.
+Users with the admin flag set cannot view or answer questions like regular users
+but rather have access to the administration page where they can create and
+modify questions and student accounts.
+Added basic admin options to the administration page.
+Changed the navbar to display different options depending on whether the user is
+an admin or not.
+
+2016-11-04:
+Started working on the 'Manage Accounts' option on the administration page.
+When the button is clicked, a popup appears that displays a table of all
+(non-admin) users in the database and their basic information. Wrote a new
+function in the students module to grab these database entries.
+Added (currently non-functional) buttons to edit or delete each user in the
+table.
+Added a button below the table to create a new user entry. Copied over the
+old temporary user creation form to be displayed when this button is clicked.
