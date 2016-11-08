@@ -122,3 +122,8 @@ Added (currently non-functional) buttons to edit or delete each user in the
 table.
 Added a button below the table to create a new user entry. Copied over the
 old temporary user creation form to be displayed when this button is clicked.
+
+2016-11-08:
+Changed the admin page to have a sidebar of administration actions and a main
+display. Rearranged the user table to appear in the center content area of the
+admin page instead of as a popup.

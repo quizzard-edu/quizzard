@@ -9,20 +9,7 @@ block title
 
 block content
   include navbar
-  // Account Management modal
-  .modal.fade#modal-accounts(tabindex='-1' role='dialog' aria-labelledby='modal-accounts-label'
-                             aria-hidden='true')
-    .modal-dialog.modal-lg
-      .modal-content
-        .modal-header
-          button.close(type='button' data-dismiss='modal' aria-label='Close')
-            span(aria-hidden='true') &times;
-          h4.modal-title#modal-accounts-label Manage Accounts
-        .modal-body#account-table
-        .modal-footer
-          button.btn.btn-primary#create-user(type='button') Create new user
 
-  // Account Creation modal
   .modal.fade#modal-createuser(tabindex='-1' role='dialog' aria-labelledby='modal-createuser-label'
                                aria-hidden='true')
     .modal-dialog.modal-lg
@@ -51,9 +38,9 @@ block content
                                       required)
             button.btn.btn-lg.btn-primary.btn-block(type='submit') Create
 
-  .container
+  .container-fluid
     .row
-      .col-md-8
+      .col-md-2
         .list-group
           a.list-group-item#option-accounts(href='#')
             h4.list-group-item-heading Manage Accounts
@@ -67,11 +54,12 @@ block content
           a.list-group-item#option-settings(href='#')
             h4.list-group-item-heading Global Settings
             p.list-group-item-text Change application settings.
-      .sidebar.col-md-4
-        h4.sidebar-item#name #{user.fname} #{user.lname}
-        p.sidebar-item
-          | This is the administration page. You can add and modify accounts
-          | and questions, or check how students are performing.
+      .col-md-8
+        .admin-body
+          h4#admin-label
+          #admin-content
+          button.btn.btn-sm.btn-primary#admin-button
+      .col-md-2
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')

@@ -1,20 +1,26 @@
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
-$('#option-accounts').click(function(evt) {
-    $('#modal-accounts').modal('show');
+var displayAccountsTable = function() {
     $.ajax({
         type: 'GET',
         url: '/studentlist',
         success: function(data) {
-            $('#account-table').html(data);
+            $('#admin-label').html('Manage Accounts');
+            $('#admin-content').html(data);
+            $('#admin-button').off();
+            $('#admin-button').click(function(evt) {
+                $('#modal-createuser').modal('show');
+            });
+            $('#admin-button').html('Create User');
         }
     });
-});
+}
 
-$('#create-user').click(function(evt) {
-    $('#modal-accounts').modal('hide');
-    $('#modal-createuser').modal('show');
+displayAccountsTable();
+
+$('#option-accounts').click(function(evt) {
+    displayAccountsTable();
 });
 
 $('#userform').submit(function(evt) {
