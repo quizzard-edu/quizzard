@@ -9,10 +9,33 @@ var displayAccountsTable = function() {
             $('#admin-label').html('Manage Accounts');
             $('#admin-content').html(data);
             $('#admin-button').off();
+            $('#admin-button').show();
             $('#admin-button').click(function(evt) {
-                $('#modal-createuser').modal('show');
+                displayAccountForm();
             });
             $('#admin-button').html('Create User');
+            $('#admin-back').hide();
+            $('#admin-back').click(function(evt) {
+                displayAccountsTable();
+            });
+        }
+    });
+}
+
+var displayAccountForm = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/accountform',
+        success: function(data) {
+            $('#admin-label').html('Create Account');
+            $('#admin-content').html(data);
+            $('#admin-button').off();
+            $('#admin-button').hide();
+            $('#admin-back').show();
+            $('#userform').submit(function(evt) {
+                evt.preventDefault();
+                submitUserForm();
+            });
         }
     });
 }
@@ -25,9 +48,11 @@ var displayQuestionTable = function() {
             $('#admin-label').html('Manage Questions');
             $('#admin-content').html(data);
             $('#admin-button').off();
+            $('#admin-button').show();
             $('#admin-button').click(function(evt) {
             });
             $('#admin-button').html('Add New Question');
+            $('#admin-back').hide();
         }
     });
 }
@@ -43,9 +68,7 @@ $('#option-questions').click(function(evt) {
     displayQuestionTable();
 });
 
-$('#userform').submit(function(evt) {
-    evt.preventDefault();
-
+var submitUserForm = function() {
     var fields = $('#userform').serializeArray();
     var user = {};
 
@@ -66,4 +89,4 @@ $('#userform').submit(function(evt) {
                 $('#result').html('User ' + user.id + ' added to database');
         }
     });
-});
+}

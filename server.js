@@ -105,6 +105,7 @@ app.get('/admin', function(req,res) {
 });
 
 const studentTable = pug.compileFile('views/account-table.pug');
+const accountForm = pug.compileFile('views/account-creation.pug');
 const questionTable = pug.compileFile('views/question-table.pug');
 
 /* send the student table html */
@@ -115,6 +116,12 @@ app.get('/studentlist', function(req, res) {
         });
         res.status(200).send(html);
     });
+});
+
+/* send the account creation form html */
+app.get('/accountform', function(req, res) {
+    var html = accountForm();
+    res.status(200).send(html);
 });
 
 /* send the question table html */
