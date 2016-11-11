@@ -207,16 +207,19 @@ app.post('/submitanswer', function(req, res) {
     });
 });
 
-/* temporary account creation form */
-app.get('/createuser', function(req,res) {
-    res.render('userform');
-});
-
 /* temporary question creation form */
 app.get('/createquestion', function(req,res) {
     res.render('questionform');
 });
 
+/*
+ * Create a new user.
+ * The request body contains an incomplete student object with attributes
+ * from the fields in the user creation form.
+ * If the user ID already exists, creation fails.
+ * Otherwise, the user is inserted into the database and added
+ * to the active admin student list.
+ */
 app.post('/useradd', function(req, res) {
     students.createAccount(req.body, function(result) {
         if (result == 'failure') {
@@ -230,6 +233,11 @@ app.post('/useradd', function(req, res) {
     });
 });
 
+/*
+ * Delete a user with from the database.
+ * The request body is an object with a single 'userid' field,
+ * containing the ID of the user to be deleted.
+ */
 app.post('/userdel', function(req, res) {
     students.deleteAccount(req.body.userid, function(result) {
         if (result == 'failure') {
