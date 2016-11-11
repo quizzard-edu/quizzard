@@ -133,3 +133,14 @@ questions in the database and format them. Made the Manage Questions button in
 the admin sidebar functional. The questions table has an extra view action
 alongside edit and delete to allow the instructor to examine the question's
 full text and answers.
+
+2016-11-11:
+Made the user creation form display within the admin page body instead of being
+a popup.
+The server now stores the administrator's student list instead of fetching it
+from the database every time it is requested. The user creation process appends
+the created user to this stored list as well as inserting it into the database.
+Made the delete action on the account table operational. Added deleteAccount
+function to the students module to facilitate this.
+Started working on the account editing form, allowing an administrator to
+modify various information stored with each account.
