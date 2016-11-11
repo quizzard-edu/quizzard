@@ -104,8 +104,10 @@ app.get('/admin', function(req,res) {
         res.render('admin', { user: req.session.user });
 });
 
+/* Pre-compiled Pug views */
 const studentTable = pug.compileFile('views/account-table.pug');
 const accountForm = pug.compileFile('views/account-creation.pug');
+const accountEdit = pug.compileFile('views/account-edit.pug');
 const questionTable = pug.compileFile('views/question-table.pug');
 
 /* send the student table html */
@@ -130,6 +132,26 @@ app.get('/studentlist', function(req, res) {
 /* send the account creation form html */
 app.get('/accountform', function(req, res) {
     var html = accountForm();
+    res.status(200).send(html);
+});
+
+/* send the account editing form html */
+app.post('/accountedit', function(req, res) {
+    /* Find the requested user */
+    var ind;
+    for (ind in req.session.adminStudentList) {
+        if (req.session.adminStudentList[ind].id == req.body.userid)
+            break;
+    }
+
+    const months = ['Jan', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var date = new Date(req.session.adminStudentList[ind].ctime * 1000);
+    var time = months[date.getMonth() - 1] + ' ' + date.getDate() + ' ' + date.getFullYear();
+
+    var html = accountEdit({
+        user: req.session.adminStudentList[ind],
+        cdate: time
+    });
     res.status(200).send(html);
 });
 

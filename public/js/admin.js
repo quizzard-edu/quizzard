@@ -20,7 +20,8 @@ var displayAccountsTable = function() {
                 deleteUser(this.id.substring(7));
             });
             $('.edit-button').click(function(evt) {
-                alert(this.id);
+                /* cut off the edit- */
+                editUser(this.id.substring(5));
             });
         }
     });
@@ -116,5 +117,23 @@ var deleteUser = function(id) {
                 displayAccountsTable();
             }
         });
+    });
+}
+
+var editUser = function(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/accountedit',
+        data: { userid: id },
+        success: function(data) {
+            $('#admin-label').html('Edit Account');
+            $('#admin-content').html(data);
+            $('#admin-button').off();
+            $('#admin-button').hide();
+            $('#admin-back').show();
+            $('#admin-back').click(function(evt) {
+                displayAccountsTable();
+            });
+        }
     });
 }

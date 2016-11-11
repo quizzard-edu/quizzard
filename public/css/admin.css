@@ -35,3 +35,15 @@ body {
   height: auto;
   padding: 10px;
 }
+
+.form-edit {
+  max-width: 600px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-edit .form-control {
+  position: relative;
+  height: auto;
+  padding: 10px;
+}
