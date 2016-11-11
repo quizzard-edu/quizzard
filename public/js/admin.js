@@ -15,8 +15,12 @@ var displayAccountsTable = function() {
             });
             $('#admin-button').html('Create User');
             $('#admin-back').hide();
-            $('#admin-back').click(function(evt) {
-                displayAccountsTable();
+            $('.delete-button').click(function(evt) {
+                /* cut off the delete- */
+                deleteUser(this.id.substring(7));
+            });
+            $('.edit-button').click(function(evt) {
+                alert(this.id);
             });
         }
     });
@@ -32,6 +36,9 @@ var displayAccountForm = function() {
             $('#admin-button').off();
             $('#admin-button').hide();
             $('#admin-back').show();
+            $('#admin-back').click(function(evt) {
+                displayAccountsTable();
+            });
             $('#userform').submit(function(evt) {
                 evt.preventDefault();
                 submitUserForm();
@@ -88,5 +95,26 @@ var submitUserForm = function() {
             else if (data == 'success')
                 $('#result').html('User ' + user.id + ' added to database');
         }
+    });
+}
+
+var deleteUser = function(id) {
+    swal({
+        title: 'Confirm deletion',
+        text: 'User ' + id + ' will be removed from the database.',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Delete',
+        closeOnConfirm: true
+    }, function() {
+        $.ajax({
+            type: 'POST',
+            url: '/userdel',
+            data: { userid: id },
+            success: function(data) {
+                displayAccountsTable();
+            }
+        });
     });
 }

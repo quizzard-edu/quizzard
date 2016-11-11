@@ -12,7 +12,7 @@ table.table
         td #{s.id}
         td #{s.email}
         td
-          button.btn.btn-default(id='edit-' + s.id type='button' aria-label='Edit')
+          button.btn.btn-default.edit-button(id='edit-' + s.id type='button' aria-label='Edit')
             span.glyphicon.glyphicon-pencil(aria-hidden='true')
-          button.btn.btn-default(id='delete-' + s.id type='button' aria-label='Delete')
+          button.btn.btn-default.delete-button(id='delete-' + s.id type='button' aria-label='Delete')
             span.glyphicon.glyphicon-remove(aria-hidden='true')
