@@ -17,10 +17,30 @@ var displayAccountsTable = function() {
     });
 }
 
+var displayQuestionTable = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/questionlist',
+        success: function(data) {
+            $('#admin-label').html('Manage Questions');
+            $('#admin-content').html(data);
+            $('#admin-button').off();
+            $('#admin-button').click(function(evt) {
+            });
+            $('#admin-button').html('Add New Question');
+        }
+    });
+}
+
+/* show the account table by default */
 displayAccountsTable();
 
 $('#option-accounts').click(function(evt) {
     displayAccountsTable();
+});
+
+$('#option-questions').click(function(evt) {
+    displayQuestionTable();
 });
 
 $('#userform').submit(function(evt) {

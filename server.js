@@ -105,11 +105,24 @@ app.get('/admin', function(req,res) {
 });
 
 const studentTable = pug.compileFile('views/account-table.pug');
+const questionTable = pug.compileFile('views/question-table.pug');
 
+/* send the student table html */
 app.get('/studentlist', function(req, res) {
     students.getAll(function(studentlist) {
         var html = studentTable({
             students: studentlist
+        });
+        res.status(200).send(html);
+    });
+});
+
+/* send the question table html */
+app.get('/questionlist', function(req, res) {
+    selector.findQuestions(0, selector.findTypes.SORT_DEFAULT,
+                           null, function(questionlist) {
+        var html = questionTable({
+            questions: questionlist
         });
         res.status(200).send(html);
     });

@@ -1,12 +1,10 @@
 2016-09-29:
-
 Started writing code for the project.
 Set up an Express server.
 Created a simple login page using Bootstrap.
 Added database authentication for login.
 
 2016-09-30:
-
 Changed login page from static HTML to Pug.
 Added session support.
 
@@ -127,3 +125,11 @@ old temporary user creation form to be displayed when this button is clicked.
 Changed the admin page to have a sidebar of administration actions and a main
 display. Rearranged the user table to appear in the center content area of the
 admin page instead of as a popup.
+
+2016-11-10:
+Created an admin question table, similar to the user table. Created question
+table in Pug to display basic information. Added a new POST request to fetch all
+questions in the database and format them. Made the Manage Questions button in
+the admin sidebar functional. The questions table has an extra view action
+alongside edit and delete to allow the instructor to examine the question's
+full text and answers.
