@@ -110,12 +110,21 @@ const questionTable = pug.compileFile('views/question-table.pug');
 
 /* send the student table html */
 app.get('/studentlist', function(req, res) {
-    students.getAll(function(studentlist) {
+    if (req.session.adminStudentList == null) {
+        /* only fetch student list once, then store it */
+        students.getAll(function(studentlist) {
+            req.session.adminStudentList = studentlist;
+            var html = studentTable({
+                students: studentlist
+            });
+            res.status(200).send(html);
+        });
+    } else {
         var html = studentTable({
-            students: studentlist
+            students: req.session.adminStudentList
         });
         res.status(200).send(html);
-    });
+    }
 });
 
 /* send the account creation form html */
@@ -210,11 +219,34 @@ app.get('/createquestion', function(req,res) {
 
 app.post('/useradd', function(req, res) {
     students.createAccount(req.body, function(result) {
-        if (result == 'failure')
+        if (result == 'failure') {
             res.status(500);
-        else
+        } else {
+            if (req.session.adminStudentList != null)
+                req.session.adminStudentList.push(req.body);
             res.status(200);
+        }
         res.send(result);
+    });
+});
+
+app.post('/userdel', function(req, res) {
+    students.deleteAccount(req.body.userid, function(result) {
+        if (result == 'failure') {
+            res.status(500);
+        } else {
+            if (req.session.adminStudentList != null) {
+                /* Remove the deleted user from the stored student list. */
+                var ind;
+                for (ind in req.session.adminStudentList) {
+                    if (req.session.adminStudentList[ind].id == req.body.userid)
+                        break;
+                }
+                req.session.adminStudentList.splice(ind, 1);
+            }
+            res.status(200);
+        }
+        res.send();
     });
 });
 

@@ -91,6 +91,19 @@ exports.updateAccount = function(user, callback) {
     });
 }
 
+/* Remove an account from the database. */
+exports.deleteAccount = function(userid, callback) {
+    students.remove({id: userid}, function(err, res) {
+        if (err) {
+            console.log(err);
+            callback('failure');
+        } else {
+            console.log('User %s deleted', userid);
+            callback('success');
+        }
+    });
+};
+
 /*
  * Check the hash of pass against the password stored in userobj.
  */
