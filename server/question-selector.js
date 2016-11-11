@@ -43,7 +43,7 @@ exports.findQuestions = function(amount, findType, user, callback) {
 
     if (checkMask(findType, types.QUERY_ANSWERED)) {
         query = {};
-    } else {
+    } else if (user != null) {
         query = {
             id: { $nin: user.answeredIds }
         };
