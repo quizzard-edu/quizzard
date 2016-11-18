@@ -164,7 +164,7 @@ var submitUserForm = function() {
     var user = {};
 
     jQuery.each(fields, function(i, field) {
-        user[field.name] = field.value;
+        user[field.name.substring(3)] = field.value;
     });
 
     $.ajax({
