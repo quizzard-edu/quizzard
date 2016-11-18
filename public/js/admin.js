@@ -23,6 +23,9 @@ var displayAccountsTable = function() {
                 /* cut off the edit- */
                 editUser(this.id.substring(5));
             });
+
+            $('#option-accounts').addClass('active');
+            $('#option-questions').removeClass('active');
         }
     });
 }
@@ -61,6 +64,9 @@ var displayQuestionTable = function() {
             });
             $('#admin-button').html('Add New Question');
             $('#admin-back').hide();
+
+            $('#option-questions').addClass('active');
+            $('#option-accounts').removeClass('active');
         }
     });
 }
@@ -75,29 +81,6 @@ $('#option-accounts').click(function(evt) {
 $('#option-questions').click(function(evt) {
     displayQuestionTable();
 });
-
-var submitUserForm = function() {
-    var fields = $('#userform').serializeArray();
-    var user = {};
-
-    jQuery.each(fields, function(i, field) {
-        user[field.name] = field.value;
-    });
-
-    $.ajax({
-        type: 'POST',
-        url: '/useradd',
-        data: user,
-        success: function(data) {
-            if (data == 'failure')
-                $('#result').html('User could not be added');
-            else if (data == 'exists')
-                $('#result').html('User ' + user.id + ' already exists');
-            else if (data == 'success')
-                $('#result').html('User ' + user.id + ' added to database');
-        }
-    });
-}
 
 var deleteUser = function(id) {
     swal({
@@ -134,6 +117,65 @@ var editUser = function(id) {
             $('#admin-back').click(function(evt) {
                 displayAccountsTable();
             });
+            $('#account-edit-form').submit(function(evt) {
+                evt.preventDefault();
+                submitEditForm(id);
+            });
+        }
+    });
+}
+
+var submitUserForm = function() {
+    var fields = $('#userform').serializeArray();
+    var user = {};
+
+    jQuery.each(fields, function(i, field) {
+        user[field.name] = field.value;
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: '/useradd',
+        data: user,
+        success: function(data) {
+            if (data == 'failure')
+                $('#result').html('User could not be added');
+            else if (data == 'exists')
+                $('#result').html('User ' + user.id + ' already exists');
+            else if (data == 'success')
+                $('#result').html('User ' + user.id + ' added to database');
+        }
+    });
+}
+
+var submitEditForm = function(id) {
+    var fields = $('#account-edit-form').serializeArray();
+    var user = {
+        originalID: id
+    };
+
+    jQuery.each(fields, function(i, field) {
+        if (field.value)
+            user[field.name] = field.value;
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: '/usermod',
+        data: user,
+        success: function(data) {
+            if (data.result == 'failure') {
+                $('#account-edit-result').html('User could not be updated. Please try again');
+            } else if (data.result == 'dupid') {
+                $('#account-edit-result').html('User ID ' + user.id + ' is taken');
+            } else if (data.result == 'success') {
+                $('#admin-content').html(data.html);
+                $('#account-edit-form').submit(function(evt) {
+                    evt.preventDefault();
+                    submitEditForm(user.id ? user.id : id);
+                });
+                $('#account-edit-result').html('User ' + id + ' has been updated');
+            }
         }
     });
 }

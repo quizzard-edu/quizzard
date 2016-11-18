@@ -2,8 +2,10 @@
   h4 #{user.id}
   p #{user.fname} #{user.lname}
   p #{user.email}
-  p #{user.points}
+  p #{user.points} Points
   p Created on #{cdate}
+
+  p#account-edit-result
 
 form.form-edit#account-edit-form
   .form-group.row
@@ -27,9 +29,9 @@ form.form-edit#account-edit-form
       input.form-control#email(type='email' name='email' placeholder='New email')
 
   .form-group.row
-    label.col-sm-2.col-form-label(for='email') Points
+    label.col-sm-2.col-form-label(for='points') Points
     .col-sm-10
-      input.form-control#email(type='number' name='email' placeholder='Set point count')
+      input.form-control#email(type='number' name='points' placeholder='Set point count')
 
   .form-group.row
     label.col-sm-2.col-form-label(for='passwd') Password

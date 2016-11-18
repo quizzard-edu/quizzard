@@ -135,6 +135,12 @@ app.get('/accountform', function(req, res) {
     res.status(200).send(html);
 });
 
+var creationDate = function(timestamp) {
+    const months = ['Jan', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var date = new Date(timestamp);
+    return months[date.getMonth() - 1] + ' ' + date.getDate() + ' ' + date.getFullYear();
+}
+
 /* send the account editing form html */
 app.post('/accountedit', function(req, res) {
     /* Find the requested user */
@@ -144,13 +150,9 @@ app.post('/accountedit', function(req, res) {
             break;
     }
 
-    const months = ['Jan', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var date = new Date(req.session.adminStudentList[ind].ctime * 1000);
-    var time = months[date.getMonth() - 1] + ' ' + date.getDate() + ' ' + date.getFullYear();
-
     var html = accountEdit({
         user: req.session.adminStudentList[ind],
-        cdate: time
+        cdate: creationDate(req.session.adminStudentList[ind].ctime * 1000)
     });
     res.status(200).send(html);
 });
@@ -277,6 +279,41 @@ app.post('/userdel', function(req, res) {
             res.status(200);
         }
         res.send();
+    });
+});
+
+/*
+ * Modify a user object in the database.
+ * The request body contains a user object with the fields to be modified.
+ */
+app.post('/usermod', function(req, res) {
+    var orig, ind, user;
+
+    orig = req.body.originalID;
+    for (ind in req.session.adminStudentList) {
+        if (req.session.adminStudentList[ind].id == orig) {
+            user = JSON.parse(JSON.stringify(req.session.adminStudentList[ind]));
+            break;
+        }
+    }
+
+    delete req.body.originalID;
+    /* update user in stored list */
+    for (var field in req.body)
+        user[field] = req.body[field];
+
+    students.updateAccount(orig, user, function(result) {
+        if (result == 'success')
+            req.session.adminStudentList[ind] = user;
+
+        var html = accountEdit({
+            user: req.session.adminStudentList[ind],
+            cdate: creationDate(req.session.adminStudentList[ind].ctime * 1000)
+        });
+        res.status(200).send({
+            result: result,
+            html: html
+        });
     });
 });
 

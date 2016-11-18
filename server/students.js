@@ -6,10 +6,13 @@ var students = db.collection('students');
 /* Return an array of all students in the database (users without admin flag) */
 exports.getAll = function(callback) {
     students.find({admin: false}).sort({id: 1}).toArray(function(err, docs) {
-        if (err)
+        if (err) {
             callback([]);
-        else
+        } else {
+            for (s in docs)
+                delete docs[s]._id;
             callback(docs);
+        }
     });
 }
 
@@ -80,13 +83,24 @@ exports.createAccount = function(account, callback) {
     });
 }
 
-exports.updateAccount = function(user, callback) {
-    students.update({id: user.id}, user, function(err, res) {
+exports.updateAccount = function(userid, user, callback) {
+    students.findOne({id : user.id}, function(err, obj) {
         if (err) {
             console.log(err);
             callback('failure');
+        } else if (obj && userid != user.id) {
+            callback('dupid');
         } else {
-            callback('success');
+            if (user.password)
+                user.password = bcrypt.hashSync(user.password, 11);
+            students.update({id: userid}, user, function(err, res) {
+                if (err) {
+                    console.log(err);
+                    callback('failure');
+                } else {
+                    callback('success');
+                }
+            });
         }
     });
 }

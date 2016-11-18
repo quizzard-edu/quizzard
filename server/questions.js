@@ -92,7 +92,7 @@ exports.checkAnswer = function(question, answer, user, callback) {
     } else {
         result = 'incorrect';
     }
-    students.updateAccount(user, function(res) {
+    students.updateAccount(user.id, user, function(res) {
         if (res == 'failure') {
             callback('failed-update');
             return;
