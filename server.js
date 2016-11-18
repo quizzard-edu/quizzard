@@ -7,7 +7,7 @@ var selector = require('./server/question-selector.js');
 var pug = require('pug');
 
 var app = express();
-var port = 65535;
+var port = process.env.QUIZZARD_PORT || 8000;
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -298,7 +298,6 @@ app.post('/usermod', function(req, res) {
     }
 
     delete req.body.originalID;
-    /* update user in stored list */
     for (var field in req.body)
         user[field] = req.body[field];
 
@@ -317,6 +316,10 @@ app.post('/usermod', function(req, res) {
     });
 });
 
+/*
+ * Add a question to the database.
+ * The request body contains the question to be added.
+ */
 app.post('/questionadd', function(req, res) {
     req.body.basePoints = parseInt(req.body.basePoints);
     req.body.type = questions.QUESTION_REGULAR;
