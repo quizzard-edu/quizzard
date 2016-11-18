@@ -47,3 +47,21 @@ body {
   height: auto;
   padding: 10px;
 }
+
+th a {
+  color: inherit
+}
+
+th a:link {
+  color: inherit;
+  text-decoration: none;
+}
+
+th a:hover {
+  text-decoration: none;
+}
+
+th a:active {
+  color: inherit;
+  text-decoration: none;
+}

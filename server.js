@@ -130,6 +130,23 @@ app.get('/studentlist', function(req, res) {
     }
 });
 
+app.post('/sortaccountlist', function(req, res) {
+    if (req.session.adminStudentList == null) {
+        var html = studentTable({
+            students: []
+        });
+        res.status(200).send(html);
+    } else {
+        students.sortAccounts(req.session.adminStudentList, req.body.type,
+                                req.body.asc == 'true', function(result) {
+            var html = studentTable({
+                students: result
+            });
+            res.status(200).send(html);
+        });
+    }
+});
+
 /* send the account creation form html */
 app.get('/accountform', function(req, res) {
     var html = accountForm();

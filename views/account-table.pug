@@ -1,14 +1,19 @@
 table.table
   thead
     tr
-      th Name
-      th User ID
+      th
+        a.sort-table#sort-fname(href='#') First Name
+      th
+        a.sort-table#sort-lname(href='#') Last Name
+      th
+        a.sort-table#sort-id(href='#') User ID
       th Email
       th Action
   tbody
     each s in students
       tr
-        td #{s.fname} #{s.lname}
+        td #{s.fname}
+        td #{s.lname}
         td #{s.id}
         td #{s.email}
         td

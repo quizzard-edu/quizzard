@@ -15,18 +15,26 @@ var displayAccountsTable = function() {
             });
             $('#admin-button').html('Create User');
             $('#admin-back').hide();
-            $('.delete-button').click(function(evt) {
-                /* cut off the delete- */
-                deleteUser(this.id.substring(7));
-            });
-            $('.edit-button').click(function(evt) {
-                /* cut off the edit- */
-                editUser(this.id.substring(5));
-            });
+
+            addAccountsTableEvents();
 
             $('#option-accounts').addClass('active');
             $('#option-questions').removeClass('active');
         }
+    });
+}
+
+var addAccountsTableEvents = function() {
+    $('.delete-button').click(function(evt) {
+        /* cut off the delete- */
+        deleteUser(this.id.substring(7));
+    });
+    $('.edit-button').click(function(evt) {
+        /* cut off the edit- */
+        editUser(this.id.substring(5));
+    });
+    $('.sort-table').click(function(evt) {
+        sortAccountsTable(this.id.substring(5));
     });
 }
 
@@ -260,4 +268,38 @@ var deleteQuestion = function(qid) {
 }
 
 var editQuestion = function(qid) {
+}
+
+/*
+ * Determines the sorting order for accounts in the accounts table.
+ * false: will be sorted in ascending order
+ * true: will be sorted in descending order
+ */
+var accountSortTypes = {
+    fname: false,
+    lname: false,
+    id: false
+};
+
+var sortAccountsTable = function(type) {
+    /* Toggle type's sort order; reset all others. */
+    for (var ind in accountSortTypes) {
+        if (ind == type)
+            accountSortTypes[type] = !accountSortTypes[type];
+        else
+            accountSortTypes[ind] = false;
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/sortaccountlist',
+        data: {
+            type: type,
+            asc: accountSortTypes[type]
+        },
+        success: function(data) {
+            $('#admin-content').html(data);
+            addAccountsTableEvents();
+        }
+    });
 }

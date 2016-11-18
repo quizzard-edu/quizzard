@@ -124,6 +124,29 @@ exports.deleteAccount = function(userid, callback) {
     });
 };
 
+exports.sortAccounts = function(as, type, asc, callback) {
+    var cmpfn;
+
+    var lo = asc ? -1 : 1;
+    var hi = -lo;
+    if (type == 'id') {
+        cmpfn = function(a, b) {
+            return a.id < b.id ? lo : hi;
+        };
+    } else if (type == 'fname') {
+        cmpfn = function(a, b) {
+            return a.fname.toLowerCase() < b.fname.toLowerCase() ? lo : hi;
+        };
+    } else {
+        cmpfn = function(a, b) {
+            return a.lname.toLowerCase() < b.lname.toLowerCase() ? lo : hi;
+        }
+    }
+
+    as.sort(cmpfn);
+    callback(as);
+}
+
 /*
  * Check the hash of pass against the password stored in userobj.
  */
