@@ -83,6 +83,12 @@ exports.createAccount = function(account, callback) {
     });
 }
 
+/*
+ * Update the account with ID userid in the student database.
+ * The user argument holds the complete new object to insert.
+ * Fail if the ID has changed and the new ID already belongs
+ * to a user.
+ */
 exports.updateAccount = function(userid, user, callback) {
     students.findOne({id : user.id}, function(err, obj) {
         if (err) {
