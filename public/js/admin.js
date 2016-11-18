@@ -65,6 +65,18 @@ var displayQuestionTable = function() {
             });
             $('#admin-button').html('Add New Question');
             $('#admin-back').hide();
+            $('.view-button').click(function(evt) {
+                /* cut off the view- */
+                viewQuestion(this.id.substring(5));
+            });
+            $('.delete-button').click(function(evt) {
+                /* cut off the delete- */
+                deleteQuestion(this.id.substring(7));
+            });
+            $('.edit-button').click(function(evt) {
+                /* cut off the edit- */
+                editQuestion(this.id.substring(5));
+            });
 
             $('#option-questions').addClass('active');
             $('#option-accounts').removeClass('active');
@@ -221,4 +233,31 @@ var submitQuestionForm = function() {
                 $('#result').html('Question added to database');
         }
     });
+}
+
+var viewQuestion = function(qid) {
+}
+
+var deleteQuestion = function(qid) {
+    swal({
+        title: 'Confirm deletion',
+        text: 'Question ' + qid + ' will be removed from the database.',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Delete',
+        closeOnConfirm: true
+    }, function() {
+        $.ajax({
+            type: 'POST',
+            url: '/questiondel',
+            data: { qid: qid },
+            success: function(data) {
+                displayQuestionTable();
+            }
+        });
+    });
+}
+
+var editQuestion = function(qid) {
 }

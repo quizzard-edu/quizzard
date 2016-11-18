@@ -350,6 +350,31 @@ app.post('/questionadd', function(req, res) {
     });
 });
 
+/*
+ * Remove a question from the database.
+ * The request body contains the ID of the question to delete.
+ */
+app.post('/questiondel', function(req, res) {
+    var qid = parseInt(req.body.qid);
+    questions.deleteQuestion(qid, function(result) {
+        if (result == 'failure') {
+            res.status(500);
+        } else {
+            if (req.session.adminQuestionList != null) {
+                /* Remove the deleted question from the stored question list. */
+                var ind;
+                for (ind in req.session.adminQuestionList) {
+                    if (req.session.adminQuestionList[ind].id == qid)
+                        break;
+                }
+                req.session.adminQuestionList.splice(ind, 1);
+            }
+            res.status(200);
+        }
+        res.send();
+    });
+});
+
 app.listen(port, function() {
     console.log('server listening on http://localhost:%s', port);
 });

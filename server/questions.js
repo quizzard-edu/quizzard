@@ -50,6 +50,19 @@ exports.addQuestion = function(question, callback) {
     });
 }
 
+/* Remove the question with ID qid from the database. */
+exports.deleteQuestion = function(qid, callback) {
+    questions.remove({id: qid}, function(err, res) {
+        if (err) {
+            console.log(err);
+            callback('failure');
+        } else {
+            console.log('Question %d deleted', qid);
+            callback('success');
+        }
+    });
+}
+
 /* Extract a question object from the database using its ID. */
 exports.lookupQuestion = function(qid, callback) {
     if (qid < 0 || qid > nextid - 1) {
