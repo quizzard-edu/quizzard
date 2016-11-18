@@ -109,12 +109,13 @@ const studentTable = pug.compileFile('views/account-table.pug');
 const accountForm = pug.compileFile('views/account-creation.pug');
 const accountEdit = pug.compileFile('views/account-edit.pug');
 const questionTable = pug.compileFile('views/question-table.pug');
+const questionForm = pug.compileFile('views/question-creation.pug');
 
 /* send the student table html */
 app.get('/studentlist', function(req, res) {
     if (req.session.adminStudentList == null) {
         /* only fetch student list once, then store it */
-        students.getAll(function(studentlist) {
+        students.getUsers(false, function(studentlist) {
             req.session.adminStudentList = studentlist;
             var html = studentTable({
                 students: studentlist
@@ -132,6 +133,12 @@ app.get('/studentlist', function(req, res) {
 /* send the account creation form html */
 app.get('/accountform', function(req, res) {
     var html = accountForm();
+    res.status(200).send(html);
+});
+
+/* send the account creation form html */
+app.get('/questionform', function(req, res) {
+    var html = questionForm();
     res.status(200).send(html);
 });
 
@@ -159,13 +166,21 @@ app.post('/accountedit', function(req, res) {
 
 /* send the question table html */
 app.get('/questionlist', function(req, res) {
-    selector.findQuestions(0, selector.findTypes.SORT_DEFAULT,
-                           null, function(questionlist) {
+    if (req.session.adminQuestionList == null) {
+        selector.findQuestions(0, selector.findTypes.SORT_DEFAULT,
+                                    null, function(questionlist) {
+            req.session.adminQuestionList = questionlist;
+            var html = questionTable({
+                questions: questionlist
+            });
+            res.status(200).send(html);
+        });
+    } else {
         var html = questionTable({
-            questions: questionlist
+            questions: req.session.adminQuestionList
         });
         res.status(200).send(html);
-    });
+    }
 });
 
 app.get('/sortlist', function(req, res) {
@@ -325,10 +340,12 @@ app.post('/questionadd', function(req, res) {
     req.body.type = questions.QUESTION_REGULAR;
     req.body.hint = '';
     questions.addQuestion(req.body, function(result) {
-        if (result == 'failure')
+        if (result == 'failure') {
             res.status(500);
-        else
+        } else {
             res.status(200);
+            req.session.adminQuestionList.push(req.body);
+        }
         res.send(result);
     });
 });

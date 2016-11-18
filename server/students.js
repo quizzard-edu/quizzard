@@ -3,9 +3,9 @@ var db = require('./db.js').database;
 
 var students = db.collection('students');
 
-/* Return an array of all students in the database (users without admin flag) */
-exports.getAll = function(callback) {
-    students.find({admin: false}).sort({id: 1}).toArray(function(err, docs) {
+/* Return an array of users in the database. */
+exports.getUsers = function(admin, callback) {
+    students.find({admin: !!admin}).sort({id: 1}).toArray(function(err, docs) {
         if (err) {
             callback([]);
         } else {

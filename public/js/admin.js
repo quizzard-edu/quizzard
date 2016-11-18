@@ -61,12 +61,34 @@ var displayQuestionTable = function() {
             $('#admin-button').off();
             $('#admin-button').show();
             $('#admin-button').click(function(evt) {
+                displayQuestionForm();
             });
             $('#admin-button').html('Add New Question');
             $('#admin-back').hide();
 
             $('#option-questions').addClass('active');
             $('#option-accounts').removeClass('active');
+        }
+    });
+}
+
+var displayQuestionForm = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/questionform',
+        success: function(data) {
+            $('#admin-label').html('Add New Question');
+            $('#admin-content').html(data);
+            $('#admin-button').off();
+            $('#admin-button').hide();
+            $('#admin-back').show();
+            $('#admin-back').click(function(evt) {
+                displayQuestionTable();
+            });
+            $('#questionform').submit(function(evt) {
+                evt.preventDefault();
+                submitQuestionForm();
+            });
         }
     });
 }
@@ -176,6 +198,27 @@ var submitEditForm = function(id) {
                 });
                 $('#account-edit-result').html('User ' + id + ' has been updated');
             }
+        }
+    });
+}
+
+var submitQuestionForm = function() {
+    var fields = $('#questionform').serializeArray();
+    var question = {};
+
+    jQuery.each(fields, function(i, field) {
+        question[field.name] = field.value;
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: '/questionadd',
+        data: question,
+        success: function(data) {
+            if (data == 'failure')
+                $('#result').html('Question could not be added');
+            else if (data == 'success')
+                $('#result').html('Question added to database');
         }
     });
 }
