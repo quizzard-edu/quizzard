@@ -16,3 +16,13 @@ form.form-user#userform
   input.form-control#email(type='email' name='newemail' placeholder='Email'
                             required)
   button.btn.btn-lg.btn-primary.btn-block(type='submit') Create
+
+h4.text-center Upload
+form.form-upload#uploadform(enctype='multipart/form-data')
+  p#upload-result
+  .form-group
+    label.sr-only(for='upload-file') Upload File
+    input.form-control-file#upload-file(type='file' accept='.csv,text/csv' name='usercsv'
+                                        aria-describedby='filehelp' required)
+    small.form-text.text-muted#filehelp Upload a CSV file containing accounts
+  button.btn.btn-sm.btn-primary.btn-block#upload-submit(type='submit') Upload

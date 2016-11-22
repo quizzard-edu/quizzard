@@ -1,6 +1,7 @@
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
+var multer = require('multer');
 var students = require('./server/students.js');
 var questions = require('./server/questions.js');
 var selector = require('./server/question-selector.js');
@@ -8,6 +9,8 @@ var pug = require('pug');
 
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
+
+var upload = multer({ dest: 'uploads/' });
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -346,6 +349,15 @@ app.post('/usermod', function(req, res) {
             html: html
         });
     });
+});
+
+/*
+ * Upload a csv file containing account information.
+ * Users are stored in the database.
+ */
+app.post('/userupload', upload.single('usercsv'), function(req, res) {
+    console.log(req.file);
+    res.status(200).send();
 });
 
 /*

@@ -36,6 +36,18 @@ body {
   padding: 10px;
 }
 
+.form-upload {
+  max-width: 300px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-user .form-control {
+  position: relative;
+  height: auto;
+  padding: 10px;
+}
+
 .form-edit {
   max-width: 600px;
   padding: 15px;

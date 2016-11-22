@@ -13,7 +13,7 @@ var displayAccountsTable = function() {
             $('#admin-button').click(function(evt) {
                 displayAccountForm();
             });
-            $('#admin-button').html('Create User');
+            $('#admin-button').html('Add Users');
             $('#admin-back').hide();
 
             addAccountsTableEvents();
@@ -54,6 +54,10 @@ var displayAccountForm = function() {
             $('#userform').submit(function(evt) {
                 evt.preventDefault();
                 submitUserForm();
+            });
+            $('#uploadform').submit(function(evt) {
+                evt.preventDefault();
+                submitUploadForm();
             });
         }
     });
@@ -186,6 +190,28 @@ var submitUserForm = function() {
                 $('#result').html('User ' + user.id + ' already exists');
             else if (data == 'success')
                 $('#result').html('User ' + user.id + ' added to database');
+        }
+    });
+}
+
+var submitUploadForm = function() {
+    var files = $('#upload-file').get(0).files;
+    var formData = new FormData();
+
+    if (files.length > 1) {
+        $('#upload-result').html('Select a single file');
+        return;
+    }
+
+    formData.append('usercsv', files[0]);
+
+    $.ajax({
+        type: 'POST',
+        url: '/userupload',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
         }
     });
 }
