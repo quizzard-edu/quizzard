@@ -182,3 +182,8 @@ Added a basic statistics view, displaying information about students and
 questions, such as their status, number of successful/total attempts, success
 ratio, etc.
 Added a barebones 'About' page.
+
+2016-11-25:
+Made the user creation and question creation forms modal. When they are
+submitted, the account/question table in the background is automatically updated
+with the new information in a few seconds.
