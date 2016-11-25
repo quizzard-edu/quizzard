@@ -311,6 +311,8 @@ app.post('/useradd', function(req, res) {
     students.createAccount(req.body, function(result) {
         if (result == 'failure') {
             res.status(500);
+        } else if (result == 'exists') {
+            res.status(200);
         } else {
             if (req.session.adminStudentList != null)
                 req.session.adminStudentList.push(req.body);

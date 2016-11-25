@@ -45,14 +45,9 @@ var displayAccountForm = function() {
         type: 'GET',
         url: '/accountform',
         success: function(data) {
-            $('#admin-label').html('Create Account');
-            $('#admin-content').html(data);
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').show();
-            $('#admin-back').click(function(evt) {
-                displayAccountsTable();
-            });
+            $('#admin-modal').modal('show');
+            $('#admin-modal-label').html('Create Account');
+            $('#admin-modal-body').html(data);
             $('#userform').submit(function(evt) {
                 evt.preventDefault();
                 submitUserForm();
@@ -240,12 +235,14 @@ var submitUserForm = function() {
         url: '/useradd',
         data: user,
         success: function(data) {
-            if (data == 'failure')
+            if (data == 'failure') {
                 $('#result').html('User could not be added');
-            else if (data == 'exists')
+            } else if (data == 'exists') {
                 $('#result').html('User ' + user.id + ' already exists');
-            else if (data == 'success')
+            } else if (data == 'success') {
                 $('#result').html('User ' + user.id + ' added to database');
+                setTimeout(displayAccountsTable, 2000);
+            }
         }
     });
 }
@@ -268,10 +265,12 @@ var submitUploadForm = function() {
         processData: false,
         contentType: false,
         success: function(data) {
-            if (data == 'uploaded')
+            if (data == 'uploaded') {
                 $('#upload-result').html('File successfully uploaded');
-            else
+                setTimeout(displayAccountsTable, 3000);
+            } else {
                 $('#upload-result').html('Upload failed');
+            }
         }
     });
 }

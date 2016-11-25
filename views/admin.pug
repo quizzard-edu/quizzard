@@ -10,6 +10,17 @@ block title
 
 block content
   include navbar
+
+  .modal.fade#admin-modal(tabindex='-1' role='dialog' arialabelledby='admin-modal-label'
+                          aria-hidden='true')
+   .modal-dialog.modal-lg
+     .modal-content
+       .modal-header
+         button.close(type='button' data-dismiss='modal' aria-label='Close')
+           span(aria-hidden='true') &times;
+         h4.modal-title.text-center#admin-modal-label
+       .modal-body#admin-modal-body
+
   .container-fluid
     .row
       .col-md-2
