@@ -1,0 +1,24 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/about.css')
+  link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/css/navbar.css')
+
+block title
+  title Quizzard - About
+
+block content
+  include navbar
+
+  .container
+    h3.text-center Quizzard
+
+    p.text-center Quizzard is a thing.
+    p.text-center Quizzard is licensed under the $LICENSE.
+    p.text-center Copyright &copy; 2016 Alexei Frolov
+
+block scripts
+  script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/js/about.js')
+  script(src='/js/navbar.js')
