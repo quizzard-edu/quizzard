@@ -212,6 +212,10 @@ var submitUploadForm = function() {
         processData: false,
         contentType: false,
         success: function(data) {
+            if (data == 'uploaded')
+                $('#upload-result').html('File successfully uploaded');
+            else
+                $('#upload-result').html('Upload failed');
         }
     });
 }

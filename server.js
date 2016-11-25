@@ -114,9 +114,12 @@ const accountEdit = pug.compileFile('views/account-edit.pug');
 const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
 
+/* refetch users from database instead of using stored list */
+var refetch = false;
+
 /* send the student table html */
 app.get('/studentlist', function(req, res) {
-    if (req.session.adminStudentList == null) {
+    if (req.session.adminStudentList == null || refetch) {
         /* only fetch student list once, then store it */
         students.getUsers(false, function(studentlist) {
             req.session.adminStudentList = studentlist;
@@ -357,7 +360,14 @@ app.post('/usermod', function(req, res) {
  */
 app.post('/userupload', upload.single('usercsv'), function(req, res) {
     console.log(req.file);
-    res.status(200).send();
+    if (!req.file || req.file.mimetype != 'text/csv')
+        res.status(200).send('invalid');
+
+    students.parseFile(req.file, function(account) {
+        refetch = true;
+    }, function() {
+        res.status(200).send('uploaded');
+    });
 });
 
 /*

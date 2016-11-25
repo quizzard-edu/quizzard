@@ -144,3 +144,15 @@ Made the delete action on the account table operational. Added deleteAccount
 function to the students module to facilitate this.
 Started working on the account editing form, allowing an administrator to
 modify various information stored with each account.
+
+2016-11-17:
+Null.
+
+2016-11-18:
+Null.
+
+2016-11-21:
+Added file upload form to account creation view, allowing admin to upload a CSV
+file containing account information.
+
+2016-11-23:

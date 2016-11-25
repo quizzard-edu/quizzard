@@ -1,4 +1,6 @@
 var bcrypt = require('bcryptjs');
+var fs = require('fs');
+var csv = require('csv');
 var db = require('./db.js').database;
 
 var students = db.collection('students');
@@ -48,17 +50,17 @@ exports.checkLogin = function(user, pass, callback) {
  * Call callback with the result of the insertion, or 'failure' if
  * unsuccessful.
  */
-exports.createAccount = function(account, callback) {
+var createAccount = function(account, callback) {
     students.findOne({'id': account.id}, function(err, obj) {
         if (err) {
             console.log(err);
-            callback('failure');
+            callback('failure', account);
         } else if (obj) {
-            callback('exists');
+            callback('exists', account);
         } else {
             bcrypt.hash(account.password, 11, function(err, hash) {
                 if (err) {
-                    callback('failure');
+                    callback('failure', account);
                 } else {
                     account.password = hash;
                     account.ctime = (Date.now() / 1000) | 0;
@@ -71,10 +73,10 @@ exports.createAccount = function(account, callback) {
 
                     students.insert(account, function(err, res) {
                         if (err) {
-                            callback('failure');
+                            callback('failure', account);
                         } else {
                             console.log(res);
-                            callback('success');
+                            callback('success', account);
                         }
                     });
                 }
@@ -82,6 +84,7 @@ exports.createAccount = function(account, callback) {
         }
     });
 }
+exports.createAccount = createAccount;
 
 /*
  * Update the account with ID userid in the student database.
@@ -146,6 +149,54 @@ exports.sortAccounts = function(as, type, asc, callback) {
     as.sort(cmpfn);
     callback(as);
 }
+
+var updatefn;
+
+/*
+ * Read account entries from a csv file and add them to the database.
+ */
+exports.parseFile = function(file, ufn, callback) {
+    updatefn = ufn;
+    fs.createReadStream(__dirname + '/../' + file.path)
+        .pipe(accountParser).on('end', function() {
+            callback();
+        });
+}
+
+/*
+ * The provided csv file should have five fields per row:
+ * user ID, initial password, first name, last name, email
+ */
+var accountParser = csv.parse(function(err, data) {
+    if (err) {
+        console.log(err);
+        return;
+    }
+
+    for (var i in data) {
+        if (data[i].length != 5)
+            continue;
+
+        var account = {};
+        account.id = data[i][0];
+        account.password = data[i][1];
+        account.fname = data[i][2];
+        account.lname = data[i][3];
+        account.email = data[i][4];
+
+        createAccount(account, function(res, acc) {
+            if (res == 'failure') {
+                console.log('Could not insert account %s into database', acc.id);
+            } else if (res == 'exists') {
+                console.log('Account ID %s already exists', acc.id);
+            } else {
+                console.log('Account %s read from csv file', acc.id);
+                delete acc._id;
+                updatefn(acc);
+            }
+        });
+    }
+});
 
 /*
  * Check the hash of pass against the password stored in userobj.

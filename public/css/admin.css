@@ -11,6 +11,11 @@ body {
   -webkit-border-radius: 4px 4px 4px 4px;
 }
 
+#admin-content {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
 #admin-label {
   font-size: 18px;
   text-align: center;
