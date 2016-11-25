@@ -130,6 +130,7 @@ app.get('/studentlist', function(req, res) {
     if (req.session.adminStudentList == null || refetch) {
         /* only fetch student list once, then store it */
         students.getUsers(false, function(studentlist) {
+            refetch = false;
             req.session.adminStudentList = studentlist;
             var html = studentTable({
                 students: studentlist
@@ -296,11 +297,6 @@ app.post('/submitanswer', function(req, res) {
         }
         res.status(200).send(data);
     });
-});
-
-/* temporary question creation form */
-app.get('/createquestion', function(req,res) {
-    res.render('questionform');
 });
 
 /*
