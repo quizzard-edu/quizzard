@@ -1,0 +1,52 @@
+h4 Users
+table.table
+  thead
+    tr
+      th User ID
+      th Questions Attempted
+      th Correct Answers
+      th Success Rate
+      th Points
+      th Level
+  tbody
+    each s in students
+      tr
+        td #{s.id}
+        td #{s.attempted}
+        td #{s.answered}
+        if s.attempted == 0
+          td N/A
+        else
+          td #{((s.answered / s.attempted) * 100).toFixed(2)}%
+        td #{s.points}
+        td #{s.level}
+
+h4 Questions
+table.table
+  thead
+    tr
+      th ID
+      th Title
+      th Base Points
+      th Total Attempts
+      th Correct Answers
+      th Success Rate
+      th First Answer
+  tbody
+    each q in questions
+      tr
+        td #{q.id}
+        td #{q.title}
+        td #{q.basePoints}
+        td #{q.attempts}
+        td #{q.correctAnswers}
+        if q.attempts == 0
+          td N/A
+        else
+          td #{((q.correctAnswers / q.attempts) * 100).toFixed(2)}%
+        if q.correctAnswers == 0
+          td No one
+        else
+          td #{q.firstAnswer}
+
+h4 Graphs

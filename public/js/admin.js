@@ -20,6 +20,8 @@ var displayAccountsTable = function() {
 
             $('#option-accounts').addClass('active');
             $('#option-questions').removeClass('active');
+            $('#option-stats').removeClass('active');
+            $('#option-settings').removeClass('active');
         }
     });
 }
@@ -92,6 +94,8 @@ var displayQuestionTable = function() {
 
             $('#option-questions').addClass('active');
             $('#option-accounts').removeClass('active');
+            $('#option-stats').removeClass('active');
+            $('#option-settings').removeClass('active');
         }
     });
 }
@@ -117,6 +121,50 @@ var displayQuestionForm = function() {
     });
 }
 
+/* Display the application statistics form. */
+var displayStatistics = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/statistics',
+        success: function(data) {
+            $('#admin-label').html('Statistics');
+            $('#admin-content').html(data);
+
+            $('#option-stats').addClass('active');
+            $('#option-accounts').removeClass('active');
+            $('#option-questions').removeClass('active');
+            $('#option-settings').removeClass('active');
+
+            $('#admin-button').off();
+            $('#admin-button').hide();
+            $('#admin-back').hide();
+        }
+    });
+}
+
+var displaySettings = function() {
+    $('#admin-label').html('Global Settings');
+    $('#admin-content').html('');
+
+    $('#option-settings').addClass('active');
+    $('#option-stats').removeClass('active');
+    $('#option-accounts').removeClass('active');
+    $('#option-questions').removeClass('active');
+
+    $('#admin-button').off();
+    $('#admin-button').hide();
+    $('#admin-back').hide();
+
+    /*
+    $.ajax({
+        type: 'GET',
+        url: '/statistics',
+        success: function(data) {
+        }
+    });
+    */
+}
+
 /* show the account table by default */
 displayAccountsTable();
 
@@ -126,6 +174,14 @@ $('#option-accounts').click(function(evt) {
 
 $('#option-questions').click(function(evt) {
     displayQuestionTable();
+});
+
+$('#option-stats').click(function(evt) {
+    displayStatistics();
+});
+
+$('#option-settings').click(function(evt) {
+    displaySettings();
 });
 
 var deleteUser = function(id) {

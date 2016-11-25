@@ -107,12 +107,20 @@ app.get('/admin', function(req,res) {
         res.render('admin', { user: req.session.user });
 });
 
+app.get('/about', function(req,res) {
+    if (req.session.user == null)
+        res.redirect('/')
+    else
+        res.render('about', { user: req.session.user });
+});
+
 /* Pre-compiled Pug views */
 const studentTable = pug.compileFile('views/account-table.pug');
 const accountForm = pug.compileFile('views/account-creation.pug');
 const accountEdit = pug.compileFile('views/account-edit.pug');
 const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
+const statistics = pug.compileFile('views/statistics.pug');
 
 /* refetch users from database instead of using stored list */
 var refetch = false;
@@ -200,6 +208,27 @@ app.get('/questionlist', function(req, res) {
         });
     } else {
         var html = questionTable({
+            questions: req.session.adminQuestionList
+        });
+        res.status(200).send(html);
+    }
+});
+
+/* send the application statistics html */
+app.get('/statistics', function(req, res) {
+    if (req.session.adminQuestionList == null) {
+        selector.findQuestions(0, selector.findTypes.SORT_DEFAULT,
+                                    null, function(questionlist) {
+            req.session.adminQuestionList = questionlist;
+            var html = statistics({
+                students: req.session.adminStudentList,
+                questions: req.session.adminQuestionList
+            });
+            res.status(200).send(html);
+        });
+    } else {
+        var html = statistics({
+            students: req.session.adminStudentList,
             questions: req.session.adminQuestionList
         });
         res.status(200).send(html);
