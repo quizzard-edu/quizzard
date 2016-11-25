@@ -146,13 +146,39 @@ Started working on the account editing form, allowing an administrator to
 modify various information stored with each account.
 
 2016-11-17:
-Null.
+Completed the account editing form. The submitted data is sent to the
+updateAccount function and the account's entry in the database is updated, if
+the given values are valid.
+Changed the default port from 65535 to 8000. Quizzard now also attempts to read
+the QUIZZARD_PORT environment variable. If it is set, it overrides the default
+port.
+Moved the old temporary question addition form into the Manage Questions section
+of the admin page and made it fully operational.
+Admin question list is now stored after the initial fetch from the database.
 
 2016-11-18:
-Null.
+Added the ability to delete questions via the Manage Questions table on the
+admin page.
 
 2016-11-21:
 Added file upload form to account creation view, allowing admin to upload a CSV
-file containing account information.
+file containing account information. Used multer to store the file locally in
+the uploads directory.
 
 2016-11-23:
+Added the parseFile function to students, which reads a CSV file containing
+account entries and attempts to insert the accounts into the students database.
+Incomplete account objects or invalid IDs given in the file are ignored.
+
+2016-11-24:
+Fixed a few things about account CSV uploading. A flag was added to the main
+server module which forces a refetch of the student list if it is set. This flag
+is set when an account CSV file is uploaded so that all the newly added accounts
+are fetched from the database into the student list. File upload status is now
+displayed on the upload form after a file has been uploaded.
+Made the 'View Statisics' and 'Global Settings' options on the admin sidebar
+open their respective views.
+Added a basic statistics view, displaying information about students and
+questions, such as their status, number of successful/total attempts, success
+ratio, etc.
+Added a barebones 'About' page.
