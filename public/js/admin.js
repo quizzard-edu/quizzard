@@ -100,14 +100,9 @@ var displayQuestionForm = function() {
         type: 'GET',
         url: '/questionform',
         success: function(data) {
-            $('#admin-label').html('Add New Question');
-            $('#admin-content').html(data);
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').show();
-            $('#admin-back').click(function(evt) {
-                displayQuestionTable();
-            });
+            $('#admin-modal').modal('show');
+            $('#admin-modal-label').html('Add New Question');
+            $('#admin-modal-body').html(data);
             $('#questionform').submit(function(evt) {
                 evt.preventDefault();
                 submitQuestionForm();
@@ -320,10 +315,12 @@ var submitQuestionForm = function() {
         url: '/questionadd',
         data: question,
         success: function(data) {
-            if (data == 'failure')
+            if (data == 'failure') {
                 $('#result').html('Question could not be added');
-            else if (data == 'success')
+            } else if (data == 'success') {
                 $('#result').html('Question added to database');
+                setTimeout(displayQuestionTable, 2000);
+            }
         }
     });
 }
