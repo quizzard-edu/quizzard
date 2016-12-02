@@ -4,24 +4,35 @@ table.table
       th Rank
       th User ID
       th Points
-      th Level
-      th Attempts
-      th Correct Answers
-      th Success Rate
+      if fullTable
+        th Level
+        th Attempts
+        th Correct Answers
+        th Success Rate
   tbody
     - var i = 0, last = -1;
     each s, index in students
-      tr
-        if s.points != last
-          - last = s.points
-          - i = index + 1;
+      if s.points != last
+        - last = s.points
+        - i = index + 1;
+      if s.points != 0 && i <= 3
+        if i == 1
+          - colour = 'col-gold';
+        if i == 2
+          - colour = 'col-silver';
+        if i == 3
+          - colour = 'col-bronze';
+      else
+        - colour = 'col-default';
+      tr(class=colour)
         td #{i}
         td #{s.id}
         td #{s.points}
-        td #{s.level}
-        td #{s.attempted}
-        td #{s.answered}
-        if s.attempted == 0
-          td N/A
-        else
-          td #{((s.answered / s.attempted) * 100).toFixed(2)}%
+        if fullTable
+          td #{s.level}
+          td #{s.attempted}
+          td #{s.answered}
+          if s.attempted == 0
+            td N/A
+          else
+            td #{((s.answered / s.attempted) * 100).toFixed(2)}%

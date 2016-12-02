@@ -63,3 +63,19 @@ var sortRequest = function(type) {
         }
     });
 };
+
+var fetchLeaderboard = function() {
+    $.ajax({
+        type: 'POST',
+        url: '/leaderboard-table',
+        data: {
+            fullTable: false,
+            lim: 8
+        },
+        success: function(data) {
+            $('.leaderboard-small').html(data);
+        }
+    });
+}
+
+fetchLeaderboard();

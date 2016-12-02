@@ -3,8 +3,12 @@ $('#nav-leaderboard').addClass('active');
 
 var fetchLeaderboard = function() {
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/leaderboard-table',
+        data: {
+            fullTable: true,
+            lim: 0
+        },
         success: function(data) {
             $('.leaderboard-content').html(data);
         }

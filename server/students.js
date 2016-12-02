@@ -19,8 +19,8 @@ exports.getUsers = function(admin, callback) {
 }
 
 /* Return an array of users in the database, sorted by rank. */
-exports.getUsersSorted = function(callback) {
-    students.find({}).sort({points: -1}).toArray(function(err, docs) {
+exports.getUsersSorted = function(lim, callback) {
+    students.find({}).sort({points: -1}).limit(lim).toArray(function(err, docs) {
         if (err) {
             callback([]);
         } else {

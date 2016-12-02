@@ -131,9 +131,19 @@ const statistics = pug.compileFile('views/statistics.pug');
 
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
-app.get('/leaderboard-table', function(req, res) {
-    students.getUsersSorted(function(studentlist) {
+app.post('/leaderboard-table', function(req, res) {
+    var ft = true;
+    if (req.body.fullTable == 'false')
+        ft = false;
+
+    if (req.body.lim)
+        lim = parseInt(req.body.lim);
+    else
+        lim = 0;
+
+    students.getUsersSorted(lim, function(studentlist) {
         var html = leaderboardTable({
+            fullTable: ft,
             students: studentlist
         });
         res.status(200).send(html);
