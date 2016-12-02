@@ -236,7 +236,7 @@ var submitUserForm = function() {
                 $('#result').html('User ' + user.id + ' already exists');
             } else if (data == 'success') {
                 $('#result').html('User ' + user.id + ' added to database');
-                setTimeout(displayAccountsTable, 2000);
+                displayAccountsTable();
             }
         }
     });

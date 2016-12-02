@@ -18,6 +18,19 @@ exports.getUsers = function(admin, callback) {
     });
 }
 
+/* Return an array of users in the database, sorted by rank. */
+exports.getUsersSorted = function(callback) {
+    students.find({}).sort({points: -1}).toArray(function(err, docs) {
+        if (err) {
+            callback([]);
+        } else {
+            for (s in docs)
+                delete docs[s]._id;
+            callback(docs);
+        }
+    });
+}
+
 /*
  * Check if the account given by user and pass is valid.
  * Return account object if it is or null otherwise.

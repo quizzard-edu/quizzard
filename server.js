@@ -98,6 +98,13 @@ app.get('/question', function(req, res) {
         });
 });
 
+app.get('/leaderboard', function(req, res) {
+    if (req.session.user == null)
+        res.redirect('/')
+    else
+        res.render('leaderboard', { user: req.session.user, });
+});
+
 app.get('/admin', function(req,res) {
     if (req.session.user == null)
         res.redirect('/');
@@ -121,6 +128,17 @@ const accountEdit = pug.compileFile('views/account-edit.pug');
 const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
 const statistics = pug.compileFile('views/statistics.pug');
+
+const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
+
+app.get('/leaderboard-table', function(req, res) {
+    students.getUsersSorted(function(studentlist) {
+        var html = leaderboardTable({
+            students: studentlist
+        });
+        res.status(200).send(html);
+    });
+});
 
 /* refetch users from database instead of using stored list */
 var refetch = false;
