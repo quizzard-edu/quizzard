@@ -58,6 +58,10 @@ body {
   font-size: 18px;
 }
 
+.no-questions {
+  margin-top: 20px;
+}
+
 .leaderboard-sidebar {
   margin-top: 40px;
 }
