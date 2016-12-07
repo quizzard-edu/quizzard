@@ -187,3 +187,19 @@ Added a barebones 'About' page.
 Made the user creation and question creation forms modal. When they are
 submitted, the account/question table in the background is automatically updated
 with the new information in a few seconds.
+
+2016-12-1:
+Added leaderboard page.
+Created a leaderboard view which displays all students in the application sorted
+by decreasing number of points and gives them a rank. If multiple students have
+the same amount of points, they get the same rank.
+
+2016-12-2:
+Added small version of leaderboard to sidebar of home view.
+Extract home sidebar to its own file.
+Modified leaderboard to display ranks 1, 2 and 3 in gold, silver and bronze,
+respectively.
+
+2016-12-7:
+Removed all references to level from the interface as it levels will not be part
+of the initial release.
