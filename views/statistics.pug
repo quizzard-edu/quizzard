@@ -7,7 +7,6 @@ table.table
       th Correct Answers
       th Success Rate
       th Points
-      th Level
   tbody
     each s in students
       tr
@@ -19,7 +18,6 @@ table.table
         else
           td #{((s.answered / s.attempted) * 100).toFixed(2)}%
         td #{s.points}
-        td #{s.level}
 
 h4 Questions
 table.table

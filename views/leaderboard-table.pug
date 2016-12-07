@@ -5,7 +5,6 @@ table.table
       th User ID
       th Points
       if fullTable
-        th Level
         th Attempts
         th Correct Answers
         th Success Rate
@@ -29,7 +28,6 @@ table.table
         td #{s.id}
         td #{s.points}
         if fullTable
-          td #{s.level}
           td #{s.attempted}
           td #{s.answered}
           if s.attempted == 0
