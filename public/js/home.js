@@ -70,7 +70,7 @@ var fetchLeaderboard = function() {
         url: '/leaderboard-table',
         data: {
             fullTable: false,
-            lim: 8
+            longTable: false
         },
         success: function(data) {
             $('.leaderboard-small').html(data);

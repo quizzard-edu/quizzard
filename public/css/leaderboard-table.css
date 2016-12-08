@@ -25,3 +25,7 @@
 .col-bronze:hover {
   background-color: #77623b;
 }
+
+.col-isuser {
+  font-weight: bold;
+}

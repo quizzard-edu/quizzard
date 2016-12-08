@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var students = require('./server/students.js');
 var questions = require('./server/questions.js');
+var lb = require('./server/leaderboard.js');
 var selector = require('./server/question-selector.js');
 var pug = require('pug');
 
@@ -132,19 +133,22 @@ const statistics = pug.compileFile('views/statistics.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 app.post('/leaderboard-table', function(req, res) {
-    var ft = true;
+    var ft, shrt;
+
+    ft = true;
+    shrt = false;
+
     if (req.body.fullTable == 'false')
         ft = false;
+    if (req.body.longTable == 'false')
+        shrt = true;
 
-    if (req.body.lim)
-        lim = parseInt(req.body.lim);
-    else
-        lim = 0;
-
-    students.getUsersSorted(lim, function(studentlist) {
+    lb.leaderboard(req.session.user.id, shrt, function(leader) {
         var html = leaderboardTable({
             fullTable: ft,
-            students: studentlist
+            shortTable: shrt,
+            leaderboard: leader,
+            userid: req.session.user.id
         });
         res.status(200).send(html);
     });

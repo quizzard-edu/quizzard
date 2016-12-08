@@ -7,7 +7,7 @@ var fetchLeaderboard = function() {
         url: '/leaderboard-table',
         data: {
             fullTable: true,
-            lim: 0
+            longTable: true
         },
         success: function(data) {
             $('.leaderboard-content').html(data);
