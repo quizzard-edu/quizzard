@@ -1,0 +1,43 @@
+#!/bin/sh
+
+dbname=quizzard
+port=
+dumpdir=quizzarddump
+
+[ $DB_PORT ] && port=$DB_PORT || port=27017
+
+while [ "$1" ]; do
+	case "$1" in
+		--help|-h)
+			echo "usage: $0 [options] dumpfile"
+			echo "dbbackup - backup quizzard database to file"
+			echo
+			echo "    -h, --help"
+			echo "        display this help text and exit"
+			echo "    --port=PORT"
+			echo "        specify mongodb database port"
+			exit 0
+			;;
+		--port=*)
+			port=`echo "$1" | sed 's/--port=//'`
+			shift
+			;;
+		-*) echo "invalid option $1" >&2; exit 1 ;;
+		*) dumpdir="$1"; shift ;;
+	esac
+done
+
+dumpfile="$dumpdir.tar.gz"
+
+mongodump --port $port -d $dbname -o "$dumpdir" 2>/dev/null
+
+if [ $? -ne 0 ]; then
+	echo "$0: could not dump database" >&2
+	exit 1
+fi
+
+tar zcvf "$dumpfile" "$dumpdir" >/dev/null
+rm -rf "$dumpdir"
+
+echo "Database dumped to $dumpfile."
+echo "Quizzard database backup complete."
