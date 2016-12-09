@@ -2,6 +2,7 @@ var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var multer = require('multer');
+var db = require('./server/db.js');
 var students = require('./server/students.js');
 var questions = require('./server/questions.js');
 var lb = require('./server/leaderboard.js');
@@ -478,6 +479,11 @@ app.post('/questiondel', function(req, res) {
     });
 });
 
-app.listen(port, function() {
-    console.log('server listening on http://localhost:%s', port);
+db.initialize(function() {
+    questions.questionInit(function(id) {
+        console.log('Next question ID initialized to %d.', id);
+        app.listen(port, function() {
+            console.log('Server listening on http://localhost:%s.', port);
+        });
+    });
 });

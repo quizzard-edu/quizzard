@@ -10,24 +10,29 @@ exports.QUESTION_MULTCHOICE = 1;
 var nextid;
 
 /* initialize nextid */
-questions.count(function(err, num) {
-    if (err) {
-        console.log(err);
-        process.exit(1);
-    }
-    if (num == 0) {
-        nextid = 0;
-    } else {
-        /* get the maximum question id in the database */
-        questions.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
-            if (err) {
-                console.log(err);
-                process.exit(1);
-            }
-            nextid = docs[0].id + 1;
-        });
-    }
-});
+exports.questionInit = function(callback) {
+    questions.count(function(err, num) {
+        if (err) {
+            console.log(err);
+            process.exit(1);
+        }
+
+        if (num == 0) {
+            nextid = 0;
+            callback(nextid);
+        } else {
+            /* get the maximum question id in the database */
+            questions.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
+                if (err) {
+                    console.log(err);
+                    process.exit(1);
+                }
+                nextid = docs[0].id + 1;
+                callback(nextid);
+            });
+        }
+    });
+}
 
 /*
  * Insert a new question into the database.
