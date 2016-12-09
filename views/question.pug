@@ -17,7 +17,7 @@ block content
       .col-md-8
         form.form-question#answerform
           h2.qtext #{question.title}
-          h5.qtext #{question.text}
+          h5.qtext !{question.text}
           label.sr-only(for='answer') Answer
           if answered
             input.form-control#answer(name='answer' placeholder='Enter your answer here'

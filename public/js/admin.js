@@ -315,7 +315,7 @@ var submitQuestionForm = function() {
         $('#result').html('Please enter a question body in the editor.');
         return;
     }
-    question[text] = $('#qtext').summernote('code');
+    question['text'] = $('#qtext').summernote('code');
 
     $.ajax({
         type: 'POST',
