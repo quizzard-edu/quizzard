@@ -103,6 +103,7 @@ var displayQuestionForm = function() {
             $('#admin-modal').modal('show');
             $('#admin-modal-label').html('Add New Question');
             $('#admin-modal-body').html(data);
+            $('#qtext').summernote({ height: 100 });
             $('#questionform').submit(function(evt) {
                 evt.preventDefault();
                 submitQuestionForm();
@@ -305,10 +306,16 @@ var submitEditForm = function(id) {
 var submitQuestionForm = function() {
     var fields = $('#questionform').serializeArray();
     var question = {};
+    var qbody;
 
     jQuery.each(fields, function(i, field) {
         question[field.name] = field.value;
     });
+    if ($('#qtext').summernote('isEmpty')) {
+        $('#result').html('Please enter a question body in the editor.');
+        return;
+    }
+    question[text] = $('#qtext').summernote('code');
 
     $.ajax({
         type: 'POST',
