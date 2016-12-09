@@ -14,7 +14,7 @@ $('#answerform').submit(function(evt) {
                     text: 'Congratulations! You gained ' + data.points + ' points!',
                     type: 'success'
                 }, function () {
-                    window.location.href = '/home';
+                    window.location.href = '/question';
                 });
             }
         }

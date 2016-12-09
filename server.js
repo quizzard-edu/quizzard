@@ -95,7 +95,8 @@ app.get('/question', function(req, res) {
     else
         res.render('question', {
             user: req.session.user,
-            question: req.session.question
+            question: req.session.question,
+            answered: req.session.questionAnswered
         });
 });
 
@@ -299,6 +300,10 @@ app.post('/questionreq', function(req, res) {
             res.status(500).send();
         } else {
             req.session.question = result;
+            if (req.session.user.answeredIds.indexOf(result.id) == -1)
+                req.session.questionAnswered = false;
+            else
+                req.session.questionAnswered = true;
             res.status(200).send();
         }
     });
@@ -323,7 +328,7 @@ app.post('/submitanswer', function(req, res) {
                     break;
             }
             req.session.questions.splice(ind, 1);
-            req.session.question = null;
+            req.session.questionAnswered = true;
         } else {
             /* TODO: reload sidebar stats, save in data.html */
         }

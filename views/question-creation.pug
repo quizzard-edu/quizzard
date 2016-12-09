@@ -1,18 +1,32 @@
 form.form-user#questionform
   p#result
-  label.sr-only(for='qtitle') Title
-  input.form-control#qtitle(type='text' name='title' placeholder='Title'
-                            required autofocus)
-  label.sr-only(for='qtext') Question
-  input.form-control#qtext(type='text' name='text' placeholder='Question'
-                            required autofocus)
-  label.sr-only(for='qanswer') Answer (regex)
-  input.form-control#qanswer(type='text' name='answer' placeholder='Answer (regex)'
-                             required)
-  label.sr-only(for='qtopic') Topic
-  input.form-control#qtopic(type='text' name='topic' placeholder='Topic'
-                            required)
-  label.sr-only(for='qpoints') Points
-  input.form-control#qpoints(type='number' name='basePoints'
-                             placeholder='Base Points' required)
-  button(class='btn btn-lg btn-primary btn-block' type='submit') Create
+  .form-group
+    label(for='qtitle') Title
+    input.form-control#qtitle(type='text' name='title' placeholder='Enter title'
+                              required autofocus)
+  .form-group
+    label(for='qtext') Question
+    input.form-control#qtext(type='text' name='text' placeholder='Enter question'
+                              required autofocus)
+  .form-group
+    label(for='qanswer') Answer (regex)
+    input.form-control#qanswer(type='text' name='answer'
+                               placeholder='Enter answer' required)
+  .form-group
+    label(for='qtopic') Topic
+    input.form-control#qtopic(type='text' name='topic' placeholder='Enter topic'
+                              required)
+  .form-group
+    label(for='qpoints') Points
+    input.form-control#qpoints(type='number' name='basePoints'
+                               placeholder='Enter points' required)
+  .form-group
+    label(for='successmsg') Follow up message
+    input.form-control#successmsg(type='text' name='successMessage'
+                                  placeholder='Enter message'
+                                  aria-describedby='success-msg-help')
+    p.form-text.text-muted#success-msg-help
+      | This is a message that will be displayed to the user after they
+      | successfully answer a question. It can be used to provide additional
+      | information on the topic.
+    button(class='btn btn-lg btn-primary btn-block' type='submit') Create

@@ -17,3 +17,17 @@ body {
 #answer {
   margin-bottom: 10px;
 }
+
+.success {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px 4px 4px 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  -webkit-border-radius: 4px 4px 4px 4px;
+}
+
+#success-header {
+  margin-bottom: 20px;
+}
