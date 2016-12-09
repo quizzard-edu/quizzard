@@ -85,12 +85,15 @@ exports.lookupQuestion = function(qid, callback) {
  * with the result of the comparison and the new question object.
  */
 exports.checkAnswer = function(question, answer, user, callback) {
-    var result;
+    var result, re;
+
     question.attempts++;
     user.attempted++;
     console.log('User %s attempted to answer question %d with "%s"',
                 user.id, question.id, answer);
-    if (question.answer.toLowerCase() === answer.toLowerCase()) {
+
+    re = new RegExp(question.answer, 'i');
+    if (answer.match(re)) {
         if (question.correctAnswers == 0)
             question.firstAnswer = user.id;
         if (!question.studentsAnswered.includes(user.id)) {
@@ -105,6 +108,7 @@ exports.checkAnswer = function(question, answer, user, callback) {
     } else {
         result = 'incorrect';
     }
+
     students.updateAccount(user.id, user, function(res) {
         if (res == 'failure') {
             callback('failed-update');
