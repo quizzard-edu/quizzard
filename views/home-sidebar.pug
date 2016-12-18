@@ -5,7 +5,7 @@ p.sidebar-item Questions successfully answered: #{user.answered}
 if user.attempted == 0
   p.sidebar-item You have not yet attempted any questions.
 else
-  p.sidebar-item You have a #{(user.answered / user.attempted) * 100}% success rate.
+  p.sidebar-item You have a #{((user.answered / user.attempted) * 100).toFixed(2)}% success rate.
 
 .leaderboard-sidebar
   h4.sidebar-item Leaderboard
