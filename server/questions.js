@@ -114,7 +114,7 @@ exports.checkAnswer = function(question, answer, user, callback) {
         result = 'incorrect';
     }
 
-    students.updateAccount(user.id, user, function(res) {
+    students.updateAccount(user.id, user, false, function(res) {
         if (res == 'failure') {
             callback('failed-update');
             return;

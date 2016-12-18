@@ -390,7 +390,7 @@ app.post('/userdel', function(req, res) {
  * The request body contains a user object with the fields to be modified.
  */
 app.post('/usermod', function(req, res) {
-    var orig, ind, user;
+    var orig, ind, user, newpass;
 
     orig = req.body.originalID;
     for (ind in req.session.adminStudentList) {
@@ -404,7 +404,9 @@ app.post('/usermod', function(req, res) {
     for (var field in req.body)
         user[field] = req.body[field];
 
-    students.updateAccount(orig, user, function(result) {
+    newpass = !!req.body['password'];
+
+    students.updateAccount(orig, user, newpass, function(result) {
         if (result == 'success')
             req.session.adminStudentList[ind] = user;
 

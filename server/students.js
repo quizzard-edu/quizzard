@@ -105,7 +105,7 @@ exports.createAccount = createAccount;
  * Fail if the ID has changed and the new ID already belongs
  * to a user.
  */
-exports.updateAccount = function(userid, user, callback) {
+exports.updateAccount = function(userid, user, newpass, callback) {
     students.findOne({id : user.id}, function(err, obj) {
         if (err) {
             console.log(err);
@@ -113,7 +113,7 @@ exports.updateAccount = function(userid, user, callback) {
         } else if (obj && userid != user.id) {
             callback('dupid');
         } else {
-            if (user.password)
+            if (newpass)
                 user.password = bcrypt.hashSync(user.password, 11);
             students.update({id: userid}, user, function(err, res) {
                 if (err) {
