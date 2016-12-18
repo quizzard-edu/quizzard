@@ -203,3 +203,10 @@ respectively.
 2016-12-7:
 Removed all references to level from the interface as it levels will not be part
 of the initial release.
+Created a leaderboard module which manages the list of students that are
+displayed on the leaderboard, assigning each an appropriate rank.
+
+2016-12-18:
+Fixed a critical bug where answering questions changed users' passwords.
+Fixed formatting of success rate on sidebar.
+Prevented admin accounts from being displayed on leaderboard.
