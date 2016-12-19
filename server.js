@@ -6,6 +6,8 @@ var db = require('./server/db.js');
 var students = require('./server/students.js');
 var questions = require('./server/questions.js');
 var lb = require('./server/leaderboard.js');
+var log = require('./server/log.js');
+var logger = log.logger;
 var selector = require('./server/question-selector.js');
 var pug = require('pug');
 
@@ -40,10 +42,11 @@ app.get('/', function(req, res) {
 
 /* check username and password and send appropriate response */
 app.post('/login', function(req, res) {
-    console.log('Attempted login by user ' + req.body.user);
+    logger.info('Attempted login by user %s', req.body.user);
     students.checkLogin(req.body.user, req.body.passwd, function(obj) {
         if (obj) {
             req.session.user = obj;
+            logger.info('User %s logged in.', req.body.user);
             res.status(200).send('success');
         } else {
             res.status(200).send('invalid');
@@ -65,7 +68,14 @@ app.post('/changepass', function(req, res) {
 
     students.checkLogin(req.session.user.id, req.body.currpass, function(u) {
         if (u) {
-            res.status(200).send('success');
+            u.password = req.body.newpass;
+            students.updateAccount(u.id, u, true, function(result) {
+                if (result == 'success') {
+                    logger.info('User %s changed their password.', u.id);
+                    req.session.user = u;
+                }
+                res.status(200).send(result);
+            });
         } else {
             res.status(200).send('invalid');
         }
@@ -74,7 +84,7 @@ app.post('/changepass', function(req, res) {
 
 app.get('/logout', function(req, res) {
     if (req.session.user != null) {
-        console.log('User %s logged out', req.session.user.id);
+        logger.info('User %s logged out.', req.session.user.id);
         req.session.destroy();
         res.status(200).send();
     } else {
@@ -338,8 +348,6 @@ app.post('/submitanswer', function(req, res) {
         var data = {};
 
         data.result = result;
-        console.log(req.session.user);
-        console.log(req.session.question);
         if (result == 'failed-update') {
             res.status(500).send(data);
         } else if (result == 'correct') {
@@ -447,7 +455,6 @@ app.post('/usermod', function(req, res) {
  * Users are stored in the database.
  */
 app.post('/userupload', upload.single('usercsv'), function(req, res) {
-    console.log(req.file);
     if (!req.file || req.file.mimetype != 'text/csv')
         res.status(200).send('invalid');
 
@@ -503,10 +510,12 @@ app.post('/questiondel', function(req, res) {
 });
 
 db.initialize(function() {
-    questions.questionInit(function(id) {
-        console.log('Next question ID initialized to %d.', id);
-        app.listen(port, function() {
-            console.log('Server listening on http://localhost:%s.', port);
+    log.init(function() {
+        questions.questionInit(function(id) {
+            logger.info('Next question ID initialized to %d.', id);
+            app.listen(port, function() {
+                logger.info('Server listening on http://localhost:%s.', port);
+            });
         });
     });
 });

@@ -1,5 +1,6 @@
 var Db = require('mongodb').Db;
 var Server = require('mongodb').Server;
+var logger = require('./log.js').logger;
 
 var DB_HOST = process.env.DB_HOST || 'localhost';
 var DB_PORT = process.env.DB_PORT || 27017;
@@ -10,10 +11,10 @@ var db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 exports.initialize = function(callback) {
     db.open(function(err, db) {
         if (err) {
-            console.log(err);
+            logger.error(err);
             process.exit(1);
         }
-        console.log('Connection to Quizzard database successful.');
+        logger.info('Connection to Quizzard database successful.');
         callback();
     });
 }

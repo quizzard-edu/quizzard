@@ -2,6 +2,7 @@ var bcrypt = require('bcryptjs');
 var fs = require('fs');
 var csv = require('csv');
 var db = require('./db.js').database;
+var logger = require('./log.js').logger;
 
 var students = db.collection('students');
 
@@ -41,7 +42,7 @@ exports.getUsersSorted = function(lim, callback) {
 exports.checkLogin = function(user, pass, callback) {
     students.findOne({'id' : user}, function(err, obj) {
         if (err) {
-            console.log(err);
+            logger.error(err);
             callback(null);
         } else if (obj) {
             validatePassword(obj, pass, function(valid) {
@@ -49,7 +50,7 @@ exports.checkLogin = function(user, pass, callback) {
                     delete obj._id;
                     callback(obj);
                 } else {
-                    console.log('invalid password provided for user ' + user);
+                    logger.warn('Invalid password provided for user %s.', user);
                     callback(null);
                 }
             });
@@ -69,7 +70,7 @@ exports.checkLogin = function(user, pass, callback) {
 var createAccount = function(account, callback) {
     students.findOne({'id': account.id}, function(err, obj) {
         if (err) {
-            console.log(err);
+            logger.error(err);
             callback('failure', account);
         } else if (obj) {
             callback('exists', account);
@@ -92,6 +93,7 @@ var createAccount = function(account, callback) {
                             callback('failure', account);
                         } else {
                             console.log(res);
+                            logger.info('Account %s created.', account.id);
                             callback('success', account);
                         }
                     });
@@ -111,7 +113,7 @@ exports.createAccount = createAccount;
 exports.updateAccount = function(userid, user, newpass, callback) {
     students.findOne({id : user.id}, function(err, obj) {
         if (err) {
-            console.log(err);
+            logger.error(err);
             callback('failure');
         } else if (obj && userid != user.id) {
             callback('dupid');
@@ -120,7 +122,7 @@ exports.updateAccount = function(userid, user, newpass, callback) {
                 user.password = bcrypt.hashSync(user.password, 11);
             students.update({id: userid}, user, function(err, res) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     callback('failure');
                 } else {
                     callback('success');
@@ -134,10 +136,10 @@ exports.updateAccount = function(userid, user, newpass, callback) {
 exports.deleteAccount = function(userid, callback) {
     students.remove({id: userid}, function(err, res) {
         if (err) {
-            console.log(err);
+            logger.error(err);
             callback('failure');
         } else {
-            console.log('User %s deleted', userid);
+            logger.info('Account %s deleted from database.', userid);
             callback('success');
         }
     });
@@ -173,6 +175,7 @@ var updatefn;
  */
 exports.parseFile = function(file, ufn, callback) {
     updatefn = ufn;
+    logger.info('Reading accounts from file %s.', file.path);
     fs.createReadStream(__dirname + '/../' + file.path)
         .pipe(accountParser).on('end', function() {
             callback();
@@ -185,7 +188,7 @@ exports.parseFile = function(file, ufn, callback) {
  */
 var accountParser = csv.parse(function(err, data) {
     if (err) {
-        console.log(err);
+        logger.error(err);
         return;
     }
 
@@ -202,11 +205,11 @@ var accountParser = csv.parse(function(err, data) {
 
         createAccount(account, function(res, acc) {
             if (res == 'failure') {
-                console.log('Could not insert account %s into database', acc.id);
+                logger.error('Could not insert account %s into database.', acc.id);
             } else if (res == 'exists') {
-                console.log('Account ID %s already exists', acc.id);
+                logger.error('Account ID %s already exists.', acc.id);
             } else {
-                console.log('Account %s read from csv file', acc.id);
+                logger.info('Account %s read from csv file.', acc.id);
                 delete acc._id;
                 updatefn(acc);
             }

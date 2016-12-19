@@ -1,5 +1,6 @@
 var db = require('./db.js').database;
 var students = require('./students.js');
+var logger = require('./log.js').logger;
 
 var questions = db.collection('questions');
 exports.questions = questions;
@@ -13,7 +14,7 @@ var nextid;
 exports.questionInit = function(callback) {
     questions.count(function(err, num) {
         if (err) {
-            console.log(err);
+            logger.error(err);
             process.exit(1);
         }
 
@@ -24,7 +25,7 @@ exports.questionInit = function(callback) {
             /* get the maximum question id in the database */
             questions.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     process.exit(1);
                 }
                 nextid = docs[0].id + 1;
@@ -50,6 +51,7 @@ exports.addQuestion = function(question, callback) {
             callback('failure');
         } else {
             console.log(res);
+            logger.info('Question %d added to database.', question.id);
             callback('success');
         }
     });
@@ -59,10 +61,10 @@ exports.addQuestion = function(question, callback) {
 exports.deleteQuestion = function(qid, callback) {
     questions.remove({id: qid}, function(err, res) {
         if (err) {
-            console.log(err);
+            logger.error(err);
             callback('failure');
         } else {
-            console.log('Question %d deleted', qid);
+            logger.info('Question %d deleted from database.', qid);
             callback('success');
         }
     });
@@ -94,7 +96,7 @@ exports.checkAnswer = function(question, answer, user, callback) {
 
     question.attempts++;
     user.attempted++;
-    console.log('User %s attempted to answer question %d with "%s"',
+    logger.info('User %s attempted to answer question %d with "%s"',
                 user.id, question.id, answer);
 
     re = new RegExp(question.answer, 'i');
@@ -121,7 +123,7 @@ exports.checkAnswer = function(question, answer, user, callback) {
         }
         questions.update({id: question.id}, question, function(err, res) {
             if (err) {
-                console.log(err);
+                logger.error(err);
                 callback('failed-update');
             } else {
                 callback(result);

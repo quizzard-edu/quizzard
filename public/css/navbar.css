@@ -21,3 +21,7 @@
 .form-changepass label {
   margin-top: 10px;
 }
+
+.form-changepass #changepass-result {
+  margin-top: 10px;
+}

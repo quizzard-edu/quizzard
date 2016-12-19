@@ -31,17 +31,17 @@ exports.findTypes = types;
 exports.findQuestions = function(amount, findType, user, callback) {
     var criteria, query;
 
-    if (checkMask(findType, types.SORT_DEFAULT)) {
+    if (findType & types.SORT_DEFAULT) {
         criteria = {id: 1};
-    } else if (checkMask(findType, types.SORT_TOPIC)) {
+    } else if (findType & types.SORT_TOPIC) {
         critera = {topic : 1};
-    } else if (checkMask(findType, types.SORT_POINTS)) {
+    } else if (findType & types.SORT_POINTS) {
         critera = {basePoints : -1};
     } else {
         criteria = {};
     }
 
-    if (checkMask(findType, types.QUERY_ANSWERED)) {
+    if (findType & types.QUERY_ANSWERED) {
         query = {};
     } else if (user != null) {
         query = {
@@ -53,7 +53,7 @@ exports.findQuestions = function(amount, findType, user, callback) {
         if (err) {
             callback('failure');
         } else {
-            if (checkMask(findType, types.SORT_RANDOM))
+            if (findType & types.SORT_RANDOM)
                 shuffle(docs);
             for (q in docs)
                 delete docs[q]._id;
@@ -65,15 +65,15 @@ exports.findQuestions = function(amount, findType, user, callback) {
 exports.sortQuestions = function(qs, type, callback) {
     var cmpfn;
 
-    if (checkMask(type, types.SORT_RANDOM)) {
+    if (type & types.SORT_RANDOM) {
         shuffle(qs);
         callback(qs);
         return;
-    } else if (checkMask(type, types.SORT_TOPIC)) {
+    } else if (type & types.SORT_TOPIC) {
         cmpfn = function(a, b) {
             return a.topic < b.topic ? -1 : 1;
         };
-    } else if (checkMask(type, types.SORT_POINTS)) {
+    } else if (type & types.SORT_POINTS) {
         cmpfn = function(a, b) {
             return b.basePoints - a.basePoints;
         };
@@ -98,8 +98,4 @@ var shuffle = function(arr) {
         arr[curr] = arr[rnd];
         arr[rnd] = tmp;
     }
-}
-
-var checkMask = function(val, mask) {
-    return (val & mask) == mask;
 }
