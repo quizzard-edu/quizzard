@@ -7,7 +7,8 @@ var types = Object.freeze({
     SORT_RANDOM:     0x2,
     SORT_TOPIC:      0x4,
     SORT_POINTS:     0x8,
-    QUERY_ANSWERED:  0x10
+    QUERY_ANSWERED:  0x10,
+    QUERY_ANSONLY:   0x20,
 });
 
 exports.findTypes = types;
@@ -27,6 +28,7 @@ exports.findTypes = types;
  *
  * QUERYING
  * 4th bit: if 1, allow questions that have already been answered by user.
+ * 5th bit: if 1, only show those questions that have been answered (with bit 4).
  */
 exports.findQuestions = function(amount, findType, user, callback) {
     var criteria, query;
@@ -42,7 +44,13 @@ exports.findQuestions = function(amount, findType, user, callback) {
     }
 
     if (findType & types.QUERY_ANSWERED) {
-        query = {};
+        if (findType & types.QUERY_ANSONLY) {
+            query = {
+                id: { $in: user.answeredIds }
+            };
+        } else {
+                query = {};
+        }
     } else if (user != null) {
         query = {
             id: { $nin: user.answeredIds }

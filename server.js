@@ -317,6 +317,21 @@ app.get('/sortlist', function(req, res) {
 
 const questionList = pug.compileFile('views/questionlist.pug');
 
+app.post('/fetchqlist', function(req, res) {
+    var type = selector.findTypes.SORT_RANDOM;
+
+    if (req.body.type == 'answered')
+        type |= selector.findTypes.QUERY_ANSWERED | selector.findTypes.QUERY_ANSONLY;
+
+    selector.findQuestions(10, type, req.session.user, function(results) {
+        req.session.questions = results;
+        var html = questionList({
+            questions: results
+        });
+        res.status(200).send(html);
+    });
+});
+
 /* Sort question list by specified criterion and send new HTML. */
 app.post('/sortlist', function(req, res) {
     var type;

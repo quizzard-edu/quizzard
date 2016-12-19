@@ -38,6 +38,26 @@ $('#sort-point').click(function(evt) {
     sortRequest(sortTypes.SORT_POINTS);
 });
 
+$('#qlist-unanswered').click(function(evt) {
+    fetchQList('unanswered');
+});
+
+$('#qlist-answered').click(function(evt) {
+    fetchQList('answered');
+});
+
+var fetchQList = function(which) {
+    $.ajax({
+        type: 'POST',
+        url: '/fetchqlist',
+        data: { type: which },
+        success: function(data) {
+            $('.question-list').html(data);
+            setupQuestionListeners();
+        }
+    });
+}
+
 /*
  * Send a request to sort the question list in a given order.
  */
