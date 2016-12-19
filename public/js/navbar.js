@@ -1,5 +1,25 @@
+/* Password changing form. */
 $('#nav-changepass').click(function(evt) {
     $('#modal-password').modal('show');
+});
+
+$('#changepass-form').submit(function(evt) {
+    evt.preventDefault();
+    var passreq = $('#changepass-form').serializeArray();
+    $.ajax({
+        type: 'POST',
+        url: '/changepass',
+        data: passreq,
+        success: function(data) {
+            if (data == 'invalid') {
+                $('#changepass-result').html('Invalid password');
+            } else if (data == 'mismatch') {
+                $('#changepass-result').html('Passwords do not match');
+            } else if (data == 'success') {
+                $('#changepass-result').html('Your password has been changed.');
+            }
+        }
+    });
 });
 
 $('#nav-logout').click(function(evt) {

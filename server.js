@@ -51,6 +51,27 @@ app.post('/login', function(req, res) {
     });
 });
 
+/* Process a password changing request. */
+app.post('/changepass', function(req, res) {
+    if (!req.session.user) {
+        res.status(500).send();
+        return;
+    }
+
+    if (req.body.newpass != req.body.newpass2) {
+        res.status(200).send('mismatch');
+        return;
+    }
+
+    students.checkLogin(req.session.user.id, req.body.currpass, function(u) {
+        if (u) {
+            res.status(200).send('success');
+        } else {
+            res.status(200).send('invalid');
+        }
+    });
+});
+
 app.get('/logout', function(req, res) {
     if (req.session.user != null) {
         console.log('User %s logged out', req.session.user.id);
