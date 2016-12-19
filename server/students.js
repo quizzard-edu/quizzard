@@ -145,6 +145,7 @@ exports.deleteAccount = function(userid, callback) {
     });
 };
 
+/* Sort the list of accounts as by the given criteria. */
 exports.sortAccounts = function(as, type, asc, callback) {
     var cmpfn;
 

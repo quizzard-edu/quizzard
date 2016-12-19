@@ -1,6 +1,7 @@
 var winston = require('winston');
 require('winston-daily-rotate-file');
 
+/* Initialize rotating logging. */
 exports.init = function(callback) {
     winston.add(winston.transports.DailyRotateFile, {
         filename: 'log/quizzard',

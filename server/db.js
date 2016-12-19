@@ -8,6 +8,7 @@ var DB_NAME = process.env.DB_NAME || 'quizzard';
 
 var db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 
+/* Open a connection to the database. */
 exports.initialize = function(callback) {
     db.open(function(err, db) {
         if (err) {

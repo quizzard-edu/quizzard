@@ -1,3 +1,4 @@
+/* Process a user login request. */
 $('#login').submit(function(evt) {
     evt.preventDefault();
     $.ajax({

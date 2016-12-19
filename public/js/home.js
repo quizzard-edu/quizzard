@@ -1,5 +1,6 @@
 var sortTypes;
 
+/* Fetch the list of valid question list sort types from the server. */
 $.ajax({
     type: 'GET',
     url: '/sortlist',
@@ -8,6 +9,7 @@ $.ajax({
     }
 });
 
+/* Make questions clickable. */
 var setupQuestionListeners = function() {
     $('.question-block').click(function(evt) {
         var qid = this.id;
@@ -64,6 +66,9 @@ var sortRequest = function(type) {
     });
 };
 
+/*
+ * Fetch the mini leaderboard table and display it in the sidebar.
+ */
 var fetchLeaderboard = function() {
     $.ajax({
         type: 'POST',

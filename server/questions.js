@@ -10,7 +10,7 @@ exports.QUESTION_MULTCHOICE = 1;
 
 var nextid;
 
-/* initialize nextid */
+/* Initialize the next question ID. */
 exports.questionInit = function(callback) {
     questions.count(function(err, num) {
         if (err) {

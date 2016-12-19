@@ -82,6 +82,7 @@ app.post('/changepass', function(req, res) {
     });
 });
 
+/* End a user's session. */
 app.get('/logout', function(req, res) {
     if (req.session.user != null) {
         logger.info('User %s logged out.', req.session.user.id);
@@ -92,6 +93,7 @@ app.get('/logout', function(req, res) {
     }
 });
 
+/* Display the home page. */
 app.get('/home', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (req.session.user == null) {
@@ -118,6 +120,7 @@ app.get('/home', function(req, res) {
     }
 });
 
+/* Display the question page. */
 app.get('/question', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (req.session.user == null)
@@ -132,6 +135,7 @@ app.get('/question', function(req, res) {
         });
 });
 
+/* Display the leaderboard page. */
 app.get('/leaderboard', function(req, res) {
     if (req.session.user == null)
         res.redirect('/')
@@ -139,6 +143,7 @@ app.get('/leaderboard', function(req, res) {
         res.render('leaderboard', { user: req.session.user, });
 });
 
+/* Display the admin page. */
 app.get('/admin', function(req,res) {
     if (req.session.user == null)
         res.redirect('/');
@@ -148,6 +153,7 @@ app.get('/admin', function(req,res) {
         res.render('admin', { user: req.session.user });
 });
 
+/* Display the about page. */
 app.get('/about', function(req,res) {
     if (req.session.user == null)
         res.redirect('/')
@@ -165,6 +171,7 @@ const statistics = pug.compileFile('views/statistics.pug');
 
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
+/* Fetch and render the leaderboard table. Send HTML as response. */
 app.post('/leaderboard-table', function(req, res) {
     var ft, shrt;
 
@@ -190,7 +197,7 @@ app.post('/leaderboard-table', function(req, res) {
 /* refetch users from database instead of using stored list */
 var refetch = false;
 
-/* send the student table html */
+/* Send the student table HTML. */
 app.get('/studentlist', function(req, res) {
     if (req.session.adminStudentList == null || refetch) {
         /* only fetch student list once, then store it */
@@ -210,6 +217,7 @@ app.get('/studentlist', function(req, res) {
     }
 });
 
+/* Sort the list of student accounts by the specified criterion. */
 app.post('/sortaccountlist', function(req, res) {
     if (req.session.adminStudentList == null) {
         var html = studentTable({
@@ -227,25 +235,26 @@ app.post('/sortaccountlist', function(req, res) {
     }
 });
 
-/* send the account creation form html */
+/* Send the account creation form HTML. */
 app.get('/accountform', function(req, res) {
     var html = accountForm();
     res.status(200).send(html);
 });
 
-/* send the account creation form html */
+/* Send the question creation form HTML. */
 app.get('/questionform', function(req, res) {
     var html = questionForm();
     res.status(200).send(html);
 });
 
+/* Return a formatted date for the given timestamp. */
 var creationDate = function(timestamp) {
     const months = ['Jan', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var date = new Date(timestamp);
     return months[date.getMonth() - 1] + ' ' + date.getDate() + ' ' + date.getFullYear();
 }
 
-/* send the account editing form html */
+/* Send the account editing form HTML. */
 app.post('/accountedit', function(req, res) {
     /* Find the requested user */
     var ind;
@@ -261,8 +270,9 @@ app.post('/accountedit', function(req, res) {
     res.status(200).send(html);
 });
 
-/* send the question table html */
+/* Send the question table HTML. */
 app.get('/questionlist', function(req, res) {
+    /* If this is the first time accessing it, fetch list from database. */
     if (req.session.adminQuestionList == null) {
         selector.findQuestions(0, selector.findTypes.SORT_DEFAULT,
                                     null, function(questionlist) {
@@ -280,7 +290,7 @@ app.get('/questionlist', function(req, res) {
     }
 });
 
-/* send the application statistics html */
+/* Send the application statistics HTML. */
 app.get('/statistics', function(req, res) {
     if (req.session.adminQuestionList == null) {
         selector.findQuestions(0, selector.findTypes.SORT_DEFAULT,
@@ -307,7 +317,7 @@ app.get('/sortlist', function(req, res) {
 
 const questionList = pug.compileFile('views/questionlist.pug');
 
-/* send back a sorted question list */
+/* Sort question list by specified criterion and send new HTML. */
 app.post('/sortlist', function(req, res) {
     var type;
 
@@ -325,7 +335,7 @@ app.post('/sortlist', function(req, res) {
     });
 });
 
-/* user requests a question; look it up by id and store it in session */
+/* User requests a question; look it up by ID and store it in session. */
 app.post('/questionreq', function(req, res) {
     questions.lookupQuestion(parseInt(req.body.id), function(result) {
         if (result == 'failure' || result == 'invalid') {

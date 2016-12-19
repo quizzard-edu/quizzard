@@ -62,6 +62,7 @@ exports.findQuestions = function(amount, findType, user, callback) {
     });
 }
 
+/* Sort questions by the given sort type. */
 exports.sortQuestions = function(qs, type, callback) {
     var cmpfn;
 

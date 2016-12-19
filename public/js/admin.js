@@ -1,6 +1,7 @@
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
+/* Display the table of user accounts. */
 var displayAccountsTable = function() {
     $.ajax({
         type: 'GET',
@@ -26,6 +27,7 @@ var displayAccountsTable = function() {
     });
 }
 
+/* Add click events to the buttons in the account table. */
 var addAccountsTableEvents = function() {
     $('.delete-button').click(function(evt) {
         /* cut off the delete- */
@@ -40,6 +42,7 @@ var addAccountsTableEvents = function() {
     });
 }
 
+/* Fetch and display the account creation form. */
 var displayAccountForm = function() {
     $.ajax({
         type: 'GET',
@@ -60,6 +63,7 @@ var displayAccountForm = function() {
     });
 }
 
+/* Fetch and display the table of questions. */
 var displayQuestionTable = function() {
     $.ajax({
         type: 'GET',
@@ -95,6 +99,7 @@ var displayQuestionTable = function() {
     });
 }
 
+/* Fetch and display the question creation form. */
 var displayQuestionForm = function() {
     $.ajax({
         type: 'GET',
@@ -159,6 +164,7 @@ var displaySettings = function() {
 /* show the account table by default */
 displayAccountsTable();
 
+/* Set up events for the sidebar buttons. */
 $('#option-accounts').click(function(evt) {
     displayAccountsTable();
 });
@@ -175,6 +181,10 @@ $('#option-settings').click(function(evt) {
     displaySettings();
 });
 
+/*
+ * Process user deletion request.
+ * First, display a confirmation message and then request the user's removal.
+ */
 var deleteUser = function(id) {
     swal({
         title: 'Confirm deletion',
@@ -196,6 +206,7 @@ var deleteUser = function(id) {
     });
 }
 
+/* Fetch data for the user editing form. */
 var editUser = function(id) {
     $.ajax({
         type: 'POST',
@@ -218,6 +229,7 @@ var editUser = function(id) {
     });
 }
 
+/* Read data from user creation form and send request to create user. */
 var submitUserForm = function() {
     var fields = $('#userform').serializeArray();
     var user = {};
@@ -243,6 +255,7 @@ var submitUserForm = function() {
     });
 }
 
+/* Upload a file of users to the server. */
 var submitUploadForm = function() {
     var files = $('#upload-file').get(0).files;
     var formData = new FormData();
@@ -271,6 +284,7 @@ var submitUploadForm = function() {
     });
 }
 
+/* Process submitted user edit form. */
 var submitEditForm = function(id) {
     var fields = $('#account-edit-form').serializeArray();
     var user = {
@@ -303,6 +317,7 @@ var submitEditForm = function(id) {
     });
 }
 
+/* Process submitted question edit form. */
 var submitQuestionForm = function() {
     var fields = $('#questionform').serializeArray();
     var question = {};
