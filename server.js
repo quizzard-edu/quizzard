@@ -169,6 +169,7 @@ const accountForm = pug.compileFile('views/account-creation.pug');
 const accountEdit = pug.compileFile('views/account-edit.pug');
 const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
+const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
 
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
@@ -290,6 +291,23 @@ app.get('/questionlist', function(req, res) {
         });
         res.status(200).send(html);
     }
+});
+
+/* Send the question editing form HTML. */
+app.post('/questionedit', function(req, res) {
+    var ind;
+    for (ind in req.session.adminQuestionList) {
+        if (req.session.adminQuestionList[ind].id == req.body.questionid)
+            break;
+    }
+
+    var html = questionEdit({
+        question: req.session.adminQuestionList[ind]
+    });
+    res.status(200).send({
+        html: html,
+        qtext: req.session.adminQuestionList[ind].text
+    });
 });
 
 /* Send the application statistics HTML. */
@@ -513,6 +531,36 @@ app.post('/questionadd', function(req, res) {
             req.session.adminQuestionList.push(req.body);
         }
         res.send(result);
+    });
+});
+
+/*
+ * Modify a question in the database.
+ * Request body contains question's ID and a question object with
+ * the fields to be changed.
+ */
+app.post('/questionmod', function(req, res) {
+    var qid = parseInt(req.body.id);
+    var q = req.body.question;
+    var ind;
+
+    for (ind in req.session.adminQuestionList) {
+        if (req.session.adminQuestionList[ind].id == qid)
+            break;
+    }
+    var question = req.session.adminQuestionList[ind];
+
+    if (q.basePoints)
+        q.basePoints = parseInt(q.basePoints);
+
+    /* Add all modified fields. */
+    for (field in q) {
+        if (!!q[field])
+            question[field] = q[field];
+    }
+
+    questions.updateQuestion(question, function(result) {
+        res.status(200).send(result);
     });
 });
 

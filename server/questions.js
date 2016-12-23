@@ -57,6 +57,18 @@ exports.addQuestion = function(question, callback) {
     });
 }
 
+/* Replace a question in the database with the provided question object. */
+exports.updateQuestion = function(question, callback) {
+    questions.update({id: question.id}, question, function(err, res) {
+        if (err) {
+            logger.error(err);
+            callback('failure');
+        } else {
+            callback('success');
+        }
+    });
+}
+
 /* Remove the question with ID qid from the database. */
 exports.deleteQuestion = function(qid, callback) {
     questions.remove({id: qid}, function(err, res) {

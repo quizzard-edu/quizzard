@@ -372,6 +372,54 @@ var deleteQuestion = function(qid) {
 }
 
 var editQuestion = function(qid) {
+    $.ajax({
+        type: 'POST',
+        url: '/questionedit',
+        data: { questionid: qid },
+        success: function(data) {
+            $('#admin-label').html('Edit Question');
+            $('#admin-content').html(data.html);
+            $('#admin-button').off();
+            $('#admin-button').hide();
+            $('#admin-back').show();
+            $('#admin-back').click(function(evt) {
+                displayQuestionTable();
+            });
+            $('#qtext').summernote({ height: 150 });
+            $('#qtext').summernote('code', data.qtext);
+            $('#question-edit-form').submit(function(evt) {
+                evt.preventDefault();
+                submitQEditForm(qid);
+            });
+        }
+    });
+}
+
+var submitQEditForm = function(qid) {
+    var fields = $('#question-edit-form').serializeArray();
+    var question = {};
+    var qbody;
+
+    jQuery.each(fields, function(i, field) {
+        question[field.name] = field.value;
+    });
+    question['text'] = $('#qtext').summernote('code');
+
+    $.ajax({
+        type: 'POST',
+        url: '/questionmod',
+        data: {
+            question: question,
+            id: qid
+        },
+        success: function(data) {
+            if (data == 'failure') {
+                $('#question-edit-result').html('Question could not be edited.');
+            } else if (data == 'success') {
+                $('#question-edit-result').html('Question ' + qid + ' has been modified.');
+            }
+        }
+    });
 }
 
 /*

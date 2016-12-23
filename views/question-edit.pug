@@ -1,0 +1,51 @@
+.question-info.text-center
+  h4.text-center ID #{question.id}
+  h4.text-center #{question.title}
+  p.text-center #{question.basePoints} Points
+  p.text-center Current Answer: #{question.answer}
+
+  p#question-edit-result
+
+form.form-edit#question-edit-form
+  .form-group.row
+    label.col-sm-2.col-form-label(for='qtitle') Title
+    .col-sm-10
+      input.form-control#qtitle(type='text' name='title' placeholder='New title'
+                                autofocus)
+
+  .form-group.row
+    label(for='qtext') Question Body
+    .summernote#qtext
+
+  .form-group.row
+    label.col-sm-2.col-form-label(for='qanswer') Answer (regex)
+    .col-sm-10
+      input.form-control#qanswer(type='text' name='answer'
+                                 placeholder='New answer')
+
+  .form-group.row
+    label.col-sm-2.col-form-label(for='qtopic') Topic
+    .col-sm-10
+      input.form-control#qtopic(type='text' name='topic'
+                                placeholder='New topic')
+
+  .form-group.row
+    label.col-sm-2.col-form-label(for='qpoints') Points
+    .col-sm-10
+      input.form-control#qpoints(type='number' name='basePoints'
+                                 placeholder='New point count')
+
+  .form-group.row
+    label.col-sm-2.col-form-label(for='successmsg') Message
+    .col-sm-10
+      input.form-control#successmsg(type='text' name='successMessage'
+                                    placeholder='New message'
+                                    aria-describedby='success-msg-help')
+    .row
+      .col-sm-2
+      p.col-sm-10.form-text.text-muted#success-msg-help
+        | This is a message that will be displayed to the user after they
+        | successfully answer a question. It can be used to provide additional
+        | information on the topic.
+
+  button.btn.btn-lg.btn-primary.btn-block(type='submit') Edit
