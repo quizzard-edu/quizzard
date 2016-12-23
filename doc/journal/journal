@@ -210,3 +210,22 @@ displayed on the leaderboard, assigning each an appropriate rank.
 Fixed a critical bug where answering questions changed users' passwords.
 Fixed formatting of success rate on sidebar.
 Prevented admin accounts from being displayed on leaderboard.
+
+2016-12-19:
+Created a password changing form and added a 'Change Password' entry to the
+navbar which opens a popup with the password form.
+Added server-side support for password changing.
+Added Winston as a logging module and set it up to create a new log file for
+each date. Replaced print statements in the code with calls to the logging
+functions, writing data to both a file and stdout.
+Added comment headers to most functions in the project.
+Placed 'Unanswered' and 'Answered' buttons above the question table on the home
+view to choose which questions to display: those that the user has yet to
+answer (default) or those that they have already answered, for review purposes.
+
+2016-12-23:
+Fixed the 'Answered' button to properly display as active when returning from
+another page to the home page with answered questions loaded.
+Created a question editing form. Made edit buttons on admin's question table
+load the form and allow questions to be edited. Added updateQuestion function
+to questions module, which updates a question in the database.
