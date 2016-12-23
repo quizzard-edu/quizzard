@@ -17,10 +17,16 @@ block content
       .col-md-8
         .row
           .btn-group.col-md-10(data-toggle='buttons')
-            label.btn.btn-default.active#qlist-unanswered.
-              <input type="radio" name="qlist-type" checked> Unanswered
-            label.btn.btn-default#qlist-answered.
-              <input type="radio" name="qlist-type"> Answered
+            if answered
+              label.btn.btn-default#qlist-unanswered.
+                <input type="radio" name="qlist-type"> Unanswered
+              label.btn.btn-default.active#qlist-answered.
+                <input type="radio" name="qlist-type" checked> Answered
+            else
+              label.btn.btn-default.active#qlist-unanswered.
+                <input type="radio" name="qlist-type" checked> Unanswered
+              label.btn.btn-default#qlist-answered.
+                <input type="radio" name="qlist-type"> Answered
           .dropdown.col-md-2
             button.btn.btn-default.dropdown-toggle#sort(type='button' data-toggle='dropdown') Sort by
               span.caret

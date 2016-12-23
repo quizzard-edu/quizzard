@@ -106,6 +106,7 @@ app.get('/home', function(req, res) {
             selector.findQuestions(10, selector.findTypes.SORT_RANDOM,
                                    req.session.user, function(results) {
                 req.session.questions = results;
+                req.session.answeredQuestions = false;
                 res.render('home', {
                     user: req.session.user,
                     questions: results
@@ -114,7 +115,8 @@ app.get('/home', function(req, res) {
         } else {
             res.render('home', {
                 user: req.session.user,
-                questions: req.session.questions
+                questions: req.session.questions,
+                answered: req.session.answeredQuestions
             });
         }
     }
@@ -317,14 +319,19 @@ app.get('/sortlist', function(req, res) {
 
 const questionList = pug.compileFile('views/questionlist.pug');
 
+/* Respond with an HTML-formatted list of questions to display. */
 app.post('/fetchqlist', function(req, res) {
     var type = selector.findTypes.SORT_RANDOM;
+    var ans = false;
 
-    if (req.body.type == 'answered')
+    if (req.body.type == 'answered') {
         type |= selector.findTypes.QUERY_ANSWERED | selector.findTypes.QUERY_ANSONLY;
+        ans = true;
+    }
 
     selector.findQuestions(10, type, req.session.user, function(results) {
         req.session.questions = results;
+        req.session.answeredQuestions = ans;
         var html = questionList({
             questions: results
         });
