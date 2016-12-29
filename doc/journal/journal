@@ -229,3 +229,8 @@ another page to the home page with answered questions loaded.
 Created a question editing form. Made edit buttons on admin's question table
 load the form and allow questions to be edited. Added updateQuestion function
 to questions module, which updates a question in the database.
+
+2016-12-28:
+Added question previewing in admin mode. Made the 'View' button in the question
+table operational. Added a server request which sends the HTML for a given
+question in preview mode.
