@@ -133,7 +133,8 @@ app.get('/question', function(req, res) {
         res.render('question', {
             user: req.session.user,
             question: req.session.question,
-            answered: req.session.questionAnswered
+            answered: req.session.questionAnswered,
+            preview: false
         });
 });
 
@@ -586,6 +587,29 @@ app.post('/questiondel', function(req, res) {
             res.status(200);
         }
         res.send();
+    });
+});
+
+/* Respond with question page HTML for a dummy user. */
+app.get('/questionpreview', function(req, res) {
+    if (!req.query.qid) {
+        res.status(400).send();
+        return;
+    }
+
+    var qid = parseInt(req.query.qid);
+    questions.lookupQuestion(qid, function(q) {
+        if (q == 'invalid' || q == 'failure') {
+            res.status(200).send(q);
+            return
+        }
+
+        res.render('question', {
+            user: 'Username',
+            question: q,
+            answered: false,
+            preview: true
+        });
     });
 });
 

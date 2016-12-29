@@ -1,16 +1,21 @@
 extends layout
 
 block styles
-  link(rel='stylesheet' href='/lib/sweetalert/sweetalert.css')
   link(rel='stylesheet' href='/css/question.css')
   link(rel='stylesheet' href='/css/sidebar.css')
-  link(rel='stylesheet' href='/css/navbar.css')
+  if !preview
+    link(rel='stylesheet' href='/css/navbar.css')
+    link(rel='stylesheet' href='/lib/sweetalert/sweetalert.css')
 
 block title
-  title Quizzard - Question
+  if !preview
+    title Quizzard - Question
+  else
+    title Quizzard - Question Preview
 
 block content
-  include navbar
+  if !preview
+    include navbar
 
   .container
     .row
@@ -41,8 +46,9 @@ block content
           p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
 
 block scripts
-  script(src='/lib/jquery/jquery-3.1.1.min.js')
-  script(src='/lib/bootstrap/js/bootstrap.min.js')
-  script(src='/lib/sweetalert/sweetalert.min.js')
-  script(src='/js/question.js')
-  script(src='/js/navbar.js')
+  if !preview
+    script(src='/lib/jquery/jquery-3.1.1.min.js')
+    script(src='/lib/bootstrap/js/bootstrap.min.js')
+    script(src='/lib/sweetalert/sweetalert.min.js')
+    script(src='/js/question.js')
+    script(src='/js/navbar.js')

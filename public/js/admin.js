@@ -348,6 +348,28 @@ var submitQuestionForm = function() {
 }
 
 var viewQuestion = function(qid) {
+    $.ajax({
+        type: 'GET',
+        url: '/questionpreview',
+        data: {
+            qid: qid
+        },
+        success: function(data) {
+            if (data != 'failure' && data != 'invalid') {
+                $('#admin-label').html('Question Preview');
+                $('#admin-content').html(data);
+                $('#admin-button').off();
+                $('#admin-button').hide();
+                $('#admin-back').show();
+                $('#admin-back').click(function(evt) {
+                    displayQuestionTable();
+                });
+                $('#answerform').submit(function(evt) {
+                    evt.preventDefault();
+                });
+            }
+        }
+    });
 }
 
 var deleteQuestion = function(qid) {
