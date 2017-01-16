@@ -86,13 +86,13 @@ var createAccount = function(account, callback) {
                     account.points = 0.0;
                     account.level = 0;
                     account.answeredIds = [];
-                    account.admin = false;
+                    if (!account.admin)
+                        account.admin = false;
 
                     students.insert(account, function(err, res) {
                         if (err) {
                             callback('failure', account);
                         } else {
-                            console.log(res);
                             logger.info('Account %s created.', account.id);
                             callback('success', account);
                         }

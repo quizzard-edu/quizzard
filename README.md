@@ -26,14 +26,14 @@ and `mongodb` installed.
 1. Install the Node module dependencies.
 
   ```
-  cd quizzard
-  npm install
+  $ cd quizzard
+  $ npm install
   ```
 
 2. You can now launch the server by running
 
   ```
-  npm start
+  $ npm start
   ```
 
   You should now be able to access Quizzard by visiting
