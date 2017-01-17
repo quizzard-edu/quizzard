@@ -1,0 +1,24 @@
+`db` module
+server/db.js
+
+
+Description:
+
+The db module manages the connection to the MongoDB database used by Quizzard.
+
+
+API:
+
+db.initialize(callback)
+
+Opens a connection to the database.
+Uses environment variables DB_HOST, DB_PORT and DB_NAME, if they exist,
+as settings for the connection.
+DB_HOST: host on which mongodb is running (default: localhost)
+DB_PORT: port on which mongodb is running (default: 27017)
+DB_NAME: name of Quizzard's database within mongodb (default: quizzard)
+Calls function `callback` if database connection is successfully opened.
+
+db.database
+
+Handle to the database connection.
