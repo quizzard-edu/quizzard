@@ -89,12 +89,13 @@ exports.lookupQuestion = function(qid, callback) {
         return;
     }
     questions.findOne({id: qid}, function(err, q) {
-        /* necessary for later database update */
-        delete q._id;
-        if (err || !q)
+        if (err || !q) {
             callback('failure');
-        else
+        } else {
+            /* necessary for later database update */
+            delete q._id;
             callback(q);
+        }
     });
 }
 

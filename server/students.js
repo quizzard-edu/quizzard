@@ -174,10 +174,10 @@ var updatefn;
 /*
  * Read account entries from a csv file and add them to the database.
  */
-exports.parseFile = function(file, ufn, callback) {
+exports.parseFile = function(path, ufn, callback) {
     updatefn = ufn;
-    logger.info('Reading accounts from file %s.', file.path);
-    fs.createReadStream(__dirname + '/../' + file.path)
+    logger.info('Reading accounts from file %s.', path);
+    fs.createReadStream(__dirname + '/../' + path)
         .pipe(accountParser).on('end', function() {
             callback();
         });

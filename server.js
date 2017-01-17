@@ -509,7 +509,7 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
     if (!req.file || req.file.mimetype != 'text/csv')
         res.status(200).send('invalid');
 
-    students.parseFile(req.file, function(account) {
+    students.parseFile(req.file.path, function(account) {
         refetch = true;
     }, function() {
         res.status(200).send('uploaded');
