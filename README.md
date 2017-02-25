@@ -53,3 +53,18 @@ and `mongodb` installed.
 5. After you have set up an admin account, load the Quizzard application and log
   in with the account that you created. You now have a working instance of
   Quizzard which you can use.
+
+## Contact
+
+If you have a question, find a bug, need a feature, or want to contribute,
+please email: quizzard.edu@gmail.com
+
+## Credits
+
+Quizzard's development started at and has been supported by the University of
+Toronto Mississauga. Below is a list of the contributors so far.
+
+Alexei Frolov, Larry Yueli Zhang
+
+Supervisor: Larry Yueli Zhang
+
