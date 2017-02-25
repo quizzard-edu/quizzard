@@ -1,4 +1,10 @@
 ==========================
+Quizzard v0.2 Release Notes
+==========================
+
+Updated documentation
+
+==========================
 Quizzard v0.1 Release Notes
 ==========================
 
