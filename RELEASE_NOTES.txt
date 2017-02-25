@@ -1,0 +1,7 @@
+==========================
+Quizzard v0.1 Release Notes
+==========================
+
+This is the first release version of Quizzard which include complete service a
+minimal set of features.
+
