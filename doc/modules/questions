@@ -1,0 +1,77 @@
+`questions` module
+server/questions.js
+
+
+Description:
+
+The questions module provides an interface to the questions collection in
+Quizzard's database.
+
+
+API:
+
+questions.questionInit(callback)
+
+Initializes the next question ID. Called once on startup.
+
+
+questions.addQuestion(question, callback)
+
+Inserts a question into the database.
+Calls the callback function with either 'failure' or 'success' to indicate
+status.
+
+Arguments:
+    question - the question object to insert. It must have the fields
+               `text`, `topic`, `type`, `answer`, `basePoints` and `hint` set.
+    callback - function to call with result.
+
+
+questions.updateQuestion(question, callback)
+
+Replaces question in database with new one.
+Calls the callback function with either 'failure' or 'success' to indicate
+status.
+
+Arguments:
+    question - the complete question object of the question to be updated.
+    callback - function to call with result.
+
+
+questions.deleteQuestion(qid, callback)
+
+Deletes a question from the database.
+Calls the callback function with either 'failure' or 'success' to indicate
+status.
+
+Arguments:
+    qid - ID of the question to delete.
+    callback - function to call with result.
+
+
+questions.lookupQuestion(qid, callback)
+
+Finds the question with ID `qid` in the database.
+
+Arguments:
+    qid - ID of question to lookup.
+    callback - function to call on completion. Called with 'invalid',
+               indicating that an invalid ID was provided, 'failure' to indicate
+               that the question ID does not exist, or the question object to
+               indicate success.
+
+
+questions.checkAnswer(question, answer, user, callback)
+
+Checks if a user's answer to a question matches the question's answer and
+updates user and question objects in the database accordingly.
+`callback` will be called with one of the following:
+'correct' - user answered correctly
+'incorrect' - user answered incorrectly
+'failed-update' - database entry for the user or question could not be updated
+
+Arguments:
+    question - question object of the answered question.
+    answer - user's answer attempt.
+    user - student object of the user who attempted the question.
+    callback - function to call with result.

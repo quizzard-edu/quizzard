@@ -1,0 +1,54 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/question.css')
+  link(rel='stylesheet' href='/css/sidebar.css')
+  if !preview
+    link(rel='stylesheet' href='/css/navbar.css')
+    link(rel='stylesheet' href='/lib/sweetalert/sweetalert.css')
+
+block title
+  if !preview
+    title Quizzard - Question
+  else
+    title Quizzard - Question Preview
+
+block content
+  if !preview
+    include navbar
+
+  .container
+    .row
+      .col-md-8
+        form.form-question#answerform
+          h2.qtext #{question.title}
+          h5.qtext !{question.text}
+          label.sr-only(for='answer') Answer
+          if answered
+            input.form-control#answer(name='answer' placeholder='Enter your answer here'
+                                      required disabled)
+            button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
+          else
+            input.form-control#answer(name='answer' placeholder='Enter your answer here'
+                                      required autofocus)
+            button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+        if answered
+          .success
+            h4.text-center#success-header Learn more
+            p#success-message #{question.successMessage}
+      .sidebar.col-md-4
+        h3.sidebar-item#topic #{question.topic}
+        h3.sidebar-item#points #{question.basePoints} Points
+        p.sidebar-item#attempts This question has been attempted #{question.attempts} times.
+        if question.correctAnswers == 0
+          p.sidebar-item#first-answer You could be the first person to correctly answer this question!
+        else
+          p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
+
+block scripts
+  if !preview
+    script(src='/lib/jquery/jquery-3.1.1.min.js')
+    script(src='/lib/bootstrap/js/bootstrap.min.js')
+    script(src='/lib/sweetalert/sweetalert.min.js')
+    script(src='/js/question.js')
+    script(src='/js/navbar.js')

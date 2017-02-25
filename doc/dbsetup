@@ -1,0 +1,6 @@
+The MongoDB server should contain a database named 'quizzard'.
+This is what the application connects to and uses as its database.
+
+The 'quizzard' database must have the following collections:
+'students'
+'questions'

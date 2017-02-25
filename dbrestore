@@ -1,0 +1,56 @@
+#!/bin/sh
+
+dbname=quizzard
+port=
+
+[ $DB_PORT ] && port=$DB_PORT || port=27017
+
+if [ ! "$1" ]; then
+	echo "usage: $0 [options] dumpfile" >&2
+	exit 1
+fi
+
+while [ "$1" ]; do
+	case "$1" in
+		--help|-h)
+			echo "usage: $0 [options] dumpfile"
+			echo "dbrestore - restore a quizzard database from a dump"
+			echo
+			echo "    -h, --help"
+			echo "        display this help text and exit"
+			echo "    --port=PORT"
+			echo "        specify mongodb database port"
+			exit 0
+			;;
+		--port=*)
+			port=`echo "$1" | sed 's/--port=//'`
+			shift
+			;;
+		-*) echo "invalid option $1" >&2; exit 1 ;;
+		*) dumpfile="$1"; shift ;;
+	esac
+done
+
+if [ ! -f "$dumpfile" ]; then
+	echo "$0: $dumpfile: invalid file" >&2
+	exit 1
+fi
+
+tar zxvf "$dumpfile" &>/dev/null
+if [ $? -ne 0 ]; then
+	echo "$0: dumpfile must a mongodb dump tarball" >&2
+	exit 1
+fi
+
+dumpdir=`basename "$dumpfile" .tar.gz`
+
+mongorestore --port $port -d $dbname "$dumpdir/$dbname" &>/dev/null
+
+if [ $? -ne 0 ]; then
+	echo "$0: could not restore database" >&2
+	rm -rf "$dumpdir"
+	exit 1
+fi
+
+rm -rf "$dumpdir"
+echo "Quizzard database restored."

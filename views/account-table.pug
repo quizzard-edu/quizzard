@@ -1,0 +1,23 @@
+table.table
+  thead
+    tr
+      th
+        a.sort-table#sort-fname(href='#') First Name
+      th
+        a.sort-table#sort-lname(href='#') Last Name
+      th
+        a.sort-table#sort-id(href='#') User ID
+      th Email
+      th Action
+  tbody
+    each s in students
+      tr
+        td #{s.fname}
+        td #{s.lname}
+        td #{s.id}
+        td #{s.email}
+        td
+          button.btn.btn-default.edit-button(id='edit-' + s.id type='button' aria-label='Edit')
+            span.glyphicon.glyphicon-pencil(aria-hidden='true')
+          button.btn.btn-default.delete-button(id='delete-' + s.id type='button' aria-label='Delete')
+            span.glyphicon.glyphicon-remove(aria-hidden='true')

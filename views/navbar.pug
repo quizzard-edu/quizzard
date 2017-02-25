@@ -1,0 +1,47 @@
+nav.navbar.navbar-default.navbar-fixed-top
+  .container-fluid
+    .navbar-header
+      .navbar-brand Quizzard
+    .collapse.navbar-collapse
+      ul.nav.navbar-nav
+        if user.admin
+          li#nav-home
+            a(href='/admin') Administration
+        else
+          li#nav-home
+            a(href='/home') Questions
+          li#nav-leaderboard
+            a(href='/leaderboard') Leaderboard
+        li#nav-about
+          a(href='/about') About
+      ul.nav.navbar-nav.navbar-right
+        li#nav-changepass
+          a(href='#') Change password
+        li#nav-logout
+          a(href='#') Logout
+
+.modal.fade#modal-password(tabindex='-1' role='dialog'
+                           arialabelledby='modal-password-label'
+                           aria-hidden='true')
+ .modal-dialog.modal-sm
+   .modal-content
+     .modal-header
+       button.close(type='button' data-dismiss='modal' aria-label='Close')
+         span(aria-hidden='true') &times;
+       h4.modal-title.text-center Change Password
+     .modal-body
+      form.form-changepass#changepass-form
+        p.text-center#changepass-result
+        .form-group#changepass-currpass-group
+          label(for='currpass') Current password
+          input.form-control#currpass(type='password' name='currpass'
+                                      placeholder='Password'
+                                      required autofocus)
+        .form-group
+          label(for='newpass') New password
+          input.form-control#newpass(type='password' name='newpass'
+                                     placeholder='Password' required)
+          label(for='newpass2') Confirm new password
+          input.form-control#newpass2(type='password' name='newpass2'
+                                      placeholder='Password' required)
+        button.btn.btn-sm.btn-primary.btn-block(type='submit') Submit

@@ -1,0 +1,27 @@
+.navbar-brand {
+  cursor: default;
+}
+
+#nav-logout {
+  padding-right: 10px;
+}
+
+.form-changepass {
+  margin: 0 auto;
+  margin-top: -20px;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.form-changepass .form-control {
+  position: relative;
+  height: 25px;
+}
+
+.form-changepass label {
+  margin-top: 10px;
+}
+
+.form-changepass #changepass-result {
+  margin-top: 10px;
+}

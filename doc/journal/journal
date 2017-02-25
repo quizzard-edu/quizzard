@@ -1,0 +1,236 @@
+2016-09-29:
+Started writing code for the project.
+Set up an Express server.
+Created a simple login page using Bootstrap.
+Added database authentication for login.
+
+2016-09-30:
+Changed login page from static HTML to Pug.
+Added session support.
+
+2016-10-05:
+Very busy week, not much time to work on Quizzard.
+Refactored some of the code I wrote last time and added comments.
+Most of it will still probably be rewritten in the future, but it's a start.
+Completed a basic account creation function which can be used to add students.
+
+2016-10-06:
+Extracted the database connection to its own file.
+Added questions.js file which will facilitate interaction with the questions
+collection in the database.
+Started work on an addQuestion function to insert questions into the database.
+
+2016-10-11:
+Create a temporary question addition form which adds a question to the database.
+
+2016-10-13:
+Started work on the home page proper.
+Created a question selector module which fetches questions from the database,
+sorted by a given criterion.
+Created the main body of the home page, consisting of two sections: the
+question list and the sidebar.
+Populated the question list with questions from the database, displaying basic
+information about them.
+Added user's name and points total to sidebar display.
+Gave each question its question ID as its HTML ID, allowing the clicked question
+to be easily detected.
+
+2016-10-14:
+Added a sort button above the question list with a basic dropdown menu.
+Updated the question selector to allow sorting by topic or by point count.
+Moved the question list into a separate template file, allowing it to be
+re-rendered with new information without having to re-render the whole page.
+Implemented question list sorting through an AJAX request to the server to
+render a new question list with a given sort criterion.
+
+2016-10-19:
+Send AJAX request to server when a question is clicked in the question list on
+the home page. The request contains the ID of the question that was clicked.
+Redirect browser to /question if the request was successful.
+
+2016-10-20:
+Added lookupQuestion function to questions module to find a single question
+object by its ID.
+When a question is clicked, server looks up the clicked question ID. If it is
+valid, stores the question object in the session's user object.
+Added a simple question view. Like the home view, it has a main area and a
+sidebar. The sidebar CSS from the homepage was extracted to a separate file so
+it could be shared between home and question views.
+In the main area of the question page, the question text, a text box for the
+answer and a submit button are displayed. The sidebar shows additional
+information such as the question topic, number of points and stats about how
+many times it has been attempted/answered. More information will be added to
+this in the future.
+Clicking submit doesn't do anything... yet.
+
+2016-10-21:
+Fixed the form on the question page and added submit event listener.
+Send a HTTP POST with the user's answer when the submit button is clicked.
+Added checkAnswer function to questions.js which takes a question object
+and the user's submitted answer, compares the answers, updates the question
+object accordingly and replaces the old question object in the database with
+the new one.
+The answering functionality is not complete; the student's database entry
+still needs to be updated and the front end needs to respond to the result
+of the question attempt.
+
+2016-10-24:
+Added user's level and success rate to the sidebar on the home view.
+
+2016-10-26:
+Created a navbar. It is displayed at the top of the page in the home and
+question views. Added links for Home, Current Question, Leaderboard and About
+pages. Placed a logout button on the right side of the navbar and implemented
+logout functionality.
+Questions now have separate text and title attributes. The title is displayed
+in the question list; the text appears on the question page itself.
+
+2016-10-27:
+Fixed questions to properly use input box instead of the original text box.
+Added sweetalert and used it to display a success or failure message when the
+user attempts to answer a question.
+Upon answering a question, the user object now gets updated in the database
+with the new number of attempts, successes, point count, etc.
+Attempts and correct answers are now displayed in the sidebar.
+Rewrote the findQuestions function in the question-selector module. It now uses
+bitmasks to determine how questions are selected and sorted. By default,
+questions that the user has already successfully answered are not chosen.
+After a user answers a question, it gets removed from the question list.
+
+2016-10-27:
+The sort options on the home page now sort the user's stored question list
+instead of fetching new questions from the database.
+
+2016-11-03:
+Started work on the administration page.
+Added an 'admin' flag to user objects in the database.
+Users with the admin flag set cannot view or answer questions like regular users
+but rather have access to the administration page where they can create and
+modify questions and student accounts.
+Added basic admin options to the administration page.
+Changed the navbar to display different options depending on whether the user is
+an admin or not.
+
+2016-11-04:
+Started working on the 'Manage Accounts' option on the administration page.
+When the button is clicked, a popup appears that displays a table of all
+(non-admin) users in the database and their basic information. Wrote a new
+function in the students module to grab these database entries.
+Added (currently non-functional) buttons to edit or delete each user in the
+table.
+Added a button below the table to create a new user entry. Copied over the
+old temporary user creation form to be displayed when this button is clicked.
+
+2016-11-08:
+Changed the admin page to have a sidebar of administration actions and a main
+display. Rearranged the user table to appear in the center content area of the
+admin page instead of as a popup.
+
+2016-11-10:
+Created an admin question table, similar to the user table. Created question
+table in Pug to display basic information. Added a new POST request to fetch all
+questions in the database and format them. Made the Manage Questions button in
+the admin sidebar functional. The questions table has an extra view action
+alongside edit and delete to allow the instructor to examine the question's
+full text and answers.
+
+2016-11-11:
+Made the user creation form display within the admin page body instead of being
+a popup.
+The server now stores the administrator's student list instead of fetching it
+from the database every time it is requested. The user creation process appends
+the created user to this stored list as well as inserting it into the database.
+Made the delete action on the account table operational. Added deleteAccount
+function to the students module to facilitate this.
+Started working on the account editing form, allowing an administrator to
+modify various information stored with each account.
+
+2016-11-17:
+Completed the account editing form. The submitted data is sent to the
+updateAccount function and the account's entry in the database is updated, if
+the given values are valid.
+Changed the default port from 65535 to 8000. Quizzard now also attempts to read
+the QUIZZARD_PORT environment variable. If it is set, it overrides the default
+port.
+Moved the old temporary question addition form into the Manage Questions section
+of the admin page and made it fully operational.
+Admin question list is now stored after the initial fetch from the database.
+
+2016-11-18:
+Added the ability to delete questions via the Manage Questions table on the
+admin page.
+
+2016-11-21:
+Added file upload form to account creation view, allowing admin to upload a CSV
+file containing account information. Used multer to store the file locally in
+the uploads directory.
+
+2016-11-23:
+Added the parseFile function to students, which reads a CSV file containing
+account entries and attempts to insert the accounts into the students database.
+Incomplete account objects or invalid IDs given in the file are ignored.
+
+2016-11-24:
+Fixed a few things about account CSV uploading. A flag was added to the main
+server module which forces a refetch of the student list if it is set. This flag
+is set when an account CSV file is uploaded so that all the newly added accounts
+are fetched from the database into the student list. File upload status is now
+displayed on the upload form after a file has been uploaded.
+Made the 'View Statisics' and 'Global Settings' options on the admin sidebar
+open their respective views.
+Added a basic statistics view, displaying information about students and
+questions, such as their status, number of successful/total attempts, success
+ratio, etc.
+Added a barebones 'About' page.
+
+2016-11-25:
+Made the user creation and question creation forms modal. When they are
+submitted, the account/question table in the background is automatically updated
+with the new information in a few seconds.
+
+2016-12-1:
+Added leaderboard page.
+Created a leaderboard view which displays all students in the application sorted
+by decreasing number of points and gives them a rank. If multiple students have
+the same amount of points, they get the same rank.
+
+2016-12-2:
+Added small version of leaderboard to sidebar of home view.
+Extract home sidebar to its own file.
+Modified leaderboard to display ranks 1, 2 and 3 in gold, silver and bronze,
+respectively.
+
+2016-12-7:
+Removed all references to level from the interface as it levels will not be part
+of the initial release.
+Created a leaderboard module which manages the list of students that are
+displayed on the leaderboard, assigning each an appropriate rank.
+
+2016-12-18:
+Fixed a critical bug where answering questions changed users' passwords.
+Fixed formatting of success rate on sidebar.
+Prevented admin accounts from being displayed on leaderboard.
+
+2016-12-19:
+Created a password changing form and added a 'Change Password' entry to the
+navbar which opens a popup with the password form.
+Added server-side support for password changing.
+Added Winston as a logging module and set it up to create a new log file for
+each date. Replaced print statements in the code with calls to the logging
+functions, writing data to both a file and stdout.
+Added comment headers to most functions in the project.
+Placed 'Unanswered' and 'Answered' buttons above the question table on the home
+view to choose which questions to display: those that the user has yet to
+answer (default) or those that they have already answered, for review purposes.
+
+2016-12-23:
+Fixed the 'Answered' button to properly display as active when returning from
+another page to the home page with answered questions loaded.
+Created a question editing form. Made edit buttons on admin's question table
+load the form and allow questions to be edited. Added updateQuestion function
+to questions module, which updates a question in the database.
+
+2016-12-28:
+Added question previewing in admin mode. Made the 'View' button in the question
+table operational. Added a server request which sends the HTML for a given
+question in preview mode.

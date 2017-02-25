@@ -1,0 +1,107 @@
+`students` module
+server/students.js
+
+
+Description:
+
+The students module provides an interface to the students collection in
+Quizzard's database.
+
+
+API:
+
+students.getUsers(admin, callback)
+
+Fetches array of student accounts from the database.
+
+Arguments:
+    admin - boolean. When true, fetches only administrators, otherwise
+            only non-administrators.
+    callback - function to call with resulting array.
+
+
+students.getUsersSorted(lim, callback)
+
+Fetches array of non-admin users from database and sorts by decreasing points.
+
+Arguments:
+    lim - maximum amount of students to fetch. 0 indicates all.
+    callback - function to call with resulting array.
+
+
+students.checkLogin(user, pass, callback)
+
+Verifies a login attempt for a user.
+If the password provided matches the user's password hash, `callback` is called
+with the user object for that user.
+Otherwise, `callback` is called with `null`.
+
+Arguments:
+    user - ID of user attempting to login.
+    pass - unhashed password provided by user.
+    callback - function to call with result.
+
+
+students.createAccount(account, callback)
+
+Creates a new account and inserts it into the student database.
+`callback` is called with 'failure' if the account could not be created,
+'exists' if a user with the given ID already exists, or 'success' if the
+account is successfully created.
+
+Arguments:
+    account - an incomple object containing information about the new account.
+              Must have the following fields: `id`, `password` (unhashed),
+             `fname`, `lname`, `email`.
+    callback - function to call with result.
+
+
+students.updateAccount(userid, user, newpass, callback)
+
+Replaces a student object in the database with a new provided one.
+`callback` is called with 'failure' if account could not be updated,
+'dupid' if a new user ID was provided which matches an ID already in the
+database, or 'success' to indicate a successful update.
+
+Arguments:
+    userid - existing ID of the student to replace.
+    user - the new (complete) object to insert (with unhashed password if changed).
+    newpass - boolean indicating whether the user's password was changed.
+    callback - function to call with result.
+
+
+students.deleteAccount(userid, callback)
+
+Deletes an account from the database.
+`callback` is called with either 'failure' or 'success'.
+
+Arguments:
+    userid - ID of the student to delete.
+    callback - function to call with result.
+
+
+students.sortAccounts(as, type, asc, callback)
+
+Sorts an array of students by specified criteria.
+`callback` is called with the resulting array.
+
+Arguments:
+    as - the list of student accounts to sort.
+    type - field to sort by. One of 'id', 'fname' or 'lname'.
+    asc - boolean indicating whether to sort in ascending (true) or
+          descending (false) order.
+    callback - function to call with result.
+
+
+students.parseFile(file, ufn, callback)
+
+Reads student account data from a CSV file and creates accounts in the database.
+Each line in the CSV should have the following format:
+accountid,password,fname,lname,email
+where `password` is unhashed.
+
+Arguments:
+    path - path to the file to be read.
+    ufn - function called after each successfully created user. Takes the new
+          student object as an argument.
+    callback - function to call after file has been fully parsed.

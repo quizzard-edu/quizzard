@@ -1,0 +1,12 @@
+if questions.length == 0
+  .no-questions
+    h4.text-center You have completed all currently available questions. Well done!
+    p.text-center Check back later for more...
+else
+  each q in questions
+    .row.question-block(id=q.id)
+      .col-sm-8.qleft
+        p.text-center.title #{q.title}
+      .col-sm-4.qright
+        p.topic #{q.topic}
+        p.points #{q.basePoints}

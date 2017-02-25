@@ -1,0 +1,25 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/leaderboard.css')
+  link(rel='stylesheet' href='/css/leaderboard-table.css')
+  link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/css/navbar.css')
+
+block title
+  title Quizzard - Leaderboard
+
+block content
+  include navbar
+
+  .container
+    .row
+      .col-md-12
+        h4.text-center Leaderboard
+        .leaderboard-content
+
+block scripts
+  script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/lib/bootstrap/js/bootstrap.min.js')
+  script(src='/js/leaderboard.js')
+  script(src='/js/navbar.js')

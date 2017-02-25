@@ -1,0 +1,31 @@
+.col-default:hover {
+  background-color: #d3d3d3;
+}
+
+.col-gold {
+  background-color: #ffd700;
+}
+
+.col-gold:hover {
+  background-color: #ceb004;
+}
+
+.col-silver {
+  background-color: #c0c0c0;
+}
+
+.col-silver:hover {
+  background-color: #aaaaaa;
+}
+
+.col-bronze {
+  background-color: #8c7853;
+}
+
+.col-bronze:hover {
+  background-color: #77623b;
+}
+
+.col-isuser {
+  font-weight: bold;
+}

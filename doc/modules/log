@@ -1,0 +1,19 @@
+`log` module
+server/log.js
+
+
+Description:
+
+The log module contains Quizzard's logger (winston).
+
+
+API:
+
+log.init(callback)
+
+Initializes Quizzard's logger to write to both stdout and a file in the
+directory log.
+
+log.logger
+
+The instance of Winston used by Quizzard.

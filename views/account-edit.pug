@@ -1,0 +1,41 @@
+.user-info.text-center
+  h4 #{user.id}
+  p #{user.fname} #{user.lname}
+  p #{user.email}
+  p #{user.points} Points
+  p Created on #{cdate}
+
+  p#account-edit-result
+
+form.form-edit#account-edit-form
+  .form-group.row
+    label.col-sm-2.col-form-label(for='userid') Username
+    .col-sm-10
+      input.form-control#userid(type='text' name='id' placeholder='New username' autofocus)
+
+  .form-group
+    .row
+      label.col-sm-2.col-form-label(for='fname') First Name
+      .col-sm-10
+        input.form-control#fname(type='text' name='fname' placeholder='New first name')
+    .row
+      label.col-sm-2.col-form-label(for='lname') Last Name
+      .col-sm-10
+        input.form-control#lname(type='text' name='lname' placeholder='New last name')
+
+  .form-group.row
+    label.col-sm-2.col-form-label(for='email') Email
+    .col-sm-10
+      input.form-control#email(type='email' name='email' placeholder='New email')
+
+  .form-group.row
+    label.col-sm-2.col-form-label(for='points') Points
+    .col-sm-10
+      input.form-control#email(type='number' name='points' placeholder='Set point count')
+
+  .form-group.row
+    label.col-sm-2.col-form-label(for='passwd') Password
+    .col-sm-10
+      input.form-control#passwd(type='text' name='password' placeholder='New password')
+
+  button.btn.btn-lg.btn-primary.btn-block(type='submit') Edit

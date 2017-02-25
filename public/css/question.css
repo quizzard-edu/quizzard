@@ -1,0 +1,33 @@
+body {
+  padding-top: 70px;
+}
+
+.form-question {
+  max-width: 600px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.qtext {
+  text-align: center;
+  padding-bottom: 15px;
+  margin-bottom: 10px;
+}
+
+#answer {
+  margin-bottom: 10px;
+}
+
+.success {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px 4px 4px 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  -webkit-border-radius: 4px 4px 4px 4px;
+}
+
+#success-header {
+  margin-bottom: 20px;
+}
