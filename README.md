@@ -64,7 +64,13 @@ please email: quizzard.edu@gmail.com
 Quizzard's development started at and has been supported by the University of
 Toronto Mississauga. Below is a list of the contributors so far.
 
-Alexei Frolov, Larry Yueli Zhang
+* Alexei Frolov: since September 2016
+* Larry Yueli Zhang: since September 2016
+* Ramy Esteero: since September 2017
+* Mohammed Khan: since September 2017
+* Darshan Mehta: since September 2017
+* Mohamed Mohamed: since September 2017
+* Ahmed Qarmout: since September 2017
 
 Supervisor: Larry Yueli Zhang
 
