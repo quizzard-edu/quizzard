@@ -341,7 +341,8 @@ var submitQuestionForm = function() {
                 $('#result').html('Question could not be added');
             } else if (data == 'success') {
                 $('#result').html('Question added to database');
-                setTimeout(displayQuestionTable, 2000);
+                setTimeout(displayQuestionTable, 1000);
+                 $('#admin-modal').modal('hide');
             }
         }
     });
