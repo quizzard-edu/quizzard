@@ -234,6 +234,3 @@ to questions module, which updates a question in the database.
 Added question previewing in admin mode. Made the 'View' button in the question
 table operational. Added a server request which sends the HTML for a given
 question in preview mode.
-
-2017-09-13:
-Darshan Pulled Repo Test
