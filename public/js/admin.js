@@ -249,7 +249,8 @@ var submitUserForm = function() {
                 $('#result').html('User ' + user.id + ' already exists');
             } else if (data == 'success') {
                 $('#result').html('User ' + user.id + ' added to database');
-                displayAccountsTable();
+                setTimeout(displayAccountsTable(), 1000);
+		$('#admin-modal').modal('hide');
             }
         }
     });
@@ -341,7 +342,8 @@ var submitQuestionForm = function() {
                 $('#result').html('Question could not be added');
             } else if (data == 'success') {
                 $('#result').html('Question added to database');
-                setTimeout(displayQuestionTable, 2000);
+                setTimeout(displayQuestionTable, 1000);
+                 $('#admin-modal').modal('hide');
             }
         }
     });
