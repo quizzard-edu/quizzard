@@ -543,7 +543,6 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
 app.post('/questionadd', function(req, res) {
     req.body.basePoints = parseInt(req.body.basePoints);
     req.body.type = questions.QUESTION_REGULAR;
-    req.body.hint = '';
     questions.addQuestion(req.body, function(result) {
         if (result == 'failure') {
             res.status(500);
