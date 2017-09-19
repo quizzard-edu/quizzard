@@ -38,7 +38,7 @@ var setupAdminAccount = function(accid, pass) {
                 console.log('Could not create account. Please try again.');
                 process.exit(1);
             } else if (res == 'exists') {
-                console.log('Account with username `%s\' exists.', user);
+                console.log('Account with username `%s\' exists.', accid);
                 process.exit(1);
             } else {
                 console.log('Administrator account `%s\' created.', account.id);

@@ -125,6 +125,20 @@ var createAccount = function(account, callback) {
 exports.createAccount = createAccount;
 
 /*
+ * Fetch the user object with ID userid in the student database.
+ */
+exports.getUserById = function(userId, callback) {
+    students.findOne({id : userId}, function(err, obj) {
+        if (err) {
+            logger.error(err);
+            callback('failure');
+        } else {
+            callback(obj);
+        }
+    });
+}
+
+/*
  * Update the account with ID userid in the student database.
  * The user argument holds the complete new object to insert.
  * Fail if the ID has changed and the new ID already belongs
