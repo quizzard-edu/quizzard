@@ -133,10 +133,10 @@ exports.checkAnswer = function(question, answer, user, callback) {
                 user.id, question.id, answer);
 
     re = new RegExp(question.answer, 'i');
-    if (answer.match(re)) {
+    if (answer===question.answer) {
         if (question.correctAnswers == 0)
             question.firstAnswer = user.id;
-        if (!question.studentsAnswered.includes(user.id)) {
+        if (!question.studentsAnswered.indexOf(user.id) != -1) {
             question.correctAnswers++;
             question.studentsAnswered.push(user.id);
             /* update the user */
