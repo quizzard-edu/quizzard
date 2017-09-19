@@ -2,6 +2,7 @@
   h4.text-center ID #{question.id}
   h4.text-center #{question.title}
   p.text-center #{question.basePoints} Points
+  p.text-center Current Hint: #{question.hint}
   p.text-center Current Answer: #{question.answer}
 
   p#question-edit-result
@@ -34,6 +35,11 @@ form.form-edit#question-edit-form
     .col-sm-10
       input.form-control#qpoints(type='number' name='basePoints'
                                  placeholder='New point count'  min="1")
+  .form-group.row
+    label.col-sm-2.col-form-label(for='qhint') Hint
+    .col-sm-10
+      input.form-control#qhint(type='text' name='hint'
+                                  placeholder='New hint')
 
   .form-group.row
     label.col-sm-2.col-form-label(for='successmsg') Message
@@ -41,6 +47,7 @@ form.form-edit#question-edit-form
       input.form-control#successmsg(type='text' name='successMessage'
                                     placeholder='New message'
                                     aria-describedby='success-msg-help')
+
     .row
       .col-sm-2
       p.col-sm-10.form-text.text-muted#success-msg-help
