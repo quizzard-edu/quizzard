@@ -91,7 +91,7 @@ var sortRequest = function(type) {
  */
 var fetchLeaderboard = function() {
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: '/leaderboard-table',
         data: {
             fullTable: false,

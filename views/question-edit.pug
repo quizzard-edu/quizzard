@@ -1,7 +1,7 @@
 .question-info.text-center
   h4.text-center ID #{question.id}
   h4.text-center #{question.title}
-  p.text-center #{question.basePoints} Points
+  p.text-center #{question.points} Points
   p.text-center Current Answer: #{question.answer}
 
   p#question-edit-result
@@ -32,7 +32,7 @@ form.form-edit#question-edit-form
   .form-group.row
     label.col-sm-2.col-form-label(for='qpoints') Points
     .col-sm-10
-      input.form-control#qpoints(type='number' name='basePoints'
+      input.form-control#qpoints(type='number' name='points'
                                  placeholder='New point count'  min="1")
 
   .form-group.row

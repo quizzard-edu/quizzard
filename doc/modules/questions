@@ -23,7 +23,7 @@ status.
 
 Arguments:
     question - the question object to insert. It must have the fields
-               `text`, `topic`, `type`, `answer`, `basePoints` and `hint` set.
+               `text`, `topic`, `type`, `answer`, `points` and `hint` set.
     callback - function to call with result.
 
 

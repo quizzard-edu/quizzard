@@ -18,68 +18,66 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var db = require('./db.js').database;
-var students = require('./students.js');
+var db = require('./db.js');
 var logger = require('./log.js').logger;
 
-var questions = db.collection('questions');
-exports.questions = questions;
+var QUESTION_REGULAR    = 0;
+var QUESTION_MULTCHOICE = 1;
 
-exports.QUESTION_REGULAR    = 0;
-exports.QUESTION_MULTCHOICE = 1;
-
-var nextid;
-
-/* Initialize the next question ID. */
-exports.questionInit = function(callback) {
-    questions.count(function(err, num) {
-        if (err) {
-            logger.error(err);
-            process.exit(1);
-        }
-
-        if (num == 0) {
-            nextid = 0;
-            callback(nextid);
-        } else {
-            /* get the maximum question id in the database */
-            questions.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
-                if (err) {
-                    logger.error(err);
-                    process.exit(1);
-                }
-                nextid = docs[0].id + 1;
-                callback(nextid);
-            });
-        }
-    });
+/*
+ * Insert a new regular question into the database.
+ * The question object passed to the function should have
+ * the text, topic, type, answer, points and hint set.
+ */
+exports.addRegularQuestion = function(question, callback) {
+		var currentDate = new Date().toString();
+		var questionToAdd = {};
+		questionToAdd.topic = question.topic;
+		questionToAdd.title = question.title;
+		questionToAdd.text = question.text;
+		questionToAdd.answer = question.answer;
+		questionToAdd.hint = question.hint;
+		questionToAdd.points = question.points;
+		questionToAdd.type = QUESTION_REGULAR;
+		questionToAdd.attempted = [];
+		questionToAdd.answered = [];
+		questionToAdd.attempts = [];
+		questionToAdd.ctime = currentDate;
+		db.addRegularQuestion(questionToAdd, function(res) {
+        callback(res);
+		});
 }
 
 /*
- * Insert a new question into the database.
- * The question object passed to the function should have
- * the text, topic, type, answer, basePoints and hint set.
+ * Fetch amount questions from the database, using findType to
+ * determine how to select and sort them.
+ *
+ * findType is laid out as follows:
+ *
+ * SORTING
+ * The first bit that matches is the sort criterion. If none match, don't sort.
+ * 0th bit: default sort
+ * 1st bit: randomly shuffle
+ * 2nd bit: sort by topic
+ * 3rd bit: sort by points
+ *
+ * QUERYING
+ * 4th bit: if 1, allow questions that have already been answered by user.
+ * 5th bit: if 1, only show those questions that have been answered (with bit 4).
  */
-exports.addQuestion = function(question, callback) {
-    question.id = nextid++;
-    question.attempts = 0;
-    question.correctAnswers = 0;
-    question.firstAnswer = '';
-    question.studentsAnswered = [];
-    questions.insert(question, function(err, res) {
-        if (err) {
-            callback('failure');
-        } else {
-            console.log(res);
-            logger.info('Question %d added to database.', question.id);
-            callback('success');
-        }
-    });
+exports.findQuestions = function(amount, findType, user, callback) {
+		db.findQuestions(amount, findType, user, callback);
 }
 
+/* Sort questions by the given sort type. */
+exports.sortQuestions = function(qs, type, callback) {
+    db.sortQuestions(qs, type, callback);
+}
+
+
 /* Replace a question in the database with the provided question object. */
-exports.updateQuestion = function(question, callback) {
-    questions.update({id: question.id}, question, function(err, res) {
+exports.updateRegularQuestion = function(question, callback) {
+    questions.update({id: question.id}, question, function(res) {
         if (err) {
             logger.error(err);
             callback('failure');
@@ -104,19 +102,7 @@ exports.deleteQuestion = function(qid, callback) {
 
 /* Extract a question object from the database using its ID. */
 exports.lookupQuestion = function(qid, callback) {
-    if (qid < 0 || qid > nextid - 1) {
-        callback('invalid');
-        return;
-    }
-    questions.findOne({id: qid}, function(err, q) {
-        if (err || !q) {
-            callback('failure');
-        } else {
-            /* necessary for later database update */
-            delete q._id;
-            callback(q);
-        }
-    });
+    db.lookupQuestion(qid, callback);
 }
 
 /*
@@ -124,43 +110,24 @@ exports.lookupQuestion = function(qid, callback) {
  * Update the question object in the database and call the callback function
  * with the result of the comparison and the new question object.
  */
-exports.checkAnswer = function(question, answer, user, callback) {
-    var result, re;
-
-    question.attempts++;
-    user.attempted++;
+exports.checkAnswer = function(questionId, userId, answer, callback) {
     logger.info('User %s attempted to answer question %d with "%s"',
-                user.id, question.id, answer);
+                userId, questionId, answer);
 
-    re = new RegExp(question.answer, 'i');
-    if (answer===question.answer) {
-        if (question.correctAnswers == 0)
-            question.firstAnswer = user.id;
-        if (!question.studentsAnswered.indexOf(user.id) != -1) {
-            question.correctAnswers++;
-            question.studentsAnswered.push(user.id);
-            /* update the user */
-            user.answered++;
-            user.answeredIds.push(question.id);
-            user.points += question.basePoints;
-        }
-        result = 'correct';
-    } else {
-        result = 'incorrect';
-    }
-
-    students.updateAccount(user.id, user, false, function(res) {
-        if (res == 'failure') {
-            callback('failed-update');
-            return;
-        }
-        questions.update({id: question.id}, question, function(err, res) {
-            if (err) {
-                logger.error(err);
-                callback('failed-update');
-            } else {
-                callback(result);
-            }
-        });
-    });
+		db.lookupQuestion(questionId, function(question){
+				var value = answer===question.answer;
+				db.updateStudentById(
+						userId,
+						{ questionId:questionId, correct:value, points:question.points },
+						function(res){
+								db.updateQuestionById(
+										questionId,
+										{ userId:userId, correct:value, answer:answer },
+										function(res) {
+												callback(res);
+										}
+								);
+						}
+				);
+		});
 }

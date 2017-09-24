@@ -23,12 +23,11 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var db = require('./server/db.js');
-var students = require('./server/students.js');
+var users = require('./server/users.js');
 var questions = require('./server/questions.js');
 var lb = require('./server/leaderboard.js');
 var log = require('./server/log.js');
 var logger = log.logger;
-var selector = require('./server/question-selector.js');
 var pug = require('pug');
 
 var app = express();
@@ -38,7 +37,7 @@ var upload = multer({ dest: 'uploads/' });
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
-    console.log(req.url);
+    logger.info("Request path: %s",req.url);
     next();
 });
 
@@ -61,43 +60,55 @@ app.get('/', function(req, res) {
 });
 
 /* check username and password and send appropriate response */
-app.post('/login', function(req, res) {
-    logger.info('Attempted login by user %s', req.body.user);
-    students.checkLogin(req.body.user, req.body.passwd, function(obj) {
-        if (obj) {
-            req.session.user = obj;
-            logger.info('User %s logged in.', req.body.user);
+app.get('/login', function(req, res) {
+    var username = req.query.user.toLowerCase();
+    var password = req.query.passwd;
+    logger.info('Attempted login by user %s', username);
+    users.checkLogin(username, password, function(user) {
+        if (user) {
+            logger.info('User %s logged in.', username);
+            req.session.user = user;
             res.status(200).send('success');
         } else {
-            res.status(200).send('invalid');
+            res.status(403).send('invalid');
         }
     });
 });
 
 /* Process a password changing request. */
 app.post('/changepass', function(req, res) {
-    if (!req.session.user) {
-        res.status(500).send();
-        return;
-    }
+    if (!req.session.user)
+        return res.status(500).send();
 
-    if (req.body.newpass != req.body.newpass2) {
-        res.status(200).send('mismatch');
-        return;
-    }
+    if (req.body.newpass != req.body.newpass2)
+        return res.status(500).send('mismatch');
 
-    students.checkLogin(req.session.user.id, req.body.currpass, function(u) {
-        if (u) {
-            u.password = req.body.newpass;
-            students.updateAccount(u.id, u, true, function(result) {
-                if (result == 'success') {
-                    logger.info('User %s changed their password.', u.id);
-                    req.session.user = u;
-                }
-                res.status(200).send(result);
-            });
+    var userId = req.session.user.id;
+    var currentPass = req.body.currpass;
+    var newPass = req.body.newpass;
+
+    users.checkLogin(userId, currentPass, function(user) {
+        if (user) {
+            if(user.type === 'admin'){
+                users.updateAdminById(user.id, {newPassword:newPass}, function(result){
+                    if (result == 'success') {
+                        logger.info('User %s changed their password.', user.id);
+                    }
+                    var code = (result === 'success') ? 200 : 500;
+                    res.status(code).send(result);
+                });
+            }
+            if(user.type === 'student'){
+                users.updateStudentById(user.id, {newPassword:newPass}, function(result){
+                    if (result == 'success') {
+                        logger.info('User %s changed their password.', user.id);
+                    }
+                    var code = (result === 'success') ? 200 : 500;
+                    res.status(code).send(result);
+                });
+            }
         } else {
-            res.status(200).send('invalid');
+            res.status(500).send('invalid');
         }
     });
 });
@@ -118,12 +129,12 @@ app.get('/home', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (req.session.user == null) {
         res.redirect('/')
-    } else if (req.session.user.admin) {
+    } else if (req.session.user.type==='admin') {
         res.redirect('/admin')
     } else {
         if (req.session.questions == null) {
             /* fetch some questions from the database if the user doesn't have any */
-            selector.findQuestions(10, selector.findTypes.SORT_RANDOM,
+            questions.findQuestions(10, db.sortTypes.SORT_RANDOM,
                                    req.session.user, function(results) {
                 req.session.questions = results;
                 req.session.answeredQuestions = false;
@@ -163,14 +174,14 @@ app.get('/leaderboard', function(req, res) {
     if (req.session.user == null)
         res.redirect('/')
     else
-        res.render('leaderboard', { user: req.session.user, });
+        res.render('leaderboard', { user: req.session.user });
 });
 
 /* Display the admin page. */
 app.get('/admin', function(req,res) {
     if (req.session.user == null)
         res.redirect('/');
-    else if (!req.session.user.admin)
+    else if (!req.session.user.type==='admin')
         res.redirect('/home')
     else
         res.render('admin', { user: req.session.user });
@@ -196,15 +207,15 @@ const statistics = pug.compileFile('views/statistics.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
-app.post('/leaderboard-table', function(req, res) {
+app.get('/leaderboard-table', function(req, res) {
     var ft, shrt;
 
     ft = true;
     shrt = false;
 
-    if (req.body.fullTable == 'false')
+    if (req.query.fullTable == 'false')
         ft = false;
-    if (req.body.longTable == 'false')
+    if (req.query.longTable == 'false')
         shrt = true;
 
     lb.leaderboard(req.session.user.id, shrt, function(leader) {
@@ -223,22 +234,15 @@ var refetch = false;
 
 /* Send the student table HTML. */
 app.get('/studentlist', function(req, res) {
-    if (req.session.adminStudentList == null || refetch) {
-        /* only fetch student list once, then store it */
-        students.getUsers(false, function(studentlist) {
-            refetch = false;
-            req.session.adminStudentList = studentlist;
-            var html = studentTable({
-                students: studentlist
-            });
-            res.status(200).send(html);
-        });
-    } else {
+    /* only fetch student list once, then store it */
+    users.getStudentsList(function(studentlist) {
+        refetch = false;
+        req.session.adminStudentList = studentlist;
         var html = studentTable({
-            students: req.session.adminStudentList
+            students: studentlist
         });
         res.status(200).send(html);
-    }
+    });
 });
 
 /* Sort the list of student accounts by the specified criterion. */
@@ -297,21 +301,18 @@ app.post('/accountedit', function(req, res) {
 /* Send the question table HTML. */
 app.get('/questionlist', function(req, res) {
     /* If this is the first time accessing it, fetch list from database. */
-    if (req.session.adminQuestionList == null) {
-        selector.findQuestions(0, selector.findTypes.SORT_DEFAULT,
-                                    null, function(questionlist) {
+    questions.findQuestions(
+        0,
+        db.sortTypes.SORT_DEFAULT,
+        null,
+        function(questionlist) {
             req.session.adminQuestionList = questionlist;
             var html = questionTable({
                 questions: questionlist
             });
             res.status(200).send(html);
-        });
-    } else {
-        var html = questionTable({
-            questions: req.session.adminQuestionList
-        });
-        res.status(200).send(html);
-    }
+        }
+    );
 });
 
 /* Send the question editing form HTML. */
@@ -334,15 +335,18 @@ app.post('/questionedit', function(req, res) {
 /* Send the application statistics HTML. */
 app.get('/statistics', function(req, res) {
     if (req.session.adminQuestionList == null) {
-        selector.findQuestions(0, selector.findTypes.SORT_DEFAULT,
-                                    null, function(questionlist) {
-            req.session.adminQuestionList = questionlist;
-            var html = statistics({
-                students: req.session.adminStudentList,
-                questions: req.session.adminQuestionList
+        questions.findQuestions(
+            0,
+            db.sortTypes.SORT_DEFAULT,
+            null,
+            function(questionlist) {
+                req.session.adminQuestionList = questionlist;
+                var html = statistics({
+                    students: req.session.adminStudentList,
+                    questions: req.session.adminQuestionList
+                });
+                res.status(200).send(html);
             });
-            res.status(200).send(html);
-        });
     } else {
         var html = statistics({
             students: req.session.adminStudentList,
@@ -353,22 +357,22 @@ app.get('/statistics', function(req, res) {
 });
 
 app.get('/sortlist', function(req, res) {
-    res.status(200).send(selector.findTypes);
+    res.status(200).send(db.sortTypes);
 });
 
 const questionList = pug.compileFile('views/questionlist.pug');
 
 /* Respond with an HTML-formatted list of questions to display. */
 app.post('/fetchqlist', function(req, res) {
-    var type = selector.findTypes.SORT_RANDOM;
+    var type = db.sortTypes.SORT_RANDOM;
     var ans = false;
 
     if (req.body.type == 'answered') {
-        type |= selector.findTypes.QUERY_ANSWERED | selector.findTypes.QUERY_ANSONLY;
+        type |= db.sortTypes.QUERY_ANSWERED | db.sortTypes.QUERY_ANSONLY;
         ans = true;
     }
 
-    selector.findQuestions(10, type, req.session.user, function(results) {
+    questions.findQuestions(10, type, req.session.user, function(results) {
         req.session.questions = results;
         req.session.answeredQuestions = ans;
         var html = questionList({
@@ -382,18 +386,19 @@ app.post('/fetchqlist', function(req, res) {
 app.post('/sortlist', function(req, res) {
     var type;
 
-    for (type in selector.findTypes) {
-        if (req.body.sort == selector.findTypes[type])
+    for (type in db.sortTypes) {
+        if (req.body.sort == db.sortTypes[type])
             break;
     }
 
-    selector.sortQuestions(req.session.questions, selector.findTypes[type],
-                           function(results) {
-        var html = questionList({
-            questions: results
-        });
-        res.status(200).send(html);
-    });
+    questions.sortQuestions(req.session.questions, db.sortTypes[type],
+        function(results) {
+          var html = questionList({
+              questions: results
+          });
+          res.status(200).send(html);
+        }
+    );
 });
 
 /* User requests a question; look it up by ID and store it in session. */
@@ -403,7 +408,7 @@ app.post('/questionreq', function(req, res) {
             res.status(500).send();
         } else {
             req.session.question = result;
-            if (req.session.user.answeredIds.indexOf(result.id) == -1)
+            if (req.session.user.answeredCorrectly.indexOf(result.id) == -1)
                 req.session.questionAnswered = false;
             else
                 req.session.questionAnswered = true;
@@ -414,15 +419,15 @@ app.post('/questionreq', function(req, res) {
 
 /* check if the submitted answer is correct */
 app.post('/submitanswer', function(req, res) {
-    questions.checkAnswer(req.session.question, req.body.answer,
-                          req.session.user, function(result) {
+    questions.checkAnswer(req.session.question.id, req.body.answer,
+                          req.session.user.id, function(result) {
         var data = {};
 
         data.result = result;
         if (result == 'failed-update') {
             res.status(500).send(data);
         } else if (result == 'correct') {
-            data.points = req.session.question.basePoints;
+            data.points = req.session.question.points;
             /* remove question from questions list, TODO: fetch new one */
             for (var ind in req.session.questions) {
                 if (req.session.questions[ind].id == req.session.question.id)
@@ -541,7 +546,7 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
  * The request body contains the question to be added.
  */
 app.post('/questionadd', function(req, res) {
-    req.body.basePoints = parseInt(req.body.basePoints);
+    req.body.points = parseInt(req.body.points);
     req.body.type = questions.QUESTION_REGULAR;
     req.body.hint = '';
     questions.addQuestion(req.body, function(result) {
@@ -571,8 +576,8 @@ app.post('/questionmod', function(req, res) {
     }
     var question = req.session.adminQuestionList[ind];
 
-    if (q.basePoints)
-        q.basePoints = parseInt(q.basePoints);
+    if (q.points)
+        q.points = parseInt(q.points);
 
     /* Add all modified fields. */
     for (field in q) {
@@ -635,11 +640,8 @@ app.get('/questionpreview', function(req, res) {
 
 db.initialize(function() {
     log.init(function() {
-        questions.questionInit(function(id) {
-            logger.info('Next question ID initialized to %d.', id);
-            app.listen(port, function() {
-                logger.info('Server listening on http://localhost:%s.', port);
-            });
+        app.listen(port, function() {
+            logger.info('Server listening on http://localhost:%s.', port);
         });
     });
 });

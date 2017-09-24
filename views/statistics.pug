@@ -11,12 +11,12 @@ table.table
     each s in students
       tr
         td #{s.id}
-        td #{s.attempted}
-        td #{s.answered}
-        if s.attempted == 0
-          td N/A
+        td #{s.attemptedCount}
+        td #{s.answeredCount}
+        if s.attemptedCount == 0
+          td 0%
         else
-          td #{((s.answered / s.attempted) * 100).toFixed(2)}%
+          td #{((s.answeredCount / s.attemptedCount) * 100).toFixed(2)}%
         td #{s.points}
 
 h4 Questions
@@ -25,7 +25,7 @@ table.table
     tr
       th ID
       th Title
-      th Base Points
+      th Points
       th Total Attempts
       th Correct Answers
       th Success Rate
@@ -35,16 +35,13 @@ table.table
       tr
         td #{q.id}
         td #{q.title}
-        td #{q.basePoints}
-        td #{q.attempts}
-        td #{q.correctAnswers}
-        if q.attempts == 0
-          td N/A
+        td #{q.points}
+        td #{q.attemptsCount}
+        td #{q.answeredCount}
+        if q.attemptsCount == 0
+          td 0%
         else
-          td #{((q.correctAnswers / q.attempts) * 100).toFixed(2)}%
-        if q.correctAnswers == 0
-          td No one
-        else
-          td #{q.firstAnswer}
+          td #{((q.answeredCount / q.attemptsCount) * 100).toFixed(2)}%
+        td #{q.firstAnswer}
 
 h4 Graphs
