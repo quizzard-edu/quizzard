@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var Db = require('mongodb').Db;
 var Server = require('mongodb').Server;
 var logger = require('./log.js').logger;
+var common = require('./common.js');
 var bcrypt = require('bcryptjs');
 
 var DB_HOST = process.env.DB_HOST || 'localhost';
@@ -28,19 +29,6 @@ var DB_PORT = process.env.DB_PORT || 27017;
 var DB_NAME = process.env.DB_NAME || 'quizzard';
 
 var db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
-
-/* the field to sort by */
-var sortTypes = Object.freeze({
-    SORT_NOSORT:     0x0,
-    SORT_DEFAULT:    0x1,
-    SORT_RANDOM:     0x2,
-    SORT_TOPIC:      0x4,
-    SORT_POINTS:     0x8,
-    QUERY_ANSWERED:  0x10,
-    QUERY_ANSONLY:   0x20,
-});
-
-exports.sortTypes = sortTypes;
 
 var nextId = 0;
 var usersCollection;
@@ -82,8 +70,8 @@ var addUser = function(user, callback) {
 }
 
 /* Return an array of users in the database. */
-exports.getAdminsList = function(callback) { getUsersList('admin', callback); }
-exports.getStudentsList = function(callback) { getUsersList('student', callback); }
+exports.getAdminsList = function(callback) { getUsersList(common.userTypes.ADMIN, callback); }
+exports.getStudentsList = function(callback) { getUsersList(common.userTypes.STUDENT, callback); }
 
 /* Return an array of users in the database, sorted by rank. */
 var getUsersList = function(type, callback){
@@ -99,7 +87,7 @@ var getUsersList = function(type, callback){
 }
 
 exports.getStudentsListSorted = function(lim, callback){
-    usersCollection.find({type: 'student'})
+    usersCollection.find({type: common.userTypes.STUDENT})
             .sort({points: -1})
             .limit(lim)
             .toArray(function(err, docs) {
@@ -109,6 +97,17 @@ exports.getStudentsListSorted = function(lim, callback){
             for (s in docs)
                 delete docs[s]._id;
             callback(docs);
+        }
+    });
+}
+
+exports.lookUpUserById = function(userId, callback){
+    usersCollection.findOne({id: userId}, function(err, u) {
+        if (err || !u) {
+            callback('failure');
+        } else {
+            delete u._id;
+            callback(u);
         }
     });
 }
@@ -154,6 +153,7 @@ exports.removeAllUsers = function(callback){
             logger.error(err);
             return callback('failure');
         }
+        logger.info('All users have been removed');
         return callback(res);
     });
 }
@@ -176,6 +176,7 @@ var getUserById = function(userId, callback){
 }
 
 // Update a student record using its Id
+exports.updateUserById = function(userId, info, callback){ updateUserById(userId, info, callback); }
 exports.updateStudentById = function(userId, info, callback){ updateUserById(userId, info, callback); }
 exports.updateAdminById = function(userId, info, callback){ updateUserById(userId, info, callback); }
 
@@ -183,23 +184,21 @@ var updateUserById = function(userId, info, callback){
     var query = { id:userId };
     var update = {};
 
-    if(typeof info.correct !== 'undefined'){
-        update.$addToSet = {};
-        update.$inc = {};
-    }
+    update.$addToSet = {};
+    update.$inc = {};
+    update.$set = {};
 
     if(info.id)
-        update.id = info.id;
+        update.$set.id = info.id;
 
     if(info.firstName)
-        update.firstName = info.firstName;
+        update.$set.firstName = info.firstName;
 
     if(info.lastName)
-        update.lastName = info.lastName;
+        update.$set.lastName = info.lastName;
 
     if(info.email)
-        update.email = info.email;
-
+        update.$set.email = info.email;
 
     if(typeof info.correct !== 'undefined'){
         if(info.correct){
@@ -212,6 +211,14 @@ var updateUserById = function(userId, info, callback){
         }
     }
 
+    if(isEmptyObject(update.$addToSet))
+        delete update.$addToSet;
+
+    if(isEmptyObject(update.$inc))
+        delete update.$inc;
+
+    if(isEmptyObject(update.$set))
+        delete update.$set;
 
     if(typeof info.newPassword === 'undefined'){
         usersCollection.update(query, update, function(err, res) {
@@ -228,7 +235,10 @@ var updateUserById = function(userId, info, callback){
     						logger.error(err);
     		        return callback('failure');
     		    }
-            update.$set = {password:hash};
+            if(update.$set && !isEmptyObject(update.$set))
+                update.$set.password = hash;
+            else
+                update.$set = {password:hash};
             usersCollection.update(query, update, function(err, res) {
                 if (err) {
                     logger.error(err);
@@ -274,6 +284,7 @@ exports.removeAllQuestions = function(callback){
             return callback('failure');
         }
         nextId = 0;
+        logger.info('All questions have been removed');
         logger.info('next question: %d', nextId);
         return callback(res);
     });
@@ -294,18 +305,18 @@ var getNextQuestionId = function(callback){
 exports.findQuestions = function(amount, findType, user, callback){
     var criteria, query;
 
-    if (findType & sortTypes.SORT_DEFAULT) {
+    if (findType & common.sortTypes.SORT_DEFAULT) {
         criteria = {id: 1};
-    } else if (findType & sortTypes.SORT_TOPIC) {
+    } else if (findType & common.sortTypes.SORT_TOPIC) {
         critera = {topic : 1};
-    } else if (findType & sortTypes.SORT_POINTS) {
+    } else if (findType & common.sortTypes.SORT_POINTS) {
         critera = {points : -1};
     } else {
         criteria = {};
     }
 
-    if (findType & sortTypes.QUERY_ANSWERED) {
-        if (findType & sortTypes.QUERY_ANSONLY) {
+    if (findType & common.sortTypes.QUERY_ANSWERED) {
+        if (findType & common.sortTypes.QUERY_ANSONLY) {
             query = {
                 id: { $in: user.answered }
             };
@@ -321,7 +332,7 @@ exports.findQuestions = function(amount, findType, user, callback){
         if (err) {
             callback('failure');
         } else {
-            if (findType & sortTypes.SORT_RANDOM)
+            if (findType & common.sortTypes.SORT_RANDOM)
                 shuffle(docs);
             for (q in docs){
                 docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
@@ -353,15 +364,15 @@ var shuffle = function(arr) {
 exports.sortQuestions = function(qs, type, callback) {
     var cmpfn;
 
-    if (type & sortTypes.SORT_RANDOM) {
+    if (type & common.sortTypes.SORT_RANDOM) {
         shuffle(qs);
         callback(qs);
         return;
-    } else if (type & sortTypes.SORT_TOPIC) {
+    } else if (type & common.sortTypes.SORT_TOPIC) {
         cmpfn = function(a, b) {
             return a.topic < b.topic ? -1 : 1;
         };
-    } else if (type & sortTypes.SORT_POINTS) {
+    } else if (type & common.sortTypes.SORT_POINTS) {
         cmpfn = function(a, b) {
             return b.points - a.points;
         };
@@ -380,6 +391,9 @@ exports.lookupQuestion = function(qid, callback) {
             callback('failure');
         } else {
             /* necessary for later database update */
+            q.firstAnswer = q.answered[0] ? q.answered[0] : 'No One';
+            q.attemptsCount = q.attempted.length;
+            q.answeredCount = q.answered.length;
             delete q._id;
             callback(q);
         }
@@ -387,16 +401,49 @@ exports.lookupQuestion = function(qid, callback) {
 }
 
 // update a question record based on its id
-exports.updateQuestionById = function(questionId, info, callback){
+exports.updateRegularQuestionById = function(questionId, info, callback){
     var query = { id:questionId };
     var update = {};
 
-    if(info.correct){
-        update.$addToSet = { answered: info.userId };
-    }else{
-        update.$addToSet = { attempted: info.userId };
-        update.$push = { attempts: info.answer };
+    update.$addToSet = {};
+    update.$push = {};
+    update.$set = {};
+
+    if(info.topic)
+      update.$set.topic = info.topic;
+
+    if(info.title)
+      update.$set.title = info.title;
+
+    if(info.text)
+      update.$set.text = info.text;
+
+    if(info.answer)
+      update.$set.answer = info.answer;
+
+    if(info.hint)
+      update.$set.hint = info.hint;
+
+    if(info.points)
+      update.$set.points = info.points;
+
+    if(typeof info.correct !== 'undefined'){
+        if(info.correct){
+            update.$addToSet.answered = info.userId;
+        }else{
+            update.$addToSet.attempted = info.userId;
+            update.$push.attempts = info.answer;
+        }
     }
+
+    if(isEmptyObject(update.$addToSet))
+        delete update.$addToSet;
+
+    if(isEmptyObject(update.$push))
+        delete update.$push;
+
+    if(isEmptyObject(update.$set))
+        delete update.$set;
 
     questionsCollection.update(query, update, function(err, res) {
         if (err) {

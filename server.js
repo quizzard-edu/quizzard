@@ -29,6 +29,7 @@ var lb = require('./server/leaderboard.js');
 var log = require('./server/log.js');
 var logger = log.logger;
 var pug = require('pug');
+var common = require('./server/common.js');
 
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
@@ -89,24 +90,13 @@ app.post('/changepass', function(req, res) {
 
     users.checkLogin(userId, currentPass, function(user) {
         if (user) {
-            if(user.type === 'admin'){
-                users.updateAdminById(user.id, {newPassword:newPass}, function(result){
-                    if (result == 'success') {
-                        logger.info('User %s changed their password.', user.id);
-                    }
-                    var code = (result === 'success') ? 200 : 500;
-                    res.status(code).send(result);
-                });
-            }
-            if(user.type === 'student'){
-                users.updateStudentById(user.id, {newPassword:newPass}, function(result){
-                    if (result == 'success') {
-                        logger.info('User %s changed their password.', user.id);
-                    }
-                    var code = (result === 'success') ? 200 : 500;
-                    res.status(code).send(result);
-                });
-            }
+            users.updateUserByIdWithRedirection(user.id, {newPassword:newPass}, function(result){
+                if (result == 'success') {
+                    logger.info('User %s changed their password.', user.id);
+                }
+                var code = (result === 'success') ? 200 : 500;
+                res.status(code).send(result);
+            });
         } else {
             res.status(500).send('invalid');
         }
@@ -129,12 +119,12 @@ app.get('/home', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (req.session.user == null) {
         res.redirect('/')
-    } else if (req.session.user.type==='admin') {
+    } else if (req.session.user.type==common.userTypes.ADMIN) {
         res.redirect('/admin')
     } else {
         if (req.session.questions == null) {
             /* fetch some questions from the database if the user doesn't have any */
-            questions.findQuestions(10, db.sortTypes.SORT_RANDOM,
+            questions.findQuestions(10, common.sortTypes.SORT_RANDOM,
                                    req.session.user, function(results) {
                 req.session.questions = results;
                 req.session.answeredQuestions = false;
@@ -181,7 +171,7 @@ app.get('/leaderboard', function(req, res) {
 app.get('/admin', function(req,res) {
     if (req.session.user == null)
         res.redirect('/');
-    else if (!req.session.user.type==='admin')
+    else if (!req.session.user.type==common.userTypes.ADMIN)
         res.redirect('/home')
     else
         res.render('admin', { user: req.session.user });
@@ -253,13 +243,17 @@ app.post('/sortaccountlist', function(req, res) {
         });
         res.status(200).send(html);
     } else {
-        students.sortAccounts(req.session.adminStudentList, req.body.type,
-                                req.body.asc == 'true', function(result) {
-            var html = studentTable({
-                students: result
-            });
-            res.status(200).send(html);
-        });
+        students.sortAccounts(
+            req.session.adminStudentList,
+            req.body.type,
+            req.body.asc == 'true',
+            function(result) {
+                var html = studentTable({
+                    students: result
+                });
+                res.status(200).send(html);
+            }
+        );
     }
 });
 
@@ -303,7 +297,7 @@ app.get('/questionlist', function(req, res) {
     /* If this is the first time accessing it, fetch list from database. */
     questions.findQuestions(
         0,
-        db.sortTypes.SORT_DEFAULT,
+        common.sortTypes.SORT_DEFAULT,
         null,
         function(questionlist) {
             req.session.adminQuestionList = questionlist;
@@ -337,7 +331,7 @@ app.get('/statistics', function(req, res) {
     if (req.session.adminQuestionList == null) {
         questions.findQuestions(
             0,
-            db.sortTypes.SORT_DEFAULT,
+            common.sortTypes.SORT_DEFAULT,
             null,
             function(questionlist) {
                 req.session.adminQuestionList = questionlist;
@@ -357,18 +351,18 @@ app.get('/statistics', function(req, res) {
 });
 
 app.get('/sortlist', function(req, res) {
-    res.status(200).send(db.sortTypes);
+    res.status(200).send(common.sortTypes);
 });
 
 const questionList = pug.compileFile('views/questionlist.pug');
 
 /* Respond with an HTML-formatted list of questions to display. */
 app.post('/fetchqlist', function(req, res) {
-    var type = db.sortTypes.SORT_RANDOM;
+    var type = common.sortTypes.SORT_RANDOM;
     var ans = false;
 
     if (req.body.type == 'answered') {
-        type |= db.sortTypes.QUERY_ANSWERED | db.sortTypes.QUERY_ANSONLY;
+        type |= common.sortTypes.QUERY_ANSWERED | common.sortTypes.QUERY_ANSONLY;
         ans = true;
     }
 
@@ -386,12 +380,12 @@ app.post('/fetchqlist', function(req, res) {
 app.post('/sortlist', function(req, res) {
     var type;
 
-    for (type in db.sortTypes) {
-        if (req.body.sort == db.sortTypes[type])
+    for (type in common.sortTypes) {
+        if (req.body.sort == common.sortTypes[type])
             break;
     }
 
-    questions.sortQuestions(req.session.questions, db.sortTypes[type],
+    questions.sortQuestions(req.session.questions, common.sortTypes[type],
         function(results) {
           var html = questionList({
               questions: results
@@ -408,7 +402,7 @@ app.post('/questionreq', function(req, res) {
             res.status(500).send();
         } else {
             req.session.question = result;
-            if (req.session.user.answeredCorrectly.indexOf(result.id) == -1)
+            if (req.session.user.answered.indexOf(result.id) == -1)
                 req.session.questionAnswered = false;
             else
                 req.session.questionAnswered = true;
@@ -419,27 +413,32 @@ app.post('/questionreq', function(req, res) {
 
 /* check if the submitted answer is correct */
 app.post('/submitanswer', function(req, res) {
-    questions.checkAnswer(req.session.question.id, req.body.answer,
-                          req.session.user.id, function(result) {
-        var data = {};
+    questions.checkAnswer(
+        req.session.question.id,
+        req.session.user.id,
+        req.body.answer,
+        function(result) {
+            var data = {};
 
-        data.result = result;
-        if (result == 'failed-update') {
-            res.status(500).send(data);
-        } else if (result == 'correct') {
-            data.points = req.session.question.points;
-            /* remove question from questions list, TODO: fetch new one */
-            for (var ind in req.session.questions) {
-                if (req.session.questions[ind].id == req.session.question.id)
-                    break;
+            result = result ? 'correct' : 'incorrect';
+            data.result = result;
+            if (result == 'failed-update') {
+                res.status(500).send(data);
+            } else if (result == 'correct') {
+                data.points = req.session.question.points;
+                /* remove question from questions list, TODO: fetch new one */
+                for (var ind in req.session.questions) {
+                    if (req.session.questions[ind].id == req.session.question.id)
+                        break;
+                }
+                req.session.questions.splice(ind, 1);
+                req.session.questionAnswered = true;
+            } else {
+                /* TODO: reload sidebar stats, save in data.html */
             }
-            req.session.questions.splice(ind, 1);
-            req.session.questionAnswered = true;
-        } else {
-            /* TODO: reload sidebar stats, save in data.html */
+            res.status(200).send(data);
         }
-        res.status(200).send(data);
-    });
+    );
 });
 
 /*
@@ -547,7 +546,7 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
  */
 app.post('/questionadd', function(req, res) {
     req.body.points = parseInt(req.body.points);
-    req.body.type = questions.QUESTION_REGULAR;
+    req.body.type = common.questionTypes.REGULAR;
     req.body.hint = '';
     questions.addQuestion(req.body, function(result) {
         if (result == 'failure') {
@@ -568,24 +567,8 @@ app.post('/questionadd', function(req, res) {
 app.post('/questionmod', function(req, res) {
     var qid = parseInt(req.body.id);
     var q = req.body.question;
-    var ind;
 
-    for (ind in req.session.adminQuestionList) {
-        if (req.session.adminQuestionList[ind].id == qid)
-            break;
-    }
-    var question = req.session.adminQuestionList[ind];
-
-    if (q.points)
-        q.points = parseInt(q.points);
-
-    /* Add all modified fields. */
-    for (field in q) {
-        if (!!q[field])
-            question[field] = q[field];
-    }
-
-    questions.updateQuestion(question, function(result) {
+    questions.updateQuestionByIdWithRedirection(qid, q, function(result) {
         res.status(200).send(result);
     });
 });

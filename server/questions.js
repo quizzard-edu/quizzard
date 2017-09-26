@@ -20,9 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var db = require('./db.js');
 var logger = require('./log.js').logger;
-
-var QUESTION_REGULAR    = 0;
-var QUESTION_MULTCHOICE = 1;
+var common = require('./common.js');
 
 /*
  * Insert a new regular question into the database.
@@ -38,11 +36,12 @@ exports.addRegularQuestion = function(question, callback) {
 		questionToAdd.answer = question.answer;
 		questionToAdd.hint = question.hint;
 		questionToAdd.points = question.points;
-		questionToAdd.type = QUESTION_REGULAR;
+		questionToAdd.type = common.questionTypes.REGULAR;
 		questionToAdd.attempted = [];
 		questionToAdd.answered = [];
 		questionToAdd.attempts = [];
 		questionToAdd.ctime = currentDate;
+		questionToAdd.mtime = currentDate;
 		db.addRegularQuestion(questionToAdd, function(res) {
         callback(res);
 		});
@@ -76,15 +75,27 @@ exports.sortQuestions = function(qs, type, callback) {
 
 
 /* Replace a question in the database with the provided question object. */
-exports.updateRegularQuestion = function(question, callback) {
-    questions.update({id: question.id}, question, function(res) {
-        if (err) {
-            logger.error(err);
-            callback('failure');
-        } else {
-            callback('success');
-        }
-    });
+exports.updateQuestionByIdWithRedirection = function(questionId, info, callback) {
+		updateQuestionByIdWithRedirection(questionId, info, callback);
+}
+
+var updateQuestionByIdWithRedirection = function(questionId, info, callback) {
+		db.lookupQuestion(questionId, function(q){
+				if(q){
+						switch(q.type){
+								case common.questionTypes.REGULAR:
+								 		db.updateRegularQuestionById(questionId, info, callback);
+										break;
+								case common.questionTypes.MULTIPLECHOICE:
+										db.updateMultipleChoiceQuestionById(questionId, info, callback);
+										break;
+								default:
+										callback('failure');
+						}
+				}else{
+						callback('failure');
+				}
+		});
 }
 
 /* Remove the question with ID qid from the database. */
@@ -120,11 +131,11 @@ exports.checkAnswer = function(questionId, userId, answer, callback) {
 						userId,
 						{ questionId:questionId, correct:value, points:question.points },
 						function(res){
-								db.updateQuestionById(
+								updateQuestionByIdWithRedirection(
 										questionId,
-										{ userId:userId, correct:value, answer:answer },
+										{ userId:userId, correct:value },
 										function(res) {
-												callback(res);
+												callback(value);
 										}
 								);
 						}

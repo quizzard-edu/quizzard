@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var bcrypt = require('bcryptjs');
 var db = require('./db.js');
 var logger = require('./log.js').logger;
+var common = require('./common.js');
 
 // Create an admin USER, if the USER object is valid
 exports.addAdmin = function(user, callback) {
@@ -44,7 +45,7 @@ exports.addAdmin = function(user, callback) {
 				userToAdd.atime = currentDate;
 				userToAdd.mtime = currentDate;
 				userToAdd.email = user.email ? user.email : '';
-				userToAdd.type = 'admin';
+				userToAdd.type = common.userTypes.ADMIN;
 				userToAdd.password = hash;
 
 				db.addAdmin(userToAdd, function(res){
@@ -82,7 +83,7 @@ exports.addStudent = function(user, callback) {
 				userToAdd.atime = currentDate;
 				userToAdd.mtime = currentDate;
 				userToAdd.email = user.email ? user.email : '';
-				userToAdd.type = 'student';
+				userToAdd.type = common.userTypes.STUDENT;
 				userToAdd.password = hash;
 
 				userToAdd.points = 0.0;
@@ -110,6 +111,10 @@ exports.addStudent = function(user, callback) {
  * Fail if the ID has changed and the new ID already belongs
  * to a user.
 */
+exports.updateUserByIdWithRedirection = function(userId, info, callback){
+		db.updateUserById(userId, info, callback);
+}
+
 exports.updateStudentById = function(userId, info, callback){
     db.updateStudentById(userId, info, callback);
 }
@@ -129,7 +134,11 @@ exports.getStudentsList = function(callback) {
 
 /* Return an array of users in the database, sorted by rank. */
 exports.getStudentsListSorted = function(lim, callback) {
-	db.getStudentsListSorted(lim, callback);
+		db.getStudentsListSorted(lim, callback);
+}
+
+exports.lookUpUserById = function(userId, callback){
+		db.lookUpUserById(userId, callback);
 }
 
 /*

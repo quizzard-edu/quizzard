@@ -4,7 +4,7 @@ $('#nav-leaderboard').addClass('active');
 /* Get HTML for the complete leaderboard table from the server and display it. */
 var fetchLeaderboard = function() {
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: '/leaderboard-table',
         data: {
             fullTable: true,

@@ -22,6 +22,7 @@ var logger = require('./server/log.js').logger;
 var db = require('./server/db.js');
 var users = require('./server/users.js');
 var questions = require('./server/questions.js');
+var common = require('./server/common.js');
 
 // variables to control the genereated data
 var adminsCount = 10;
@@ -93,7 +94,7 @@ var addQuestion = function(qTopic, id){
         text: '<p>'+qTopic+' Text</p>',
         answer: 'KonniChiwa',
         points: Math.floor(Math.random()*questionsMaxValue),
-        type: questions.QUESTION_REGULAR,
+        type: common.questionTypes.REGULAR,
         hint: 'KonniChiwa'
     };
 
