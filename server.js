@@ -193,6 +193,9 @@ const questionForm = pug.compileFile('views/question-creation.pug');
 const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
 
+const regexForm = pug.compileFile('views/regex-answer.pug');
+const multiplechoiceFrom = pug.compileFile('views/mc-answer.pug');
+
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
@@ -271,6 +274,16 @@ app.get('/questionform', function(req, res) {
     res.status(200).send(html);
 });
 
+app.get('/re', function(req, res){
+    var html = regexForm();
+    res.status(200).send(html);
+});
+
+app.get('/mc', function(req, res){
+    var html = multiplechoiceFrom();
+    res.status(200).send(html);
+});
+
 /* Return a formatted date for the given timestamp. */
 var creationDate = function(timestamp) {
     const months = ['Jan', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -321,7 +334,6 @@ app.post('/questionedit', function(req, res) {
         if (req.session.adminQuestionList[ind].id == req.body.questionid)
             break;
     }
-
     var html = questionEdit({
         question: req.session.adminQuestionList[ind]
     });
@@ -413,7 +425,7 @@ app.post('/questionreq', function(req, res) {
 });
 
 /* check if the submitted answer is correct */
-app.post('/submitanswer', function(req, res) {
+app.post('/submitREanswer', function(req, res) {
     questions.checkAnswer(req.session.question, req.body.answer,
                           req.session.user, function(result) {
         var data = {};
@@ -437,6 +449,30 @@ app.post('/submitanswer', function(req, res) {
     });
 });
 
+/* check if the submitted MC answer is correct */
+app.post('/submitMCanswer', function(req, res) {
+    questions.checkMCAnswer(req.session.question, req.body.answer,
+                          req.session.user, function(result) {
+        var data = {};
+
+        data.result = result;
+        if (result == 'failed-update') {
+            res.status(500).send(data);
+        } else if (result == 'correct') {
+            data.points = req.session.question.basePoints;
+            /* remove question from questions list, TODO: fetch new one */
+            for (var ind in req.session.questions) {
+                if (req.session.questions[ind].id == req.session.question.id)
+                    break;
+            }
+            req.session.questions.splice(ind, 1);
+            req.session.questionAnswered = true;
+        } else {
+            /* TODO: reload sidebar stats, save in data.html */
+        }
+        res.status(200).send(data);
+    });
+});
 /*
  * Create a new user.
  * The request body contains an incomplete student object with attributes
@@ -542,7 +578,29 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
  */
 app.post('/questionadd', function(req, res) {
     req.body.basePoints = parseInt(req.body.basePoints);
-    req.body.type = questions.QUESTION_REGULAR;
+    // correct the question Type in database:
+    switch(req.body.type){
+        case 're':
+            req.body.type = questions.QUESTION_REGULAR;
+            break;
+        case 'mc':
+            req.body.type = questions.QUESTION_MULTCHOICE;
+            // make all answers into a list
+            var mcanswers = Object.keys(req.body).filter(function(k) {
+                return k.indexOf('mc') == 0;
+            }).reduce(function(newData, k) {
+                newData[k] = req.body[k];
+                return newData;
+            }, {});
+            req.body.mc_answers =  Object.keys(mcanswers).map(function(key){return mcanswers[key]});
+            req.body.answer = req.body['mcans' + req.body.radbutton];
+
+            console.log("\n this is mc_questions: " + req.body.mc_answers);
+            break;
+        default:
+            res.status(500).send('failure');
+            break;
+    }
     questions.addQuestion(req.body, function(result) {
         if (result == 'failure') {
             res.status(500);
