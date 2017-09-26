@@ -137,12 +137,16 @@ exports.checkAnswer = function(question, answer, user, callback) {
         if (question.correctAnswers == 0)
             question.firstAnswer = user.id;
         if (!question.studentsAnswered.indexOf(user.id) != -1) {
-            question.correctAnswers++;
-            question.studentsAnswered.push(user.id);
-            /* update the user */
-            user.answered++;
-            user.answeredIds.push(question.id);
-            user.points += question.basePoints;
+
+            // don't update if user already answered question
+            if( question.studentsAnswered.indexOf(user.id) < 0){
+                question.correctAnswers++;            
+                question.studentsAnswered.push(user.id);
+                /* update the user */
+                user.answered++;
+                user.answeredIds.push(question.id);
+                user.points += question.basePoints;
+            }
         }
         result = 'correct';
     } else {

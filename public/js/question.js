@@ -7,6 +7,7 @@ $('#re_answerform').submit(function(evt) {
         data: $('#re_answerform').serialize(),
         success: function(data) {
             if (data.result == 'incorrect') {
+                $('#hint').removeClass('hidden');
                 swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
             } else if (data.result == 'correct') {
                 swal({

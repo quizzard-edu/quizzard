@@ -41,8 +41,11 @@ block content
               each answer in question.mc_answers
                 input(type='radio' name='answer', value=answer, required, autofocus) 
                 | #{answer} 
+              if answered
+                button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
+              else
+                button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
 
-              button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
             
         if answered
           .success
