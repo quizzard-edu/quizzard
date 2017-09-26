@@ -130,12 +130,23 @@ var displayQuestionForm = function() {
             });
         }    
     });
-}   
+}
+
+/*String Formating option*/
+String.prototype.format = function() {
+  a = this;
+  for (k in arguments) {
+    a = a.replace("{" + k + "}", arguments[k])
+  }
+  return a
+}
+
 var mcAnswerCount = 4;
 var addMCAnswers = function(dom){ 
     mcAnswerCount++;
      var newdiv = document.createElement('div');
-     newdiv.innerHTML = "<p>Is Correct: <input type='radio' name='radbutton' value='" + mcAnswerCount + "'/><input class='form-control' type='text' name='mcans" + mcAnswerCount + "' placeholder='Enter Answer Here' required='required' style='float:left;'/> <button onclick='$(this).parent().remove();'>delete</button></p>"  
+     var inputdiv = "<p>Is Correct: <input type='radio' name='radbutton' value='{0}'/><input class='form-control' type='text' name='mcans{1}' placeholder='Enter Answer Here' required='required' style='float:left;'/> <button onclick='$(this).parent().remove();'>delete</button></p>"
+     newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount);  
      $('#qAnswer > div.form-group').append(newdiv);
 }
 
@@ -146,12 +157,14 @@ var getQuestionFormAnswer = function(form){
         url: form,
         success: function(data){
             $('#qAnswer').html(data);
+        },
+        failure: function(data){
+            $('#result').html('Server is down cannot pull Answer form');
         }
     });
     
 }
    
-  
 /* Display the application statistics form. */ 
 var displayStatistics = function() {
     $.ajax({
@@ -369,7 +382,6 @@ var submitQuestionForm = function() {
     
     // add the question type
     question['type'] = $('#qType').select().val();
-    console.log(question);
     $.ajax({
         type: 'POST',
         url: '/questionadd',

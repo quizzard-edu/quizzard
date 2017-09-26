@@ -13,7 +13,7 @@ body {
 
 #admin-content {
   max-height: 750px;
-  overflow-y: auto; 
+  overflow-y: auto;
 }
 
 #admin-label {

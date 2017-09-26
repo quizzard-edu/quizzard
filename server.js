@@ -194,7 +194,7 @@ const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
 
 const regexForm = pug.compileFile('views/regex-answer.pug');
-const multiplechoiceFrom = pug.compileFile('views/mc-answer.pug');
+const multipleChoiceForm = pug.compileFile('views/mc-answer.pug');
 
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
@@ -280,7 +280,7 @@ app.get('/re', function(req, res){
 });
 
 app.get('/mc', function(req, res){
-    var html = multiplechoiceFrom();
+    var html = multipleChoiceForm();
     res.status(200).send(html);
 });
 

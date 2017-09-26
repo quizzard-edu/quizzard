@@ -1,24 +1,11 @@
 .form-group
-	p
-		| Is Correct: 
-		input(type='radio', name='radbutton', value='1', required)
-		input.form-control(type='text', name='mcans1', placeholder='Enter Answer Here', required, style='float:left;')
-		button(onclick='$(this).parent().remove()') delete
-	p
-		| Is Correct: 
-		input(type='radio', name='radbutton', value='2', required)
-		input.form-control(type='text', name='mcans2', placeholder='Enter Answer Here', required, style='float:left;')
-		button(onclick='$(this).parent().remove()') delete
-	p
-		| Is Correct: 
-		input(type='radio', name='radbutton', value='3', required)
-		input.form-control(type='text', name='mcans3', placeholder='Enter Answer Here', required, style='float:left;')
-		button(onclick='$(this).parent().remove()') delete
-	p
-		| Is Correct: 
-		input(type='radio', name='radbutton', value='4', required)
-		input.form-control(type='text', name='mcans4', placeholder='Enter Answer Here', required, style='float:left;')
-		button(onclick='$(this).parent().remove()') delete
+
+	each index in [1,2,3,4]
+		p
+			| Is Correct: 
+			input(type='radio', name='radbutton', value=index, required)
+			input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required, style='float:left;')
+			button(onclick='$(this).parent().remove()') delete
 
 #addMoreAnswersButton
 	button(onclick="addMCAnswers('qAnswer')") add answer
