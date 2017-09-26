@@ -13,7 +13,7 @@ body {
 
 #admin-content {
   max-height: 750px;
-  overflow-y: auto;
+  overflow-y: auto; 
 }
 
 #admin-label {
@@ -30,7 +30,6 @@ body {
 }
 
 .form-user {
-  max-width: 600px;
   padding: 15px;
   margin: 0 auto;
 }
