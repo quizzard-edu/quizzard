@@ -124,7 +124,7 @@ app.get('/home', function(req, res) {
         if (req.session.questions == null) {
             /* fetch some questions from the database if the user doesn't have any */
             selector.findQuestions(10, selector.findTypes.SORT_RANDOM,
-                                   req.session.user, function(results) {
+                                   req.session.user, selector.findTypes.QUERY_SHOWONLY, function(results) {
                 req.session.questions = results;
                 req.session.answeredQuestions = false;
                 res.render('home', {
@@ -299,7 +299,7 @@ app.get('/questionlist', function(req, res) {
     /* If this is the first time accessing it, fetch list from database. */
     if (req.session.adminQuestionList == null) {
         selector.findQuestions(0, selector.findTypes.SORT_DEFAULT,
-                                    null, function(questionlist) {
+                                    null, null, function(questionlist) {
             req.session.adminQuestionList = questionlist;
             var html = questionTable({
                 questions: questionlist
@@ -335,7 +335,8 @@ app.post('/questionedit', function(req, res) {
 app.get('/statistics', function(req, res) {
     if (req.session.adminQuestionList == null) {
         selector.findQuestions(0, selector.findTypes.SORT_DEFAULT,
-                                    null, function(questionlist) {
+				    //TODO Does statics pull from all questions or only questions the student can see?
+                                    null, null, function(questionlist) {
             req.session.adminQuestionList = questionlist;
             var html = statistics({
                 students: req.session.adminStudentList,
@@ -368,7 +369,7 @@ app.post('/fetchqlist', function(req, res) {
         ans = true;
     }
 
-    selector.findQuestions(10, type, req.session.user, function(results) {
+    selector.findQuestions(10, type, req.session.user, selector.findTypes.QUERY_SHOWONLY, function(results) {
         req.session.questions = results;
         req.session.answeredQuestions = ans;
         var html = questionList({

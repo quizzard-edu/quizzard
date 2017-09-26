@@ -1,6 +1,7 @@
 table.table
   thead
     tr
+      th Shown?
       th ID
       th Title
       th Topic
@@ -9,6 +10,12 @@ table.table
   tbody
     each q in questions
       tr
+        td
+          case q.show
+            when 'true'
+              input.checked(id='checked-' + q.id type='checkbox' checked=true)
+            when 'false'
+              input.checked(id='checked-' + q.id type='checkbox' checked=false) 
         td #{q.id}
         td #{q.title}
         td #{q.topic}

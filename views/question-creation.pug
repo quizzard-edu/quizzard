@@ -1,5 +1,10 @@
 form.form-user#questionform
   p#result
+
+  .form-group
+    label(for='show') Show?
+    input.form-control#show(type='checkbox' name='show' checked=false value=false)
+
   .form-group
     label(for='qtitle') Title
     input.form-control#qtitle(type='text' name='title' placeholder='Enter title'

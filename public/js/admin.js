@@ -90,6 +90,9 @@ var displayQuestionTable = function() {
                 /* cut off the edit- */
                 editQuestion(this.id.substring(5));
             });
+            $('.checked').change(function(evt) {
+                updateVisibility(this.id.substring(8));
+	    });
 
             $('#option-questions').addClass('active');
             $('#option-accounts').removeClass('active');
@@ -319,6 +322,28 @@ var submitEditForm = function(id) {
     });
 }
 
+var updateVisibility = function(qid) {
+    var question = {};
+
+    question['show'] = $('#checked-' + qid).is(':checked');
+
+    $.ajax({
+        type: 'POST',
+        url: '/questionmod',
+        data: {
+            question: question,
+            id: qid
+        },
+        success: function(data) {
+            if (data == 'failure') {
+		displayQuestionTable();
+            } else if (data == 'success') {
+                displayQuestionTable();
+            }
+        }
+    });
+}
+
 /* Process submitted question edit form. */
 var submitQuestionForm = function() {
     var fields = $('#questionform').serializeArray();
@@ -333,7 +358,7 @@ var submitQuestionForm = function() {
         return;
     }
     question['text'] = $('#qtext').summernote('code');
-
+    question['show'] = $('#show').is(':checked');
     $.ajax({
         type: 'POST',
         url: '/questionadd',
@@ -481,3 +506,4 @@ var sortAccountsTable = function(type) {
         }
     });
 }
+
