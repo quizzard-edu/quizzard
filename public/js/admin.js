@@ -97,27 +97,62 @@ var displayQuestionTable = function() {
             $('#option-settings').removeClass('active');
         }
     });
-}
-
+} 
+ 
 /* Fetch and display the question creation form. */
 var displayQuestionForm = function() {
     $.ajax({
         type: 'GET',
         url: '/questionform',
-        success: function(data) {
-            $('#admin-modal').modal('show');
-            $('#admin-modal-label').html('Add New Question');
-            $('#admin-modal-body').html(data);
-            $('#qtext').summernote({ height: 100 });
-            $('#questionform').submit(function(evt) {
-                evt.preventDefault();
-                submitQuestionForm();
+        success: function(data) { 
+            $('#admin-label').html('Add New Question');
+            $('#admin-content').html(data); 
+            $('#admin-button').off(); 
+            $('#admin-button').hide(); 
+            $('#admin-back').show();
+            $('#admin-back').click(function(evt) {
+                displayQuestionTable();
             });
-        }
+
+            $('#qtext').summernote({ height: 100 });
+            // choose the type of question creating
+            $('#qType').change(function(evt) { 
+                // get the answer part for the form requested
+                // id to replace is qAnswer
+                var form = "/" + $(this).val();
+                getQuestionFormAnswer(form);
+                $('#questionform').show(); 
+            });          
+            
+            $('#questionform').submit(function(evt) {
+                evt.preventDefault(); 
+                submitQuestionForm(); 
+            });
+        }    
     });
+}   
+var mcAnswerCount = 4;
+var addMCAnswers = function(dom){ 
+    mcAnswerCount++;
+     var newdiv = document.createElement('div');
+     newdiv.innerHTML = "<p>Is Correct: <input type='radio' name='radbutton' value='" + mcAnswerCount + "'/><input class='form-control' type='text' name='mcans" + mcAnswerCount + "' placeholder='Enter Answer Here' required='required' style='float:left;'/> <button onclick='$(this).parent().remove();'>delete</button></p>"  
+     $('#qAnswer > div.form-group').append(newdiv);
 }
 
-/* Display the application statistics form. */
+// replace the answer field in Question-creation.pug for specific question
+var getQuestionFormAnswer = function(form){
+    $.ajax({ 
+        type: 'GET',
+        url: form,
+        success: function(data){
+            $('#qAnswer').html(data);
+        }
+    });
+    
+}
+   
+  
+/* Display the application statistics form. */ 
 var displayStatistics = function() {
     $.ajax({
         type: 'GET',
@@ -313,7 +348,6 @@ var submitEditForm = function(id) {
                     submitEditForm(user.id ? user.id : id);
                 });
                 $('#account-edit-result').html('User ' + id + ' has been updated');
-		displayAccountsTable();
             }
         }
     });
@@ -323,17 +357,19 @@ var submitEditForm = function(id) {
 var submitQuestionForm = function() {
     var fields = $('#questionform').serializeArray();
     var question = {};
-    var qbody;
 
     jQuery.each(fields, function(i, field) {
-        question[field.name] = field.value;
+        question[field.name] = field.value; 
     });
     if ($('#qtext').summernote('isEmpty')) {
         $('#result').html('Please enter a question body in the editor.');
         return;
     }
     question['text'] = $('#qtext').summernote('code');
-
+    
+    // add the question type
+    question['type'] = $('#qType').select().val();
+    console.log(question);
     $.ajax({
         type: 'POST',
         url: '/questionadd',
@@ -344,7 +380,6 @@ var submitQuestionForm = function() {
             } else if (data == 'success') {
                 $('#result').html('Question added to database');
                 setTimeout(displayQuestionTable, 1000);
-                 $('#admin-modal').modal('hide');
             }
         }
     });
@@ -442,7 +477,6 @@ var submitQEditForm = function(qid) {
                 $('#question-edit-result').html('Question could not be edited.');
             } else if (data == 'success') {
                 $('#question-edit-result').html('Question ' + qid + ' has been modified.');
-		displayQuestionTable();
             }
         }
     });
