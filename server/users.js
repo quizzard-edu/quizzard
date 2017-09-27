@@ -25,7 +25,7 @@ var common = require('./common.js');
 
 // Create an admin USER, if the USER object is valid
 exports.addAdmin = function(user, callback) {
-		if(!user.firstName || !user.lastName || !user.id || !user.password){
+		if(!user.fname || !user.lname || !user.id || !user.password){
 				logger.error('Failed to create a new admin, missing requirements');
 				return callback('failure');
 		}
@@ -39,8 +39,8 @@ exports.addAdmin = function(user, callback) {
 				var currentDate = new Date().toString();
 				var userToAdd = {};
 				userToAdd.id = user.id.toLowerCase();
-				userToAdd.firstName = user.firstName;
-				userToAdd.lastName = user.lastName;
+				userToAdd.fname = user.fname;
+				userToAdd.lname = user.lname;
 				userToAdd.ctime = currentDate;
 				userToAdd.atime = currentDate;
 				userToAdd.mtime = currentDate;
@@ -63,7 +63,7 @@ exports.addAdmin = function(user, callback) {
 
 // Create a student USER, if the USER object is valid
 exports.addStudent = function(user, callback) {
-		if(!user.firstName || !user.lastName || !user.id || !user.password){
+		if(!user.fname || !user.lname || !user.id || !user.password){
 				logger.error('Failed to create a new student, missing requirements');
 				return callback('failure');
 		}
@@ -77,8 +77,8 @@ exports.addStudent = function(user, callback) {
 				var 	currentDate = new Date().toString();
 				var userToAdd = {};
 				userToAdd.id = user.id.toLowerCase();
-				userToAdd.firstName = user.firstName;
-				userToAdd.lastName = user.lastName;
+				userToAdd.fname = user.fname;
+				userToAdd.lname = user.lname;
 				userToAdd.ctime = currentDate;
 				userToAdd.atime = currentDate;
 				userToAdd.mtime = currentDate;

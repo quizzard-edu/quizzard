@@ -27,6 +27,8 @@ var common = require('./common.js');
  * The question object passed to the function should have
  * the text, topic, type, answer, points and hint set.
  */
+exports.addQuestionByTypeWithRedirection = function(question, callback) {}
+
 exports.addRegularQuestion = function(question, callback) {
 		var currentDate = new Date().toString();
 		var questionToAdd = {};

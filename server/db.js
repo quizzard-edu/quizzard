@@ -191,11 +191,11 @@ var updateUserById = function(userId, info, callback){
     if(info.id)
         update.$set.id = info.id;
 
-    if(info.firstName)
-        update.$set.firstName = info.firstName;
+    if(info.fname)
+        update.$set.fname = info.fname;
 
-    if(info.lastName)
-        update.$set.lastName = info.lastName;
+    if(info.lname)
+        update.$set.lname = info.lname;
 
     if(info.email)
         update.$set.email = info.email;

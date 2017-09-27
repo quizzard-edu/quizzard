@@ -450,7 +450,7 @@ app.post('/submitanswer', function(req, res) {
  * to the active admin student list.
  */
 app.post('/useradd', function(req, res) {
-    students.createAccount(req.body, function(result) {
+    users.addStudent(req.body, function(result) {
         if (result == 'failure') {
             res.status(500);
         } else if (result == 'exists') {
@@ -494,33 +494,19 @@ app.post('/userdel', function(req, res) {
  * The request body contains a user object with the fields to be modified.
  */
 app.post('/usermod', function(req, res) {
-    var orig, ind, user, newpass;
+    var userId = req.body.originalID;
+    var updateId = req.body.id;
 
-    orig = req.body.originalID;
-    for (ind in req.session.adminStudentList) {
-        if (req.session.adminStudentList[ind].id == orig) {
-            user = JSON.parse(JSON.stringify(req.session.adminStudentList[ind]));
-            break;
-        }
-    }
-
-    delete req.body.originalID;
-    for (var field in req.body)
-        user[field] = req.body[field];
-
-    newpass = !!req.body['password'];
-
-    students.updateAccount(orig, user, newpass, function(result) {
-        if (result == 'success')
-            req.session.adminStudentList[ind] = user;
-
-        var html = accountEdit({
-            user: req.session.adminStudentList[ind],
-            cdate: creationDate(req.session.adminStudentList[ind].ctime * 1000)
-        });
-        res.status(200).send({
-            result: result,
-            html: html
+    users.updateStudentById(userId, req.body, function(result) {
+        users.getStudentById(updateId, function(userFound){
+            var html = accountEdit({
+                user: userFound,
+                cdate: creationDate(userFound.ctime)
+            });
+            res.status(200).send({
+                result: result,
+                html: html
+            });
         });
     });
 });

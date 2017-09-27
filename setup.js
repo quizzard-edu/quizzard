@@ -26,8 +26,8 @@ var setupAdminAccount = function(accid, pass) {
     var acc = {
         id: accid,
         password: pass,
-        firstName: 'Root',
-        lastName: 'User'
+        fname: 'Root',
+        lname: 'User'
     };
 
     db.initialize(function() {

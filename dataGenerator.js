@@ -45,8 +45,8 @@ var addAdmin = function(accid, pass, isAdmin) {
     var acc = {
         id: accid,
         password: pass,
-        firstName: accid,
-        lastName: accid,
+        fname: accid,
+        lname: accid,
         email: accid+'@'+'fake.fake'
     };
 
@@ -68,8 +68,8 @@ var addStudent = function(accid, pass, isAdmin) {
     var acc = {
         id: accid,
         password: pass,
-        firstName: accid,
-        lastName: accid,
+        fname: accid,
+        lname: accid,
         email: accid+'@'+'fake.fake'
     };
 
