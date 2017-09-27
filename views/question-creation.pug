@@ -20,6 +20,10 @@ form.form-user#questionform
     input.form-control#qpoints(type='number' name='points'
                                placeholder='Enter points'  min="1" required)
   .form-group
+    label(for='qhint') Hint
+    input.form-control#qhint(type='text' name='hint'
+                                  placeholder='Enter Hint')
+  .form-group
     label(for='successmsg') Follow up message
     input.form-control#successmsg(type='text' name='successMessage'
                                   placeholder='Enter message'

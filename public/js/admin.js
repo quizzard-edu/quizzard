@@ -313,6 +313,7 @@ var submitEditForm = function(id) {
                     submitEditForm(user.id ? user.id : id);
                 });
                 $('#account-edit-result').html('User ' + id + ' has been updated');
+		displayAccountsTable();
             }
         }
     });
@@ -441,6 +442,7 @@ var submitQEditForm = function(qid) {
                 $('#question-edit-result').html('Question could not be edited.');
             } else if (data == 'success') {
                 $('#question-edit-result').html('Question ' + qid + ' has been modified.');
+		displayQuestionTable();
             }
         }
     });

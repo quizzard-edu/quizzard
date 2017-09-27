@@ -44,6 +44,11 @@ block content
           p.sidebar-item#first-answer You could be the first person to correctly answer this question!
         else
           p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
+        if preview
+          h4.sidebar-item#hint Hint: #{question.hint}
+        else
+          h4.sidebar-item#hint.hidden Hint: #{question.hint}
+
 
 block scripts
   if !preview
