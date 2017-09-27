@@ -116,7 +116,7 @@ exports.updateQuestionByIdWithRedirection = function(questionId, info, callback)
 }
 
 var updateQuestionByIdWithRedirection = function(questionId, info, callback) {
-	db.lookupQuestion(questionId, function(q){
+	lookupQuestionById(questionId, function(q){
 		if(q){
 			switch(q.type){
 				case common.questionTypes.REGULAR:
@@ -148,8 +148,12 @@ exports.deleteQuestion = function(qid, callback) {
 }
 
 /* Extract a question object from the database using its ID. */
-exports.lookupQuestion = function(qid, callback) {
-    db.lookupQuestion(qid, callback);
+exports.lookupQuestionById = function(qid, callback) {
+    lookupQuestionById(qid, callback);
+}
+
+var lookupQuestionById = function(qid, callback) {
+	db.lookupQuestionById(qid, callback);
 }
 
 /*
@@ -161,7 +165,7 @@ exports.checkAnswer = function(questionId, userId, answer, callback) {
     logger.info('User %s attempted to answer question %d with "%s"',
         userId, questionId, answer);
 
-	db.lookupQuestion(questionId, function(question){
+	lookupQuestionById(questionId, function(question){
 		var value = answer===question.answer;
 		db.updateStudentById(
 			userId,

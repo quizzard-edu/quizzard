@@ -397,7 +397,7 @@ app.post('/sortlist', function(req, res) {
 
 /* User requests a question; look it up by ID and store it in session. */
 app.post('/questionreq', function(req, res) {
-    questions.lookupQuestion(parseInt(req.body.id), function(result) {
+    questions.lookupQuestionById(parseInt(req.body.id), function(result) {
         if (result == 'failure' || result == 'invalid') {
             res.status(500).send();
         } else {
@@ -589,7 +589,7 @@ app.get('/questionpreview', function(req, res) {
     }
 
     var qid = parseInt(req.query.qid);
-    questions.lookupQuestion(qid, function(q) {
+    questions.lookupQuestionById(qid, function(q) {
         if (q == 'invalid' || q == 'failure') {
             res.status(200).send(q);
             return

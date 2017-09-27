@@ -386,7 +386,7 @@ exports.sortQuestions = function(qs, type, callback) {
 }
 
 /* Extract a question object from the database using its ID. */
-exports.lookupQuestion = function(qid, callback) {
+exports.lookupQuestionById = function(qid, callback) {
     questionsCollection.findOne({id: qid}, function(err, q) {
         if (err || !q) {
             callback('failure');
