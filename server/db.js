@@ -232,7 +232,7 @@ var updateUserById = function(userId, info, callback){
     }else{
         bcrypt.hash(info.newPassword, 11, function(err, hash) {
     		    if (err) {
-    						logger.error(err);
+					logger.error(err);
     		        return callback('failure');
     		    }
             if(update.$set && !isEmptyObject(update.$set))

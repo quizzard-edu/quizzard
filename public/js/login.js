@@ -6,10 +6,10 @@ $('#login').submit(function(evt) {
         url: '/login',
         data: $('#login').serialize(),
         success: function(data) {
-            if (data == 'invalid')
-                $('#invalid').html('Invalid username or password');
-            else if (data == 'success')
                 window.location.href = '/home';
+        },
+        error: function(data) {
+            $('#invalid').html('Invalid username or password');
         }
     });
 });

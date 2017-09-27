@@ -237,7 +237,7 @@ var submitUserForm = function() {
     jQuery.each(fields, function(i, field) {
         user[field.name.substring(3)] = field.value;
     });
-alert(JSON.stringify(user));
+
     $.ajax({
         type: 'POST',
         url: '/useradd',
