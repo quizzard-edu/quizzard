@@ -264,9 +264,10 @@ var isEmptyObject = function(obj) {
 // Questions functions
 // Add QUESTION to questionsCollection in the database
 exports.addRegularQuestion = function(question, callback){ addQuestion(question, callback); };
+exports.addMultipleChoiceQuestion = function(question, callback){ addQuestion(question, callback); };
 
 var addQuestion = function(question, callback) {
-	  question.id = ++nextId;
+	question.id = ++nextId;
     questionsCollection.insert(question, function(err, res) {
         if(err){
             logger.error(err);
@@ -321,7 +322,7 @@ exports.findQuestions = function(amount, findType, user, callback){
                 id: { $in: user.answered }
             };
         } else {
-                query = {};
+            query = {};
         }
     } else if (user != null) {
         query = {

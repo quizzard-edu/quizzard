@@ -531,10 +531,7 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
  * The request body contains the question to be added.
  */
 app.post('/questionadd', function(req, res) {
-    req.body.points = parseInt(req.body.points);
-    req.body.type = common.questionTypes.REGULAR;
-    req.body.hint = '';
-    questions.addQuestion(req.body, function(result) {
+    questions.addQuestionByTypeWithRedirection(req.body.type, req.body, function(result) {
         if (result == 'failure') {
             res.status(500);
         } else {
