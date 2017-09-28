@@ -58,12 +58,12 @@ var addUser = function(user, callback) {
     usersCollection.findOne({'id': user.id}, function(err, obj) {
         if (err) {
             logger.error(err);
-            callback('failure');
+            callback(err, null);
         } else if (obj) {
-            callback('exists');
+            callback('exists', null);
         } else {
             usersCollection.insert(user, function(err, res) {
-                callback(res);
+                callback(err, res);
             });
         }
     });
@@ -77,11 +77,11 @@ exports.getStudentsList = function(callback) { getUsersList(common.userTypes.STU
 var getUsersList = function(type, callback){
     usersCollection.find({type : type}).sort({id: 1}).toArray(function(err, docs) {
         if (err) {
-            callback([]);
+            callback(err, []);
         } else {
             for (s in docs)
                 delete docs[s]._id;
-            callback(docs);
+            callback(null, docs);
         }
     });
 }
@@ -92,11 +92,11 @@ exports.getStudentsListSorted = function(lim, callback){
             .limit(lim)
             .toArray(function(err, docs) {
         if (err) {
-            callback([]);
+            callback(err, []);
         } else {
             for (s in docs)
                 delete docs[s]._id;
-            callback(docs);
+            callback(null, docs);
         }
     });
 }
@@ -120,19 +120,21 @@ exports.checkLogin = function(userId, pass, callback) {
     usersCollection.findOne({'id' : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
-            callback(null);
+            callback(err, null);
         } else if (obj) {
-            validatePassword(obj, pass, function(valid) {
-                if (valid) {
+            validatePassword(obj, pass, function(err, valid) {
+                if(err){
+                    callback(err, null);
+                } else if (valid) {
                     delete obj._id;
-                    callback(obj);
+                    callback(null, obj);
                 } else {
                     logger.warn('Invalid password provided for user %s.', userId);
-                    callback(null);
+                    callback('invalid', null);
                 }
             });
         } else {
-            callback(null);
+            callback('error', null);
         }
     });
 }
@@ -142,7 +144,7 @@ exports.checkLogin = function(userId, pass, callback) {
  */
 var validatePassword = function(userobj, pass, callback) {
     bcrypt.compare(pass, userobj.password, function(err, res) {
-        callback(res);
+        callback(err, res);
     });
 }
 
@@ -151,10 +153,10 @@ exports.removeAllUsers = function(callback){
     usersCollection.remove({}, function(err, res) {
         if(err){
             logger.error(err);
-            return callback('failure');
+            return callback(err, null);
         }
         logger.info('All users have been removed');
-        return callback(res);
+        return callback(null, res);
     });
 }
 
@@ -168,9 +170,9 @@ var getUserById = function(userId, callback){
     usersCollection.findOne({id : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
-            callback(null);
+            callback(err, null);
         } else {
-            callback(obj);
+            callback(null, obj);
         }
     });
 }
@@ -224,16 +226,16 @@ var updateUserById = function(userId, info, callback){
         usersCollection.update(query, update, function(err, res) {
             if (err) {
                 logger.error(err);
-                callback('failure');
+                callback(err, null);
             } else {
-                callback('success');
+                callback(null, 'success');
             }
         });
     }else{
         bcrypt.hash(info.newPassword, 11, function(err, hash) {
     		    if (err) {
 					logger.error(err);
-    		        return callback('failure');
+    		        return callback(err, null);
     		    }
             if(update.$set && !isEmptyObject(update.$set))
                 update.$set.password = hash;
@@ -242,9 +244,9 @@ var updateUserById = function(userId, info, callback){
             usersCollection.update(query, update, function(err, res) {
                 if (err) {
                     logger.error(err);
-                    callback('failure');
+                    callback(err, null);
                 } else {
-                    callback('success');
+                    callback(null, 'success');
                 }
             });
         });
@@ -253,12 +255,12 @@ var updateUserById = function(userId, info, callback){
 
 // check if json obejct is empty
 var isEmptyObject = function(obj) {
-  for (var key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      return false;
+    for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            return false;
+        }
     }
-  }
-  return true;
+    return true;
 }
 
 // Questions functions
@@ -271,9 +273,9 @@ var addQuestion = function(question, callback) {
     questionsCollection.insert(question, function(err, res) {
         if(err){
             logger.error(err);
-            return callback('failure');
+            return callback(err, null);
         }
-        return callback(res);
+        return callback(null, res);
     });
 }
 
@@ -282,12 +284,12 @@ exports.removeAllQuestions = function(callback){
     questionsCollection.remove({}, function(err, res) {
         if(err){
             logger.error(err);
-            return callback('failure');
+            return callback(err, null);
         }
         nextId = 0;
         logger.info('All questions have been removed');
         logger.info('next question: %d', nextId);
-        return callback(res);
+        return callback(null, res);
     });
 }
 
@@ -331,7 +333,7 @@ exports.findQuestions = function(amount, findType, user, callback){
     }
     questionsCollection.find(query).sort(criteria).limit(amount).toArray(function(err, docs) {
         if (err) {
-            callback('failure');
+            callback(err, null);
         } else {
             if (findType & common.sortTypes.SORT_RANDOM)
                 shuffle(docs);
@@ -341,7 +343,7 @@ exports.findQuestions = function(amount, findType, user, callback){
                 docs[q].answeredCount = docs[q].answered.length;
                 delete docs[q]._id;
             }
-            callback(docs);
+            callback(null, docs);
         }
     });
 }
@@ -367,7 +369,7 @@ exports.sortQuestions = function(qs, type, callback) {
 
     if (type & common.sortTypes.SORT_RANDOM) {
         shuffle(qs);
-        callback(qs);
+        callback(null, qs);
         return;
     } else if (type & common.sortTypes.SORT_TOPIC) {
         cmpfn = function(a, b) {
@@ -382,21 +384,21 @@ exports.sortQuestions = function(qs, type, callback) {
     }
 
     qs.sort(cmpfn);
-    callback(qs);
+    callback(null, qs);
 }
 
 /* Extract a question object from the database using its ID. */
 exports.lookupQuestionById = function(qid, callback) {
     questionsCollection.findOne({id: qid}, function(err, q) {
-        if (err || !q) {
-            callback('failure');
+        if (err) {
+            callback(err, null);
         } else {
             /* necessary for later database update */
             q.firstAnswer = q.answered[0] ? q.answered[0] : 'No One';
             q.attemptsCount = q.attempted.length;
             q.answeredCount = q.answered.length;
             delete q._id;
-            callback(q);
+            callback(null, q);
         }
     });
 }
@@ -449,9 +451,9 @@ exports.updateRegularQuestionById = function(questionId, info, callback){
     questionsCollection.update(query, update, function(err, res) {
         if (err) {
             logger.error(err);
-            callback('failure');
+            callback(err, null);
         } else {
-            callback('success');
+            callback(null, 'success');
         }
     });
 }
