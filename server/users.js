@@ -49,14 +49,17 @@ exports.addAdmin = function(user, callback) {
 		userToAdd.password = hash;
 
 		db.addAdmin(userToAdd, function(err, res){
-			if (err === 'failure'){
-				logger.error('Failed to create admin %s, database issue', userToAdd.id);
-			} else if (err === 'exists') {
-				logger.warn('Admin %s already exists', userToAdd.id);
+			if(err){
+				if (err === 'failure'){
+					logger.error('Failed to create admin %s, database issue', userToAdd.id);
+				} else if (err === 'exists') {
+					logger.warn('Admin %s already exists', userToAdd.id);
+				}
+				callback(err, null);
 			} else {
 				logger.info('Admin %s created', userToAdd.id);
+				callback(null, 'created');
 			}
-			callback(err, res);
 		});
 	});
 }
@@ -93,14 +96,17 @@ exports.addStudent = function(user, callback) {
 		userToAdd.attemptedCount = 0;
 
 		db.addStudent(userToAdd, function(err, res){
-			if (err === 'failure'){
+			if(err){
+				if (err === 'failure'){
 					logger.error('Failed to create student %s, database issue', userToAdd.id);
-			} else if (err === 'exists') {
-				logger.warn('Student %s already exists', userToAdd.id);
+				} else if (err === 'exists') {
+					logger.warn('Student %s already exists', userToAdd.id);
+				}
+				callback(err, null);
 			} else {
-					logger.info('Student %s created', userToAdd.id);
+				logger.info('Student %s created', userToAdd.id);
+				callback(null, 'Created');
 			}
-			callback(err, res);
 		});
 	});
 }

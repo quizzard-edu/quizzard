@@ -27,7 +27,7 @@ var common = require('./common.js');
  * The question object passed to the function should have
  * the text, topic, type, answer, points and hint set.
  */
-exports.addQuestionByTypeWithRedirection = function(qType, question, callback) {console.log(question);
+exports.addQuestionByTypeWithRedirection = function(qType, question, callback) {
 	switch(qType){
 		case common.questionTypes.REGULAR:
 			addRegularQuestion(question, callback);
@@ -36,7 +36,7 @@ exports.addQuestionByTypeWithRedirection = function(qType, question, callback) {
 			addMultipleChoiceQuestion(question, callback);
 			break;
 		default:
-			callback('failure');
+			callback('failure', null);
 	}
 }
 
@@ -58,8 +58,8 @@ var addRegularQuestion = function(question, callback) {
 	questionToAdd.attempts = [];
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
-	db.addRegularQuestion(questionToAdd, function(res) {
-		callback(res);
+	db.addRegularQuestion(questionToAdd, function(err, res) {
+		callback(err, res);
 	});
 }
 
@@ -78,8 +78,8 @@ var addMultipleChoiceQuestion = function(question, callback) {
 	questionToAdd.attempts = [];
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
-	db.addMultipleChoiceQuestion(questionToAdd, function(res) {
-		callback(res);
+	db.addMultipleChoiceQuestion(questionToAdd, function(err, res) {
+		callback(err, res);
 	});
 }
 
@@ -116,7 +116,10 @@ exports.updateQuestionByIdWithRedirection = function(questionId, info, callback)
 }
 
 var updateQuestionByIdWithRedirection = function(questionId, info, callback) {
-	lookupQuestionById(questionId, function(q){
+	lookupQuestionById(questionId, function(err, q){
+		if(err){
+			callback(err, null);
+		}
 		if(q){
 			switch(q.type){
 				case common.questionTypes.REGULAR:
@@ -126,10 +129,10 @@ var updateQuestionByIdWithRedirection = function(questionId, info, callback) {
 					db.updateMultipleChoiceQuestionById(questionId, info, callback);
 					break;
 				default:
-					callback('failure');
+					callback('invalid type', null);
 			}
 		}else{
-			callback('failure');
+			callback('failure', null);
 		}
 	});
 }
@@ -139,10 +142,10 @@ exports.deleteQuestion = function(qid, callback) {
     questions.remove({id: qid}, function(err, res) {
         if (err) {
             logger.error(err);
-            callback('failure');
+            callback(err, null);
         } else {
             logger.info('Question %d deleted from database.', qid);
-            callback('success');
+            callback(null, 'success');
         }
     });
 }
@@ -165,20 +168,24 @@ exports.checkAnswer = function(questionId, userId, answer, callback) {
     logger.info('User %s attempted to answer question %d with "%s"',
         userId, questionId, answer);
 
-	lookupQuestionById(questionId, function(question){
-		var value = answer===question.answer;
-		db.updateStudentById(
-			userId,
-			{ questionId:questionId, correct:value, points:question.points },
-			function(res){
-				updateQuestionByIdWithRedirection(
-					questionId,
-					{ userId:userId, correct:value },
-					function(res) {
-						callback(value);
-					}
-				);
-			}
-		);
+	lookupQuestionById(questionId, function(err, question){
+		if(err){
+			callback(err, null);
+		}else{
+			var value = answer===question.answer;
+			db.updateStudentById(
+				userId,
+				{ questionId:questionId, correct:value, points:question.points },
+				function(err, res){
+					updateQuestionByIdWithRedirection(
+						questionId,
+						{ userId:userId, correct:value },
+						function(err, res) {
+							callback(err, value);
+						}
+					);
+				}
+			);
+		}
 	});
 }
