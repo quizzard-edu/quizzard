@@ -101,13 +101,13 @@ exports.getStudentsListSorted = function(lim, callback){
     });
 }
 
-exports.lookUpUserById = function(userId, callback){
-    usersCollection.findOne({id: userId}, function(err, u) {
-        if (err || !u) {
-            callback('failure');
+exports.getUserById = function(userId, callback){
+    usersCollection.findOne({id: userId}, function(err, user) {
+        if (err) {
+            callback('failure', null);
         } else {
-            delete u._id;
-            callback(u);
+            delete user._id;
+            callback(null, user);
         }
     });
 }

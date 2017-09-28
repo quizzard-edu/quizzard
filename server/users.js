@@ -25,84 +25,84 @@ var common = require('./common.js');
 
 // Create an admin USER, if the USER object is valid
 exports.addAdmin = function(user, callback) {
-		if(!user.fname || !user.lname || !user.id || !user.password){
-				logger.error('Failed to create a new admin, missing requirements');
-				return callback('failure');
+	if(!user.fname || !user.lname || !user.id || !user.password){
+		logger.error('Failed to create a new admin, missing requirements');
+		return callback('failure', null);
+	}
+
+	bcrypt.hash(user.password, 11, function(err, hash) {
+		if (err) {
+			logger.error(err);
+			return callback(err, null);
 		}
 
-		bcrypt.hash(user.password, 11, function(err, hash) {
-		    if (err) {
-						logger.error(err);
-		        return callback('failure');
-		    }
+		var currentDate = new Date().toString();
+		var userToAdd = {};
+		userToAdd.id = user.id.toLowerCase();
+		userToAdd.fname = user.fname;
+		userToAdd.lname = user.lname;
+		userToAdd.ctime = currentDate;
+		userToAdd.atime = currentDate;
+		userToAdd.mtime = currentDate;
+		userToAdd.email = user.email ? user.email : '';
+		userToAdd.type = common.userTypes.ADMIN;
+		userToAdd.password = hash;
 
-				var currentDate = new Date().toString();
-				var userToAdd = {};
-				userToAdd.id = user.id.toLowerCase();
-				userToAdd.fname = user.fname;
-				userToAdd.lname = user.lname;
-				userToAdd.ctime = currentDate;
-				userToAdd.atime = currentDate;
-				userToAdd.mtime = currentDate;
-				userToAdd.email = user.email ? user.email : '';
-				userToAdd.type = common.userTypes.ADMIN;
-				userToAdd.password = hash;
-
-				db.addAdmin(userToAdd, function(res){
-						if (res === 'failure'){
-								logger.error('Failed to create admin %s, database issue', userToAdd.id);
-					  } else if (res === 'exists') {
-					      logger.warn('Admin %s already exists', userToAdd.id);
-					  } else {
-								logger.info('Admin %s created', userToAdd.id);
-						}
-						callback(res);
-				});
-	  });
+		db.addAdmin(userToAdd, function(err, res){
+			if (err === 'failure'){
+				logger.error('Failed to create admin %s, database issue', userToAdd.id);
+			} else if (err === 'exists') {
+				logger.warn('Admin %s already exists', userToAdd.id);
+			} else {
+				logger.info('Admin %s created', userToAdd.id);
+			}
+			callback(err, res);
+		});
+	});
 }
 
 // Create a student USER, if the USER object is valid
 exports.addStudent = function(user, callback) {
-		if(!user.fname || !user.lname || !user.id || !user.password){
-				logger.error('Failed to create a new student, missing requirements');
-				return callback('failure');
+	if(!user.fname || !user.lname || !user.id || !user.password){
+		logger.error('Failed to create a new student, missing requirements');
+		return callback('failure', null);
+	}
+
+	bcrypt.hash(user.password, 11, function(err, hash) {
+		if (err) {
+			logger.error(err);
+			return callback(err, null);
 		}
 
-		bcrypt.hash(user.password, 11, function(err, hash) {
-		    if (err) {
-						logger.error(err);
-		        return callback('failure');
-		    }
+		var currentDate = new Date().toString();
+		var userToAdd = {};
+		userToAdd.id = user.id.toLowerCase();
+		userToAdd.fname = user.fname;
+		userToAdd.lname = user.lname;
+		userToAdd.ctime = currentDate;
+		userToAdd.atime = currentDate;
+		userToAdd.mtime = currentDate;
+		userToAdd.email = user.email ? user.email : '';
+		userToAdd.type = common.userTypes.STUDENT;
+		userToAdd.password = hash;
 
-				var 	currentDate = new Date().toString();
-				var userToAdd = {};
-				userToAdd.id = user.id.toLowerCase();
-				userToAdd.fname = user.fname;
-				userToAdd.lname = user.lname;
-				userToAdd.ctime = currentDate;
-				userToAdd.atime = currentDate;
-				userToAdd.mtime = currentDate;
-				userToAdd.email = user.email ? user.email : '';
-				userToAdd.type = common.userTypes.STUDENT;
-				userToAdd.password = hash;
+		userToAdd.points = 0.0;
+		userToAdd.answered = [];
+		userToAdd.attempted = [];
+		userToAdd.answeredCount = 0;
+		userToAdd.attemptedCount = 0;
 
-				userToAdd.points = 0.0;
-				userToAdd.answered = [];
-				userToAdd.attempted = [];
-				userToAdd.answeredCount = 0;
-				userToAdd.attemptedCount = 0;
-
-				db.addStudent(userToAdd, function(res){
-						if (res === 'failure'){
-								logger.error('Failed to create student %s, database issue', userToAdd.id);
-					  } else if (res === 'exists') {
-					      logger.warn('Student %s already exists', userToAdd.id);
-					  } else {
-								logger.info('Student %s created', userToAdd.id);
-						}
-						callback(res);
-				});
-	  });
+		db.addStudent(userToAdd, function(err, res){
+			if (err === 'failure'){
+					logger.error('Failed to create student %s, database issue', userToAdd.id);
+			} else if (err === 'exists') {
+				logger.warn('Student %s already exists', userToAdd.id);
+			} else {
+					logger.info('Student %s created', userToAdd.id);
+			}
+			callback(err, res);
+		});
+	});
 }
 
 /*
@@ -112,7 +112,7 @@ exports.addStudent = function(user, callback) {
  * to a user.
 */
 exports.updateUserByIdWithRedirection = function(userId, info, callback){
-		db.updateUserById(userId, info, callback);
+	db.updateUserById(userId, info, callback);
 }
 
 exports.updateStudentById = function(userId, info, callback){
@@ -134,11 +134,7 @@ exports.getStudentsList = function(callback) {
 
 /* Return an array of users in the database, sorted by rank. */
 exports.getStudentsListSorted = function(lim, callback) {
-		db.getStudentsListSorted(lim, callback);
-}
-
-exports.lookUpUserById = function(userId, callback){
-		db.lookUpUserById(userId, callback);
+	db.getStudentsListSorted(lim, callback);
 }
 
 /*
@@ -146,19 +142,20 @@ exports.lookUpUserById = function(userId, callback){
  * Return account object if it is or null otherwise.
  */
 exports.checkLogin = function(username, pass, callback) {
-		db.checkLogin(username, pass, callback);
+	db.checkLogin(username, pass, callback);
 }
 
 /*
- * Fetch the user object with ID studentId in the users database.
+ * Fetch the user object with ID iserId in the users database.
  */
+exports.getUserById = function(userId, callback){
+	db.getUserById(userId, callback);
+}
+
 exports.getStudentById = function(studentId, callback) {
-		db.getStudentById(studentId, callback);
+	db.getStudentById(studentId, callback);
 }
 
-/*
- * Fetch the admin object with ID adminId in the users database.
- */
 exports.getAdminById = function(adminId, callback) {
-		db.getStudentById(adminId, callback);
+	db.getStudentById(adminId, callback);
 }
