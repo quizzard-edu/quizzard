@@ -1,13 +1,14 @@
 var sortTypes;
 
-/* Fetch the list of valid question list sort types from the server. */
+/* Fetch the list of valid question list sort types from the server.
 $.ajax({
     type: 'GET',
     url: '/sortlist',
     success: function(data) {
         sortTypes = data;
     }
-});
+});*/
+
 
 /* Make questions clickable. */
 var setupQuestionListeners = function() {
@@ -48,8 +49,8 @@ $('#qlist-answered').click(function(evt) {
 
 var fetchQList = function(which) {
     $.ajax({
-        type: 'POST',
-        url: '/fetchqlist',
+        type: 'GET',
+        url: '/questionlist',
         data: { type: which },
         success: function(data) {
             $('.question-list').html(data);
@@ -57,6 +58,8 @@ var fetchQList = function(which) {
         }
     });
 }
+
+fetchQList('unanswered');
 
 /*
  * Send a request to sort the question list in a given order.

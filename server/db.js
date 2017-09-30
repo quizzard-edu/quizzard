@@ -363,12 +363,12 @@ exports.getQuestionsListByUser = function(request, callback) {
     var user = request.user;
     var questionsStatus = request.questionsStatus;
 
-    if (!request.user) {
+    if (!user) {
         return callback('No user object', null);
     }
 
-    if (request.user.type === common.userTypes.ADMIN) {
-        questionsCollection.find(questionsQuery).toArray(function(err, docs) {
+    if (user.type == common.userTypes.ADMIN) {
+        questionsCollection.find(questionsQuery).sort({id: 1}).toArray(function(err, docs) {
             if (err) {
                 return callback(err, null);
             }
@@ -382,17 +382,15 @@ exports.getQuestionsListByUser = function(request, callback) {
     
             return callback(null, docs);
         });
-    }
-
-    if (user.type === common.userTypes.STUDENT) {
+    } else if (user.type == common.userTypes.STUDENT) {
         questionsQuery.active = true;
         
-        getUserById(user.id, function(err, requiredUser){
+        getUserById(user.id, function(err, requiredUser) {
             if (err) {
                 return callback(err, null);
             }
 
-            questionsCollection.find(questionsQuery).toArray(function(err, docs) {
+            questionsCollection.find(questionsQuery).sort({id: 1}).toArray(function(err, docs) {
                 if (err) {
                     return callback(err, null);
                 }
@@ -407,13 +405,13 @@ exports.getQuestionsListByUser = function(request, callback) {
                     docs[q].answeredCount = docs[q].answered.length;
                     delete docs[q]._id;
 
-                    if (compareList.indexOf(q.id) == -1) {
+                    if (compareList.indexOf(docs[q].id) == -1) {
                         UnansweredList.push(docs[q]);
                     } else {
                         answeredList.push(docs[q]);
                     }
                 }
-                
+
                 var returnList = (questionsStatus === 'answered') ? answeredList : UnansweredList;
                 return callback(null, returnList);
             });
@@ -525,6 +523,7 @@ exports.updateRegularQuestionById = function(questionId, request, callback){
 
     update.$addToSet = {};
     update.$push = {};
+    update.$pull = {};
     update.$set = {};
 
     if (request.topic) {
@@ -551,9 +550,14 @@ exports.updateRegularQuestionById = function(questionId, request, callback){
       update.$set.points = request.points;
     }
 
+    if (request.active) {
+        update.$set.active = request.active;
+    }
+
     if (typeof request.correct !== 'undefined') {
         if (request.correct) {
             update.$addToSet.answered = request.userId;
+            update.$pull.attempted = { $in : [questionId] };
         } else {
             update.$addToSet.attempted = request.userId;
             update.$push.attempts = request.answer;
@@ -570,6 +574,10 @@ exports.updateRegularQuestionById = function(questionId, request, callback){
 
     if (isEmptyObject(update.$set)) {
         delete update.$set;
+    }
+
+    if (isEmptyObject(update.$pull)) {
+        delete update.$pull;
     }
 
     questionsCollection.update(query, update, function(err, info) {
