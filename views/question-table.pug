@@ -1,7 +1,7 @@
 table.table
   thead
     tr
-      th Shown?
+      th Visible
       th ID
       th Title
       th Topic
@@ -11,11 +11,7 @@ table.table
     each q in questions
       tr
         td
-          case q.active
-            when true
-              input.checked(id='checked-' + q.id type='checkbox' checked=true)
-            when false
-              input.checked(id='checked-' + q.id type='checkbox' checked=false)
+          input.checked(id='checked-' + q.id type='checkbox' checked=q.visible)
         td #{q.id}
         td #{q.title}
         td #{q.topic}

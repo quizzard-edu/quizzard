@@ -325,7 +325,7 @@ var submitEditForm = function(id) {
 var updateVisibility = function(qid) {
     var question = {};
 
-    question['show'] = $('#checked-' + qid).is(':checked');
+    question['visible'] = $('#checked-' + qid).is(':checked');
 
     $.ajax({
         type: 'POST',
@@ -358,7 +358,7 @@ var submitQuestionForm = function() {
         return;
     }
     question['text'] = $('#qtext').summernote('code');
-    question['show'] = $('#show').is(':checked');
+    question['visible'] = $('#visible').is(':checked');
     $.ajax({
         type: 'POST',
         url: '/questionadd',
@@ -506,4 +506,3 @@ var sortAccountsTable = function(type) {
         }
     });
 }
-

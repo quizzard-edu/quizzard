@@ -79,7 +79,7 @@ app.post('/login', function(req, res) {
     var password = req.body.passwd;
 
     logger.info('Attempted login by user %s', username);
-    
+
     users.checkLogin(username, password, function(err, user) {
         if(err){
             logger.info('User %s failed logged in.', username);
@@ -113,7 +113,7 @@ app.post('/changepass', function(req, res) {
         if(err){
             return res.status(400).send('invalid');
         }
-        
+
         if(user){
             users.updateUserByIdWithRedirection(user.id, {newPassword:newPass}, function(err, result){
                 if (result == 'success') {
@@ -134,7 +134,7 @@ app.get('/logout', function(req, res) {
         req.session.destroy();
         return res.status(200).send();
     }
-        
+
     return res.status(500).send();
 });
 
@@ -143,12 +143,12 @@ app.get('/home', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (!req.session.user) {
         return res.redirect('/');
-    } 
-    
+    }
+
     if (req.session.user.type == common.userTypes.ADMIN) {
         return res.redirect('/admin');
     }
-    
+
     if (req.session.questions == null) {
         /* fetch some questions from the database if the user doesn't have any */
         questions.findQuestions(10, common.sortTypes.SORT_RANDOM, req.session.user, function(err, results) {
@@ -205,7 +205,7 @@ app.get('/admin', function(req,res) {
     if (!req.session.user.type == common.userTypes.ADMIN) {
         return res.redirect('/home');
     }
-    
+
     return res.render('admin', { user: req.session.user });
 });
 
@@ -252,7 +252,7 @@ app.get('/leaderboard-table', function(req, res) {
             leaderboard: leader,
             userid: req.session.user.id
         });
-        
+
         return res.status(200).send(html);
     });
 });
@@ -265,7 +265,7 @@ app.get('/studentlist', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
-    
+
     /* only fetch student list once, then store it */
     users.getStudentsList(function(err, studentlist) {
         if (err) {
@@ -379,7 +379,7 @@ app.get('/questionlist', function(req, res) {
 
         req.session.adminQuestionList = null;
         var html = null;
-        
+
         if (req.session.user.type == common.userTypes.ADMIN) {
             html = questionTable({ questions : questionsList });
         } else {
@@ -389,7 +389,7 @@ app.get('/questionlist', function(req, res) {
         return res.status(200).send(html);
     });
 
-    /* If this is the first time accessing it, fetch list from database. 
+    /* If this is the first time accessing it, fetch list from database.
     questions.findQuestions(
         0,
         common.sortTypes.SORT_DEFAULT,
@@ -489,7 +489,7 @@ app.post('/fetchqlist', function(req, res) {
     var request = {};
     request.user = req.session.user;
     request.questionsStatus = req.body.type;
-    
+
     users.getQuestionsList(request, function(err, questionsList){
         if (err) {
             return res.status(500).send('Could not fetch questions list');
@@ -702,8 +702,7 @@ app.post('/questionadd', function(req, res) {
         if (err) {
             return res.status(500);
         }
-        
-        req.session.adminQuestionList.push(req.body);
+
         return res.status(200);
     });
 });

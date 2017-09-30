@@ -60,7 +60,7 @@ var addRegularQuestion = function(question, callback) {
 	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
 	questionToAdd.points = question.points;
-	questionToAdd.active = true;
+	questionToAdd.visible = true;
 	questionToAdd.type = common.questionTypes.REGULAR;
 	questionToAdd.attempted = [];
 	questionToAdd.answered = [];
@@ -157,7 +157,7 @@ exports.deleteQuestion = function(questionId, callback) {
             logger.error(err);
             return callback(err, null);
 		}
-		
+
         logger.info('Question %d deleted from database.', questionId);
         return callback(null, 'success');
     });
