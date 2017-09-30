@@ -36,9 +36,9 @@ table.table
           td #{s.id}
           td #{s.points}
           if fullTable
-            td #{s.attempted}
-            td #{s.answered}
+            td #{s.attemptedCount}
+            td #{s.answeredCount}
             if s.attempted == 0
               td N/A
             else
-              td #{((s.answered / s.attempted) * 100).toFixed(2)}%
+              td #{((s.answeredCount / s.attemptedCount) * 100).toFixed(2)}%
