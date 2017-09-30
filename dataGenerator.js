@@ -25,11 +25,11 @@ var questions = require('./server/questions.js');
 var common = require('./server/common.js');
 
 // variables to control the genereated data
-var adminsCount = 10;
-var studentsCount = 100;
-var questionsCount = 100;
-var questionsMaxValue = 200;
-var questionsAttempts = 100; // be careful when changing this value,
+var adminsCount = 2;
+var studentsCount = 10;
+var questionsCount = 10;
+var questionsMaxValue = 20;
+var questionsAttempts = 10; // be careful when changing this value,
                             // it will increase the run time significantly
 var questionsCorrectPercentage = 40;
 
@@ -50,12 +50,13 @@ var addAdmin = function(accid, pass, isAdmin) {
         email: accid+'@'+'fake.fake'
     };
 
-    users.addAdmin(acc, function(res, account) {
-        if (res == 'failure') {
+    users.addAdmin(acc, function(err, account) {
+        if (err == 'failure') {
             logger.error('Could not create account %s. Please try again.', accid);
-        } else if (res == 'exists') {
+        } else if (err == 'exists') {
             logger.info('Account with username %s exists.', accid);
         }
+
         adminsCreated++;
         if(adminsCreated == adminsCount){
             createStudents();
@@ -73,12 +74,13 @@ var addStudent = function(accid, pass, isAdmin) {
         email: accid+'@'+'fake.fake'
     };
 
-    users.addStudent(acc, function(res, account) {
-        if (res == 'failure') {
+    users.addStudent(acc, function(err, account) {
+        if (err == 'failure') {
             logger.error('Could not create account %s. Please try again.', accid);
-        } else if (res == 'exists') {
+        } else if (err == 'exists') {
             logger.info('Account with username %s exists.', accid);
         }
+
         studentsCreated++;
         if(studentsCreated == studentsCount){
             createQuestions();
@@ -98,12 +100,13 @@ var addQuestion = function(qTopic, id){
         hint: 'KonniChiwa'
     };
 
-    questions.addRegularQuestion(question, function(res) {
-        if (res == 'failure') {
+    questions.addRegularQuestion(question, function(err, res) {
+        if (err == 'failure') {
             logger.error('Could not add question. Please try again.');
         }else{
             logger.info('Questions %d created', id);
         }
+
         questionsCreated++;
         if(questionsCreated == questionsCount){
             answerQuestions();
@@ -116,15 +119,18 @@ var answerQuestion = function(questionId){
     for(var i = 0; i < questionsAttempts; i++){
         var studentId = 'student'+Math.floor(Math.random()*studentsCount);
         var answer = 'NotKonniChiwa';
+        
         if(Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)){
             answer = 'KonniChiwa';
         }
-        questions.checkAnswer(questionId, studentId, answer, function(res) {
+
+        questions.checkAnswer(questionId, studentId, answer, function(err, res) {
             if (res == 'failure') {
                 logger.error('Questions %d answered incorrectly by %s', questionId, studentId);
             }else{
                 logger.info('Questions %d answered correctly by %s', questionId, studentId);
             }
+
             questionsAnswered++;
             if(questionsAnswered == questionsCount*questionsAttempts){
                 process.exit(0);
@@ -160,11 +166,15 @@ var answerQuestions = function() {
 
 db.initialize(function() {
     db.removeAllUsers(function(res){
-        if(res === 'failure')
+        if(res === 'failure') {
             process.exit(1);
+        }
+
         db.removeAllQuestions(function(res){
-            if(res === 'failure')
+            if(res === 'failure') {
                 process.exit(1);
+            }
+
             createAdmins();
         });
     });

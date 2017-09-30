@@ -60,6 +60,7 @@ var addRegularQuestion = function(question, callback) {
 	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
 	questionToAdd.points = question.points;
+	questionToAdd.active = true;
 	questionToAdd.type = common.questionTypes.REGULAR;
 	questionToAdd.attempted = [];
 	questionToAdd.answered = [];
