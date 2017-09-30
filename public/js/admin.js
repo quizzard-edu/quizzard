@@ -145,7 +145,7 @@ var mcAnswerCount = 4;
 var addMCAnswers = function(dom){ 
     mcAnswerCount++;
      var newdiv = document.createElement('div');
-     var inputdiv = "<p>Is Correct: <input type='radio' name='radbutton' value='{0}'/><input class='form-control' type='text' name='mcans{1}' placeholder='Enter Answer Here' required='required' style='float:left;'/> <button onclick='$(this).parent().remove();'>delete</button></p>"
+     var inputdiv = "<p>Is Correct: <input type='radio' name='radbutton' value='mcans{0}'/><input class='form-control' type='text' name='mcans{1}' placeholder='Enter Answer Here' required='required' style='float:left;'/> <button onclick='$(this).parent().remove();'>delete</button></p>"
      newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount);  
      $('#qAnswer > div.form-group').append(newdiv);
 }

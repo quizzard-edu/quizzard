@@ -23,6 +23,7 @@ block content
 
         h2.qtext #{question.title}
         h5.qtext !{question.text}
+        // view question type in server/questions.js
         case question.type
           when 0
             form.form-question#re_answerform

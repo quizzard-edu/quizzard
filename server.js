@@ -577,14 +577,22 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
  * The request body contains the question to be added.
  */
 app.post('/questionadd', function(req, res) {
-    req.body.basePoints = parseInt(req.body.basePoints);
+    var questionData = {};
+    questionData.basePoints = parseInt(req.body.basePoints);
+    questionData.title = req.body.title;
+    questionData.topic = req.body.topic;
+    questionData.hint = req.body.hint;
+    questionData.successMessage = req.body.successMessage;
+    questionData.text = req.body.text;
+
     // correct the question Type in database:
     switch(req.body.type){
         case 're':
-            req.body.type = questions.QUESTION_REGULAR;
+            questionData.type = questions.QUESTION_REGULAR;
+            questionData.answer = req.body.answer;
             break;
         case 'mc':
-            req.body.type = questions.QUESTION_MULTCHOICE;
+            questionData.type = questions.QUESTION_MULTCHOICE;
             // make all answers into a list
             var mcanswers = Object.keys(req.body).filter(function(k) {
                 return k.indexOf('mc') == 0;
@@ -592,21 +600,20 @@ app.post('/questionadd', function(req, res) {
                 newData[k] = req.body[k];
                 return newData;
             }, {});
-            req.body.mc_answers =  Object.keys(mcanswers).map(function(key){return mcanswers[key]});
-            req.body.answer = req.body['mcans' + req.body.radbutton];
-
-            console.log("\n this is mc_questions: " + req.body.mc_answers);
+            questionData.mc_answers =  Object.keys(mcanswers).map(function(key){return mcanswers[key]});
+            questionData.mcAnswers_Object = mcanswers;
+            questionData.answer = req.body[req.body.radbutton];
             break;
         default:
             res.status(500).send('failure');
             break;
     }
-    questions.addQuestion(req.body, function(result) {
+    questions.addQuestion(questionData, function(result) {
         if (result == 'failure') {
             res.status(500);
         } else {
             res.status(200);
-            req.session.adminQuestionList.push(req.body);
+            req.session.adminQuestionList.push(questionData);
         }
         res.send(result);
     });
@@ -630,6 +637,7 @@ app.post('/questionmod', function(req, res) {
 
     if (q.basePoints)
         q.basePoints = parseInt(q.basePoints);
+    // add switch statement to modify MC / RE question
 
     /* Add all modified fields. */
     for (field in q) {
