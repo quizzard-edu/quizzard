@@ -41,48 +41,64 @@ exports.initialize = function(callback) {
             logger.error(err);
             process.exit(1);
         }
+
         logger.info('Connection to Quizzard database successful.');
-    		usersCollection = db.collection('users');
-    		questionsCollection = db.collection('questions');
-    		getNextQuestionId(function(){ logger.info('next question: %d', nextId); });
-        callback();
+        usersCollection = db.collection('users');
+        questionsCollection = db.collection('questions');
+
+        getNextQuestionId(function(){
+            logger.info('next question: %d', nextId); 
+            return callback();
+        });
     });
 }
 
 // Users functions
 // Add USER to usersCollection in the database
-exports.addStudent = function(student, callback){ addUser(student, callback); };
-exports.addAdmin = function(admin, callback){ addUser(admin, callback); };
+exports.addStudent = function(student, callback){
+    addUser(student, callback); 
+}
+
+exports.addAdmin = function(admin, callback){
+    addUser(admin, callback);
+}
 
 var addUser = function(user, callback) {
     usersCollection.findOne({'id': user.id}, function(err, obj) {
         if (err) {
             logger.error(err);
-            callback(err, null);
+            return callback(err, null);
         } else if (obj) {
-            callback('exists', null);
+            return callback('exists', null);
         } else {
             usersCollection.insert(user, function(err, res) {
-                callback(err, res);
+                return callback(err, res);
             });
         }
     });
 }
 
 /* Return an array of users in the database. */
-exports.getAdminsList = function(callback) { getUsersList(common.userTypes.ADMIN, callback); }
-exports.getStudentsList = function(callback) { getUsersList(common.userTypes.STUDENT, callback); }
+exports.getAdminsList = function(callback) {
+    getUsersList(common.userTypes.ADMIN, callback);
+}
+
+exports.getStudentsList = function(callback) {
+    getUsersList(common.userTypes.STUDENT, callback);
+}
 
 /* Return an array of users in the database, sorted by rank. */
 var getUsersList = function(type, callback){
     usersCollection.find({type : type}).sort({id: 1}).toArray(function(err, docs) {
         if (err) {
-            callback(err, []);
-        } else {
-            for (s in docs)
-                delete docs[s]._id;
-            callback(null, docs);
+            return callback(err, []);
         }
+
+        for (s in docs) {
+            delete docs[s]._id;
+        }
+
+        return callback(null, docs);
     });
 }
 
@@ -92,23 +108,25 @@ exports.getStudentsListSorted = function(lim, callback){
             .limit(lim)
             .toArray(function(err, docs) {
         if (err) {
-            callback(err, []);
-        } else {
-            for (s in docs)
-                delete docs[s]._id;
-            callback(null, docs);
+            return callback(err, []);
         }
+
+        for (s in docs) {
+            delete docs[s]._id;
+        }
+
+        return callback(null, docs);
     });
 }
 
 exports.getUserById = function(userId, callback){
     usersCollection.findOne({id: userId}, function(err, user) {
         if (err) {
-            callback('failure', null);
-        } else {
-            delete user._id;
-            callback(null, user);
+            return callback('failure', null);
         }
+
+        delete user._id;
+        return callback(null, user);
     });
 }
 
@@ -120,21 +138,21 @@ exports.checkLogin = function(userId, pass, callback) {
     usersCollection.findOne({'id' : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
-            callback(err, null);
-        } else if (obj) {
+            return callback(err, null);
+        }
+
+        if (obj) {
             validatePassword(obj, pass, function(err, valid) {
-                if(err){
-                    callback(err, null);
-                } else if (valid) {
+                if (err) {
+                    return callback(err, null);
+                } 
+                if (valid) {
                     delete obj._id;
-                    callback(null, obj);
-                } else {
-                    logger.warn('Invalid password provided for user %s.', userId);
-                    callback('invalid', null);
+                    delete obj.password;
+                    return callback(null, obj);
                 }
+                return callback('invalid', null);
             });
-        } else {
-            callback('error', null);
         }
     });
 }
@@ -143,44 +161,57 @@ exports.checkLogin = function(userId, pass, callback) {
  * Check the hash of pass against the password stored in userobj.
  */
 var validatePassword = function(userobj, pass, callback) {
-    bcrypt.compare(pass, userobj.password, function(err, res) {
-        callback(err, res);
+    bcrypt.compare(pass, userobj.password, function(err, obj) {
+        callback(err, obj);
     });
 }
 
 // cleanup the users collection
 exports.removeAllUsers = function(callback){
-    usersCollection.remove({}, function(err, res) {
-        if(err){
+    usersCollection.remove({}, function(err, obj) {
+        if (err) {
             logger.error(err);
             return callback(err, null);
         }
         logger.info('All users have been removed');
-        return callback(null, res);
+        return callback(null, obj);
     });
 }
 
 /*
  * Fetch the user object with ID userId in the users database.
  */
-exports.getStudentById = function(studentId, callback) { getUserById(studentId, callback); }
-exports.getAdminById = function(adminId, callback) { getUserById(adminId, callback); }
+exports.getStudentById = function(studentId, callback) {
+    getUserById(studentId, callback);
+}
+
+exports.getAdminById = function(adminId, callback) {
+    getUserById(adminId, callback);
+}
 
 var getUserById = function(userId, callback){
     usersCollection.findOne({id : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
-            callback(err, null);
-        } else {
-            callback(null, obj);
+            return callback(err, null);
         }
+        
+        return callback(null, obj);
     });
 }
 
 // Update a student record using its Id
-exports.updateUserById = function(userId, info, callback){ updateUserById(userId, info, callback); }
-exports.updateStudentById = function(userId, info, callback){ updateUserById(userId, info, callback); }
-exports.updateAdminById = function(userId, info, callback){ updateUserById(userId, info, callback); }
+exports.updateUserById = function(userId, info, callback){
+    updateUserById(userId, info, callback);
+}
+
+exports.updateStudentById = function(userId, info, callback){
+    updateUserById(userId, info, callback);
+}
+
+exports.updateAdminById = function(userId, info, callback){
+    updateUserById(userId, info, callback);
+}
 
 var updateUserById = function(userId, info, callback){
     var query = { id:userId };
@@ -190,64 +221,74 @@ var updateUserById = function(userId, info, callback){
     update.$inc = {};
     update.$set = {};
 
-    if(info.id)
+    if (info.id) {
         update.$set.id = info.id;
+    }
 
-    if(info.fname)
+    if (info.fname) {
         update.$set.fname = info.fname;
+    }
 
-    if(info.lname)
+    if (info.lname) {
         update.$set.lname = info.lname;
+    }
 
-    if(info.email)
+    if (info.email) {
         update.$set.email = info.email;
+    }
 
-    if(typeof info.correct !== 'undefined'){
-        if(info.correct){
+    if (typeof info.correct !== 'undefined') {
+        if (info.correct) {
             update.$addToSet.answered = info.questionId;
             update.$inc.points = info.points;
             update.$inc.answeredCount = 1;
-        }else{
+        } else {
             update.$addToSet.attempted = info.questionId;
             update.$inc.attemptedCount = 1;
         }
     }
 
-    if(isEmptyObject(update.$addToSet))
+    if (isEmptyObject(update.$addToSet)) {
         delete update.$addToSet;
+    }
 
-    if(isEmptyObject(update.$inc))
+    if (isEmptyObject(update.$inc)) {
         delete update.$inc;
+    }
 
-    if(isEmptyObject(update.$set))
+    if (isEmptyObject(update.$set)) {
         delete update.$set;
+    }
 
-    if(typeof info.newPassword === 'undefined'){
-        usersCollection.update(query, update, function(err, res) {
+    if (typeof info.newPassword === 'undefined') {
+        usersCollection.update(query, update, function(err, obj) {
             if (err) {
                 logger.error(err);
-                callback(err, null);
-            } else {
-                callback(null, 'success');
+                return callback(err, null);
             }
+            
+            return callback(null, 'success');
         });
-    }else{
+    } else {
         bcrypt.hash(info.newPassword, 11, function(err, hash) {
-    		    if (err) {
-					logger.error(err);
-    		        return callback(err, null);
-    		    }
-            if(update.$set && !isEmptyObject(update.$set))
+            if (err) {
+                logger.error(err);
+                return callback(err, null);
+            }
+
+            if (update.$set && !isEmptyObject(update.$set)) {
                 update.$set.password = hash;
-            else
+            } else {
                 update.$set = {password:hash};
-            usersCollection.update(query, update, function(err, res) {
+            }
+
+            usersCollection.update(query, update, function(err, obj) {
                 if (err) {
                     logger.error(err);
-                    callback(err, null);
-                } else {
-                    callback(null, 'success');
+                    return callback(err, null);
                 }
+                
+                return callback(null, 'success');
             });
         });
     }
@@ -265,8 +306,13 @@ var isEmptyObject = function(obj) {
 
 // Questions functions
 // Add QUESTION to questionsCollection in the database
-exports.addRegularQuestion = function(question, callback){ addQuestion(question, callback); };
-exports.addMultipleChoiceQuestion = function(question, callback){ addQuestion(question, callback); };
+exports.addRegularQuestion = function(question, callback){
+    addQuestion(question, callback);
+}
+
+exports.addMultipleChoiceQuestion = function(question, callback){
+    addQuestion(question, callback);
+}
 
 var addQuestion = function(question, callback) {
 	question.id = ++nextId;
@@ -275,6 +321,7 @@ var addQuestion = function(question, callback) {
             logger.error(err);
             return callback(err, null);
         }
+
         return callback(null, res);
     });
 }
@@ -286,6 +333,7 @@ exports.removeAllQuestions = function(callback){
             logger.error(err);
             return callback(err, null);
         }
+
         nextId = 0;
         logger.info('All questions have been removed');
         logger.info('next question: %d', nextId);
@@ -300,8 +348,9 @@ var getNextQuestionId = function(callback){
             logger.error(err);
             process.exit(1);
         }
+        
         nextId = docs[0] ? docs[0].id : 0;
-        callback(nextId);
+        return callback(nextId);
     });
 }
 
@@ -320,31 +369,31 @@ exports.findQuestions = function(amount, findType, user, callback){
 
     if (findType & common.sortTypes.QUERY_ANSWERED) {
         if (findType & common.sortTypes.QUERY_ANSONLY) {
-            query = {
-                id: { $in: user.answered }
-            };
+            query = { id: { $in: user.answered } };
         } else {
             query = {};
         }
     } else if (user != null) {
-        query = {
-            id: { $nin: user.answered }
-        };
+        query = { id: { $nin: user.answered } };
     }
+
     questionsCollection.find(query).sort(criteria).limit(amount).toArray(function(err, docs) {
         if (err) {
-            callback(err, null);
-        } else {
-            if (findType & common.sortTypes.SORT_RANDOM)
-                shuffle(docs);
-            for (q in docs){
-                docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-                docs[q].attemptsCount = docs[q].attempted.length;
-                docs[q].answeredCount = docs[q].answered.length;
-                delete docs[q]._id;
-            }
-            callback(null, docs);
+            return callback(err, null);
         }
+
+        if (findType & common.sortTypes.SORT_RANDOM) {
+            shuffle(docs);
+        }
+
+        for (q in docs) {
+            docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
+            docs[q].attemptsCount = docs[q].attempted.length;
+            docs[q].answeredCount = docs[q].answered.length;
+            delete docs[q]._id;
+        }
+
+        return callback(null, docs);
     });
 }
 
@@ -353,10 +402,10 @@ var shuffle = function(arr) {
     var curr, tmp, rnd;
 
     curr = arr.length;
+
     while (curr) {
         rnd = Math.floor(Math.random() * curr);
         --curr;
-
         tmp = arr[curr];
         arr[curr] = arr[rnd];
         arr[rnd] = tmp;
@@ -364,13 +413,12 @@ var shuffle = function(arr) {
 }
 
 /* Sort questions by the given sort type. */
-exports.sortQuestions = function(qs, type, callback) {
+exports.sortQuestions = function(questions, type, callback) {
     var cmpfn;
 
     if (type & common.sortTypes.SORT_RANDOM) {
-        shuffle(qs);
-        callback(null, qs);
-        return;
+        shuffle(questions);
+        return callback(null, questions);
     } else if (type & common.sortTypes.SORT_TOPIC) {
         cmpfn = function(a, b) {
             return a.topic < b.topic ? -1 : 1;
@@ -383,28 +431,28 @@ exports.sortQuestions = function(qs, type, callback) {
         cmpfn = function(a, b) { return -1; };
     }
 
-    qs.sort(cmpfn);
-    callback(null, qs);
+    questions.sort(cmpfn);
+    return callback(null, questions);
 }
 
 /* Extract a question object from the database using its ID. */
-exports.lookupQuestionById = function(qid, callback) {
-    questionsCollection.findOne({id: qid}, function(err, q) {
+exports.lookupQuestionById = function(questionId, callback) {
+    questionsCollection.findOne({id: questionId}, function(err, question) {
         if (err) {
-            callback(err, null);
-        } else {
-            /* necessary for later database update */
-            q.firstAnswer = q.answered[0] ? q.answered[0] : 'No One';
-            q.attemptsCount = q.attempted.length;
-            q.answeredCount = q.answered.length;
-            delete q._id;
-            callback(null, q);
+            return callback(err, null);
         }
+
+        /* necessary for later database update */
+        question.firstAnswer = question.answered[0] ? question.answered[0] : 'No One';
+        question.attemptsCount = question.attempted.length;
+        question.answeredCount = question.answered.length;
+        delete question._id;
+        return callback(null, question);
     });
 }
 
 // update a question record based on its id
-exports.updateRegularQuestionById = function(questionId, info, callback){
+exports.updateRegularQuestionById = function(questionId, request, callback){
     var query = { id:questionId };
     var update = {};
 
@@ -412,48 +460,57 @@ exports.updateRegularQuestionById = function(questionId, info, callback){
     update.$push = {};
     update.$set = {};
 
-    if(info.topic)
-      update.$set.topic = info.topic;
+    if (request.topic) {
+      update.$set.topic = request.topic;
+    }
 
-    if(info.title)
-      update.$set.title = info.title;
+    if (request.title) {
+      update.$set.title = request.title;
+    }
 
-    if(info.text)
-      update.$set.text = info.text;
+    if (request.text) {
+      update.$set.text = request.text;
+    }
 
-    if(info.answer)
-      update.$set.answer = info.answer;
+    if (request.answer) {
+      update.$set.answer = request.answer;
+    }
 
-    if(info.hint)
-      update.$set.hint = info.hint;
+    if (request.hint) {
+      update.$set.hint = request.hint;
+    }
 
-    if(info.points)
-      update.$set.points = info.points;
+    if (request.points) {
+      update.$set.points = request.points;
+    }
 
-    if(typeof info.correct !== 'undefined'){
-        if(info.correct){
-            update.$addToSet.answered = info.userId;
-        }else{
-            update.$addToSet.attempted = info.userId;
-            update.$push.attempts = info.answer;
+    if (typeof request.correct !== 'undefined') {
+        if (request.correct) {
+            update.$addToSet.answered = request.userId;
+        } else {
+            update.$addToSet.attempted = request.userId;
+            update.$push.attempts = request.answer;
         }
     }
 
-    if(isEmptyObject(update.$addToSet))
+    if (isEmptyObject(update.$addToSet)) {
         delete update.$addToSet;
+    }
 
-    if(isEmptyObject(update.$push))
+    if (isEmptyObject(update.$push)) {
         delete update.$push;
+    }
 
-    if(isEmptyObject(update.$set))
+    if (isEmptyObject(update.$set)) {
         delete update.$set;
+    }
 
-    questionsCollection.update(query, update, function(err, res) {
+    questionsCollection.update(query, update, function(err, info) {
         if (err) {
             logger.error(err);
-            callback(err, null);
-        } else {
-            callback(null, 'success');
+            return callback(err, null);
         }
+
+        return callback(null, 'success');
     });
 }

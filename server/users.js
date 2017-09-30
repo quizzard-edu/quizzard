@@ -38,6 +38,7 @@ exports.addAdmin = function(user, callback) {
 
 		var currentDate = new Date().toString();
 		var userToAdd = {};
+
 		userToAdd.id = user.id.toLowerCase();
 		userToAdd.fname = user.fname;
 		userToAdd.lname = user.lname;
@@ -55,11 +56,11 @@ exports.addAdmin = function(user, callback) {
 				} else if (err === 'exists') {
 					logger.warn('Admin %s already exists', userToAdd.id);
 				}
-				callback(err, null);
-			} else {
-				logger.info('Admin %s created', userToAdd.id);
-				callback(null, 'created');
+				return callback(err, null);
 			}
+
+			logger.info('Admin %s created', userToAdd.id);
+			return callback(null, 'created');
 		});
 	});
 }
@@ -79,6 +80,7 @@ exports.addStudent = function(user, callback) {
 
 		var currentDate = new Date().toString();
 		var userToAdd = {};
+
 		userToAdd.id = user.id.toLowerCase();
 		userToAdd.fname = user.fname;
 		userToAdd.lname = user.lname;
@@ -102,11 +104,12 @@ exports.addStudent = function(user, callback) {
 				} else if (err === 'exists') {
 					logger.warn('Student %s already exists', userToAdd.id);
 				}
-				callback(err, null);
-			} else {
-				logger.info('Student %s created', userToAdd.id);
-				callback(null, 'Created');
+				
+				return callback(err, null);
 			}
+
+			logger.info('Student %s created', userToAdd.id);
+			return callback(null, 'Created');
 		});
 	});
 }

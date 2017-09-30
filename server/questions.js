@@ -32,20 +32,28 @@ exports.addQuestionByTypeWithRedirection = function(qType, question, callback) {
 		case common.questionTypes.REGULAR:
 			addRegularQuestion(question, callback);
 			break;
+
 		case common.questionTypes.MULTIPLECHOICE:
 			addMultipleChoiceQuestion(question, callback);
 			break;
+
 		default:
 			callback('failure', null);
 	}
 }
 
-exports.addRegularQuestion = function(question, callback) {	addRegularQuestion(question, callback); }
-exports.addMultipleChoiceQuestion = function(question, callback) {	addMultipleChoiceQuestion(question, callback); }
+exports.addRegularQuestion = function(question, callback) {
+	addRegularQuestion(question, callback);
+}
+
+exports.addMultipleChoiceQuestion = function(question, callback) {
+	addMultipleChoiceQuestion(question, callback);
+}
 
 var addRegularQuestion = function(question, callback) {
 	var currentDate = new Date().toString();
 	var questionToAdd = {};
+
 	questionToAdd.topic = question.topic;
 	questionToAdd.title = question.title;
 	questionToAdd.text = question.text;
@@ -58,6 +66,7 @@ var addRegularQuestion = function(question, callback) {
 	questionToAdd.attempts = [];
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
+
 	db.addRegularQuestion(questionToAdd, function(err, res) {
 		callback(err, res);
 	});
@@ -66,6 +75,7 @@ var addRegularQuestion = function(question, callback) {
 var addMultipleChoiceQuestion = function(question, callback) {
 	var currentDate = new Date().toString();
 	var questionToAdd = {};
+
 	questionToAdd.topic = question.topic;
 	questionToAdd.title = question.title;
 	questionToAdd.text = question.text;
@@ -78,6 +88,7 @@ var addMultipleChoiceQuestion = function(question, callback) {
 	questionToAdd.attempts = [];
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
+
 	db.addMultipleChoiceQuestion(questionToAdd, function(err, res) {
 		callback(err, res);
 	});
@@ -116,47 +127,50 @@ exports.updateQuestionByIdWithRedirection = function(questionId, info, callback)
 }
 
 var updateQuestionByIdWithRedirection = function(questionId, info, callback) {
-	lookupQuestionById(questionId, function(err, q){
+	lookupQuestionById(questionId, function(err, question){
 		if(err){
-			callback(err, null);
+			return callback(err, null);
 		}
-		if(q){
-			switch(q.type){
+
+		if(question){
+			switch(question.type){
 				case common.questionTypes.REGULAR:
 			 		db.updateRegularQuestionById(questionId, info, callback);
 					break;
+
 				case common.questionTypes.MULTIPLECHOICE:
 					db.updateMultipleChoiceQuestionById(questionId, info, callback);
 					break;
+
 				default:
-					callback('invalid type', null);
+					return callback('invalid type', null);
 			}
-		}else{
-			callback('failure', null);
 		}
+
+		return callback('failure', null);
 	});
 }
 
 /* Remove the question with ID qid from the database. */
-exports.deleteQuestion = function(qid, callback) {
-    questions.remove({id: qid}, function(err, res) {
+exports.deleteQuestion = function(questionId, callback) {
+    questions.remove({id: questionId}, function(err, res) {
         if (err) {
             logger.error(err);
-            callback(err, null);
-        } else {
-            logger.info('Question %d deleted from database.', qid);
-            callback(null, 'success');
-        }
+            return callback(err, null);
+		}
+		
+        logger.info('Question %d deleted from database.', questionId);
+        return callback(null, 'success');
     });
 }
 
 /* Extract a question object from the database using its ID. */
-exports.lookupQuestionById = function(qid, callback) {
-    lookupQuestionById(qid, callback);
+exports.lookupQuestionById = function(questionId, callback) {
+    lookupQuestionById(questionId, callback);
 }
 
-var lookupQuestionById = function(qid, callback) {
-	db.lookupQuestionById(qid, callback);
+var lookupQuestionById = function(questionId, callback) {
+	db.lookupQuestionById(questionId, callback);
 }
 
 /*
@@ -165,27 +179,27 @@ var lookupQuestionById = function(qid, callback) {
  * with the result of the comparison and the new question object.
  */
 exports.checkAnswer = function(questionId, userId, answer, callback) {
-    logger.info('User %s attempted to answer question %d with "%s"',
-        userId, questionId, answer);
+    logger.info('User %s attempted to answer question %d with "%s"', userId, questionId, answer);
 
 	lookupQuestionById(questionId, function(err, question){
 		if(err){
-			callback(err, null);
-		}else{
-			var value = answer===question.answer;
-			db.updateStudentById(
-				userId,
-				{ questionId:questionId, correct:value, points:question.points },
-				function(err, res){
-					updateQuestionByIdWithRedirection(
-						questionId,
-						{ userId:userId, correct:value },
-						function(err, res) {
-							callback(err, value);
-						}
-					);
-				}
-			);
+			return callback(err, null);
 		}
+
+		var value = answer===question.answer;
+
+		db.updateStudentById(
+			userId,
+			{ questionId:questionId, correct:value, points:question.points },
+			function(err, res){
+				updateQuestionByIdWithRedirection(
+					questionId,
+					{ userId:userId, correct:value },
+					function(err, res) {
+						return callback(err, value);
+					}
+				);
+			}
+		);
 	});
 }

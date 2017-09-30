@@ -28,7 +28,7 @@ var users = require('./users.js');
  * If shrt is true, return leaderboard with max eight entries.
  */
 exports.leaderboard = function(userid, shrt, callback) {
-    users.getStudentsListSorted(0, function(studentlist) {
+    users.getStudentsListSorted(0, function(err, studentlist) {
         var rank = 0;
         var last = -1;
         var userind;

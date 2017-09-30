@@ -1,5 +1,5 @@
 /* the field to sort by */
-var sortTypes = Object.freeze({
+const sortTypes = Object.freeze({
     SORT_NOSORT    : 0x0,
     SORT_DEFAULT   : 0x1,
     SORT_RANDOM    : 0x2,
@@ -10,13 +10,13 @@ var sortTypes = Object.freeze({
 });
 exports.sortTypes = sortTypes;
 
-var userTypes = Object.freeze({
+const userTypes = Object.freeze({
     ADMIN     : 0,
     STUDENT   : 1
 });
 exports.userTypes = userTypes;
 
-var questionTypes = Object.freeze({
+const questionTypes = Object.freeze({
     REGULAR         : 0,
     MULTIPLECHOICE  : 1
 });
