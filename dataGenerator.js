@@ -25,11 +25,11 @@ var questions = require('./server/questions.js');
 var common = require('./server/common.js');
 
 // variables to control the genereated data
-var adminsCount = 10;
-var studentsCount = 100;
-var questionsCount = 100;
-var questionsMaxValue = 200;
-var questionsAttempts = 100; // be careful when changing this value,
+var adminsCount = 2;
+var studentsCount = 10;
+var questionsCount = 10;
+var questionsMaxValue = 20;
+var questionsAttempts = 10; // be careful when changing this value,
                             // it will increase the run time significantly
 var questionsCorrectPercentage = 40;
 
@@ -153,7 +153,7 @@ var createStudents = function() {
 }
 
 var createQuestions = function() {
-  	for (var id = 0; id < questionsCount; id++) {
+  	for (var id = 1; id <= questionsCount; id++) {
       	addQuestion('Is math related to science? '+id, id);
   	}
 }
@@ -174,7 +174,7 @@ db.initialize(function() {
             if (res === 'failure') {
                 process.exit(1);
             }
-            
+
             createAdmins();
         });
     });

@@ -2,7 +2,7 @@
 $('#login').submit(function(evt) {
     evt.preventDefault();
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/login',
         data: $('#login').serialize(),
         success: function(data) {
