@@ -104,7 +104,7 @@ exports.addStudent = function(user, callback) {
 				} else if (err === 'exists') {
 					logger.warn('Student %s already exists', userToAdd.id);
 				}
-				
+
 				return callback(err, null);
 			}
 
@@ -167,4 +167,11 @@ exports.getStudentById = function(studentId, callback) {
 
 exports.getAdminById = function(adminId, callback) {
 	db.getStudentById(adminId, callback);
+}
+
+/*
+ * Fetch the question list of userId
+ */
+exports.getQuestionsList = function(request, callback) {
+	db.getQuestionsListByUser(request, callback);
 }

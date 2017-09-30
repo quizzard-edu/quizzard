@@ -25,11 +25,11 @@ var questions = require('./server/questions.js');
 var common = require('./server/common.js');
 
 // variables to control the genereated data
-var adminsCount = 10;
-var studentsCount = 100;
-var questionsCount = 100;
-var questionsMaxValue = 200;
-var questionsAttempts = 100; // be careful when changing this value,
+var adminsCount = 2;
+var studentsCount = 10;
+var questionsCount = 10;
+var questionsMaxValue = 20;
+var questionsAttempts = 10; // be careful when changing this value,
                             // it will increase the run time significantly
 var questionsCorrectPercentage = 40;
 
@@ -174,7 +174,7 @@ db.initialize(function() {
             if(res === 'failure') {
                 process.exit(1);
             }
-            
+
             createAdmins();
         });
     });

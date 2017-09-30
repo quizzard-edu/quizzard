@@ -120,6 +120,10 @@ exports.getStudentsListSorted = function(lim, callback){
 }
 
 exports.getUserById = function(userId, callback){
+    getUserById(userId, callback);
+}
+
+var getUserById = function(userId, callback) {
     usersCollection.findOne({id: userId}, function(err, user) {
         if (err) {
             return callback('failure', null);
@@ -352,6 +356,69 @@ var getNextQuestionId = function(callback){
         nextId = docs[0] ? docs[0].id : 0;
         return callback(nextId);
     });
+}
+
+exports.getQuestionsListByUser = function(request, callback) {
+    var questionsQuery = {};
+    var user = request.user;
+    var questionsStatus = request.questionsStatus;
+
+    if (!request.user) {
+        return callback('No user object', null);
+    }
+
+    if (request.user.type === common.userTypes.ADMIN) {
+        questionsCollection.find(questionsQuery).toArray(function(err, docs) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            for (q in docs) {
+                docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
+                docs[q].attemptsCount = docs[q].attempted.length;
+                docs[q].answeredCount = docs[q].answered.length;
+                delete docs[q]._id;
+            }
+    
+            return callback(null, docs);
+        });
+    }
+
+    if (user.type === common.userTypes.STUDENT) {
+        questionsQuery.active = true;
+        
+        getUserById(user.id, function(err, requiredUser){
+            if (err) {
+                return callback(err, null);
+            }
+
+            questionsCollection.find(questionsQuery).toArray(function(err, docs) {
+                if (err) {
+                    return callback(err, null);
+                }
+
+                var compareList = requiredUser.answered;
+                var answeredList = [];
+                var UnansweredList = [];
+    
+                for (q in docs) {
+                    docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
+                    docs[q].attemptsCount = docs[q].attempted.length;
+                    docs[q].answeredCount = docs[q].answered.length;
+                    delete docs[q]._id;
+
+                    if (compareList.indexOf(q.id) == -1) {
+                        UnansweredList.push(docs[q]);
+                    } else {
+                        answeredList.push(docs[q]);
+                    }
+                }
+                
+                var returnList = (questionsStatus === 'answered') ? answeredList : UnansweredList;
+                return callback(null, returnList);
+            });
+        });        
+    }
 }
 
 exports.findQuestions = function(amount, findType, user, callback){

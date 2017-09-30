@@ -159,13 +159,13 @@ app.get('/home', function(req, res) {
                 questions: results
             });
         });
+    } else {
+        return res.render('home', {
+            user: req.session.user,
+            questions: req.session.questions,
+            answered: req.session.answeredQuestions
+        });
     }
-
-    return res.render('home', {
-        user: req.session.user,
-        questions: req.session.questions,
-        answered: req.session.answeredQuestions
-    });
 });
 
 /* Display the question page. */
@@ -245,7 +245,7 @@ app.get('/leaderboard-table', function(req, res) {
     if (req.query.longTable == 'false')
         shrt = true;
 
-    lb.leaderboard(req.session.user.id, shrt, function(err, leader) {
+    lb.leaderboard(req.session.user.id, shrt, function(leader) {
         var html = leaderboardTable({
             fullTable: ft,
             shortTable: shrt,
@@ -368,12 +368,31 @@ app.get('/questionlist', function(req, res) {
         return res.redirect('/');
     }
 
-    /* If this is the first time accessing it, fetch list from database. */
+    var request = { user : req.session.user };
+
+    users.getQuestionsList(request, function(err, questionsList){
+        if (err) {
+            return res.status(500).send('Could not fetch questions list');
+        }
+
+        req.session.adminQuestionList = null;
+        var html = questionTable({
+            questions: questionsList
+        });
+
+        return res.status(200).send(html);
+    });
+
+    /* If this is the first time accessing it, fetch list from database. 
     questions.findQuestions(
         0,
         common.sortTypes.SORT_DEFAULT,
         null,
-        function(questionlist) {
+        function(err, questionlist) {
+            if (err) {
+                return res.status(500).send('Could not fetch questions list');
+            }
+
             req.session.adminQuestionList = questionlist;
             var html = questionTable({
                 questions: questionlist
@@ -381,7 +400,7 @@ app.get('/questionlist', function(req, res) {
 
             return res.status(200).send(html);
         }
-    );
+    );*/
 });
 
 /* Send the question editing form HTML. */
@@ -461,6 +480,24 @@ app.post('/fetchqlist', function(req, res) {
         ans = true;
     }
 
+    var request = {};
+    request.user = req.session.user;
+    request.questionsStatus = req.body.type;
+    
+    users.getQuestionsList(request, function(err, questionsList){
+        if (err) {
+            return res.status(500).send('Could not fetch questions list');
+        }
+
+        req.session.adminQuestionList = null;
+        var html = questionList({
+            questions: questionsList
+        });
+
+        return res.status(200).send(html);
+    });
+
+    /*
     questions.findQuestions(10, type, req.session.user, function(err, results) {
         req.session.questions = results;
         req.session.answeredQuestions = ans;
@@ -469,7 +506,7 @@ app.post('/fetchqlist', function(req, res) {
         });
 
         return res.status(200).send(html);
-    });
+    });*/
 });
 
 /* Sort question list by specified criterion and send new HTML. */
