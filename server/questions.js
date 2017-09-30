@@ -147,8 +147,6 @@ var updateQuestionByIdWithRedirection = function(questionId, info, callback) {
 					return callback('invalid type', null);
 			}
 		}
-
-		return callback('failure', null);
 	});
 }
 

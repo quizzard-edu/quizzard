@@ -368,7 +368,9 @@ app.get('/questionlist', function(req, res) {
         return res.redirect('/');
     }
 
-    var request = { user : req.session.user };
+    var request = {};
+    request.user = req.session.user;
+    request.questionsStatus = req.query.type;
 
     users.getQuestionsList(request, function(err, questionsList){
         if (err) {
@@ -376,9 +378,13 @@ app.get('/questionlist', function(req, res) {
         }
 
         req.session.adminQuestionList = null;
-        var html = questionTable({
-            questions: questionsList
-        });
+        var html = null;
+        
+        if (req.session.user.type == common.userTypes.ADMIN) {
+            html = questionTable({ questions : questionsList });
+        } else {
+            html = questionList({ questions : questionsList });
+        }
 
         return res.status(200).send(html);
     });
@@ -572,19 +578,8 @@ app.post('/submitanswer', function(req, res) {
             result = result ? 'correct' : 'incorrect';
             data.result = result;
 
-            if (result == 'failed-update') {
+            if (err) {
                 return res.status(500).send(data);
-            }
-
-            if (result == 'correct') {
-                data.points = req.session.question.points;
-                /* remove question from questions list, TODO: fetch new one */
-                for (var ind in req.session.questions) {
-                    if (req.session.questions[ind].id == req.session.question.id)
-                        break;
-                }
-                req.session.questions.splice(ind, 1);
-                req.session.questionAnswered = true;
             }
 
             return res.status(200).send(data);

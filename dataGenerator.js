@@ -153,7 +153,7 @@ var createStudents = function() {
 }
 
 var createQuestions = function() {
-  	for(var id = 0; id < questionsCount; id++){
+  	for(var id = 1; id <= questionsCount; id++){
       	addQuestion('Is math related to science? '+id, id);
   	}
 }
