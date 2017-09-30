@@ -570,7 +570,7 @@ exports.updateRegularQuestionById = function(questionId, request, callback){
             update.$push.attempts = request.answer;
             update.$pull.answered = { $in : [request.userId] };//to be removed
         }
-    }//console.log(JSON.stringify(update));
+    }
 
     if (isEmptyObject(update.$addToSet)) {
         delete update.$addToSet;
