@@ -58,7 +58,7 @@ var addAdmin = function(accid, pass, isAdmin) {
         }
 
         adminsCreated++;
-        if(adminsCreated == adminsCount){
+        if (adminsCreated == adminsCount) {
             createStudents();
         }
     });
@@ -89,7 +89,7 @@ var addStudent = function(accid, pass, isAdmin) {
 }
 
 // add question and send random answers
-var addQuestion = function(qTopic, id){
+var addQuestion = function(qTopic, id) {
 	  var question = {
     		topic: 'CSC492',
     		title: qTopic,
@@ -103,36 +103,36 @@ var addQuestion = function(qTopic, id){
     questions.addRegularQuestion(question, function(err, res) {
         if (err == 'failure') {
             logger.error('Could not add question. Please try again.');
-        }else{
+        } else {
             logger.info('Questions %d created', id);
         }
 
         questionsCreated++;
-        if(questionsCreated == questionsCount){
+        if (questionsCreated == questionsCount) {
             answerQuestions();
         }
     });
 }
 
 // add question and send random answers
-var answerQuestion = function(questionId){
-    for(var i = 0; i < questionsAttempts; i++){
+var answerQuestion = function(questionId) {
+    for (var i = 0; i < questionsAttempts; i++) {
         var studentId = 'student'+Math.floor(Math.random()*studentsCount);
         var answer = 'NotKonniChiwa';
         
-        if(Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)){
+        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
             answer = 'KonniChiwa';
         }
 
         questions.checkAnswer(questionId, studentId, answer, function(err, res) {
             if (res == 'failure') {
                 logger.error('Questions %d answered incorrectly by %s', questionId, studentId);
-            }else{
+            } else {
                 logger.info('Questions %d answered correctly by %s', questionId, studentId);
             }
 
             questionsAnswered++;
-            if(questionsAnswered == questionsCount*questionsAttempts){
+            if (questionsAnswered == questionsCount*questionsAttempts) {
                 process.exit(0);
             }
         });
@@ -141,37 +141,37 @@ var answerQuestion = function(questionId){
 
 
 var createAdmins = function() {
-    for(var id = 0; id < adminsCount; id++){
+    for (var id = 0; id < adminsCount; id++) {
         addAdmin('Admin'+id, 'KonniChiwa');
     }
 }
 
 var createStudents = function() {
-  	for(var id = 0; id < studentsCount; id++){
+  	for (var id = 0; id < studentsCount; id++) {
       	addStudent('Student'+id, 'KonniChiwa');
   	}
 }
 
 var createQuestions = function() {
-  	for(var id = 0; id < questionsCount; id++){
+  	for (var id = 0; id < questionsCount; id++) {
       	addQuestion('Is math related to science? '+id, id);
   	}
 }
 
 var answerQuestions = function() {
-  	for(var id = 1; id <= questionsCount; id++){
+  	for (var id = 1; id <= questionsCount; id++) {
       	answerQuestion(id);
   	}
 }
 
 db.initialize(function() {
-    db.removeAllUsers(function(res){
-        if(res === 'failure') {
+    db.removeAllUsers(function(res) {
+        if (res === 'failure') {
             process.exit(1);
         }
 
-        db.removeAllQuestions(function(res){
-            if(res === 'failure') {
+        db.removeAllQuestions(function(res) {
+            if (res === 'failure') {
                 process.exit(1);
             }
             
