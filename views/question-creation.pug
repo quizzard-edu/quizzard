@@ -7,8 +7,12 @@
       option(value='mc') Multiple Choice
       option(value='re') Regex Question Answer
 
-form.form-user#questionform(style='display:none') 
+form.form-user#questionform(style='display:none')
   .col-md-4
+    .form-group
+        label(for='show') Visible
+        input.form-control#show(type='checkbox' name='show' checked=false value=false)
+
     .form-group
       label(for='qtitle') Title
       input.form-control#qtitle(type='text' name='title' placeholder='Enter title' required autofocus )
@@ -30,9 +34,9 @@ form.form-user#questionform(style='display:none')
     .form-group
       label(for='qtext') Question Body
       .summernote#qtext
-    
-    #qAnswer  
-    
+
+    #qAnswer
+
     .form-group
       label(for='successmsg') Follow up message
       input.form-control#successmsg(type='text' name='successMessage'

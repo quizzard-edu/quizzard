@@ -23,7 +23,7 @@ status.
 
 Arguments:
     question - the question object to insert. It must have the fields
-               `text`, `topic`, `type`, `answer`, `basePoints` and `hint` set.
+               `text`, `topic`, `type`, `answer`, `points` and `hint` set.
     callback - function to call with result.
 
 
@@ -49,7 +49,7 @@ Arguments:
     callback - function to call with result.
 
 
-questions.lookupQuestion(qid, callback)
+questions.lookupQuestionById(qid, callback)
 
 Finds the question with ID `qid` in the database.
 

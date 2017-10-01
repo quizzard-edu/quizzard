@@ -1,6 +1,7 @@
 table.table
   thead
     tr
+      th Visible
       th ID
       th Title
       th Topic
@@ -9,6 +10,8 @@ table.table
   tbody
     each q in questions
       tr
+        td
+          input.checked(id='checked-' + q.id type='checkbox' checked=q.visible)
         td #{q.id}
         td #{q.title}
         td #{q.topic}

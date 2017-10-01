@@ -90,6 +90,9 @@ var displayQuestionTable = function() {
                 /* cut off the edit- */
                 editQuestion(this.id.substring(5));
             });
+            $('.checked').change(function(evt) {
+                updateVisibility(this.id.substring(8));
+	    });
 
             $('#option-questions').addClass('active');
             $('#option-accounts').removeClass('active');
@@ -97,18 +100,18 @@ var displayQuestionTable = function() {
             $('#option-settings').removeClass('active');
         }
     });
-} 
- 
+}
+
 /* Fetch and display the question creation form. */
 var displayQuestionForm = function() {
     $.ajax({
         type: 'GET',
         url: '/questionform',
-        success: function(data) { 
+        success: function(data) {
             $('#admin-label').html('Add New Question');
-            $('#admin-content').html(data); 
-            $('#admin-button').off(); 
-            $('#admin-button').hide(); 
+            $('#admin-content').html(data);
+            $('#admin-button').off();
+            $('#admin-button').hide();
             $('#admin-back').show();
             $('#admin-back').click(function(evt) {
                 displayQuestionTable();
@@ -116,19 +119,19 @@ var displayQuestionForm = function() {
 
             $('#qtext').summernote({ height: 100 });
             // choose the type of question creating
-            $('#qType').change(function(evt) { 
+            $('#qType').change(function(evt) {
                 // get the answer part for the form requested
                 // id to replace is qAnswer
                 var form = "/" + $(this).val();
                 getQuestionFormAnswer(form);
-                $('#questionform').show(); 
-            });          
-            
-            $('#questionform').submit(function(evt) {
-                evt.preventDefault(); 
-                submitQuestionForm(); 
+                $('#questionform').show();
             });
-        }    
+
+            $('#questionform').submit(function(evt) {
+                evt.preventDefault();
+                submitQuestionForm();
+            });
+        }
     });
 }
 
@@ -142,17 +145,17 @@ String.prototype.format = function() {
 }
 
 var mcAnswerCount = 4;
-var addMCAnswers = function(dom){ 
+var addMCAnswers = function(dom){
     mcAnswerCount++;
      var newdiv = document.createElement('div');
      var inputdiv = "<p>Is Correct: <input type='radio' name='radbutton' value='mcans{0}'/><input class='form-control' type='text' name='mcans{1}' placeholder='Enter Answer Here' required='required' style='float:left;'/> <button onclick='$(this).parent().remove();'>delete</button></p>"
-     newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount);  
+     newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount);
      $('#qAnswer > div.form-group').append(newdiv);
 }
 
 // replace the answer field in Question-creation.pug for specific question
 var getQuestionFormAnswer = function(form){
-    $.ajax({ 
+    $.ajax({
         type: 'GET',
         url: form,
         success: function(data){
@@ -162,10 +165,10 @@ var getQuestionFormAnswer = function(form){
             $('#result').html('Server is down cannot pull Answer form');
         }
     });
-    
+
 }
-   
-/* Display the application statistics form. */ 
+
+/* Display the application statistics form. */
 var displayStatistics = function() {
     $.ajax({
         type: 'GET',
@@ -366,22 +369,44 @@ var submitEditForm = function(id) {
     });
 }
 
+var updateVisibility = function(qid) {
+    var question = {};
+
+    question['visible'] = $('#checked-' + qid).is(':checked');
+
+    $.ajax({
+        type: 'POST',
+        url: '/questionmod',
+        data: {
+            question: question,
+            id: qid
+        },
+        success: function(data) {
+            if (data == 'failure') {
+		displayQuestionTable();
+            } else if (data == 'success') {
+                displayQuestionTable();
+            }
+        }
+    });
+}
+
 /* Process submitted question edit form. */
 var submitQuestionForm = function() {
     var fields = $('#questionform').serializeArray();
     var question = {};
 
     jQuery.each(fields, function(i, field) {
-        question[field.name] = field.value; 
+        question[field.name] = field.value;
     });
     if ($('#qtext').summernote('isEmpty')) {
         $('#result').html('Please enter a question body in the editor.');
         return;
     }
     question['text'] = $('#qtext').summernote('code');
-    
-    // add the question type
     question['type'] = $('#qType').select().val();
+    question['visible'] = $('#visible').is(':checked');
+
     $.ajax({
         type: 'POST',
         url: '/questionadd',
