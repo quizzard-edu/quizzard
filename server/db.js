@@ -47,7 +47,7 @@ exports.initialize = function(callback) {
         questionsCollection = db.collection('questions');
 
         getNextQuestionId(function(){
-            logger.info('next question: %d', nextId); 
+            logger.info('next question: %d', nextId);
             return callback();
         });
     });
@@ -56,7 +56,7 @@ exports.initialize = function(callback) {
 // Users functions
 // Add USER to usersCollection in the database
 exports.addStudent = function(student, callback){
-    addUser(student, callback); 
+    addUser(student, callback);
 }
 
 exports.addAdmin = function(admin, callback){
@@ -149,7 +149,7 @@ exports.checkLogin = function(userId, pass, callback) {
             validatePassword(obj, pass, function(err, valid) {
                 if (err) {
                     return callback(err, null);
-                } 
+                }
                 if (valid) {
                     delete obj._id;
                     delete obj.password;
@@ -199,7 +199,7 @@ var getUserById = function(userId, callback){
             logger.error(err);
             return callback(err, null);
         }
-        
+
         return callback(null, obj);
     });
 }
@@ -223,6 +223,7 @@ var updateUserById = function(userId, info, callback){
 
     update.$addToSet = {};
     update.$inc = {};
+    update.$pull = {};
     update.$set = {};
 
     if (info.id) {
@@ -246,9 +247,11 @@ var updateUserById = function(userId, info, callback){
             update.$addToSet.answered = info.questionId;
             update.$inc.points = info.points;
             update.$inc.answeredCount = 1;
+            update.$pull.attempted = { $in : [info.questionId] };
         } else {
             update.$addToSet.attempted = info.questionId;
             update.$inc.attemptedCount = 1;
+            update.$pull.answered = { $in : [info.questionId] };
         }
     }
 
@@ -264,13 +267,17 @@ var updateUserById = function(userId, info, callback){
         delete update.$set;
     }
 
+    if (isEmptyObject(update.$pull)) {
+        delete update.$pull;
+    }
+
     if (typeof info.newPassword === 'undefined') {
         usersCollection.update(query, update, function(err, obj) {
             if (err) {
                 logger.error(err);
                 return callback(err, null);
             }
-            
+
             return callback(null, 'success');
         });
     } else {
@@ -291,7 +298,7 @@ var updateUserById = function(userId, info, callback){
                     logger.error(err);
                     return callback(err, null);
                 }
-                
+
                 return callback(null, 'success');
             });
         });
@@ -352,7 +359,7 @@ var getNextQuestionId = function(callback){
             logger.error(err);
             process.exit(1);
         }
-        
+
         nextId = docs[0] ? docs[0].id : 0;
         return callback(nextId);
     });
@@ -379,12 +386,12 @@ exports.getQuestionsListByUser = function(request, callback) {
                 docs[q].answeredCount = docs[q].answered.length;
                 delete docs[q]._id;
             }
-    
+
             return callback(null, docs);
         });
     } else if (user.type == common.userTypes.STUDENT) {
-        questionsQuery.active = true;
-        
+        questionsQuery.visible = true;
+
         getUserById(user.id, function(err, requiredUser) {
             if (err) {
                 return callback(err, null);
@@ -398,7 +405,7 @@ exports.getQuestionsListByUser = function(request, callback) {
                 var compareList = requiredUser.answered;
                 var answeredList = [];
                 var UnansweredList = [];
-    
+
                 for (q in docs) {
                     docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
                     docs[q].attemptsCount = docs[q].attempted.length;
@@ -415,7 +422,7 @@ exports.getQuestionsListByUser = function(request, callback) {
                 var returnList = (questionsStatus === 'answered') ? answeredList : UnansweredList;
                 return callback(null, returnList);
             });
-        });        
+        });
     }
 }
 
@@ -550,17 +557,18 @@ exports.updateRegularQuestionById = function(questionId, request, callback){
       update.$set.points = request.points;
     }
 
-    if (request.active) {
-        update.$set.active = request.active;
+    if (request.visible) {
+        update.$set.visible = (request.visible === 'true');
     }
 
     if (typeof request.correct !== 'undefined') {
         if (request.correct) {
             update.$addToSet.answered = request.userId;
-            update.$pull.attempted = { $in : [questionId] };
+            update.$pull.attempted = { $in : [request.userId] };
         } else {
             update.$addToSet.attempted = request.userId;
             update.$push.attempts = request.answer;
+            update.$pull.answered = { $in : [request.userId] };//to be removed
         }
     }
 
