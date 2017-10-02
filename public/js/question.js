@@ -3,7 +3,7 @@ $('#re_answerform').submit(function(evt) {
     var ans = $('#answer').val();
     $.ajax({
         type: 'POST',
-        url: '/submitREanswer',
+        url: '/submitanswer',
         data: $('#re_answerform').serialize(),
         success: function(data) {
             if (data.result == 'incorrect') {
@@ -29,7 +29,7 @@ $('#mc_answerform').submit(function(evt) {
     var ans = $("input[name=answer]:checked").val();
     $.ajax({
         type: 'POST',
-        url: '/submitREanswer',
+        url: '/submitanswer',
         data: $('#mc_answerform').serialize(),
         success: function(data) {
             if (data.result == 'incorrect') {

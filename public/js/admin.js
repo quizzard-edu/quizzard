@@ -395,14 +395,25 @@ var updateVisibility = function(qid) {
 var submitQuestionForm = function() {
     var fields = $('#questionform').serializeArray();
     var question = {};
+    question['choices'] = [];
 
     jQuery.each(fields, function(i, field) {
+        if(field.name.startsWith('radbutton')){
+            question['answer'] = fields[i+1].value;
+        }
+
+        if(field.name.startsWith('mcans')){
+            question['choices'].push(field.value);
+        }
+
         question[field.name] = field.value;
     });
+
     if ($('#qtext').summernote('isEmpty')) {
         $('#result').html('Please enter a question body in the editor.');
         return;
     }
+
     question['text'] = $('#qtext').summernote('code');
     question['type'] = $('#qType').select().val();
     question['visible'] = $('#visible').is(':checked');

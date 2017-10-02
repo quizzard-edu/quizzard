@@ -10,8 +10,8 @@
 form.form-user#questionform(style='display:none')
   .col-md-4
     .form-group
-        label(for='show') Visible
-        input.form-control#show(type='checkbox' name='show' checked=false value=false)
+        label(for='visible') Visible
+        input.form-control#visible(type='checkbox' name='visible' checked=false value=false)
 
     .form-group
       label(for='qtitle') Title
@@ -23,7 +23,7 @@ form.form-user#questionform(style='display:none')
                                 required)
     .form-group
       label(for='qpoints') Points
-      input.form-control#qpoints(type='number' name='basePoints'
+      input.form-control#qpoints(type='number' name='points'
                                  placeholder='Enter points'  min="0" required)
     .form-group
       label(for='qhint') Hint

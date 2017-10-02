@@ -559,7 +559,7 @@ app.post('/questionreq', function(req, res) {
     }
 
     questions.lookupQuestionById(parseInt(req.body.id), function(err, result) {
-        if (result == 'failure' || result == 'invalid') {
+        if (err) {
             return res.status(500).send();
         }
 
@@ -599,30 +599,6 @@ app.post('/submitanswer', function(req, res) {
     );
 });
 
-/* check if the submitted MC answer is correct */
-app.post('/submitMCanswer', function(req, res) {
-    questions.checkMCAnswer(req.session.question, req.body.answer,
-                          req.session.user, function(result) {
-        var data = {};
-
-        data.result = result;
-        if (result == 'failed-update') {
-            res.status(500).send(data);
-        } else if (result == 'correct') {
-            data.points = req.session.question.basePoints;
-            /* remove question from questions list, TODO: fetch new one */
-            for (var ind in req.session.questions) {
-                if (req.session.questions[ind].id == req.session.question.id)
-                    break;
-            }
-            req.session.questions.splice(ind, 1);
-            req.session.questionAnswered = true;
-        } else {
-            /* TODO: reload sidebar stats, save in data.html */
-        }
-        res.status(200).send(data);
-    });
-});
 /*
  * Create a new user.
  * The request body contains an incomplete student object with attributes
@@ -734,12 +710,12 @@ app.post('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByTypeWithRedirection(req.body.type, req.body, function(err, result) {
+    questions.addQuestionByType(req.body.type, req.body, function(err, result) {
         if (err) {
-            return res.status(500);
+            return res.status(500).send();
         }
 
-        return res.status(200);
+        return res.status(201).send();
     });
 });
 
