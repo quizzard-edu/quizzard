@@ -28,7 +28,7 @@ form.form-edit#question-edit-form
             input.form-control#qanswer(type='text', name='answer',value=question.answer)
       when 1
         .form-group.row
-          each option, i in question.mc_answers
+          each option, i in question.choices
             p
               | Is Correct:
               if question.answer == option

@@ -506,6 +506,10 @@ exports.lookupQuestionById = function(questionId, callback) {
             return callback(err, null);
         }
 
+        if (!question) {
+            return callback('No question found', null);
+        }
+
         /* necessary for later database update */
         question.firstAnswer = question.answered[0] ? question.answered[0] : 'No One';
         question.attemptsCount = question.attempted.length;

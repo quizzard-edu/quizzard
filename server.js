@@ -428,19 +428,20 @@ app.post('/questionedit', function(req, res) {
         return res.redirect('/');
     }
 
-    var ind;
-    for (ind in req.session.adminQuestionList) {
-        if (req.session.adminQuestionList[ind].id == req.body.questionid) {
-            break;
+    var qId = parseInt(req.body.questionid);
+    questions.lookupQuestionById(qId, function(err, question){
+        if(err){
+            res.status(500).send('Question not found');
         }
-    }
-    var html = questionEdit({
-        question: req.session.adminQuestionList[ind]
-    });
 
-    return res.status(200).send({
-        html: html,
-        qtext: req.session.adminQuestionList[ind].text
+        var html = questionEdit({
+            question: question
+        });
+
+        return res.status(200).send({
+            html: html,
+            qtext: question.text
+        });
     });
 });
 
