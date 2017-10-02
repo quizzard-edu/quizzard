@@ -227,6 +227,9 @@ const questionForm = pug.compileFile('views/question-creation.pug');
 const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
 
+const regexForm = pug.compileFile('views/regex-answer.pug');
+const multipleChoiceForm = pug.compileFile('views/mc-answer.pug');
+
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
@@ -332,6 +335,16 @@ app.get('/questionform', function(req, res) {
     return res.status(200).send(html);
 });
 
+app.get('/re', function(req, res){
+    var html = regexForm();
+    res.status(200).send(html);
+});
+
+app.get('/mc', function(req, res){
+    var html = multipleChoiceForm();
+    res.status(200).send(html);
+});
+
 /* Return a formatted date for the given timestamp. */
 var creationDate = function(timestamp) {
     const months = ['Jan', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -415,20 +428,20 @@ app.post('/questionedit', function(req, res) {
         return res.redirect('/');
     }
 
-    var ind;
-    for (ind in req.session.adminQuestionList) {
-        if (req.session.adminQuestionList[ind].id == req.body.questionid) {
-            break;
+    var qId = parseInt(req.body.questionid);
+    questions.lookupQuestionById(qId, function(err, question){
+        if(err){
+            res.status(500).send('Question not found');
         }
-    }
 
-    var html = questionEdit({
-        question: req.session.adminQuestionList[ind]
-    });
+        var html = questionEdit({
+            question: question
+        });
 
-    return res.status(200).send({
-        html: html,
-        qtext: req.session.adminQuestionList[ind].text
+        return res.status(200).send({
+            html: html,
+            qtext: question.text
+        });
     });
 });
 
@@ -547,7 +560,7 @@ app.post('/questionreq', function(req, res) {
     }
 
     questions.lookupQuestionById(parseInt(req.body.id), function(err, result) {
-        if (result == 'failure' || result == 'invalid') {
+        if (err) {
             return res.status(500).send();
         }
 
@@ -698,12 +711,12 @@ app.post('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByTypeWithRedirection(req.body.type, req.body, function(err, result) {
+    questions.addQuestionByType(req.body.type, req.body, function(err, result) {
         if (err) {
-            return res.status(500);
+            return res.status(500).send();
         }
 
-        return res.status(200);
+        return res.status(201).send();
     });
 });
 

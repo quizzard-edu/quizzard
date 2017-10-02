@@ -317,15 +317,7 @@ var isEmptyObject = function(obj) {
 
 // Questions functions
 // Add QUESTION to questionsCollection in the database
-exports.addRegularQuestion = function(question, callback){
-    addQuestion(question, callback);
-}
-
-exports.addMultipleChoiceQuestion = function(question, callback){
-    addQuestion(question, callback);
-}
-
-var addQuestion = function(question, callback) {
+exports.addQuestion = function(question, callback){
 	question.id = ++nextId;
     questionsCollection.insert(question, function(err, res) {
         if(err){
@@ -514,6 +506,10 @@ exports.lookupQuestionById = function(questionId, callback) {
             return callback(err, null);
         }
 
+        if (!question) {
+            return callback('No question found', null);
+        }
+
         /* necessary for later database update */
         question.firstAnswer = question.answered[0] ? question.answered[0] : 'No One';
         question.attemptsCount = question.attempted.length;
@@ -524,7 +520,7 @@ exports.lookupQuestionById = function(questionId, callback) {
 }
 
 // update a question record based on its id
-exports.updateRegularQuestionById = function(questionId, request, callback){
+exports.updateQuestionById = function(questionId, request, callback){
     var query = { id:questionId };
     var update = {};
 

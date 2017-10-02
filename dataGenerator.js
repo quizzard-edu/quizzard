@@ -91,16 +91,17 @@ var addStudent = function(accid, pass, isAdmin) {
 // add question and send random answers
 var addQuestion = function(qTopic, id) {
 	  var question = {
-    		topic: 'CSC492',
-    		title: qTopic,
+		topic: 'CSC492',
+		title: qTopic,
         text: '<p>'+qTopic+' Text</p>',
         answer: 'KonniChiwa',
         points: Math.floor(Math.random()*questionsMaxValue),
         type: common.questionTypes.REGULAR,
-        hint: 'KonniChiwa'
+        hint: 'KonniChiwa',
+        visible: 'true'
     };
 
-    questions.addRegularQuestion(question, function(err, res) {
+    questions.addQuestionByType(question.type, question, function(err, res) {
         if (err == 'failure') {
             logger.error('Could not add question. Please try again.');
         } else {
@@ -119,7 +120,7 @@ var answerQuestion = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
         var studentId = 'student'+Math.floor(Math.random()*studentsCount);
         var answer = 'NotKonniChiwa';
-        
+
         if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
             answer = 'KonniChiwa';
         }
