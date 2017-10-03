@@ -563,7 +563,7 @@ exports.updateQuestionById = function(questionId, request, callback){
             update.$pull.attempted = { $in : [request.userId] };
         } else {
             update.$addToSet.attempted = request.userId;
-            update.$push.attempts = request.answer;
+            update.$push.attempts = request.attempt;
             update.$pull.answered = { $in : [request.userId] };//to be removed
         }
     }
