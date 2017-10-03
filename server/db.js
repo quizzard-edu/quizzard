@@ -143,9 +143,7 @@ exports.checkLogin = function(userId, pass, callback) {
         if (err) {
             logger.error(err);
             return callback(err, null);
-        }
-
-        if (obj) {
+        } else if (obj) {
             validatePassword(obj, pass, function(err, valid) {
                 if (err) {
                     return callback(err, null);
@@ -157,9 +155,9 @@ exports.checkLogin = function(userId, pass, callback) {
                 }
                 return callback('invalid', null);
             });
+        } else {
+            return callback('user does not exists', null);
         }
-
-        return callback('user does not exists', null);
     });
 }
 
