@@ -28,7 +28,7 @@ var common = require('./common.js');
  * the text, topic, type, answer, points and hint set.
  */
 exports.addQuestionByType = function(qType, question, callback) {
-	var currentDate = new Date().toString();console.log(qType+'    '+JSON.stringify(question));
+	var currentDate = new Date().toString();
 	var questionToAdd = {};
 
 	questionToAdd.topic = question.topic;

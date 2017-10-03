@@ -614,19 +614,19 @@ app.post('/useradd', function(req, res) {
     }
 
     users.addStudent(req.body, function(err, result) {
-        if (result == 'failure') {
-            return res.status(500);
+        if (err == 'failure') {
+            return res.status(500).send('Could not add user');
         }
 
-        if (result == 'exists') {
-            return res.status(200);
+        if (err == 'exists') {
+            return res.status(500).send('User already exists');
         }
 
         if (req.session.adminStudentList != null) {
             req.session.adminStudentList.push(req.body);
         }
 
-        return res.status(200);
+        return res.status(201).send('User created');
     });
 });
 
@@ -713,10 +713,10 @@ app.post('/questionadd', function(req, res) {
 
     questions.addQuestionByType(req.body.type, req.body, function(err, result) {
         if (err) {
-            return res.status(500).send();
+            return res.status(500).send('Could not create question');
         }
 
-        return res.status(201).send();
+        return res.status(201).send('Question created');
     });
 });
 
