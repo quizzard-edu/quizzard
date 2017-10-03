@@ -20,28 +20,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var rls = require('readline-sync');
 var db = require('./server/db.js');
-var students = require('./server/students.js');
+var users = require('./server/users.js');
 
 var setupAdminAccount = function(accid, pass) {
     var acc = {
         id: accid,
         password: pass,
         fname: 'Root',
-        lname: 'User',
-        email: '',
-        admin: true
+        lname: 'User'
     };
 
     db.initialize(function() {
-        students.createAccount(acc, function(res, account) {
-            if (res == 'failure') {
+        users.addAdmin(acc, function(err, res) {
+            if (err == 'failure') {
                 console.log('Could not create account. Please try again.');
                 process.exit(1);
-            } else if (res == 'exists') {
+            } else if (err == 'exists') {
                 console.log('Account with username `%s\' exists.', accid);
                 process.exit(1);
             } else {
-                console.log('Administrator account `%s\' created.', account.id);
+                console.log('Administrator account `%s\' created.', accid);
                 process.exit(0);
             }
         });

@@ -4,7 +4,7 @@ nav.navbar.navbar-default.navbar-fixed-top
       .navbar-brand Quizzard
     .collapse.navbar-collapse
       ul.nav.navbar-nav
-        if user.admin
+        if user.type == 0
           li#nav-home
             a(href='/admin') Administration
         else

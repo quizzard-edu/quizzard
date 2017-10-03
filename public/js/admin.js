@@ -97,6 +97,9 @@ var displayQuestionTable = function() {
                 /* cut off the edit- */
                 editQuestion(this.id.substring(5));
             });
+            $('.checked').change(function(evt) {
+                updateVisibility(this.id.substring(8));
+	    });
 
             $('#option-questions').addClass('active');
             $('#option-accounts').removeClass('active');
@@ -112,16 +115,64 @@ var displayQuestionForm = function() {
         type: 'GET',
         url: '/questionform',
         success: function(data) {
-            $('#admin-modal').modal('show');
-            $('#admin-modal-label').html('Add New Question');
-            $('#admin-modal-body').html(data);
+            $('#admin-label').html('Add New Question');
+            $('#admin-content').html(data);
+            $('#admin-button').off();
+            $('#admin-button').hide();
+            $('#admin-back').show();
+            $('#admin-back').click(function(evt) {
+                displayQuestionTable();
+            });
+
             $('#qtext').summernote({ height: 100 });
+            // choose the type of question creating
+            $('#qType').change(function(evt) {
+                // get the answer part for the form requested
+                // id to replace is qAnswer
+                var form = "/" + $(this).val();
+                getQuestionFormAnswer(form);
+                $('#questionform').show();
+            });
+
             $('#questionform').submit(function(evt) {
                 evt.preventDefault();
                 submitQuestionForm();
             });
         }
     });
+}
+
+/*String Formating option*/
+String.prototype.format = function() {
+  a = this;
+  for (k in arguments) {
+    a = a.replace("{" + k + "}", arguments[k])
+  }
+  return a
+}
+
+var mcAnswerCount = 4;
+var addMCAnswers = function(dom){
+    mcAnswerCount++;
+     var newdiv = document.createElement('div');
+     var inputdiv = "<p>Is Correct: <input type='radio' name='radbutton' value='mcans{0}'/><input class='form-control' type='text' name='mcans{1}' placeholder='Enter Answer Here' required='required' style='float:left;'/> <button onclick='$(this).parent().remove();'>delete</button></p>"
+     newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount);
+     $('#qAnswer > div.form-group').append(newdiv);
+}
+
+// replace the answer field in Question-creation.pug for specific question
+var getQuestionFormAnswer = function(form){
+    $.ajax({
+        type: 'GET',
+        url: form,
+        success: function(data){
+            $('#qAnswer').html(data);
+        },
+        failure: function(data){
+            $('#result').html('Server is down cannot pull Answer form');
+        }
+    });
+
 }
 
 /* Display the application statistics form. */
@@ -252,13 +303,13 @@ var submitUserForm = function() {
         data: user,
         success: function(data) {
             if (data == 'failure') {
-		dropSnack(colours.FAIL_RED, 'User could not be added');
+		            dropSnack(colours.FAIL_RED, 'User could not be added');
             } else if (data == 'exists') {
-		dropSnack(colours.FAIL_RED, 'User ' + user.id + ' already exists');
+		            dropSnack(colours.FAIL_RED, 'User ' + user.id + ' already exists');
             } else if (data == 'success') {
                 setTimeout(displayAccountsTable(), 1000);
-		$('#admin-modal').modal('hide');
-		dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
+		          $('#admin-modal').modal('hide');
+		          dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
             }
         }
     });
@@ -284,11 +335,11 @@ var submitUploadForm = function() {
         contentType: false,
         success: function(data) {
             if (data == 'uploaded') {
-		dropSnack(colours.SUCCESS_GREEN, 'File successfully uploaded');
+		            dropSnack(colours.SUCCESS_GREEN, 'File successfully uploaded');
                 setTimeout(displayAccountsTable, 3000);
 		//TODO: Properly test this.
             } else {
-		dropSnack(colours.FAIL_RED, 'Upload failed');
+		          dropSnack(colours.FAIL_RED, 'Upload failed');
 		//TODO: File upload is confused.
             }
         }
@@ -313,17 +364,42 @@ var submitEditForm = function(id) {
         data: user,
         success: function(data) {
             if (data.result == 'failure') {
-		dropSnack(colours.FAIL_RED, 'User could not be updated. Please try again');
+		            dropSnack(colours.FAIL_RED, 'User could not be updated. Please try again');
             } else if (data.result == 'dupid') {
-		dropSnack(colours.FAIL_RED, 'User ID ' + user.id + ' is taken');
+		            dropSnack(colours.FAIL_RED, 'User ID ' + user.id + ' is taken');
             } else if (data.result == 'success') {
                 $('#admin-content').html(data.html);
                 $('#account-edit-form').submit(function(evt) {
                     evt.preventDefault();
                     submitEditForm(user.id ? user.id : id);
                 });
-		displayAccountsTable();
-		dropSnack(colours.SUCCESS_GREEN, 'User ' + id + ' has been updated');
+                displayAccountsTable();
+                dropSnack(colours.SUCCESS_GREEN, 'User ' + id + ' has been updated');
+                $('#account-edit-result').html('User ' + id + ' has been updated');
+            }
+        }
+    });
+}
+
+var updateVisibility = function(qid) {
+    var question = {};
+
+    question['visible'] = $('#checked-' + qid).is(':checked');
+
+    $.ajax({
+        type: 'POST',
+        url: '/questionmod',
+        data: {
+            question: question,
+            id: qid
+        },
+        success: function(data) {
+            if (data == 'failure') {
+              	dropSnack(colours.FAIL_RED, 'Could not change visibility of question');
+		            displayQuestionTable();
+            } else if (data == 'success') {
+                dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + 'is now visible to the students');
+                displayQuestionTable();
             }
         }
     });
@@ -333,16 +409,28 @@ var submitEditForm = function(id) {
 var submitQuestionForm = function() {
     var fields = $('#questionform').serializeArray();
     var question = {};
-    var qbody;
+    question['choices'] = [];
 
     jQuery.each(fields, function(i, field) {
+        if(field.name.startsWith('radbutton')){
+            question['answer'] = fields[i+1].value;
+        }
+
+        if(field.name.startsWith('mcans')){
+            question['choices'].push(field.value);
+        }
+
         question[field.name] = field.value;
     });
+
     if ($('#qtext').summernote('isEmpty')) {
-	dropSnack(colours.FAIL_RED, 'Please enter a question body in the editor');
+	      dropSnack(colours.FAIL_RED, 'Please enter a question body in the editor');
         return;
     }
+
     question['text'] = $('#qtext').summernote('code');
+    question['type'] = $('#qType').select().val();
+    question['visible'] = $('#visible').is(':checked');
 
     $.ajax({
         type: 'POST',
@@ -350,11 +438,10 @@ var submitQuestionForm = function() {
         data: question,
         success: function(data) {
             if (data == 'failure') {
-		dropSnack(colours.FAIL_RED, 'Question could not be added');
+		          dropSnack(colours.FAIL_RED, 'Question could not be added');
             } else if (data == 'success') {
-		dropSnack(colours.SUCCESS_GREEN, 'Question added to database');
-                setTimeout(displayQuestionTable, 1000);
-                $('#admin-modal').modal('hide');
+		          dropSnack(colours.SUCCESS_GREEN, 'Question added to database');
+              displayQuestionTable();
             }
         }
     });
@@ -400,7 +487,7 @@ var deleteQuestion = function(qid) {
             url: '/questiondel',
             data: { qid: qid },
             success: function(data) {
-		dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' was removed from the database');
+		            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' was removed from the database');
                 displayQuestionTable();
             }
         });
@@ -450,10 +537,13 @@ var submitQEditForm = function(qid) {
         },
         success: function(data) {
             if (data == 'failure') {
-		dropSnack(colours.FAIL_RED, 'Question could not be edited');
+		            dropSnack(colours.FAIL_RED, 'Question could not be edited');
             } else if (data == 'success') {
-		dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' has been modified');
-		displayQuestionTable();
+
+                dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' has been modified');
+                displayQuestionTable();
+
+                $('#question-edit-result').html('Question ' + qid + ' has been modified.');
             }
         }
     });

@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var students = require('./students.js');
+var users = require('./users.js');
 
 /*
  * Fetch a list of students to display in the leaderboard.
@@ -28,7 +28,7 @@ var students = require('./students.js');
  * If shrt is true, return leaderboard with max eight entries.
  */
 exports.leaderboard = function(userid, shrt, callback) {
-    students.getUsersSorted(0, function(studentlist) {
+    users.getStudentsListSorted(0, function(err, studentlist) {
         var rank = 0;
         var last = -1;
         var userind;
