@@ -141,7 +141,7 @@ exports.checkAnswer = function(questionId, userId, answer, callback) {
 			function(err, res){
 				updateQuestionById(
 					questionId,
-					{ userId:userId, correct:value },
+					{ userId:userId, correct:value, attempt:answer },
 					function(err, res) {
 						return callback(err, value);
 					}
