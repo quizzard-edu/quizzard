@@ -158,6 +158,8 @@ exports.checkLogin = function(userId, pass, callback) {
                 return callback('invalid', null);
             });
         }
+
+        return callback('user does not exists', null);
     });
 }
 
