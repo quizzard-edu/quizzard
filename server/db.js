@@ -374,8 +374,9 @@ exports.getQuestionsListByUser = function(request, callback) {
 
             for (q in docs) {
                 docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-                docs[q].attemptsCount = docs[q].attempted.length;
+                docs[q].attemptedCount = docs[q].attempted.length;
                 docs[q].answeredCount = docs[q].answered.length;
+                docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
                 delete docs[q]._id;
             }
 
@@ -400,8 +401,9 @@ exports.getQuestionsListByUser = function(request, callback) {
 
                 for (q in docs) {
                     docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-                    docs[q].attemptsCount = docs[q].attempted.length;
+                    docs[q].attemptedCount = docs[q].attempted.length;
                     docs[q].answeredCount = docs[q].answered.length;
+                    docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
                     delete docs[q]._id;
 
                     if (compareList.indexOf(docs[q].id) == -1) {
@@ -452,8 +454,9 @@ exports.findQuestions = function(amount, findType, user, callback){
 
         for (q in docs) {
             docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-            docs[q].attemptsCount = docs[q].attempted.length;
+            docs[q].attemptedCount = docs[q].attempted.length;
             docs[q].answeredCount = docs[q].answered.length;
+            docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
             delete docs[q]._id;
         }
 
@@ -512,8 +515,9 @@ exports.lookupQuestionById = function(questionId, callback) {
 
         /* necessary for later database update */
         question.firstAnswer = question.answered[0] ? question.answered[0] : 'No One';
-        question.attemptsCount = question.attempted.length;
+        question.attemptedCount = question.attempted.length;
         question.answeredCount = question.answered.length;
+        question.totalCount = question.attempted.length + question.answered.length;
         delete question._id;
         return callback(null, question);
     });

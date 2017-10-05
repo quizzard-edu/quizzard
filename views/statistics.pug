@@ -13,10 +13,10 @@ table.table
         td #{s.id}
         td #{s.attemptedCount}
         td #{s.answeredCount}
-        if s.attemptedCount == 0
+        if (s.answeredCount+s.attemptedCount) == 0
           td 0%
         else
-          td #{((s.answeredCount / s.attemptedCount) * 100).toFixed(2)}%
+          td #{((s.answeredCount / (s.answeredCount+s.attemptedCount)) * 100).toFixed(2)}%
         td #{s.points}
 
 h4 Questions
@@ -36,12 +36,12 @@ table.table
         td #{q.id}
         td #{q.title}
         td #{q.points}
-        td #{q.attemptsCount}
+        td #{q.totalCount}
         td #{q.answeredCount}
-        if q.attemptsCount == 0
+        if q.totalCount == 0
           td 0%
         else
-          td #{((q.answeredCount / q.attemptsCount) * 100).toFixed(2)}%
+          td #{((q.answeredCount / q.totalCount) * 100).toFixed(2)}%
         td #{q.firstAnswer}
 
 h4 Graphs
