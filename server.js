@@ -608,7 +608,7 @@ app.post('/submitanswer', function(req, res) {
  * Otherwise, the user is inserted into the database and added
  * to the active admin student list.
  */
-app.post('/useradd', function(req, res) {
+app.put('/useradd', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -706,7 +706,7 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
  * Add a question to the database.
  * The request body contains the question to be added.
  */
-app.post('/questionadd', function(req, res) {
+app.put('/questionadd', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }

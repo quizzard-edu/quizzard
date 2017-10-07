@@ -290,18 +290,19 @@ var submitUserForm = function() {
     });
 
     $.ajax({
-        type: 'POST',
+        type: 'PUT',
         url: '/useradd',
         data: user,
         success: function(data) {
-            if (data == 'failure') {
+            $('#result').html('User ' + user.id + ' added to database');
+            setTimeout(displayAccountsTable(), 1000);
+            $('#admin-modal').modal('hide');
+        },
+        error: function(data) {
+            if (data === 'failure') {
                 $('#result').html('User could not be added');
-            } else if (data == 'exists') {
+            } else if (data === 'exists') {
                 $('#result').html('User ' + user.id + ' already exists');
-            } else if (data == 'success') {
-                $('#result').html('User ' + user.id + ' added to database');
-                setTimeout(displayAccountsTable(), 1000);
-		$('#admin-modal').modal('hide');
             }
         }
     });
@@ -419,16 +420,15 @@ var submitQuestionForm = function() {
     question['visible'] = $('#visible').is(':checked');
 
     $.ajax({
-        type: 'POST',
+        type: 'PUT',
         url: '/questionadd',
         data: question,
         success: function(data) {
-            if (data == 'failure') {
-                $('#result').html('Question could not be added');
-            } else if (data == 'success') {
-                $('#result').html('Question added to database');
-                setTimeout(displayQuestionTable, 1000);
-            }
+            $('#result').html('Question added to database');
+            setTimeout(displayQuestionTable, 1000);
+        },
+        error: function(data) {
+            $('#result').html('Question could not be added');
         }
     });
 }
