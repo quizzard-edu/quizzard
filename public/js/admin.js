@@ -303,7 +303,7 @@ var submitUserForm = function() {
                 $('#result').html('User could not be added');
             } else if (data === 'exists') {
                 $('#result').html('User ' + user.id + ' already exists');
-            }
+            }echo('test');
         }
     });
 }
