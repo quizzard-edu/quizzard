@@ -23,6 +23,11 @@ var displayAccountsTable = function() {
             $('#option-questions').removeClass('active');
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -59,6 +64,11 @@ var displayAccountForm = function() {
                 evt.preventDefault();
                 submitUploadForm();
             });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -98,6 +108,11 @@ var displayQuestionTable = function() {
             $('#option-accounts').removeClass('active');
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -131,6 +146,11 @@ var displayQuestionForm = function() {
                 evt.preventDefault();
                 submitQuestionForm();
             });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -161,8 +181,12 @@ var getQuestionFormAnswer = function(form){
         success: function(data){
             $('#qAnswer').html(data);
         },
-        failure: function(data){
-            $('#result').html('Server is down cannot pull Answer form');
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                $('#result').html('Server is down cannot pull Answer form');
+            }
         }
     });
 
@@ -185,6 +209,11 @@ var displayStatistics = function() {
             $('#admin-button').off();
             $('#admin-button').hide();
             $('#admin-back').hide();
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -252,6 +281,11 @@ var deleteUser = function(id) {
             data: { userid: id },
             success: function(data) {
                 displayAccountsTable();
+            },
+            error: function(data){
+                if (data['status'] === 401) {
+                    window.location.href = '/';
+                }
             }
         });
     });
@@ -276,6 +310,11 @@ var editUser = function(id) {
                 evt.preventDefault();
                 submitEditForm(id);
             });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -302,6 +341,11 @@ var submitUserForm = function() {
                 $('#result').html('User ' + user.id + ' added to database');
                 setTimeout(displayAccountsTable(), 1000);
 		$('#admin-modal').modal('hide');
+            }
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
             }
         }
     });
@@ -331,6 +375,11 @@ var submitUploadForm = function() {
                 setTimeout(displayAccountsTable, 3000);
             } else {
                 $('#upload-result').html('Upload failed');
+            }
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
             }
         }
     });
@@ -365,6 +414,11 @@ var submitEditForm = function(id) {
                 });
                 $('#account-edit-result').html('User ' + id + ' has been updated');
             }
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -383,9 +437,14 @@ var updateVisibility = function(qid) {
         },
         success: function(data) {
             if (data == 'failure') {
-		displayQuestionTable();
+                displayQuestionTable();
             } else if (data == 'success') {
                 displayQuestionTable();
+            }
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
             }
         }
     });
@@ -429,6 +488,11 @@ var submitQuestionForm = function() {
                 $('#result').html('Question added to database');
                 setTimeout(displayQuestionTable, 1000);
             }
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -454,6 +518,11 @@ var viewQuestion = function(qid) {
                     evt.preventDefault();
                 });
             }
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -474,6 +543,11 @@ var deleteQuestion = function(qid) {
             data: { qid: qid },
             success: function(data) {
                 displayQuestionTable();
+            },
+            error: function(data){
+                if (data['status'] === 401) {
+                    window.location.href = '/';
+                }
             }
         });
     });
@@ -526,6 +600,11 @@ var submitQEditForm = function(qid) {
             } else if (data == 'success') {
                 $('#question-edit-result').html('Question ' + qid + ' has been modified.');
             }
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -560,6 +639,11 @@ var sortAccountsTable = function(type) {
         success: function(data) {
             $('#admin-content').html(data);
             addAccountsTableEvents();
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }

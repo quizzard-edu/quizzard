@@ -19,6 +19,11 @@ $('#userform').submit(function(evt) {
                 $('#result').html('User ' + user.id + ' already exists');
             else if (data == 'success')
                 $('#result').html('User ' + user.id + ' added to database');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 });
