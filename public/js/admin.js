@@ -578,6 +578,11 @@ var editQuestion = function(qid) {
                 evt.preventDefault();
                 submitQEditForm(qid);
             });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
