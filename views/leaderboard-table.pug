@@ -38,7 +38,7 @@ table.table
           if fullTable
             td #{s.attemptedCount}
             td #{s.answeredCount}
-            if (s.answeredCount+s.attemptedCount) == 0
+            if (s.answeredCount + s.attemptedCount) === 0
               td N/A
             else
               td #{((s.answeredCount / (s.answeredCount+s.attemptedCount)) * 100).toFixed(2)}%
