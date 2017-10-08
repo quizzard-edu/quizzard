@@ -342,7 +342,6 @@ var submitUserForm = function() {
         url: '/useradd',
         data: user,
         success: function(data) {
-
             $('#admin-modal').modal('hide');
             setTimeout(displayAccountsTable(), 1000);
 		    dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
