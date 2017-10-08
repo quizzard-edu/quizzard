@@ -79,7 +79,7 @@ app.post('/login', function(req, res) {
     var password = req.body.passwd;
 
     logger.info('Attempted login by user %s', username);
-    
+
     users.checkLogin(username, password, function(err, user) {
         if(err){
             logger.info('User %s failed logged in.', username);
@@ -113,7 +113,7 @@ app.post('/changepass', function(req, res) {
         if(err){
             return res.status(400).send('invalid');
         }
-        
+
         if(user){
             users.updateUserByIdWithRedirection(user.id, {newPassword:newPass}, function(err, result){
                 if (result == 'success') {
@@ -134,7 +134,7 @@ app.get('/logout', function(req, res) {
         req.session.destroy();
         return res.status(200).send();
     }
-        
+
     return res.status(500).send();
 });
 
@@ -143,12 +143,12 @@ app.get('/home', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (!req.session.user) {
         return res.redirect('/');
-    } 
-    
+    }
+
     if (req.session.user.type == common.userTypes.ADMIN) {
         return res.redirect('/admin');
     }
-    
+
     if (req.session.questions == null) {
         /* fetch some questions from the database if the user doesn't have any */
         questions.findQuestions(10, common.sortTypes.SORT_RANDOM, req.session.user, function(err, results) {
@@ -205,7 +205,7 @@ app.get('/admin', function(req,res) {
     if (!req.session.user.type == common.userTypes.ADMIN) {
         return res.redirect('/home');
     }
-    
+
     return res.render('admin', { user: req.session.user });
 });
 
@@ -226,6 +226,9 @@ const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
 const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
+
+const regexForm = pug.compileFile('views/regex-answer.pug');
+const multipleChoiceForm = pug.compileFile('views/mc-answer.pug');
 
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
@@ -252,7 +255,7 @@ app.get('/leaderboard-table', function(req, res) {
             leaderboard: leader,
             userid: req.session.user.id
         });
-        
+
         return res.status(200).send(html);
     });
 });
@@ -265,7 +268,7 @@ app.get('/studentlist', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
-    
+
     /* only fetch student list once, then store it */
     users.getStudentsList(function(err, studentlist) {
         if (err) {
@@ -332,6 +335,16 @@ app.get('/questionform', function(req, res) {
     return res.status(200).send(html);
 });
 
+app.get('/re', function(req, res){
+    var html = regexForm();
+    res.status(200).send(html);
+});
+
+app.get('/mc', function(req, res){
+    var html = multipleChoiceForm();
+    res.status(200).send(html);
+});
+
 /* Return a formatted date for the given timestamp. */
 var creationDate = function(timestamp) {
     const months = ['Jan', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -379,7 +392,7 @@ app.get('/questionlist', function(req, res) {
 
         req.session.adminQuestionList = null;
         var html = null;
-        
+
         if (req.session.user.type == common.userTypes.ADMIN) {
             html = questionTable({ questions : questionsList });
         } else {
@@ -389,7 +402,7 @@ app.get('/questionlist', function(req, res) {
         return res.status(200).send(html);
     });
 
-    /* If this is the first time accessing it, fetch list from database. 
+    /* If this is the first time accessing it, fetch list from database.
     questions.findQuestions(
         0,
         common.sortTypes.SORT_DEFAULT,
@@ -415,20 +428,20 @@ app.post('/questionedit', function(req, res) {
         return res.redirect('/');
     }
 
-    var ind;
-    for (ind in req.session.adminQuestionList) {
-        if (req.session.adminQuestionList[ind].id == req.body.questionid) {
-            break;
+    var qId = parseInt(req.body.questionid);
+    questions.lookupQuestionById(qId, function(err, question){
+        if(err){
+            res.status(500).send('Question not found');
         }
-    }
 
-    var html = questionEdit({
-        question: req.session.adminQuestionList[ind]
-    });
+        var html = questionEdit({
+            question: question
+        });
 
-    return res.status(200).send({
-        html: html,
-        qtext: req.session.adminQuestionList[ind].text
+        return res.status(200).send({
+            html: html,
+            qtext: question.text
+        });
     });
 });
 
@@ -489,7 +502,7 @@ app.post('/fetchqlist', function(req, res) {
     var request = {};
     request.user = req.session.user;
     request.questionsStatus = req.body.type;
-    
+
     users.getQuestionsList(request, function(err, questionsList){
         if (err) {
             return res.status(500).send('Could not fetch questions list');
@@ -547,7 +560,7 @@ app.post('/questionreq', function(req, res) {
     }
 
     questions.lookupQuestionById(parseInt(req.body.id), function(err, result) {
-        if (result == 'failure' || result == 'invalid') {
+        if (err) {
             return res.status(500).send();
         }
 
@@ -601,19 +614,19 @@ app.post('/useradd', function(req, res) {
     }
 
     users.addStudent(req.body, function(err, result) {
-        if (result == 'failure') {
-            return res.status(500);
+        if (err == 'failure') {
+            return res.status(500).send('Could not add user');
         }
 
-        if (result == 'exists') {
-            return res.status(200);
+        if (err == 'exists') {
+            return res.status(500).send('User already exists');
         }
 
         if (req.session.adminStudentList != null) {
             req.session.adminStudentList.push(req.body);
         }
 
-        return res.status(200);
+        return res.status(201).send('User created');
     });
 });
 
@@ -698,13 +711,12 @@ app.post('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByTypeWithRedirection(req.body.type, req.body, function(err, result) {
+    questions.addQuestionByType(req.body.type, req.body, function(err, result) {
         if (err) {
-            return res.status(500);
+            return res.status(500).send('Could not create question');
         }
-        
-        req.session.adminQuestionList.push(req.body);
-        return res.status(200);
+
+        return res.status(201).send('Question created');
     });
 });
 
