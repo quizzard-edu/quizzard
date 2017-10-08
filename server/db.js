@@ -145,6 +145,10 @@ exports.checkLogin = function(userId, pass, callback) {
             return callback(err, null);
         }
 
+        if (!obj) {
+            return callback('notExist', null);
+        }
+
         if (obj) {
             validatePassword(obj, pass, function(err, valid) {
                 if (err) {
