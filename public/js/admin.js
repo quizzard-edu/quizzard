@@ -441,7 +441,7 @@ var updateVisibility = function(qid) {
         },
         success: function(data) {
             displayQuestionTable();
-            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + 'is now visible to the students');
+            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' is now visible to the students');
         },
         error: function(data){
             if (data['status'] === 401) {

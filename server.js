@@ -733,7 +733,7 @@ app.post('/questionmod', function(req, res) {
     var qid = parseInt(req.body.id);
     var q = req.body.question;
 
-    questions.updateQuestionByIdWithRedirection(qid, q, function(err, result) {
+    questions.updateQuestionById(qid, q, function(err, result) {
         return res.status(200).send(result);
     });
 });
