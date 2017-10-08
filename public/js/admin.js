@@ -1,7 +1,7 @@
-/* This is the index for referencing colours for the snackbars */		
-var colours = Object.freeze({		
-    SUCCESS_GREEN: '#4BB543',		
-    FAIL_RED: '#D93232',		
+/* This is the index for referencing colours for the snackbars */
+var colours = Object.freeze({
+    SUCCESS_GREEN: '#4BB543',
+    FAIL_RED: '#D93232',
 });
 
 /* set home as the active navbar element */
@@ -600,15 +600,14 @@ var submitQEditForm = function(qid) {
             id: qid
         },
         success: function(data) {
-            if (data == 'failure') {
-                $('#question-edit-result').html('Question could not be edited.');
-            } else if (data == 'success') {
-                $('#question-edit-result').html('Question ' + qid + ' has been modified.');
-            }
+            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' has been modified.');
+            displayQuestionTable();
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                dropSnack(colours.FAIL_RED, 'Question could not be edited.');
             }
         }
     });
@@ -651,4 +650,13 @@ var sortAccountsTable = function(type) {
             }
         }
     });
+}
+
+/* This function slides down a snakbar */		
+function dropSnack(colour, msg) {		
+    var x = document.getElementById("snackbar");		
+    x.style.backgroundColor=colour;		
+    x.innerHTML=msg;		
+    x.className = "show";		
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);		
 }
