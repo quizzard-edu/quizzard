@@ -652,11 +652,11 @@ var sortAccountsTable = function(type) {
     });
 }
 
-/* This function slides down a snakbar */		
-function dropSnack(colour, msg) {		
-    var x = document.getElementById("snackbar");		
-    x.style.backgroundColor=colour;		
-    x.innerHTML=msg;		
-    x.className = "show";		
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);		
+/* This function slides down a snakbar */
+function dropSnack(colour, msg) {
+    var x = document.getElementById("snackbar");
+    x.style.backgroundColor=colour;
+    x.innerHTML=msg;
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
 }
