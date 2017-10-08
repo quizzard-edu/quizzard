@@ -338,7 +338,7 @@ var submitUserForm = function() {
     });
 
     $.ajax({
-        type: 'POST',
+        type: 'PUT',
         url: '/useradd',
         data: user,
         success: function(data) {
@@ -482,7 +482,7 @@ var submitQuestionForm = function() {
     question['visible'] = $('#visible').is(':checked');
 
     $.ajax({
-        type: 'POST',
+        type: 'PUT',
         url: '/questionadd',
         data: question,
         success: function(data) {
