@@ -1,3 +1,9 @@
+/* This is the index for referencing colours for the snackbars */		
+var colours = Object.freeze({		
+    SUCCESS_GREEN: '#4BB543',		
+    FAIL_RED: '#D93232',		
+});
+
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
@@ -281,10 +287,13 @@ var deleteUser = function(id) {
             data: { userid: id },
             success: function(data) {
                 displayAccountsTable();
+                dropSnack(colours.SUCCESS_GREEN, 'User ' + id + ' was removed from the database');
             },
             error: function(data){
                 if (data['status'] === 401) {
                     window.location.href = '/';
+                } else {
+                    dropSnack(colours.FAIL_RED, 'Failed to remove user ' + id + ' from the database');
                 }
             }
         });
@@ -333,19 +342,17 @@ var submitUserForm = function() {
         url: '/useradd',
         data: user,
         success: function(data) {
-            if (data == 'failure') {
-                $('#result').html('User could not be added');
-            } else if (data == 'exists') {
-                $('#result').html('User ' + user.id + ' already exists');
-            } else if (data == 'success') {
-                $('#result').html('User ' + user.id + ' added to database');
-                setTimeout(displayAccountsTable(), 1000);
-		$('#admin-modal').modal('hide');
-            }
+            $('#admin-modal').modal('hide');
+            setTimeout(displayAccountsTable(), 1000);
+		    dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data === 'failure') {
+                dropSnack(colours.FAIL_RED, 'User could not be added');
+            } else if (data === 'exists') {
+                dropSnack(colours.FAIL_RED, 'User ' + user.id + ' already exists');
             }
         }
     });
@@ -370,16 +377,14 @@ var submitUploadForm = function() {
         processData: false,
         contentType: false,
         success: function(data) {
-            if (data == 'uploaded') {
-                $('#upload-result').html('File successfully uploaded');
-                setTimeout(displayAccountsTable, 3000);
-            } else {
-                $('#upload-result').html('Upload failed');
-            }
+            dropSnack(colours.SUCCESS_GREEN, 'File successfully uploaded');
+            setTimeout(displayAccountsTable, 3000);
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                dropSnack(colours.FAIL_RED, 'Upload failed');
             }
         }
     });
@@ -402,23 +407,22 @@ var submitEditForm = function(id) {
         url: '/usermod',
         data: user,
         success: function(data) {
-            if (data.result == 'failure') {
-                $('#account-edit-result').html('User could not be updated. Please try again');
-            } else if (data.result == 'dupid') {
-                $('#account-edit-result').html('User ID ' + user.id + ' is taken');
-            } else if (data.result == 'success') {
-                $('#admin-content').html(data.html);
-                $('#account-edit-form').submit(function(evt) {
-                    evt.preventDefault();
-                    submitEditForm(user.id ? user.id : id);
-                });
-                $('#account-edit-result').html('User ' + id + ' has been updated');
-            }
+            $('#admin-content').html(data.html);
+            $('#account-edit-form').submit(function(evt) {
+                evt.preventDefault();
+                submitEditForm(user.id ? user.id : id);
+            });
+            displayAccountsTable();		
+            dropSnack(colours.SUCCESS_GREEN, 'User ' + id + ' has been updated');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
-            }
+            } else if (data.result === 'failure') {
+                dropSnack(colours.FAIL_RED, 'User could not be updated. Please try again');
+            } else if (data.result === 'dupid') {
+                dropSnack(colours.FAIL_RED, 'User ID ' + user.id + ' is taken');
+            } 
         }
     });
 }
@@ -436,15 +440,15 @@ var updateVisibility = function(qid) {
             id: qid
         },
         success: function(data) {
-            if (data == 'failure') {
-                displayQuestionTable();
-            } else if (data == 'success') {
-                displayQuestionTable();
-            }
+            displayQuestionTable();
+            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + 'is now visible to the students');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                displayQuestionTable();
+                dropSnack(colours.FAIL_RED, 'Could not change visibility of question');
             }
         }
     });
@@ -469,7 +473,7 @@ var submitQuestionForm = function() {
     });
 
     if ($('#qtext').summernote('isEmpty')) {
-        $('#result').html('Please enter a question body in the editor.');
+        dropSnack(colours.FAIL_RED, 'Please enter a question body in the editor.');
         return;
     }
 
@@ -482,16 +486,14 @@ var submitQuestionForm = function() {
         url: '/questionadd',
         data: question,
         success: function(data) {
-            if (data == 'failure') {
-                $('#result').html('Question could not be added');
-            } else if (data == 'success') {
-                $('#result').html('Question added to database');
-                setTimeout(displayQuestionTable, 1000);
-            }
+            dropSnack(colours.SUCCESS_GREEN, 'Question added to database');
+            displayQuestionTable();
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                dropSnack(colours.FAIL_RED, 'Question could not be added');
             }
         }
     });
@@ -542,11 +544,14 @@ var deleteQuestion = function(qid) {
             url: '/questiondel',
             data: { qid: qid },
             success: function(data) {
+                dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' was removed from the database');
                 displayQuestionTable();
             },
             error: function(data){
                 if (data['status'] === 401) {
                     window.location.href = '/';
+                } else {
+                    dropSnack(colours.FAIL_RED, 'Coud not remove question ' + qid + ' from the database');
                 }
             }
         });
