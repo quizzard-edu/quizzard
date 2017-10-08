@@ -66,7 +66,7 @@ app.get('/', function(req, res) {
         return res.redirect('home');
     }
 
-    return res.render('login');
+    return res.status(401).render('login');
 });
 
 /* check username and password and send appropriate response */
@@ -84,7 +84,7 @@ app.post('/login', function(req, res) {
         if(err){
             logger.info('User %s failed logged in.', username);
             req.session.user = null;
-            return res.status(401).send('invalid');
+            return res.status(403).send('invalid');
         }
 
         if(user){
