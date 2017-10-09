@@ -218,13 +218,16 @@ exports.updateAdminById = function(userId, info, callback){
 }
 
 var updateUserById = function(userId, info, callback){
-    var query = { id:userId };
+    var currentDate = new Date().toString();    
+    var query = { id : userId };
     var update = {};
 
     update.$addToSet = {};
     update.$inc = {};
     update.$pull = {};
     update.$set = {};
+    update.$push = {};
+    update.$set = { mtime : currentDate };
 
     if (info.id) {
         update.$set.id = info.id;
@@ -242,17 +245,28 @@ var updateUserById = function(userId, info, callback){
         update.$set.email = info.email;
     }
 
-    if (typeof info.correct !== 'undefined') {
+    if (typeof info.correct !== 'undefined') {    
+        query['correctAttempts.id'] = { $ne : info.questionId };    
         if (info.correct) {
-            update.$addToSet.answered = info.questionId;
             update.$inc.points = info.points;
-            update.$inc.answeredCount = 1;
-            update.$pull.attempted = { $in : [info.questionId] };
+            update.$inc.correctAttemptsCount = 1;
+            update.$push.correctAttempts = {
+                id : info.questionId,
+                points : info.points,
+                answer : info.attempt,
+                date : currentDate };
         } else {
-            update.$addToSet.attempted = info.questionId;
-            update.$inc.attemptedCount = 1;
-            update.$pull.answered = { $in : [info.questionId] };
+            update.$inc.wrongAttemptsCount = 1;
+            update.$push.wrongAttempts = {
+                id : info.questionId,
+                attempt : info.attempt,
+                date : currentDate };
         }
+        update.$inc.totalAttemptsCount = 1;
+        update.$push.totalAttempts = {
+            id : info.questionId,
+            attempt : info.attempt,
+            date : currentDate };
     }
 
     if (isEmptyObject(update.$addToSet)) {
@@ -269,6 +283,10 @@ var updateUserById = function(userId, info, callback){
 
     if (isEmptyObject(update.$pull)) {
         delete update.$pull;
+    }
+
+    if (isEmptyObject(update.$push)) {
+        delete update.$push;
     }
 
     if (typeof info.newPassword === 'undefined') {
