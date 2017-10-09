@@ -42,7 +42,7 @@ $('#mc_answerform').submit(function(evt) {
                     text: 'Congratulations! You gained ' + data.points + ' points!',
                     type: 'success'
                 }, function () {
-                    window.location.href = '/question';
+                    window.location.href = '/home';
                 });
             }
         }
