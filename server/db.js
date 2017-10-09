@@ -408,14 +408,18 @@ exports.getQuestionsListByUser = function(request, callback) {
                 return callback(err, null);
             }
 
+            if (!requiredUser) {
+                return callback('user does not exist', null);
+            }
+
             questionsCollection.find(questionsQuery).sort({id: 1}).toArray(function(err, docs) {
                 if (err) {
                     return callback(err, null);
                 }
 
-                var compareList = requiredUser.answered;
+                var compareList = getListFromJSONList(requiredUser.correctAttempts);
                 var answeredList = [];
-                var UnansweredList = [];
+                var unansweredList = [];
 
                 for (q in docs) {
                     docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
@@ -424,18 +428,26 @@ exports.getQuestionsListByUser = function(request, callback) {
                     docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
                     delete docs[q]._id;
 
-                    if (compareList.indexOf(docs[q].id) == -1) {
-                        UnansweredList.push(docs[q]);
+                    if (compareList.indexOf(docs[q].id) === -1) {
+                        unansweredList.push(docs[q]);
                     } else {
                         answeredList.push(docs[q]);
                     }
                 }
 
-                var returnList = (questionsStatus === 'answered') ? answeredList : UnansweredList;
+                var returnList = (questionsStatus === 'answered') ? answeredList : unansweredList;
                 return callback(null, returnList);
             });
         });
     }
+}
+
+var getListFromJSONList = function (JSONList) {
+    var list = [];
+    for (i in JSONList){
+        list.push(JSONList[i].id);
+    }
+    return list;
 }
 
 exports.findQuestions = function(amount, findType, user, callback){

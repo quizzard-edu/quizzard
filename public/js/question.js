@@ -1,10 +1,12 @@
+var questionId = window.location.href.split("?id=")[1];
+
 $('#re_answerform').submit(function(evt) {
     evt.preventDefault();
     var ans = $('#answer').val();
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: '/submitanswer',
-        data: $('#re_answerform').serialize(),
+        data: { questionId: questionId, answer: ans },
         success: function(data) {
             if (data.result == 'incorrect') {
                 $('#hint').removeClass('hidden');
@@ -28,9 +30,9 @@ $('#mc_answerform').submit(function(evt) {
     evt.preventDefault();
     var ans = $("input[name=answer]:checked").val();
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: '/submitanswer',
-        data: $('#mc_answerform').serialize(),
+        data: { questionId: questionId, answer: ans },
         success: function(data) {
             if (data.result == 'incorrect') {
                 swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
