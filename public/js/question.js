@@ -1,10 +1,12 @@
+var questionId = window.location.href.split('?id=')[1];
+
 $('#re_answerform').submit(function(evt) {
     evt.preventDefault();
     var ans = $('#answer').val();
     $.ajax({
         type: 'POST',
         url: '/submitanswer',
-        data: $('#re_answerform').serialize(),
+        data: { questionId: questionId, answer: ans },
         success: function(data) {
             if (data.result == 'incorrect') {
                 $('#hint').removeClass('hidden');
@@ -30,7 +32,7 @@ $('#mc_answerform').submit(function(evt) {
     $.ajax({
         type: 'POST',
         url: '/submitanswer',
-        data: $('#mc_answerform').serialize(),
+        data: { questionId: questionId, answer: ans },
         success: function(data) {
             if (data.result == 'incorrect') {
                 swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
@@ -40,7 +42,7 @@ $('#mc_answerform').submit(function(evt) {
                     text: 'Congratulations! You gained ' + data.points + ' points!',
                     type: 'success'
                 }, function () {
-                    window.location.href = '/question';
+                    window.location.href = '/home';
                 });
             }
         }

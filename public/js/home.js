@@ -13,21 +13,7 @@ $.ajax({
 /* Make questions clickable. */
 var setupQuestionListeners = function() {
     $('.question-block').click(function(evt) {
-        var qid = this.id;
-
-        $.ajax({
-            type: 'POST',
-            url: '/questionreq',
-            data: { id: qid },
-            success: function(data) {
-                window.location.href = '/question';
-            },
-            error: function(data){
-                if (data['status'] === 401) {
-                    window.location.href = '/';
-                }
-            }
-        });
+        window.location.href = '/question?id='+this.id;
     });
 }
 
