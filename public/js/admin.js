@@ -187,6 +187,7 @@ var getQuestionFormAnswer = function(form){
         success: function(data){
             $('#qAnswer').html(data);
         },
+
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
@@ -344,7 +345,7 @@ var submitUserForm = function() {
         success: function(data) {
             $('#admin-modal').modal('hide');
             setTimeout(displayAccountsTable(), 1000);
-		    dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
+		        dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -422,7 +423,7 @@ var submitEditForm = function(id) {
                 dropSnack(colours.FAIL_RED, 'User could not be updated. Please try again');
             } else if (data.result === 'dupid') {
                 dropSnack(colours.FAIL_RED, 'User ID ' + user.id + ' is taken');
-            } 
+            }
         }
     });
 }
@@ -473,6 +474,7 @@ var submitQuestionForm = function() {
     });
 
     if ($('#qtext').summernote('isEmpty')) {
+
         dropSnack(colours.FAIL_RED, 'Please enter a question body in the editor.');
         return;
     }

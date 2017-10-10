@@ -143,21 +143,23 @@ exports.checkLogin = function(userId, pass, callback) {
         if (err) {
             logger.error(err);
             return callback(err, null);
-        } else if (obj) {
-            validatePassword(obj, pass, function(err, valid) {
-                if (err) {
-                    return callback(err, null);
-                }
-                if (valid) {
-                    delete obj._id;
-                    delete obj.password;
-                    return callback(null, obj);
-                }
-                return callback('invalid', null);
-            });
-        } else {
-            return callback('user does not exists', null);
         }
+
+        if (!obj) {
+            return callback('notExist', null);
+        }
+
+        validatePassword(obj, pass, function(err, valid) {
+            if (err) {
+                return callback(err, null);
+            }
+            if (valid) {
+                delete obj._id;
+                delete obj.password;
+                return callback(null, obj);
+            }
+            return callback('invalid', null);
+        });
     });
 }
 
