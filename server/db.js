@@ -227,9 +227,8 @@ var updateUserById = function(userId, info, callback){
     update.$addToSet = {};
     update.$inc = {};
     update.$pull = {};
-    update.$set = {};
-    update.$push = {};
     update.$set = { mtime : currentDate };
+    update.$push = {};
 
     if (info.id) {
         update.$set.id = info.id;
