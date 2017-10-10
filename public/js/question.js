@@ -1,10 +1,10 @@
-var questionId = window.location.href.split("?id=")[1];
+var questionId = window.location.href.split('?id=')[1];
 
 $('#re_answerform').submit(function(evt) {
     evt.preventDefault();
     var ans = $('#answer').val();
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/submitanswer',
         data: { questionId: questionId, answer: ans },
         success: function(data) {
@@ -30,7 +30,7 @@ $('#mc_answerform').submit(function(evt) {
     evt.preventDefault();
     var ans = $("input[name=answer]:checked").val();
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/submitanswer',
         data: { questionId: questionId, answer: ans },
         success: function(data) {

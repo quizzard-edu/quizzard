@@ -550,15 +550,15 @@ app.get('/question', function(req, res) {
 });
 
 /* check if the submitted answer is correct */
-app.get('/submitanswer', function(req, res) {
+app.post('/submitanswer', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
     questions.checkAnswer(
-        parseInt(req.query.questionId),
+        parseInt(req.body.questionId),
         req.session.user.id,
-        req.query.answer,
+        req.body.answer,
         function(err, result) {
             var data = {};
 
