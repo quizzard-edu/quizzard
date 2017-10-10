@@ -8,7 +8,7 @@ $('#login').submit(function(evt) {
         url: '/login',
         data: $('#login').serialize(),
         success: function(data) {
-                window.location.href = '/home';
+            window.location.href = '/home';
         },
         error: function(data) {
             $('#invalid').html(failedLogin);

@@ -66,7 +66,7 @@ app.get('/', function(req, res) {
         return res.redirect('home');
     }
 
-    return res.render('login');
+    return res.status(401).render('login');
 });
 
 /* check username and password and send appropriate response */
@@ -84,7 +84,7 @@ app.post('/login', function(req, res) {
         if(err){
             logger.info('User %s failed logged in.', username);
             req.session.user = null;
-            return res.status(401).send('invalid');
+            return res.status(403).send('invalid');
         }
 
         if(user){
@@ -608,7 +608,7 @@ app.post('/submitanswer', function(req, res) {
  * Otherwise, the user is inserted into the database and added
  * to the active admin student list.
  */
-app.post('/useradd', function(req, res) {
+app.put('/useradd', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -706,7 +706,7 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
  * Add a question to the database.
  * The request body contains the question to be added.
  */
-app.post('/questionadd', function(req, res) {
+app.put('/questionadd', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
