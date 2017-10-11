@@ -791,7 +791,18 @@ app.get('/questionpreview', function(req, res) {
             user: 'Username',
             question: q,
             answered: false,
-            preview: true
+            preview: true,
+            getQuestionForm: function(){
+                switch (q.type){
+                    case common.questionTypes.REGULAR.value:
+                        return regexForm({answerForm: false, studentQuestionForm:true})
+                    case common.questionTypes.MULTIPLECHOICE.value:
+                        return mcForm({answerForm: false, studentQuestionForm:true, question:questionFound})
+                    default:
+                        return res.redirect('/');
+                        break;
+                }
+            }
         });
     });
 });
