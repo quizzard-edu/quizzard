@@ -3,6 +3,8 @@ extends layout
 block styles
   link(rel='stylesheet' href='/css/question.css')
   link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
+  link(rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons')
   if !preview
     link(rel='stylesheet' href='/css/navbar.css')
     link(rel='stylesheet' href='/lib/sweetalert/sweetalert.css')
@@ -70,5 +72,6 @@ block scripts
     script(src='/lib/jquery/jquery-3.1.1.min.js')
     script(src='/lib/bootstrap/js/bootstrap.min.js')
     script(src='/lib/sweetalert/sweetalert.min.js')
+    script(src='/lib/materialize/js/materialize.min.js')
     script(src='/js/question.js')
     script(src='/js/navbar.js')

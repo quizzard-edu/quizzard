@@ -2,10 +2,6 @@
   cursor: default;
 }
 
-#nav-logout {
-  padding-right: 10px;
-}
-
 .form-changepass {
   margin: 0 auto;
   margin-top: -20px;
@@ -24,4 +20,9 @@
 
 .form-changepass #changepass-result {
   margin-top: 10px;
+}
+
+a:link, a:visited, a:hover, a:active {
+  text-decoration: none;
+  color: white;
 }
