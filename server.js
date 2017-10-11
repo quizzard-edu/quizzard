@@ -199,7 +199,7 @@ const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
 
 const regexForm = pug.compileFile('views/regex-answer.pug');
-const multipleChoiceForm = pug.compileFile('views/mc-answer.pug');
+const mcForm = pug.compileFile('views/mc-answer.pug');
 
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
@@ -301,20 +301,27 @@ app.get('/questionform', function(req, res) {
         return res.redirect('/');
     }
 
-    var html = questionForm();
-
-    return res.status(200).send(html);
+    return res.status(200).render('question-creation',{
+        questionType: common.questionTypes
+    });
 });
 
-app.get('/re', function(req, res){
-    var html = regexForm();
-    res.status(200).send(html);
-});
-
-app.get('/mc', function(req, res){
-    var html = multipleChoiceForm();
-    res.status(200).send(html);
-});
+app.post('/formanswer', function(req, res){
+    switch (req.body.qType){
+        case common.questionTypes.REGULAR.value:
+            res.status(200).render(
+                common.questionTypes.REGULAR.template,{
+                answerForm:true});
+            break;
+        case common.questionTypes.MULTIPLECHOICE.value:
+            res.status(200).render(
+                common.questionTypes.MULTIPLECHOICE.template,{
+                answerForm:true});
+            break;
+        default:
+            res.status(400).send('Invalid question type');
+    }
+})
 
 /* Return a formatted date for the given timestamp. */
 var creationDate = function(timestamp) {
@@ -406,7 +413,18 @@ app.post('/questionedit', function(req, res) {
         }
 
         var html = questionEdit({
-            question: question
+            question: question,
+            getQuestionForm: function(){
+                switch (question.type){
+                    case common.questionTypes.REGULAR.value:
+                        return regexForm({adminQuestionEdit:true, question:question})
+                    case common.questionTypes.MULTIPLECHOICE.value:
+                        return mcForm({adminQuestionEdit:true, question:question})
+                    default:
+                        console.log('notype found');
+                        break;
+                }
+            }
         });
 
         return res.status(200).send({
@@ -539,12 +557,23 @@ app.get('/question', function(req, res) {
         if (!questionFound.visible) {
             return res.status(400).send('Question is not available');
         }
-
+        console.log(questionFound);
         return res.status(200).render('question', {
             user: req.session.user,
             question: questionFound,
             answered: !(questionFound.answered.indexOf(req.session.user.id) === -1),
-            preview: false
+            preview: false,
+            getQuestionForm: function(){
+                switch (questionFound.type){
+                    case common.questionTypes.REGULAR.value:
+                        return regexForm({answerForm: false, studentQuestionForm:true})
+                    case common.questionTypes.MULTIPLECHOICE.value:
+                        return mcForm({answerForm: false, studentQuestionForm:true, question:questionFound})
+                    default:
+                        return res.redirect('/');
+                        break;
+                }
+            }
         });
     });
 });

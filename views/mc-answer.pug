@@ -1,11 +1,34 @@
-.form-group
+if answerForm
+	.form-group
+		each index in [1,2,3,4]
+			p
+				| Is Correct:
+				input(type='radio', name='radbutton', value='mcans'+index, required)
+				input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required, style='float:left;')
+				button(onclick='$(this).parent().remove()') delete
 
-	each index in [1,2,3,4]
-		p
-			| Is Correct:
-			input(type='radio', name='radbutton', value='mcans'+index, required)
-			input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required, style='float:left;')
-			button(onclick='$(this).parent().remove()') delete
+	#addMoreAnswersButton
+		button(onclick="addMCAnswers('qAnswer')") add answer
 
-#addMoreAnswersButton
-	button(onclick="addMCAnswers('qAnswer')") add answer
+else if studentQuestionForm
+	form.form-question#mc_answerform
+		each answer in question.choices
+			input(type='radio' name='answer', value=answer, required, autofocus)
+			| #{answer}
+
+		button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+
+else if adminQuestionEdit
+	.form-group.row
+		each option, i in question.choices
+			p
+				| Is Correct:
+				if question.answer == option
+					input(type='radio', name='radbutton', value=i, required, checked)
+				else
+					input(type='radio', name='radbutton', value=i, required)
+				input.form-control(type='text', name=i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
+				button(onclick='$(this).parent().remove()') delete
+
+	#addMoreAnswersButton
+		button(onclick="addMCAnswers('qAnswer')") add answer

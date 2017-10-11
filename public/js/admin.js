@@ -143,7 +143,7 @@ var displayQuestionForm = function() {
             $('#qType').change(function(evt) {
                 // get the answer part for the form requested
                 // id to replace is qAnswer
-                var form = "/" + $(this).val();
+                var form = $(this).val();
                 getQuestionFormAnswer(form);
                 $('#questionform').show();
             });
@@ -182,8 +182,9 @@ var addMCAnswers = function(dom){
 // replace the answer field in Question-creation.pug for specific question
 var getQuestionFormAnswer = function(form){
     $.ajax({
-        type: 'GET',
-        url: form,
+        type: 'POST',
+        url: '/formanswer',
+        data: {qType:form},
         success: function(data){
             $('#qAnswer').html(data);
         },

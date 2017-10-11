@@ -45,18 +45,18 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.mtime = currentDate;
 
 	switch (question.type) {
-		case 're':
-			questionToAdd.type = common.questionTypes.REGULAR;
+		case common.questionTypes.REGULAR.value:
+			questionToAdd.type = common.questionTypes.REGULAR.value;
 			break;
 
-		case 'mc':
-			questionToAdd.type = common.questionTypes.MULTIPLECHOICE;
+		case common.questionTypes.MULTIPLECHOICE.value:
+			questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
 			questionToAdd.choices = question.choices;
 			break;
 
 		default:
 			//callback('type is not defined', null);
-			questionToAdd.type = common.questionTypes.REGULAR;
+			questionToAdd.type = common.questionTypes.REGULAR.value;
 	}
 
 	db.addQuestion(questionToAdd, callback);

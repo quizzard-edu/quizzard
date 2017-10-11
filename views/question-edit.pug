@@ -20,26 +20,7 @@ form.form-edit#question-edit-form
     .summernote#qtext(value=question.text)
 
   #qAnswer
-    case question.type
-      when 0
-        .form-group.row
-          label.col-sm-2.col-form-label(for='qanswer') Answer (regex)
-          .col-sm-10
-            input.form-control#qanswer(type='text', name='answer',value=question.answer)
-      when 1
-        .form-group.row
-          each option, i in question.choices
-            p
-              | Is Correct:
-              if question.answer == option
-                input(type='radio', name='radbutton', value=i, required, checked)
-              else
-                input(type='radio', name='radbutton', value=i, required)
-              input.form-control(type='text', name=i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
-              button(onclick='$(this).parent().remove()') delete
-
-        #addMoreAnswersButton
-          button(onclick="addMCAnswers('qAnswer')") add answer
+    | !{getQuestionForm()}
 
   .form-group.row
     label.col-sm-2.col-form-label(for='qtopic') Topic

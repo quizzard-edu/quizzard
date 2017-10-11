@@ -3,9 +3,9 @@
 #questionformType
   .form-group
     select#qType.select.form-control.input-lg(name='qType' )
-      option(value='0' selected disabled) -- Select Question Type --
-      option(value='mc') Multiple Choice
-      option(value='re') Regex Question Answer
+      option(selected disabled) -- Select Question Type --
+      each type, i in questionType
+        option(value=type.value) #{type.name}
 
 form.form-user#questionform(style='display:none')
   .col-md-4

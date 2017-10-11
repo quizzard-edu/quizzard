@@ -1,4 +1,15 @@
-.form-group
-	label(for='qanswer') Answer (regex)
-	input.form-control#qanswer(type='text' name='answer'
-                               placeholder='Enter answer' required)
+if answerForm
+	.form-group
+		label(for='qanswer') Answer (regex)
+		input.form-control#qanswer(type='text' name='answer' placeholder='Enter answer' required)
+else if studentQuestionForm
+	form.form-question#re_answerform
+		label.sr-only(for='answer') Answer
+		input.form-control#answer(name='answer' placeholder='Enter your answer here' required autofocus)
+		button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+
+else if adminQuestionEdit
+	.form-group.row
+		label.col-sm-2.col-form-label(for='qanswer') Answer (regex)
+		.col-sm-10
+			input.form-control#qanswer(type='text', name='answer',value=question.answer)
