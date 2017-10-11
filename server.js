@@ -319,7 +319,7 @@ app.post('/formanswer', function(req, res){
                 answerForm:true});
             break;
         default:
-            res.status(400).send('Invalid question type');
+            return res.redirect('/');
     }
 })
 
@@ -421,7 +421,7 @@ app.post('/questionedit', function(req, res) {
                     case common.questionTypes.MULTIPLECHOICE.value:
                         return mcForm({adminQuestionEdit:true, question:question})
                     default:
-                        console.log('notype found');
+                        return res.redirect('/')
                         break;
                 }
             }
