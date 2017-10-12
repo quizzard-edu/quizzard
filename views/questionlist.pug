@@ -3,7 +3,10 @@ if questions.length == 0
     h4.text-center You have completed all currently available questions. Well done!
     p.text-center Check back later for more...
 else
+  ul.collection
   each q in questions
+    li.collection-item
+      h4 #{q.title}
     .row.question-block(id=q.id)
       .col-sm-8.qleft
         p.text-center.title #{q.title}
