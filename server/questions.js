@@ -27,72 +27,39 @@ var common = require('./common.js');
  * The question object passed to the function should have
  * the text, topic, type, answer, points and hint set.
  */
-exports.addQuestionByTypeWithRedirection = function(qType, question, callback) {
-	switch(qType){
-		case common.questionTypes.REGULAR:
-			addRegularQuestion(question, callback);
+exports.addQuestionByType = function(qType, question, callback) {
+	var currentDate = new Date().toString();
+	var questionToAdd = {};
+
+	questionToAdd.topic = question.topic;
+	questionToAdd.title = question.title;
+	questionToAdd.text = question.text;
+	questionToAdd.answer = question.answer;
+	questionToAdd.hint = question.hint;
+	questionToAdd.points = parseInt(question.points);
+	questionToAdd.visible = (question.visible === 'true');
+	questionToAdd.attempted = [];
+	questionToAdd.answered = [];
+	questionToAdd.attempts = [];
+	questionToAdd.ctime = currentDate;
+	questionToAdd.mtime = currentDate;
+
+	switch (question.type) {
+		case 're':
+			questionToAdd.type = common.questionTypes.REGULAR;
 			break;
 
-		case common.questionTypes.MULTIPLECHOICE:
-			addMultipleChoiceQuestion(question, callback);
+		case 'mc':
+			questionToAdd.type = common.questionTypes.MULTIPLECHOICE;
+			questionToAdd.choices = question.choices;
 			break;
 
 		default:
-			callback('failure', null);
+			//callback('type is not defined', null);
+			questionToAdd.type = common.questionTypes.REGULAR;
 	}
-}
 
-exports.addRegularQuestion = function(question, callback) {
-	addRegularQuestion(question, callback);
-}
-
-exports.addMultipleChoiceQuestion = function(question, callback) {
-	addMultipleChoiceQuestion(question, callback);
-}
-
-var addRegularQuestion = function(question, callback) {
-	var currentDate = new Date().toString();
-	var questionToAdd = {};
-
-	questionToAdd.topic = question.topic;
-	questionToAdd.title = question.title;
-	questionToAdd.text = question.text;
-	questionToAdd.answer = question.answer;
-	questionToAdd.hint = question.hint;
-	questionToAdd.points = question.points;
-	questionToAdd.visible = true;
-	questionToAdd.type = common.questionTypes.REGULAR;
-	questionToAdd.attempted = [];
-	questionToAdd.answered = [];
-	questionToAdd.attempts = [];
-	questionToAdd.ctime = currentDate;
-	questionToAdd.mtime = currentDate;
-
-	db.addRegularQuestion(questionToAdd, function(err, res) {
-		callback(err, res);
-	});
-}
-
-var addMultipleChoiceQuestion = function(question, callback) {
-	var currentDate = new Date().toString();
-	var questionToAdd = {};
-
-	questionToAdd.topic = question.topic;
-	questionToAdd.title = question.title;
-	questionToAdd.text = question.text;
-	questionToAdd.answer = question.answer;
-	questionToAdd.hint = question.hint;
-	questionToAdd.points = question.points;
-	questionToAdd.type = common.questionTypes.MULTIPLECHOICE;
-	questionToAdd.attempted = [];
-	questionToAdd.answered = [];
-	questionToAdd.attempts = [];
-	questionToAdd.ctime = currentDate;
-	questionToAdd.mtime = currentDate;
-
-	db.addMultipleChoiceQuestion(questionToAdd, function(err, res) {
-		callback(err, res);
-	});
+	db.addQuestion(questionToAdd, callback);
 }
 
 /*
@@ -123,31 +90,12 @@ exports.sortQuestions = function(qs, type, callback) {
 
 
 /* Replace a question in the database with the provided question object. */
-exports.updateQuestionByIdWithRedirection = function(questionId, info, callback) {
-	updateQuestionByIdWithRedirection(questionId, info, callback);
+exports.updateQuestionById = function(questionId, info, callback) {
+	updateQuestionById(questionId, info, callback);
 }
 
-var updateQuestionByIdWithRedirection = function(questionId, info, callback) {
-	lookupQuestionById(questionId, function(err, question){
-		if(err){
-			return callback(err, null);
-		}
-
-		if(question){
-			switch(question.type){
-				case common.questionTypes.REGULAR:
-			 		db.updateRegularQuestionById(questionId, info, callback);
-					break;
-
-				case common.questionTypes.MULTIPLECHOICE:
-					db.updateMultipleChoiceQuestionById(questionId, info, callback);
-					break;
-
-				default:
-					return callback('invalid type', null);
-			}
-		}
-	});
+var updateQuestionById = function(questionId, info, callback) {
+	db.updateQuestionById(questionId, info, callback);
 }
 
 /* Remove the question with ID qid from the database. */
@@ -189,11 +137,11 @@ exports.checkAnswer = function(questionId, userId, answer, callback) {
 
 		db.updateStudentById(
 			userId,
-			{ questionId:questionId, correct:value, points:question.points },
+			{ questionId:questionId, correct:value, points:question.points, attempt:answer },
 			function(err, res){
-				updateQuestionByIdWithRedirection(
+				updateQuestionById(
 					questionId,
-					{ userId:userId, correct:value },
+					{ userId:userId, correct:value, attempt:answer },
 					function(err, res) {
 						return callback(err, value);
 					}

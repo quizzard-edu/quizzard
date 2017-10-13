@@ -1,3 +1,9 @@
+/* This is the index for referencing colours for the snackbars */
+var colours = Object.freeze({
+    SUCCESS_GREEN: '#4BB543',
+    FAIL_RED: '#D93232',
+});
+
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
@@ -23,6 +29,11 @@ var displayAccountsTable = function() {
             $('#option-questions').removeClass('active');
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -59,6 +70,11 @@ var displayAccountForm = function() {
                 evt.preventDefault();
                 submitUploadForm();
             });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -98,6 +114,11 @@ var displayQuestionTable = function() {
             $('#option-accounts').removeClass('active');
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -108,16 +129,74 @@ var displayQuestionForm = function() {
         type: 'GET',
         url: '/questionform',
         success: function(data) {
-            $('#admin-modal').modal('show');
-            $('#admin-modal-label').html('Add New Question');
-            $('#admin-modal-body').html(data);
+            $('#admin-label').html('Add New Question');
+            $('#admin-content').html(data);
+            $('#admin-button').off();
+            $('#admin-button').hide();
+            $('#admin-back').show();
+            $('#admin-back').click(function(evt) {
+                displayQuestionTable();
+            });
+
             $('#qtext').summernote({ height: 100 });
+            // choose the type of question creating
+            $('#qType').change(function(evt) {
+                // get the answer part for the form requested
+                // id to replace is qAnswer
+                var form = "/" + $(this).val();
+                getQuestionFormAnswer(form);
+                $('#questionform').show();
+            });
+
             $('#questionform').submit(function(evt) {
                 evt.preventDefault();
                 submitQuestionForm();
             });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
+}
+
+/*String Formating option*/
+String.prototype.format = function() {
+  a = this;
+  for (k in arguments) {
+    a = a.replace("{" + k + "}", arguments[k])
+  }
+  return a
+}
+
+var mcAnswerCount = 4;
+var addMCAnswers = function(dom){
+    mcAnswerCount++;
+     var newdiv = document.createElement('div');
+     var inputdiv = "<p>Is Correct: <input type='radio' name='radbutton' value='mcans{0}'/><input class='form-control' type='text' name='mcans{1}' placeholder='Enter Answer Here' required='required' style='float:left;'/> <button onclick='$(this).parent().remove();'>delete</button></p>"
+     newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount);
+     $('#qAnswer > div.form-group').append(newdiv);
+}
+
+// replace the answer field in Question-creation.pug for specific question
+var getQuestionFormAnswer = function(form){
+    $.ajax({
+        type: 'GET',
+        url: form,
+        success: function(data){
+            $('#qAnswer').html(data);
+        },
+
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                $('#result').html('Server is down cannot pull Answer form');
+            }
+        }
+    });
+
 }
 
 /* Display the application statistics form. */
@@ -137,6 +216,11 @@ var displayStatistics = function() {
             $('#admin-button').off();
             $('#admin-button').hide();
             $('#admin-back').hide();
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -204,6 +288,14 @@ var deleteUser = function(id) {
             data: { userid: id },
             success: function(data) {
                 displayAccountsTable();
+                dropSnack(colours.SUCCESS_GREEN, 'User ' + id + ' was removed from the database');
+            },
+            error: function(data){
+                if (data['status'] === 401) {
+                    window.location.href = '/';
+                } else {
+                    dropSnack(colours.FAIL_RED, 'Failed to remove user ' + id + ' from the database');
+                }
             }
         });
     });
@@ -228,6 +320,11 @@ var editUser = function(id) {
                 evt.preventDefault();
                 submitEditForm(id);
             });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -242,18 +339,21 @@ var submitUserForm = function() {
     });
 
     $.ajax({
-        type: 'POST',
+        type: 'PUT',
         url: '/useradd',
         data: user,
         success: function(data) {
-            if (data == 'failure') {
-                $('#result').html('User could not be added');
-            } else if (data == 'exists') {
-                $('#result').html('User ' + user.id + ' already exists');
-            } else if (data == 'success') {
-                $('#result').html('User ' + user.id + ' added to database');
-                setTimeout(displayAccountsTable(), 1000);
-		$('#admin-modal').modal('hide');
+            $('#admin-modal').modal('hide');
+            setTimeout(displayAccountsTable(), 1000);
+		        dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data === 'failure') {
+                dropSnack(colours.FAIL_RED, 'User could not be added');
+            } else if (data === 'exists') {
+                dropSnack(colours.FAIL_RED, 'User ' + user.id + ' already exists');
             }
         }
     });
@@ -278,11 +378,14 @@ var submitUploadForm = function() {
         processData: false,
         contentType: false,
         success: function(data) {
-            if (data == 'uploaded') {
-                $('#upload-result').html('File successfully uploaded');
-                setTimeout(displayAccountsTable, 3000);
+            dropSnack(colours.SUCCESS_GREEN, 'File successfully uploaded');
+            setTimeout(displayAccountsTable, 3000);
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
             } else {
-                $('#upload-result').html('Upload failed');
+                dropSnack(colours.FAIL_RED, 'Upload failed');
             }
         }
     });
@@ -305,18 +408,21 @@ var submitEditForm = function(id) {
         url: '/usermod',
         data: user,
         success: function(data) {
-            if (data.result == 'failure') {
-                $('#account-edit-result').html('User could not be updated. Please try again');
-            } else if (data.result == 'dupid') {
-                $('#account-edit-result').html('User ID ' + user.id + ' is taken');
-            } else if (data.result == 'success') {
-                $('#admin-content').html(data.html);
-                $('#account-edit-form').submit(function(evt) {
-                    evt.preventDefault();
-                    submitEditForm(user.id ? user.id : id);
-                });
-                $('#account-edit-result').html('User ' + id + ' has been updated');
-		displayAccountsTable();
+            $('#admin-content').html(data.html);
+            $('#account-edit-form').submit(function(evt) {
+                evt.preventDefault();
+                submitEditForm(user.id ? user.id : id);
+            });
+            displayAccountsTable();		
+            dropSnack(colours.SUCCESS_GREEN, 'User ' + id + ' has been updated');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data.result === 'failure') {
+                dropSnack(colours.FAIL_RED, 'User could not be updated. Please try again');
+            } else if (data.result === 'dupid') {
+                dropSnack(colours.FAIL_RED, 'User ID ' + user.id + ' is taken');
             }
         }
     });
@@ -335,10 +441,15 @@ var updateVisibility = function(qid) {
             id: qid
         },
         success: function(data) {
-            if (data == 'failure') {
-		displayQuestionTable();
-            } else if (data == 'success') {
+            displayQuestionTable();
+            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' is now visible to the students');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
                 displayQuestionTable();
+                dropSnack(colours.FAIL_RED, 'Could not change visibility of question');
             }
         }
     });
@@ -348,28 +459,43 @@ var updateVisibility = function(qid) {
 var submitQuestionForm = function() {
     var fields = $('#questionform').serializeArray();
     var question = {};
-    var qbody;
+    question['choices'] = [];
 
     jQuery.each(fields, function(i, field) {
+        if(field.name.startsWith('radbutton')){
+            question['answer'] = fields[i+1].value;
+        }
+
+        if(field.name.startsWith('mcans')){
+            question['choices'].push(field.value);
+        }
+
         question[field.name] = field.value;
     });
+
     if ($('#qtext').summernote('isEmpty')) {
-        $('#result').html('Please enter a question body in the editor.');
+
+        dropSnack(colours.FAIL_RED, 'Please enter a question body in the editor.');
         return;
     }
+
     question['text'] = $('#qtext').summernote('code');
+    question['type'] = $('#qType').select().val();
     question['visible'] = $('#visible').is(':checked');
+
     $.ajax({
-        type: 'POST',
+        type: 'PUT',
         url: '/questionadd',
         data: question,
         success: function(data) {
-            if (data == 'failure') {
-                $('#result').html('Question could not be added');
-            } else if (data == 'success') {
-                $('#result').html('Question added to database');
-                setTimeout(displayQuestionTable, 1000);
-                 $('#admin-modal').modal('hide');
+            dropSnack(colours.SUCCESS_GREEN, 'Question added to database');
+            displayQuestionTable();
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                dropSnack(colours.FAIL_RED, 'Question could not be added');
             }
         }
     });
@@ -396,6 +522,11 @@ var viewQuestion = function(qid) {
                     evt.preventDefault();
                 });
             }
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -415,7 +546,15 @@ var deleteQuestion = function(qid) {
             url: '/questiondel',
             data: { qid: qid },
             success: function(data) {
+                dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' was removed from the database');
                 displayQuestionTable();
+            },
+            error: function(data){
+                if (data['status'] === 401) {
+                    window.location.href = '/';
+                } else {
+                    dropSnack(colours.FAIL_RED, 'Coud not remove question ' + qid + ' from the database');
+                }
             }
         });
     });
@@ -441,6 +580,11 @@ var editQuestion = function(qid) {
                 evt.preventDefault();
                 submitQEditForm(qid);
             });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -463,11 +607,14 @@ var submitQEditForm = function(qid) {
             id: qid
         },
         success: function(data) {
-            if (data == 'failure') {
-                $('#question-edit-result').html('Question could not be edited.');
-            } else if (data == 'success') {
-                $('#question-edit-result').html('Question ' + qid + ' has been modified.');
-		displayQuestionTable();
+            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' has been modified.');
+            displayQuestionTable();
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                dropSnack(colours.FAIL_RED, 'Question could not be edited.');
             }
         }
     });
@@ -503,6 +650,11 @@ var sortAccountsTable = function(type) {
         success: function(data) {
             $('#admin-content').html(data);
             addAccountsTableEvents();
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -518,4 +670,11 @@ var toggleButtonVisibility = function(){
     }
 } 
 
-
+/* This function slides down a snakbar */
+function dropSnack(colour, msg) {
+    var x = document.getElementById("snackbar");
+    x.style.backgroundColor=colour;
+    x.innerHTML=msg;
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}

@@ -21,4 +21,3 @@ const questionTypes = Object.freeze({
     MULTIPLECHOICE  : 1
 });
 exports.questionTypes = questionTypes;
-

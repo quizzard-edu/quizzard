@@ -31,11 +31,11 @@ var setupAdminAccount = function(accid, pass) {
     };
 
     db.initialize(function() {
-        users.addAdmin(acc, function(res) {
-            if (res == 'failure') {
+        users.addAdmin(acc, function(err, res) {
+            if (err == 'failure') {
                 console.log('Could not create account. Please try again.');
                 process.exit(1);
-            } else if (res == 'exists') {
+            } else if (err == 'exists') {
                 console.log('Account with username `%s\' exists.', accid);
                 process.exit(1);
             } else {

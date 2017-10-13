@@ -20,18 +20,34 @@ block content
   .container
     .row
       .col-md-8
-        form.form-question#answerform
-          h2.qtext #{question.title}
-          h5.qtext !{question.text}
-          label.sr-only(for='answer') Answer
-          if answered
-            input.form-control#answer(name='answer' placeholder='Enter your answer here'
-                                      required disabled)
-            button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
-          else
-            input.form-control#answer(name='answer' placeholder='Enter your answer here'
-                                      required autofocus)
-            button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+
+        h2.qtext #{question.title}
+        h5.qtext !{question.text}
+        // view question type in server/questions.js
+        case question.type
+          when 0
+            form.form-question#re_answerform
+              label.sr-only(for='answer') Answer
+              if answered
+                input.form-control#answer(name='answer' placeholder='Enter your answer here'
+                                          required disabled)
+                button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
+              else
+                input.form-control#answer(name='answer' placeholder='Enter your answer here'
+                                          required autofocus)
+                button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+
+          when 1
+            form.form-question#mc_answerform
+              each answer in question.choices
+                input(type='radio' name='answer', value=answer, required, autofocus)
+                | #{answer}
+              if answered
+                button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
+              else
+                button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+
+
         if answered
           .success
             h4.text-center#success-header Learn more
@@ -48,7 +64,6 @@ block content
           h4.sidebar-item#hint Hint: #{question.hint}
         else
           h4.sidebar-item#hint.hidden Hint: #{question.hint}
-
 
 block scripts
   if !preview

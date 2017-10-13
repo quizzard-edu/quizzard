@@ -145,19 +145,21 @@ exports.checkLogin = function(userId, pass, callback) {
             return callback(err, null);
         }
 
-        if (obj) {
-            validatePassword(obj, pass, function(err, valid) {
-                if (err) {
-                    return callback(err, null);
-                }
-                if (valid) {
-                    delete obj._id;
-                    delete obj.password;
-                    return callback(null, obj);
-                }
-                return callback('invalid', null);
-            });
+        if (!obj) {
+            return callback('notExist', null);
         }
+
+        validatePassword(obj, pass, function(err, valid) {
+            if (err) {
+                return callback(err, null);
+            }
+            if (valid) {
+                delete obj._id;
+                delete obj.password;
+                return callback(null, obj);
+            }
+            return callback('invalid', null);
+        });
     });
 }
 
@@ -218,13 +220,15 @@ exports.updateAdminById = function(userId, info, callback){
 }
 
 var updateUserById = function(userId, info, callback){
-    var query = { id:userId };
+    var currentDate = new Date().toString();    
+    var query = { id : userId };
     var update = {};
 
     update.$addToSet = {};
     update.$inc = {};
     update.$pull = {};
-    update.$set = {};
+    update.$set = { mtime : currentDate };
+    update.$push = {};
 
     if (info.id) {
         update.$set.id = info.id;
@@ -242,17 +246,28 @@ var updateUserById = function(userId, info, callback){
         update.$set.email = info.email;
     }
 
-    if (typeof info.correct !== 'undefined') {
+    if (typeof info.correct !== 'undefined') {    
+        query['correctAttempts.id'] = { $ne : info.questionId };    
         if (info.correct) {
-            update.$addToSet.answered = info.questionId;
             update.$inc.points = info.points;
-            update.$inc.answeredCount = 1;
-            update.$pull.attempted = { $in : [info.questionId] };
+            update.$inc.correctAttemptsCount = 1;
+            update.$push.correctAttempts = {
+                id : info.questionId,
+                points : info.points,
+                answer : info.attempt,
+                date : currentDate };
         } else {
-            update.$addToSet.attempted = info.questionId;
-            update.$inc.attemptedCount = 1;
-            update.$pull.answered = { $in : [info.questionId] };
+            update.$inc.wrongAttemptsCount = 1;
+            update.$push.wrongAttempts = {
+                id : info.questionId,
+                attempt : info.attempt,
+                date : currentDate };
         }
+        update.$inc.totalAttemptsCount = 1;
+        update.$push.totalAttempts = {
+            id : info.questionId,
+            attempt : info.attempt,
+            date : currentDate };
     }
 
     if (isEmptyObject(update.$addToSet)) {
@@ -269,6 +284,10 @@ var updateUserById = function(userId, info, callback){
 
     if (isEmptyObject(update.$pull)) {
         delete update.$pull;
+    }
+
+    if (isEmptyObject(update.$push)) {
+        delete update.$push;
     }
 
     if (typeof info.newPassword === 'undefined') {
@@ -317,15 +336,7 @@ var isEmptyObject = function(obj) {
 
 // Questions functions
 // Add QUESTION to questionsCollection in the database
-exports.addRegularQuestion = function(question, callback){
-    addQuestion(question, callback);
-}
-
-exports.addMultipleChoiceQuestion = function(question, callback){
-    addQuestion(question, callback);
-}
-
-var addQuestion = function(question, callback) {
+exports.addQuestion = function(question, callback){
 	question.id = ++nextId;
     questionsCollection.insert(question, function(err, res) {
         if(err){
@@ -382,8 +393,9 @@ exports.getQuestionsListByUser = function(request, callback) {
 
             for (q in docs) {
                 docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-                docs[q].attemptsCount = docs[q].attempted.length;
+                docs[q].attemptedCount = docs[q].attempted.length;
                 docs[q].answeredCount = docs[q].answered.length;
+                docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
                 delete docs[q]._id;
             }
 
@@ -397,33 +409,46 @@ exports.getQuestionsListByUser = function(request, callback) {
                 return callback(err, null);
             }
 
+            if (!requiredUser) {
+                return callback('user does not exist', null);
+            }
+
             questionsCollection.find(questionsQuery).sort({id: 1}).toArray(function(err, docs) {
                 if (err) {
                     return callback(err, null);
                 }
 
-                var compareList = requiredUser.answered;
+                var compareList = getListFromJSONList(requiredUser.correctAttempts);
                 var answeredList = [];
-                var UnansweredList = [];
+                var unansweredList = [];
 
                 for (q in docs) {
                     docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-                    docs[q].attemptsCount = docs[q].attempted.length;
+                    docs[q].attemptedCount = docs[q].attempted.length;
                     docs[q].answeredCount = docs[q].answered.length;
+                    docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
                     delete docs[q]._id;
 
-                    if (compareList.indexOf(docs[q].id) == -1) {
-                        UnansweredList.push(docs[q]);
+                    if (compareList.indexOf(docs[q].id) === -1) {
+                        unansweredList.push(docs[q]);
                     } else {
                         answeredList.push(docs[q]);
                     }
                 }
 
-                var returnList = (questionsStatus === 'answered') ? answeredList : UnansweredList;
+                var returnList = (questionsStatus === 'answered') ? answeredList : unansweredList;
                 return callback(null, returnList);
             });
         });
     }
+}
+
+var getListFromJSONList = function (JSONList) {
+    var list = [];
+    for (i in JSONList){
+        list.push(JSONList[i].id);
+    }
+    return list;
 }
 
 exports.findQuestions = function(amount, findType, user, callback){
@@ -460,8 +485,9 @@ exports.findQuestions = function(amount, findType, user, callback){
 
         for (q in docs) {
             docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-            docs[q].attemptsCount = docs[q].attempted.length;
+            docs[q].attemptedCount = docs[q].attempted.length;
             docs[q].answeredCount = docs[q].answered.length;
+            docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
             delete docs[q]._id;
         }
 
@@ -514,17 +540,22 @@ exports.lookupQuestionById = function(questionId, callback) {
             return callback(err, null);
         }
 
+        if (!question) {
+            return callback('No question found', null);
+        }
+
         /* necessary for later database update */
         question.firstAnswer = question.answered[0] ? question.answered[0] : 'No One';
-        question.attemptsCount = question.attempted.length;
+        question.attemptedCount = question.attempted.length;
         question.answeredCount = question.answered.length;
+        question.totalCount = question.attempted.length + question.answered.length;
         delete question._id;
         return callback(null, question);
     });
 }
 
 // update a question record based on its id
-exports.updateRegularQuestionById = function(questionId, request, callback){
+exports.updateQuestionById = function(questionId, request, callback){
     var query = { id:questionId };
     var update = {};
 
@@ -567,7 +598,7 @@ exports.updateRegularQuestionById = function(questionId, request, callback){
             update.$pull.attempted = { $in : [request.userId] };
         } else {
             update.$addToSet.attempted = request.userId;
-            update.$push.attempts = request.answer;
+            update.$push.attempts = request.attempt;
             update.$pull.answered = { $in : [request.userId] };//to be removed
         }
     }

@@ -13,16 +13,7 @@ $.ajax({
 /* Make questions clickable. */
 var setupQuestionListeners = function() {
     $('.question-block').click(function(evt) {
-        var qid = this.id;
-
-        $.ajax({
-            type: 'POST',
-            url: '/questionreq',
-            data: { id: qid },
-            success: function(data) {
-                window.location.href = '/question';
-            }
-        });
+        window.location.href = '/question?id='+this.id;
     });
 }
 
@@ -55,6 +46,11 @@ var fetchQList = function(which) {
         success: function(data) {
             $('.question-list').html(data);
             setupQuestionListeners();
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
@@ -85,6 +81,11 @@ var sortRequest = function(type) {
 
             /* reset listeners for the new question elements */
             setupQuestionListeners();
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 };
@@ -102,6 +103,11 @@ var fetchLeaderboard = function() {
         },
         success: function(data) {
             $('.leaderboard-small').html(data);
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
         }
     });
 }
