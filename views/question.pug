@@ -44,7 +44,10 @@ block content
                 form.form-question#mc_answerform
                   each val, index in question.choices
                     p
-                      input(type='radio', name='answer', value=val, id=index, required, autofocus)
+                      if answered
+                        input(type='radio', name='answer', value=val, id=index, required, autofocus, disabled)
+                      else
+                        input(type='radio', name='answer', value=val, id=index, required, autofocus)
                       label(for=index) #{val}
                   if answered
                     button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
