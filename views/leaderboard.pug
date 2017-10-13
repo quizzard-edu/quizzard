@@ -14,11 +14,15 @@ block title
 block content
   include navbar
 
+  br
   .container
     .row
-      .col-md-12
-        h4.text-center Leaderboard
-        .leaderboard-content
+      .col.s12
+        .card.center
+          .card-content
+            h4.center Leaderboard
+          .card-action
+            .leaderboard-content
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')

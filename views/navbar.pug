@@ -1,39 +1,39 @@
 nav
   .nav-wrapper
-    a.brand-logo.center(href='#!') Quizzard
-    a.button-collapse(href='#', data-activates='mobile-demo')
+    a.navbarLink.brand-logo.center(href='#!') Quizzard
+    a.navbarLink.button-collapse(href='#', data-activates='mobile-demo')
       i.material-icons menu
     ul.left.hide-on-med-and-down
       if user.type == 0
         li#nav-home
-          a(href='/admin') Administration
+          a.navbarLink(href='/admin') Administration
       else
         li#nav-home
-          a(href='/home') Questions
+          a.navbarLink(href='/home') Questions
       li#nav-leaderboard
-        a(href='/leaderboard') Leaderboard
+        a.navbarLink(href='/leaderboard') Leaderboard
       li#nav-about
-        a(href='/about') About
+        a.navbarLink(href='/about') About
     ul.right.hide-on-med-and-down
       li#nav-changepass
-        a(href='#') Change password
+        a.navbarLink(href='#') Change password
       li#nav-logout
-        a(href='#') Logout
+        a.navbarLink(href='#') Logout
     ul#mobile-demo.side-nav
       if user.type == 0
         li#nav-home
-          a(href='/admin') Administration
+          a.navbarLink(href='/admin') Administration
       else
         li#nav-home
-          a(href='/home') Questions
+          a.navbarLink(href='/home') Questions
       li#nav-leaderboard
-        a(href='/leaderboard') Leaderboard
+        a.navbarLink(href='/leaderboard') Leaderboard
       li#nav-about
-        a(href='/about') About
+        a.navbarLink(href='/about') About
       li#nav-changepass
-        a(href='#') Change password
+        a.navbarLink(href='#') Change password
       li#nav-logout
-        a(href='#') Logout
+        a.navbarLink(href='#') Logout
 
 .modal.fade#modal-password(tabindex='-1' role='dialog'
                            arialabelledby='modal-password-label'

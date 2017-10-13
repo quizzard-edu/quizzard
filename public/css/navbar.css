@@ -22,7 +22,11 @@
   margin-top: 10px;
 }
 
-a:link, a:visited, a:hover, a:active {
+.navbarLink:link, .navbarLink:visited, .navbarLink:hover, .navbarLink:active {
   text-decoration: none;
   color: white;
+}
+
+.noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
+  text-decoration: none;
 }

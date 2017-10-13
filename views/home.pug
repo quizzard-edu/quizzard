@@ -14,19 +14,19 @@ block title
 block content
   include navbar
 
+  br
   .container
-    br
     .row
-      .col-md-8
+      .col.s8
         .row
           ul.tabs
-            li.tab.col.s3
-              a.active(href='#test1')#qlist-unanswered Unanswered
-            li.tab.col.s3
-              a(href='#test2')#qlist-answered Answered
+            li.tab.col.s6
+              a.noLineLink.active(href='#test1')#qlist-unanswered Unanswered
+            li.tab.col.s6
+              a.noLineLink(href='#test2')#qlist-answered Answered
           .question-list
             include questionlist
-      .sidebar.col-md-4
+      .col.s4
         include home-sidebar
 
 block scripts

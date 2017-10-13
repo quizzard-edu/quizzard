@@ -19,53 +19,57 @@ block content
   if !preview
     include navbar
 
+  br
   .container
-    .row
-      .col-md-8
+    .row.center
+      .col.s8
+        .card
+          .card-content
+            h4.qtext #{question.title}
+          .card-action
+            h5.qtext !{question.text}
+            case question.type
+              when 0
+                form.form-question#re_answerform
+                  label.sr-only(for='answer') Answer
+                  if answered
+                    input.form-control#answer(name='answer' placeholder='Enter your answer here'
+                                              required disabled)
+                    button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
+                  else
+                    input.form-control#answer(name='answer' placeholder='Enter your answer here'
+                                              required autofocus)
+                    button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
 
-        h2.qtext #{question.title}
-        h5.qtext !{question.text}
-        // view question type in server/questions.js
-        case question.type
-          when 0
-            form.form-question#re_answerform
-              label.sr-only(for='answer') Answer
-              if answered
-                input.form-control#answer(name='answer' placeholder='Enter your answer here'
-                                          required disabled)
-                button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
-              else
-                input.form-control#answer(name='answer' placeholder='Enter your answer here'
-                                          required autofocus)
-                button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
-
-          when 1
-            form.form-question#mc_answerform
-              each answer in question.choices
-                input(type='radio' name='answer', value=answer, required, autofocus)
-                | #{answer}
-              if answered
-                button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
-              else
-                button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
-
-
+              when 1
+                form.form-question#mc_answerform
+                  each answer in question.choices
+                    p
+                      input(type='radio', name='answer', value=answer, required, autofocus)
+                      label(for='answer') #{answer}
+                  if answered
+                    button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
+                  else
+                    button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
         if answered
           .success
             h4.text-center#success-header Learn more
             p#success-message #{question.successMessage}
-      .sidebar.col-md-4
-        h3.sidebar-item#topic #{question.topic}
-        h3.sidebar-item#points #{question.points} Points
-        p.sidebar-item#attempts This question has been attempted #{question.attemptsCount} times.
-        if question.answeredCount == 0
-          p.sidebar-item#first-answer You could be the first person to correctly answer this question!
-        else
-          p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
-        if preview
-          h4.sidebar-item#hint Hint: #{question.hint}
-        else
-          h4.sidebar-item#hint.hidden Hint: #{question.hint}
+      .col.s4
+        .card
+          .card-content
+            h4.sidebar-item#topic #{question.topic}
+          .card-action
+            h5.sidebar-item#points #{question.points} Points
+            p.sidebar-item#attempts This question has been attempted #{question.attemptsCount} times.
+            if question.answeredCount == 0
+              p.sidebar-item#first-answer You could be the first person to correctly answer this question!
+            else
+              p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
+            if preview
+              h4.sidebar-item#hint Hint: #{question.hint}
+            else
+              h4.sidebar-item#hint.hidden Hint: #{question.hint}
 
 block scripts
   if !preview
