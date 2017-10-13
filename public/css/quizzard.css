@@ -18,9 +18,14 @@ body {
     top: 7px;
 }
 
-#snackbar.show {
+#snackbar.slideDown {
     visibility: visible;
-    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s;
+}
+
+#snackbar.slideUp {
+    visibility: visible;
+    animation: fadeout 0.5s;
 }
 
 @-webkit-keyframes fadein {
