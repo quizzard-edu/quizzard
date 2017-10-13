@@ -10,19 +10,6 @@
   max-height: 800px;
 }
 
-.question-block {
-  display: block;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  padding: 5px 10px 5px 10px;
-  border-radius: 10px 10px 10px 10px;
-  -moz-border-radius: 10px 10px 10px 10px;
-  -webkit-border-radius: 10px 10px 10px 10px;
-  border: 1px solid black;
-  cursor: pointer;
-  height: 72px;
-}
-
 .question-block:hover {
   background: white;
 }

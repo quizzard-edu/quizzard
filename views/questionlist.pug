@@ -4,12 +4,17 @@ if questions.length == 0
     p.text-center Check back later for more...
 else
   ul.collection
-  each q in questions
-    li.collection-item
-      h4 #{q.title}
-    .row.question-block(id=q.id)
-      .col-sm-8.qleft
-        p.text-center.title #{q.title}
-      .col-sm-4.qright
-        p.topic #{q.topic}
-        p.points #{q.points}
+    each q in questions
+      li.collection-item.avatar
+        if q.type == 0
+          i.material-icons.circle font_download
+        else
+          i.material-icons.circle format_list_bulleted
+        span.title #{q.title}
+        p
+          | #{q.topic}
+          br
+          |          #{q.points}
+        a.secondary-content.question-block(id=q.id)
+          i.material-icons send
+          p.text-center.title 

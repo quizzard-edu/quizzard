@@ -15,30 +15,17 @@ block content
   include navbar
 
   .container
+    br
     .row
       .col-md-8
         .row
-          .btn-group.col-md-10(data-toggle='buttons')
-            if answered
-              label.btn.btn-default#qlist-unanswered.
-                <input type="radio" name="qlist-type"> Unanswered
-              label.btn.btn-default.active#qlist-answered.
-                <input type="radio" name="qlist-type" checked> Answered
-            else
-              label.btn.btn-default.active#qlist-unanswered.
-                <input type="radio" name="qlist-type" checked> Unanswered
-              label.btn.btn-default#qlist-answered.
-                <input type="radio" name="qlist-type"> Answered
-          .dropdown.col-md-2
-            button.btn.btn-default.dropdown-toggle#sort(type='button' data-toggle='dropdown') Sort by
-              span.caret
-            ul.dropdown-menu
-              li
-                a#sort-topic(href='#') Topic
-              li
-                a#sort-point(href='#') Points
-        .question-list
-          include questionlist
+          ul.tabs
+            li.tab.col.s3
+              a.active(href='#test1')#qlist-unanswered Unanswered
+            li.tab.col.s3
+              a(href='#test2')#qlist-answered Answered
+          .question-list
+            include questionlist
       .sidebar.col-md-4
         include home-sidebar
 
