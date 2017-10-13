@@ -29,6 +29,12 @@ body {
   position: absolute;
 }
 
+.check-box {
+  text-align: left;
+  display: block;
+
+}
+
 .form-user {
   max-width: 600px;
   padding: 15px;

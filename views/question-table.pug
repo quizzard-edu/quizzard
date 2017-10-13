@@ -1,7 +1,8 @@
 table.table
   thead
     tr
-      th Visible
+      th
+        button(id='vis' type='button' value='true' onClick='toggleButtonVisibility()') Visiblity
       th ID
       th Title
       th Topic
@@ -11,7 +12,7 @@ table.table
     each q in questions
       tr
         td
-          input.checked(id='checked-' + q.id type='checkbox' checked=q.visible)
+          input.checked(id='checked-' + q.id type='checkbox' checked=q.visible class='visbox')
         td #{q.id}
         td #{q.title}
         td #{q.topic}
@@ -26,3 +27,4 @@ table.table
             span.glyphicon.glyphicon-pencil(aria-hidden='true')
           button.btn.btn-default.delete-button(id='delete-' + q.id type='button' aria-label='Delete')
             span.glyphicon.glyphicon-remove(aria-hidden='true')
+

@@ -506,3 +506,16 @@ var sortAccountsTable = function(type) {
         }
     });
 }
+
+//toggles the view of Visiblility button in the Question-Table View
+var toggleButtonVisibility = function(){
+    if (document.getElementById('vis').value === 'true') {
+        document.getElementById('vis').value = 'false';
+        $('.visbox').hide();
+    } else{
+        document.getElementById('vis').value = 'true';
+        $('.visbox').show();
+    }
+} 
+
+
