@@ -703,6 +703,4 @@ function dropSnack(colour, msg) {
             x.className = x.className.replace("slideUp", "");
         }, 4500);
     }
-
-    return;
 }
