@@ -1,21 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
-  data = {
-    datasets: [{
-        data: [10, 20, 30]
-    }],
-
-    // These labels appear in the legend and in the tooltips when hovering different arcs
-    labels: [
-        'Red',
-        'Yellow',
-        'Blue'
-    ]
-};
-
-  var myDoughnutChart = new Chart($('#myChart'), {
-  type: 'doughnut',
-  data: data,
-  options: options
-});
+  var config = {
+    type: 'pie',
+    data: {
+      datasets: [{
+        data: listOfNumbers,
+        backgroundColor: [
+          "#4B515D",
+          "#4285F4",
+          "#ff4444",
+          "#00C851"
+        ],
+        label: 'Dataset 1'
+      }],
+      labels: [
+        "ON-HOLD",
+        "IN-DEVELOPMENT",
+        "CANCELLED",
+        "COMPLETED"
+      ]
+    },
+    options: {
+      responsive: true
+    }
+  };
+  var ctx = $("#myChart");
+  new Chart(ctx, config);
 
 }, false);
