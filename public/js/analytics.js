@@ -9,6 +9,9 @@ var getQuestionsAnsweredVsClass = function() {
   $.ajax({
     type: 'GET',
     url: '/getAnalytics',
+    data: {
+      type: 'QuestionsAnsweredVsClass'
+    },
     success: function(data) {
       new Chart($("#questionsAnsweredVsClass"), {
         type: 'doughnut',
@@ -38,6 +41,9 @@ var getAccuracyVsClass = function() {
   $.ajax({
     type: 'GET',
     url: '/getAnalytics',
+    data: {
+      type: 'AccuracyVsClass'
+    },
     success: function(data) {
       new Chart($("#accuracyVsClass"), {
         type: 'doughnut',
@@ -67,6 +73,9 @@ var getPointsVsClass = function() {
   $.ajax({
     type: 'GET',
     url: '/getAnalytics',
+    data: {
+      type: 'PointsVsClass'
+    },
     success: function(data) {
       new Chart($("#pointsVsClass"), {
         type: 'doughnut',
@@ -96,6 +105,9 @@ var getRatingVsClass = function() {
   $.ajax({
     type: 'GET',
     url: '/getAnalytics',
+    data: {
+      type: 'RatingVsClass'
+    },
     success: function(data) {
       new Chart($("#ratingVsClass"), {
         type: 'doughnut',

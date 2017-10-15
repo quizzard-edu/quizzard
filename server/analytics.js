@@ -18,6 +18,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-exports.getChart = function(callback){
-    callback(null,[1,2,3,4]);
+exports.getChart = function(type, callback){
+    switch(type) {
+        case 'QuestionsAnsweredVsClass':
+            return callback(null, [1,2]);
+        case 'AccuracyVsClass':
+            return callback(null, [5,3]);
+        case 'PointsVsClass':
+            return callback(null, [9,4]);
+        case 'RatingVsClass':
+            return callback(null, [2,1]);
+        default:
+            return callback('notFound', null);
+    }
 }
