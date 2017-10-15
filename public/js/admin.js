@@ -108,7 +108,7 @@ var displayQuestionTable = function() {
             });
             $('.checked').change(function(evt) {
                 updateVisibility(this.id.substring(8));
-	    });
+	        });
 
             $('#option-questions').addClass('active');
             $('#option-accounts').removeClass('active');

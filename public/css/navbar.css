@@ -1,27 +1,3 @@
-.navbar-brand {
-  cursor: default;
-}
-
-.form-changepass {
-  margin: 0 auto;
-  margin-top: -20px;
-  padding: 10px;
-  font-size: 12px;
-}
-
-.form-changepass .form-control {
-  position: relative;
-  height: 25px;
-}
-
-.form-changepass label {
-  margin-top: 10px;
-}
-
-.form-changepass #changepass-result {
-  margin-top: 10px;
-}
-
 .navbarLink:link, .navbarLink:visited, .navbarLink:hover, .navbarLink:active {
   text-decoration: none;
   color: white;

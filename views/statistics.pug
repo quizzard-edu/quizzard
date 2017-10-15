@@ -1,47 +1,57 @@
-h4 Users
-table.table
-  thead
-    tr
-      th User ID
-      th Questions Attempted
-      th Correct Answers
-      th Success Rate
-      th Points
-  tbody
-    each s in students
-      tr
-        td #{s.id}
-        td #{s.totalAttemptsCount}
-        td #{s.correctAttemptsCount}
-        if totalAttemptsCount === 0
-          td 0%
-        else
-          td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%
-        td #{s.points}
-
-h4 Questions
-table.table
-  thead
-    tr
-      th ID
-      th Title
-      th Points
-      th Total Attempts
-      th Correct Answers
-      th Success Rate
-      th First Answer
-  tbody
-    each q in questions
-      tr
-        td #{q.id}
-        td #{q.title}
-        td #{q.points}
-        td #{q.totalCount}
-        td #{q.answeredCount}
-        if q.totalCount === 0
-          td 0%
-        else
-          td #{((q.answeredCount / q.totalCount) * 100).toFixed(2)}%
-        td #{q.firstAnswer}
-
-h4 Graphs
+.row
+  .col.s12
+    .card.center
+      .card-content
+        h5.card-title Users Statistics
+        h6 Examine information about users' statistics.
+      .card-action
+        table.bordered
+          thead
+            tr
+              th User ID
+              th Questions Attempted
+              th Correct Answers
+              th Success Rate
+              th Points
+          tbody
+            each s in students
+              tr
+                td #{s.id}
+                td #{s.totalAttemptsCount}
+                td #{s.correctAttemptsCount}
+                if totalAttemptsCount === 0
+                  td 0%
+                else
+                  td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%
+                td #{s.points}
+.row
+  .col.s12
+    .card.center
+      .card-content
+        h5.card-title Questions Statistics
+        h6 Examine information about questions' statistics.
+      .card-action
+        h4 Questions
+        table.bordered
+          thead
+            tr
+              th ID
+              th Title
+              th Points
+              th Total Attempts
+              th Correct Answers
+              th Success Rate
+              th First Answer
+          tbody
+            each q in questions
+              tr
+                td #{q.id}
+                td #{q.title}
+                td #{q.points}
+                td #{q.totalCount}
+                td #{q.answeredCount}
+                if q.totalCount === 0
+                  td 0%
+                else
+                  td #{((q.answeredCount / q.totalCount) * 100).toFixed(2)}%
+                td #{q.firstAnswer}

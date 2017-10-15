@@ -2,11 +2,11 @@
   .col.s12
     .card.center
       .card-content
-        h5.card-title.bold#sidebar-name #{user.fname} #{user.lname}
+        h5.card-title#sidebar-name #{user.fname} #{user.lname}
       .card-action
         h5.sidebar-item#sidebar-points #{user.points} Points
         p.sidebar-item Questions attempted: #{user.totalAttemptsCount}
-        p.sidebar-item Questions successfully answered: #{user.correctAttemptsCount}
+        p.sidebar-item Questions answered: #{user.correctAttemptsCount}
         if user.totalAttemptsCount === 0
           p.sidebar-item You have not yet attempted any questions.
         else
