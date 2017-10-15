@@ -1,43 +1,122 @@
 $(function() {
+  getQuestionsAnsweredVsClass();
+  getAccuracyVsClass();
+  getPointsVsClass();
+  getRatingVsClass();
+});
+
+var getQuestionsAnsweredVsClass = function() {
   $.ajax({
     type: 'GET',
     url: '/getAnalytics',
     success: function(data) {
-      var config = {
-        type: 'pie',
+      new Chart($("#questionsAnsweredVsClass"), {
+        type: 'doughnut',
         data: {
           datasets: [{
             data: data,
-            backgroundColor: [
-              "#4B515D",
-              "#4285F4",
-              "#ff4444",
-              "#00C851"
-            ],
+            backgroundColor: ["#ff4444", "#00C851"],
             label: 'Dataset 1'
           }],
-          labels: [
-            "ON-HOLD",
-            "IN-DEVELOPMENT",
-            "CANCELLED",
-            "COMPLETED"
-          ]
+          labels: ["CANCELLED", "COMPLETED"]
         },
         options: {
-          responsive: true
+          responsive: true,
+          display: false
         }
-      };
-      var ctx = $("#questionsAnsweredVsClass");
-      new Chart(ctx, config);
-      var ctx = $("#accuracyVsClass");
-      new Chart(ctx, config);
-      var ctx = $("#pointsVsClass");
-      new Chart(ctx, config);
-      var ctx = $("#ratingVsClass");
-      new Chart(ctx, config);
+      });
     },
     error: function(data) {
-      $('#invalid').html(failedLogin);
+      if (data['status'] === 401) {
+       window.location.href = '/';
+      }
     }
   });
-});
+}
+
+var getAccuracyVsClass = function() {
+  $.ajax({
+    type: 'GET',
+    url: '/getAnalytics',
+    success: function(data) {
+      new Chart($("#accuracyVsClass"), {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: data,
+            backgroundColor: ["#ff4444", "#00C851"],
+            label: 'Dataset 1'
+          }],
+          labels: ["CANCELLED", "COMPLETED"]
+        },
+        options: {
+          responsive: true,
+          display: false
+        }
+      });
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+       window.location.href = '/';
+      }
+    }
+  });
+}
+
+var getPointsVsClass = function() {
+  $.ajax({
+    type: 'GET',
+    url: '/getAnalytics',
+    success: function(data) {
+      new Chart($("#pointsVsClass"), {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: data,
+            backgroundColor: ["#ff4444", "#00C851"],
+            label: 'Dataset 1'
+          }],
+          labels: ["CANCELLED", "COMPLETED"]
+        },
+        options: {
+          responsive: true,
+          display: false
+        }
+      });
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+       window.location.href = '/';
+      }
+    }
+  });
+}
+
+var getRatingVsClass = function() {
+  $.ajax({
+    type: 'GET',
+    url: '/getAnalytics',
+    success: function(data) {
+      new Chart($("#ratingVsClass"), {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: data,
+            backgroundColor: ["#ff4444", "#00C851"],
+            label: 'Dataset 1'
+          }],
+          labels: ["CANCELLED", "COMPLETED"]
+        },
+        options: {
+          responsive: true,
+          display: false
+        }
+      });
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+       window.location.href = '/';
+      }
+    }
+  });
+}
