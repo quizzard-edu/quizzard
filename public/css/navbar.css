@@ -30,3 +30,8 @@
 .noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
   text-decoration: none;
 }
+
+.navbarLinkHidden:link, .navbarLinkHidden:visited, .navbarLinkHidden:hover, .navbarLinkHidden:active {
+  text-decoration: none;
+  color: black;
+}
