@@ -17,7 +17,7 @@ const userTypes = Object.freeze({
 exports.userTypes = userTypes;
 
 const questionTypes = Object.freeze({
-    REGULAR         : {name: 'Regular Question', value: "re", template: 'regex-answer'},
-    MULTIPLECHOICE  : {name: 'Multiple Choice', value: "mc", template: 'mc-answer'}
+    REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer'},
+    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer'}
 });
 exports.questionTypes = questionTypes;

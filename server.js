@@ -306,8 +306,8 @@ app.get('/questionform', function(req, res) {
     });
 });
 
-app.post('/formanswer', function(req, res){
-    switch (req.body.qType){
+app.get('/answerForm', function(req, res){
+    switch (req.param('qType')){
         case common.questionTypes.REGULAR.value:
             res.status(200).render(
                 common.questionTypes.REGULAR.template,{
@@ -557,7 +557,6 @@ app.get('/question', function(req, res) {
         if (!questionFound.visible) {
             return res.status(400).send('Question is not available');
         }
-        console.log(questionFound);
         return res.status(200).render('question', {
             user: req.session.user,
             question: questionFound,
