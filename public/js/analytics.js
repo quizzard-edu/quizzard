@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     type: 'pie',
     data: {
       datasets: [{
-        data: listOfNumbers,
+        data: [14, 10, 5, 30],
         backgroundColor: [
           "#4B515D",
           "#4285F4",
