@@ -30,6 +30,7 @@ var log = require('./server/log.js');
 var logger = log.logger;
 var pug = require('pug');
 var common = require('./server/common.js');
+var analytics = require('./server/analytics.js');
 
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
@@ -197,7 +198,6 @@ const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
 const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
-const analytics = pug.compileFile('views/analytics.pug');
 
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const multipleChoiceForm = pug.compileFile('views/mc-answer.pug');
@@ -775,4 +775,14 @@ app.get('/analytics', function(req, res){
     }
 
     return res.status(200).render('analytics', {user: req.session.user});
+});
+
+app.get('/getAnalytics', function(req,res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    analytics.getChart(function(err, result){
+        return res.status(200).send(result);
+    });
 });
