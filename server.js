@@ -66,7 +66,7 @@ app.get('/', function(req, res) {
         return res.redirect('home');
     }
 
-    return res.render('login');
+    return res.status(401).render('login');
 });
 
 /* check username and password and send appropriate response */
@@ -84,7 +84,7 @@ app.post('/login', function(req, res) {
         if(err){
             logger.info('User %s failed logged in.', username);
             req.session.user = null;
-            return res.status(401).send('invalid');
+            return res.status(403).send('invalid');
         }
 
         if(user){
@@ -149,41 +149,12 @@ app.get('/home', function(req, res) {
         return res.redirect('/admin');
     }
 
-    if (req.session.questions == null) {
-        /* fetch some questions from the database if the user doesn't have any */
-        questions.findQuestions(10, common.sortTypes.SORT_RANDOM, req.session.user, function(err, results) {
-            req.session.questions = results;
-            req.session.answeredQuestions = false;
-            return res.render('home', {
-                user: req.session.user,
-                questions: results
-            });
-        });
-    } else {
+    var request = { user : req.session.user, questionsStatus : 'unanswered' };
+    users.getQuestionsList(request, function(err, results) {
         return res.render('home', {
             user: req.session.user,
-            questions: req.session.questions,
-            answered: req.session.answeredQuestions
+            questions: results
         });
-    }
-});
-
-/* Display the question page. */
-app.get('/question', function(req, res) {
-    /* if the user has not yet logged in, redirect to login page */
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    if (req.session.question == null) {
-        return res.redirect('/home');
-    }
-
-    return res.render('question', {
-        user: req.session.user,
-        question: req.session.question,
-        answered: req.session.questionAnswered,
-        preview: false
     });
 });
 
@@ -553,25 +524,28 @@ app.post('/sortlist', function(req, res) {
     );
 });
 
-/* User requests a question; look it up by ID and store it in session. */
-app.post('/questionreq', function(req, res) {
+/* Display the question page. */
+app.get('/question', function(req, res) {
+    /* if the user has not yet logged in, redirect to login page */
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    questions.lookupQuestionById(parseInt(req.body.id), function(err, result) {
-        if (err) {
+    questions.lookupQuestionById(parseInt(req.query.id), function(err, questionFound) {
+        if (err || !questionFound) {
             return res.status(500).send();
         }
 
-        req.session.question = result;
-        if (req.session.user.answered.indexOf(result.id) == -1) {
-            req.session.questionAnswered = false;
-        } else {
-            req.session.questionAnswered = true;
+        if (!questionFound.visible) {
+            return res.status(400).send('Question is not available');
         }
 
-        return res.status(200).send();
+        return res.status(200).render('question', {
+            user: req.session.user,
+            question: questionFound,
+            answered: !(questionFound.answered.indexOf(req.session.user.id) === -1),
+            preview: false
+        });
     });
 });
 
@@ -582,7 +556,7 @@ app.post('/submitanswer', function(req, res) {
     }
 
     questions.checkAnswer(
-        req.session.question.id,
+        parseInt(req.body.questionId),
         req.session.user.id,
         req.body.answer,
         function(err, result) {
@@ -608,7 +582,7 @@ app.post('/submitanswer', function(req, res) {
  * Otherwise, the user is inserted into the database and added
  * to the active admin student list.
  */
-app.post('/useradd', function(req, res) {
+app.put('/useradd', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -706,7 +680,7 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
  * Add a question to the database.
  * The request body contains the question to be added.
  */
-app.post('/questionadd', function(req, res) {
+app.put('/questionadd', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -733,7 +707,7 @@ app.post('/questionmod', function(req, res) {
     var qid = parseInt(req.body.id);
     var q = req.body.question;
 
-    questions.updateQuestionByIdWithRedirection(qid, q, function(err, result) {
+    questions.updateQuestionById(qid, q, function(err, result) {
         return res.status(200).send(result);
     });
 });

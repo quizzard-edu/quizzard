@@ -137,7 +137,7 @@ exports.checkAnswer = function(questionId, userId, answer, callback) {
 
 		db.updateStudentById(
 			userId,
-			{ questionId:questionId, correct:value, points:question.points },
+			{ questionId:questionId, correct:value, points:question.points, attempt:answer },
 			function(err, res){
 				updateQuestionById(
 					questionId,

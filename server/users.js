@@ -92,10 +92,12 @@ exports.addStudent = function(user, callback) {
 		userToAdd.password = hash;
 
 		userToAdd.points = 0.0;
-		userToAdd.answered = [];
-		userToAdd.attempted = [];
-		userToAdd.answeredCount = 0;
-		userToAdd.attemptedCount = 0;
+		userToAdd.correctAttempts = [];
+		userToAdd.wrongAttempts = [];
+		userToAdd.totalAttempts = [];
+		userToAdd.correctAttemptsCount = 0;
+		userToAdd.wrongAttemptsCount = 0;
+		userToAdd.totalAttemptsCount = 0;
 
 		db.addStudent(userToAdd, function(err, res){
 			if(err){

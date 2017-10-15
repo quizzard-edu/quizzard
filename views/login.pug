@@ -2,6 +2,8 @@ extends layout
 
 block styles
   link(rel='stylesheet' href='/css/login.css')
+  link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
+  link(rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons')
 
 block title
   title Quizzard - Login
@@ -12,14 +14,19 @@ block content
     form.form-login#login
       h2.form-login-heading Quizzard
       p#invalid
-      label.sr-only(for='user') Username
-      input.form-control#user(type='text' name='user' placeholder='Username'
-                              required autofocus)
-      label.sr-only(for='passwd') Password
-      input.form-control#passwd(type='password' name='passwd' placeholder='Password'
-                                required)
+      .row
+        .input-field.col.s12
+          i.material-icons.prefix person
+          input.form-control#user(type='text' name='user' placeholder='Username' required autofocus)
+          label.sr-only(for='user') Username
+      .row
+        .input-field.col.s12
+          i.material-icons.prefix keyboard
+          input.form-control#passwd(type='password' name='passwd' placeholder='Password' required)
+          label.sr-only(for='passwd') Password
       button(class='btn btn-lg btn-primary btn-block' type='submit') Sign in
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/lib/materialize/js/materialize.min.js')
   script(src='/js/login.js')
