@@ -766,3 +766,10 @@ app.get('/questionpreview', function(req, res) {
         });
     });
 });
+
+/* Display some charts and graphs */
+app.get('/analytics', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+});
