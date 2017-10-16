@@ -85,35 +85,18 @@ var displayQuestionTable = function() {
         type: 'GET',
         url: '/questionlist',
         success: function(data) {
-            $('#admin-label').html('Manage Questions');
             $('#admin-content').html(data);
-            $('#admin-button').off();
-            $('#admin-button').show();
-            $('#admin-button').click(function(evt) {
-                displayQuestionForm();
-            });
-            $('#admin-button').html('Add New Question');
-            $('#admin-back').hide();
-            $('.view-button').click(function(evt) {
-                /* cut off the view- */
-                viewQuestion(this.id.substring(5));
-            });
-            $('.delete-button').click(function(evt) {
-                /* cut off the delete- */
-                deleteQuestion(this.id.substring(7));
-            });
-            $('.edit-button').click(function(evt) {
-                /* cut off the edit- */
-                editQuestion(this.id.substring(5));
-            });
-            $('.checked').change(function(evt) {
-                updateVisibility(this.id.substring(8));
-	        });
+
+            addQuestionsTableEvents();
 
             $('#option-questions').addClass('active');
             $('#option-accounts').removeClass('active');
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
+
+            $('#question-creation-button').click(function(evt) {
+                displayQuestionForm();
+            });            
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -123,18 +106,31 @@ var displayQuestionTable = function() {
     });
 }
 
+var addQuestionsTableEvents = function(){
+    $('.view-button').click(function(evt) {
+        viewQuestion(this.id.substring(5));
+    });
+    $('.delete-button').click(function(evt) {
+        deleteQuestion(this.id.substring(7));
+    });
+    $('.edit-button').click(function(evt) {
+        editQuestion(this.id.substring(5));
+    });
+    $('.checked').change(function(evt) {
+        updateVisibility(this.id.substring(8));
+    });
+}
+
+
 /* Fetch and display the question creation form. */
 var displayQuestionForm = function() {
     $.ajax({
         type: 'GET',
         url: '/questionform',
         success: function(data) {
-            $('#admin-label').html('Add New Question');
             $('#admin-content').html(data);
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').show();
-            $('#admin-back').click(function(evt) {
+
+            $('#question-creation-back-button').click(function(evt) {
                 displayQuestionTable();
             });
 
@@ -152,6 +148,7 @@ var displayQuestionForm = function() {
                 evt.preventDefault();
                 submitQuestionForm();
             });
+            $('select').material_select();
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -174,8 +171,8 @@ var mcAnswerCount = 4;
 var addMCAnswers = function(dom){
     mcAnswerCount++;
      var newdiv = document.createElement('div');
-     var inputdiv = "<p>Is Correct: <input type='radio' name='radbutton' value='mcans{0}'/><input class='form-control' type='text' name='mcans{1}' placeholder='Enter Answer Here' required='required' style='float:left;'/> <button onclick='$(this).parent().remove();'>delete</button></p>"
-     newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount);
+     var inputdiv = '<p><input type="radio" name="radbutton" value="mcans{0}" id="mcans{1}" required/><label for="mcans{2}">Is Correct</label><input type="text" name="mcans{3}" placeholder="Enter Answer Here" required style="float:left;" class="form-control"/><a onclick="$(this).parent().remove()" class="btn-floating btn-tiny waves-effect waves-light red"><i class="tiny material-icons">close</i></a></p>';     
+     newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount,mcAnswerCount,mcAnswerCount);
      $('#qAnswer > div.form-group').append(newdiv);
 }
 
