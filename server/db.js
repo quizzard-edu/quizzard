@@ -299,8 +299,6 @@ var updateUserById = function(userId, info, callback){
                 return callback(err, null);
             }
 
-            updateAnalytics();
-
             return callback(null, 'success');
         });
     } else {
@@ -321,8 +319,6 @@ var updateUserById = function(userId, info, callback){
                     logger.error(err);
                     return callback(err, null);
                 }
-
-                updateAnalytics();
 
                 return callback(null, 'success');
             });
@@ -640,5 +636,6 @@ var updateAnalytics = function() {
     analyticsCollection.insert({name:'hi'}, function(err, info){
         console.log(err);
         console.log(info);
+        return;
     });
 }
