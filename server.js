@@ -588,12 +588,8 @@ app.put('/useradd', function(req, res) {
     }
 
     users.addStudent(req.body, function(err, result) {
-        if (err == 'failure') {
-            return res.status(500).send('Could not add user');
-        }
-
-        if (err == 'exists') {
-            return res.status(500).send('User already exists');
+        if (err) {
+            return res.status(500).send(err);
         }
 
         if (req.session.adminStudentList != null) {

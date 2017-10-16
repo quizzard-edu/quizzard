@@ -7,21 +7,18 @@ var colours = Object.freeze({
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
+$(function(){
+    /* show the account table by default */
+    displayAccountsTable();
+});
+
 /* Display the table of user accounts. */
 var displayAccountsTable = function() {
     $.ajax({
         type: 'GET',
         url: '/studentlist',
         success: function(data) {
-            $('#admin-label').html('Manage Accounts');
             $('#admin-content').html(data);
-            $('#admin-button').off();
-            $('#admin-button').show();
-            $('#admin-button').click(function(evt) {
-                displayAccountForm();
-            });
-            $('#admin-button').html('Add Users');
-            $('#admin-back').hide();
 
             addAccountsTableEvents();
 
@@ -29,6 +26,10 @@ var displayAccountsTable = function() {
             $('#option-questions').removeClass('active');
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
+
+            $('#account-creation-button').click(function(){
+                displayAccountForm();
+            });
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -59,16 +60,15 @@ var displayAccountForm = function() {
         type: 'GET',
         url: '/accountform',
         success: function(data) {
-            $('#admin-modal').modal('show');
-            $('#admin-modal-label').html('Create Account');
-            $('#admin-modal-body').html(data);
+            $('#admin-content').html(data);
+
+            $('#account-creation-back-button').click(function(){
+                displayAccountsTable();
+            });
+
             $('#userform').submit(function(evt) {
                 evt.preventDefault();
                 submitUserForm();
-            });
-            $('#uploadform').submit(function(evt) {
-                evt.preventDefault();
-                submitUploadForm();
             });
         },
         error: function(data){
@@ -248,9 +248,6 @@ var displaySettings = function() {
     */
 }
 
-/* show the account table by default */
-displayAccountsTable();
-
 /* Set up events for the sidebar buttons. */
 $('#option-accounts').click(function(evt) {
     displayAccountsTable();
@@ -343,16 +340,15 @@ var submitUserForm = function() {
         url: '/useradd',
         data: user,
         success: function(data) {
-            $('#admin-modal').modal('hide');
-            setTimeout(displayAccountsTable(), 1000);
-		        dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
+            displayAccountsTable();
+            dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data === 'failure') {
+            } else if (data['responseText'] === 'failure') {
                 dropSnack(colours.FAIL_RED, 'User could not be added');
-            } else if (data === 'exists') {
+            } else if (data['responseText'] === 'exists') {
                 dropSnack(colours.FAIL_RED, 'User ' + user.id + ' already exists');
             }
         }
