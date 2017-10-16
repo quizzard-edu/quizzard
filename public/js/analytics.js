@@ -25,13 +25,19 @@ var getQuestionsAnsweredVsClass = function() {
         },
         options: {
           responsive: true,
-          display: false
+          legend:{
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Answered Vs Class'
+          }
         }
       });
     },
     error: function(data) {
       if (data['status'] === 401) {
-       window.location.href = '/';
+        window.location.href = '/';
       }
     }
   });
@@ -57,13 +63,19 @@ var getAccuracyVsClass = function() {
         },
         options: {
           responsive: true,
-          display: false
+          legend:{
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Accuracy Vs Class'
+          }
         }
       });
     },
     error: function(data) {
       if (data['status'] === 401) {
-       window.location.href = '/';
+        window.location.href = '/';
       }
     }
   });
@@ -89,13 +101,19 @@ var getPointsVsClass = function() {
         },
         options: {
           responsive: true,
-          display: false
+          legend:{
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Points Vs Class'
+          }
         }
       });
     },
     error: function(data) {
       if (data['status'] === 401) {
-       window.location.href = '/';
+        window.location.href = '/';
       }
     }
   });
@@ -121,13 +139,19 @@ var getRatingVsClass = function() {
         },
         options: {
           responsive: true,
-          display: false
+          legend:{
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Rating Vs Class'
+          }
         }
       });
     },
     error: function(data) {
       if (data['status'] === 401) {
-       window.location.href = '/';
+        window.location.href = '/';
       }
     }
   });
