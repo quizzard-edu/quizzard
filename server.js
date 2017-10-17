@@ -762,3 +762,8 @@ app.get('/questionpreview', function(req, res) {
         });
     });
 });
+
+// 404 route
+app.use(function(req, res, next){
+    return res.status(404).render('page-not-found');
+});
