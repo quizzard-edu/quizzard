@@ -71,6 +71,10 @@ app.get('/', function(req, res) {
 
 /* check username and password and send appropriate response */
 app.post('/login', function(req, res) {
+    if (req.session.user) {
+        req.session.destroy();
+    }
+
     if(!req.body.user || !req.body.passwd){
         return res.status(400).send('missing requirement');
     }
@@ -132,10 +136,9 @@ app.get('/logout', function(req, res) {
     if (req.session.user) {
         logger.info('User %s logged out.', req.session.user.id);
         req.session.destroy();
-        return res.status(200).send();
     }
 
-    return res.status(500).send();
+    return res.status(200).send();
 });
 
 /* Display the home page. */

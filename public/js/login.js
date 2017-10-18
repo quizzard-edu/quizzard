@@ -12,8 +12,9 @@ $('#login').submit(function(evt) {
         },
         error: function(data) {
             $('#invalid').html(failedLogin);
-            $('#passwd').val('');
-            $('#passwd').focus();
+        },
+        complete: function(data) {
+            $('#passwd').val('').focus();
         }
     });
 });
