@@ -9,13 +9,10 @@
           .form-group.row
             label.col-sm-2.col-form-label(for='qtitle') Title
             .col-sm-10
-              input.form-control#qtitle(type='text' name='title' placeholder='New title' value=question.title
-                                        autofocus)
-
+              input.form-control#qtitle(type='text' name='title' placeholder='New title' value=question.title autofocus)
           .form-group.row
             label(for='qtext') Question Body
             .summernote#qtext(value=question.text)
-
           #qAnswer
             case question.type
               when 0
@@ -37,36 +34,26 @@
                         i.tiny.material-icons close
                 #addMoreAnswersButton
                   button(onclick="addMCAnswers('qAnswer')") add answer
-
           .form-group.row
             label.col-sm-2.col-form-label(for='qtopic') Topic
             .col-sm-10
-              input.form-control#qtopic(type='text' name='topic'
-                                        placeholder='New topic' value=question.topic)
-
+              input.form-control#qtopic(type='text' name='topic' placeholder='New topic' value=question.topic)
           .form-group.row
             label.col-sm-2.col-form-label(for='qpoints') Points
             .col-sm-10
-              input.form-control#qpoints(type='number' name='points'
-                                        placeholder='New point count' value=question.points min="0")
+              input.form-control#qpoints(type='number' name='points' placeholder='New point count' value=question.points min="0")
           .form-group.row
             label.col-sm-2.col-form-label(for='qhint') Hint
             .col-sm-10
-              input.form-control#qhint(type='text' name='hint'
-                                          placeholder='New hint' value=question.hint)
-
+              input.form-control#qhint(type='text' name='hint' placeholder='New hint' value=question.hint)
           .form-group.row
             label.col-sm-2.col-form-label(for='successmsg') Message
             .col-sm-10
-              input.form-control#successmsg(type='text' name='successMessage'
-                                            placeholder='New message'
-                                            aria-describedby='success-msg-help' value=question.successMessage)
-
+              input.form-control#successmsg(type='text' name='successMessage' placeholder='New message' aria-describedby='success-msg-help' value=question.successMessage)
             .row
               .col-sm-2
               p.col-sm-10.form-text.text-muted#success-msg-help
                 | This is a message that will be displayed to the user after they
                 | successfully answer a question. It can be used to provide additional
                 | information on the topic.
-
           button.btn.btn-lg.btn-primary.btn-block(type='submit') Update

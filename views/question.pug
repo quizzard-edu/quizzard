@@ -36,12 +36,10 @@ block content
                 form.form-question#re_answerform
                   label.sr-only(for='answer') Answer
                   if answered
-                    input.form-control#answer(name='answer' placeholder='Enter your answer here'
-                                              required disabled)
+                    input.form-control#answer(name='answer' placeholder='Enter your answer here' required disabled)
                     button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
                   else
-                    input.form-control#answer(name='answer' placeholder='Enter your answer here'
-                                              required autofocus)
+                    input.form-control#answer(name='answer' placeholder='Enter your answer here' required autofocus)
                     button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
               when 1
                 form.form-question#mc_answerform

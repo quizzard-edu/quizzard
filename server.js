@@ -210,10 +210,8 @@ const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
 const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
-
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const multipleChoiceForm = pug.compileFile('views/mc-answer.pug');
-
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */

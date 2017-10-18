@@ -9,8 +9,7 @@
           .form-group.row
             label.col-sm-2.col-form-label(for='userid') Username
             .col-sm-10
-              input.form-control#userid(type='text' name='id' value=user.id autofocus)
-
+              input.form-control#userid(type='text' name='userid' value=user.id autofocus)
           .form-group
             .row
               label.col-sm-2.col-form-label(for='fname') First Name
@@ -20,20 +19,16 @@
               label.col-sm-2.col-form-label(for='lname') Last Name
               .col-sm-10
                 input.form-control#lname(type='text' name='lname' value=user.lname)
-
           .form-group.row
             label.col-sm-2.col-form-label(for='email') Email
             .col-sm-10
               input.form-control#email(type='email' name='email' value=user.email)
-
           .form-group.row
             label.col-sm-2.col-form-label(for='points') Points
             .col-sm-10
-              input.form-control#email(type='number' name='points' value=user.points)
-
+              input.form-control#points(type='number' name='points' value=user.points)
           .form-group.row
             label.col-sm-2.col-form-label(for='passwd') Password
             .col-sm-10
-              input.form-control#passwd(type='text' name='password' placeholder='New password')
-
+              input.form-control#passwd(type='text' name='passwd' placeholder='New password')
           button.btn.btn-lg.btn-primary.btn-block(type='submit') Update
