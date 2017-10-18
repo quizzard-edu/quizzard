@@ -2,6 +2,7 @@
 var failedLogin = '<div class="chip white-text red darken-4">Invalid username or password<i class="close material-icons">close</i></div>';
 
 $('#login').submit(function(evt) {
+    $('#passwd').val('');
     evt.preventDefault();
     $.ajax({
         type: 'POST',
@@ -12,6 +13,7 @@ $('#login').submit(function(evt) {
         },
         error: function(data) {
             $('#invalid').html(failedLogin);
+            $('#passwd').focus();
         }
     });
 });
