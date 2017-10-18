@@ -1,49 +1,52 @@
+.row
+  .col.s12
+    .card.center
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light.red.left#question-creation-back-button
+          i.material-icons arrow_back
+      .card-content
+        h5.card-title Question Creation Form
+        h6 Create a new question
+      .card-action
+        .row
+          .input-field.col.s12
+            select#qType(name='qType' )
+              option(value='0' disabled selected) -- Select Question Type --
+              option(value='re') Regex Question Answer
+              option(value='mc') Multiple Choice
+            label Choose a Question Type:
+            
+          form.form-user#questionform(style='display:none')
+            .col-md-4
+              .form-group
+                  label(for='visible') Visible
+                  input.form-control#visible(type='checkbox' name='visible' checked=false value=false)
+              .form-group
+                label(for='qtitle') Title
+                input.form-control#qtitle(type='text' name='title' placeholder='Enter title' required autofocus )
+              .form-group
+                label(for='qtopic') Topic
+                input.form-control#qtopic(type='text' name='topic' placeholder='Enter topic' required)
+              .form-group
+                label(for='qpoints') Points
+                input.form-control#qpoints(type='number' name='points' placeholder='Enter points'  min="0" required)
+              .form-group
+                label(for='qhint') Hint
+                input.form-control#qhint(type='text' name='hint' placeholder='Enter Hint')
+            .col-md-8
+              .form-group
+                label(for='qtext') Question Body
+                .summernote#qtext
 
-| Choose a Question Type:
-#questionformType
-  .form-group
-    select#qType.select.form-control.input-lg(name='qType' )
-      option(value='0' selected disabled) -- Select Question Type --
-      option(value='mc') Multiple Choice
-      option(value='re') Regex Question Answer
+              #qAnswer
 
-form.form-user#questionform(style='display:none')
-  .col-md-4
-    .form-group
-        label(for='visible') Visible
-        input.form-control#visible(type='checkbox' name='visible' checked=false value=false)
-
-    .form-group
-      label(for='qtitle') Title
-      input.form-control#qtitle(type='text' name='title' placeholder='Enter title' required autofocus )
-
-    .form-group
-      label(for='qtopic') Topic
-      input.form-control#qtopic(type='text' name='topic' placeholder='Enter topic'
-                                required)
-    .form-group
-      label(for='qpoints') Points
-      input.form-control#qpoints(type='number' name='points'
-                                 placeholder='Enter points'  min="0" required)
-    .form-group
-      label(for='qhint') Hint
-      input.form-control#qhint(type='text' name='hint'
-                                    placeholder='Enter Hint')
-  .col-md-8
-
-    .form-group
-      label(for='qtext') Question Body
-      .summernote#qtext
-
-    #qAnswer
-
-    .form-group
-      label(for='successmsg') Follow up message
-      input.form-control#successmsg(type='text' name='successMessage'
-                                    placeholder='Enter message'
-                                    aria-describedby='success-msg-help')
-      p.form-text.text-muted#success-msg-help
-        | This is a message that will be displayed to the user after they
-        | successfully answer a question. It can be used to provide additional
-        | information on the topic.
-      button(class='btn btn-lg btn-primary btn-block' type='submit') Create
+              .form-group
+                label(for='successmsg') Follow up message
+                input.form-control#successmsg(type='text' name='successMessage'
+                                              placeholder='Enter message'
+                                              aria-describedby='success-msg-help')
+                p.form-text.text-muted#success-msg-help
+                  | This is a message that will be displayed to the user after they
+                  | successfully answer a question. It can be used to provide additional
+                  | information on the topic.
+                button(class='btn btn-lg btn-primary btn-block' type='submit') Create

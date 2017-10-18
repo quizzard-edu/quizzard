@@ -1,28 +1,34 @@
-form.form-user#userform
-  p#result
-  label.sr-only(for='userid') Username
-  input.form-control#userid(type='text' name='newid' placeholder='Username'
-                          required autofocus)
-  label.sr-only(for='passwd') Password
-  input.form-control#passwd(type='password' name='newpassword'
-                            placeholder='Password' required)
-  label.sr-only(for='fname') First Name
-  input.form-control#fname(type='text' name='newfname' placeholder='First Name'
-                            required)
-  label.sr-only(for='lname') Last Name
-  input.form-control#lname(type='text' name='newlname' placeholder='Last Name'
-                            required)
-  label.sr-only(for='email') Email
-  input.form-control#email(type='email' name='newemail' placeholder='Email'
-                            required)
-  button.btn.btn-lg.btn-primary.btn-block(type='submit') Create
-
-h4.text-center Upload
-form.form-upload#uploadform(enctype='multipart/form-data')
-  p#upload-result
-  .form-group
-    label.sr-only(for='upload-file') Upload File
-    input.form-control-file#upload-file(type='file' accept='.csv,text/csv' name='usercsv'
-                                        aria-describedby='filehelp' required)
-    small.form-text.text-muted#filehelp Upload a CSV file containing accounts
-  button.btn.btn-sm.btn-primary.btn-block#upload-submit(type='submit') Upload
+.row
+  .col.s12
+    .card.center
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light.red.left#account-creation-back-button
+          i.material-icons arrow_back
+      .card-content
+        h5.card-title Account Creation Form
+        h6 Add a student account
+      .card-action
+        .row
+          form.col.s12#userform
+            .row
+              .input-field.col.s6
+                input#fname.validate(type='text' name='newfname' required autofocus)
+                label(for='fname') First Name
+              .input-field.col.s6
+                input#lname.validate(type='text' name='newlname' required)
+                label(for='lname') Last Name
+            .row
+              .input-field.col.s12
+                input#userid.validate(type='text' name='newid' required)
+                label(for='userid') Username
+            .row
+              .input-field.col.s12
+                input#passwd.validate(type='password' name='newpassword' required)
+                label(for='passwd') Password
+            .row
+              .input-field.col.s12
+                input#email.validate(type='email' name='newemail' required)
+                label(for='email') Email
+            .row
+              button.waves-effect.waves-light.btn(type='submit') Create
+                i.material-icons.right send

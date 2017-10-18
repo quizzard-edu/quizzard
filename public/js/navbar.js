@@ -1,3 +1,5 @@
+$(".button-collapse").sideNav();
+
 /* Password changing form. */
 $('#nav-changepass').click(function(evt) {
     $('#changepass-currpass-group').removeClass('has-danger');

@@ -7,21 +7,18 @@ var colours = Object.freeze({
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
+$(function(){
+    /* show the account table by default */
+    displayAccountsTable();
+});
+
 /* Display the table of user accounts. */
 var displayAccountsTable = function() {
     $.ajax({
         type: 'GET',
         url: '/studentlist',
         success: function(data) {
-            $('#admin-label').html('Manage Accounts');
             $('#admin-content').html(data);
-            $('#admin-button').off();
-            $('#admin-button').show();
-            $('#admin-button').click(function(evt) {
-                displayAccountForm();
-            });
-            $('#admin-button').html('Add Users');
-            $('#admin-back').hide();
 
             addAccountsTableEvents();
 
@@ -29,6 +26,10 @@ var displayAccountsTable = function() {
             $('#option-questions').removeClass('active');
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
+
+            $('#account-creation-button').click(function(){
+                displayAccountForm();
+            });
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -59,16 +60,15 @@ var displayAccountForm = function() {
         type: 'GET',
         url: '/accountform',
         success: function(data) {
-            $('#admin-modal').modal('show');
-            $('#admin-modal-label').html('Create Account');
-            $('#admin-modal-body').html(data);
+            $('#admin-content').html(data);
+
+            $('#account-creation-back-button').click(function(){
+                displayAccountsTable();
+            });
+
             $('#userform').submit(function(evt) {
                 evt.preventDefault();
                 submitUserForm();
-            });
-            $('#uploadform').submit(function(evt) {
-                evt.preventDefault();
-                submitUploadForm();
             });
         },
         error: function(data){
@@ -85,35 +85,18 @@ var displayQuestionTable = function() {
         type: 'GET',
         url: '/questionlist',
         success: function(data) {
-            $('#admin-label').html('Manage Questions');
             $('#admin-content').html(data);
-            $('#admin-button').off();
-            $('#admin-button').show();
-            $('#admin-button').click(function(evt) {
-                displayQuestionForm();
-            });
-            $('#admin-button').html('Add New Question');
-            $('#admin-back').hide();
-            $('.view-button').click(function(evt) {
-                /* cut off the view- */
-                viewQuestion(this.id.substring(5));
-            });
-            $('.delete-button').click(function(evt) {
-                /* cut off the delete- */
-                deleteQuestion(this.id.substring(7));
-            });
-            $('.edit-button').click(function(evt) {
-                /* cut off the edit- */
-                editQuestion(this.id.substring(5));
-            });
-            $('.checked').change(function(evt) {
-                updateVisibility(this.id.substring(8));
-	    });
+
+            addQuestionsTableEvents();
 
             $('#option-questions').addClass('active');
             $('#option-accounts').removeClass('active');
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
+
+            $('#question-creation-button').click(function(evt) {
+                displayQuestionForm();
+            });            
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -123,18 +106,31 @@ var displayQuestionTable = function() {
     });
 }
 
+var addQuestionsTableEvents = function(){
+    $('.view-button').click(function(evt) {
+        viewQuestion(this.id.substring(5));
+    });
+    $('.delete-button').click(function(evt) {
+        deleteQuestion(this.id.substring(7));
+    });
+    $('.edit-button').click(function(evt) {
+        editQuestion(this.id.substring(5));
+    });
+    $('.checked').change(function(evt) {
+        updateVisibility(this.id.substring(8));
+    });
+}
+
+
 /* Fetch and display the question creation form. */
 var displayQuestionForm = function() {
     $.ajax({
         type: 'GET',
         url: '/questionform',
         success: function(data) {
-            $('#admin-label').html('Add New Question');
             $('#admin-content').html(data);
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').show();
-            $('#admin-back').click(function(evt) {
+
+            $('#question-creation-back-button').click(function(evt) {
                 displayQuestionTable();
             });
 
@@ -152,6 +148,7 @@ var displayQuestionForm = function() {
                 evt.preventDefault();
                 submitQuestionForm();
             });
+            $('select').material_select();
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -173,10 +170,10 @@ String.prototype.format = function() {
 var mcAnswerCount = 4;
 var addMCAnswers = function(dom){
     mcAnswerCount++;
-     var newdiv = document.createElement('div');
-     var inputdiv = "<p>Is Correct: <input type='radio' name='radbutton' value='mcans{0}'/><input class='form-control' type='text' name='mcans{1}' placeholder='Enter Answer Here' required='required' style='float:left;'/> <button onclick='$(this).parent().remove();'>delete</button></p>"
-     newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount);
-     $('#qAnswer > div.form-group').append(newdiv);
+    var newdiv = document.createElement('div');
+    var inputdiv = '<p><input type="radio" name="radbutton" value="mcans{0}" id="mcans{1}" required/><label for="mcans{2}">Is Correct</label><input type="text" name="mcans{3}" placeholder="Enter Answer Here" required style="float:left;" class="form-control"/><a onclick="$(this).parent().remove()" class="btn-floating btn-tiny waves-effect waves-light red"><i class="tiny material-icons">close</i></a></p>';
+    newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount,mcAnswerCount,mcAnswerCount);
+    $('#qAnswer > div.form-group').append(newdiv);
 }
 
 // replace the answer field in Question-creation.pug for specific question
@@ -247,9 +244,6 @@ var displaySettings = function() {
     });
     */
 }
-
-/* show the account table by default */
-displayAccountsTable();
 
 /* Set up events for the sidebar buttons. */
 $('#option-accounts').click(function(evt) {
@@ -343,16 +337,15 @@ var submitUserForm = function() {
         url: '/useradd',
         data: user,
         success: function(data) {
-            $('#admin-modal').modal('hide');
-            setTimeout(displayAccountsTable(), 1000);
-		        dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
+            displayAccountsTable();
+            dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data === 'failure') {
+            } else if (data['responseText'] === 'failure') {
                 dropSnack(colours.FAIL_RED, 'User could not be added');
-            } else if (data === 'exists') {
+            } else if (data['responseText'] === 'exists') {
                 dropSnack(colours.FAIL_RED, 'User ' + user.id + ' already exists');
             }
         }
@@ -474,7 +467,6 @@ var submitQuestionForm = function() {
     });
 
     if ($('#qtext').summernote('isEmpty')) {
-
         dropSnack(colours.FAIL_RED, 'Please enter a question body in the editor.');
         return;
     }
@@ -594,9 +586,15 @@ var submitQEditForm = function(qid) {
     var question = {};
     var qbody;
 
+    if ($('#qtext').summernote('isEmpty')) {
+        dropSnack(colours.FAIL_RED, 'Please enter a question body in the editor.');
+        return;
+    }
+
     jQuery.each(fields, function(i, field) {
         question[field.name] = field.value;
     });
+
     question['text'] = $('#qtext').summernote('code');
 
     $.ajax({
