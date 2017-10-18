@@ -2,7 +2,7 @@
   nav
     .nav-wrapper
       a.navbarLink.brand-logo.center(href='#!') Quizzard
-      a.navbarLink.button-collapse(href='#', data-activates='mobile-demo')
+      a.navbarLink.button-collapse(href='#', data-activates='mobile')
         i.material-icons menu
       ul.left.hide-on-med-and-down
         if user.type == 0
@@ -20,18 +20,18 @@
           a.navbarLink(href='#') Profile
         li#nav-logout
           a.navbarLink(href='#') Logout
-      ul#mobile-demo.side-nav
-        if user.type == 0
-          li#nav-home
-            a.navbarLink(href='/admin') Administration
-        else
-          li#nav-home
-            a.navbarLinkHidden(href='/home') Questions
-        li#nav-leaderboard
-          a.navbarLinkHidden(href='/leaderboard') Leaderboard
-        li#nav-about
-          a.navbarLinkHidden(href='/about') About
-        li#nav-profile
-          a.navbarLinkHidden(href='#') Profile
-        li#nav-logout
-          a.navbarLinkHidden(href='#') Logout
+ul#mobile.side-nav
+  if user.type == 0
+    li#nav-home
+      a.navbarLinkHidden(href='/admin') Administration
+  else
+    li#nav-home
+      a.navbarLinkHidden(href='/home') Questions
+  li#nav-leaderboard
+    a.navbarLinkHidden(href='/leaderboard') Leaderboard
+  li#nav-profile
+    a.navbarLinkHidden(href='#') Profile
+  li#nav-about
+    a.navbarLinkHidden(href='/about') About
+  li#nav-logout
+    a.navbarLinkHidden(href='#') Logout

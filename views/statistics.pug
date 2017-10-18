@@ -19,7 +19,7 @@
                 td #{s.id}
                 td #{s.totalAttemptsCount}
                 td #{s.correctAttemptsCount}
-                if totalAttemptsCount === 0
+                if s.totalAttemptsCount === 0
                   td 0%
                 else
                   td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%
