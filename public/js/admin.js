@@ -586,9 +586,15 @@ var submitQEditForm = function(qid) {
     var question = {};
     var qbody;
 
+    if ($('#qtext').summernote('isEmpty')) {
+        dropSnack(colours.FAIL_RED, 'Please enter a question body in the editor.');
+        return;
+    }
+
     jQuery.each(fields, function(i, field) {
         question[field.name] = field.value;
     });
+
     question['text'] = $('#qtext').summernote('code');
 
     $.ajax({
