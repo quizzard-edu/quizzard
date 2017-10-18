@@ -151,9 +151,19 @@ app.get('/home', function(req, res) {
 
     var request = { user : req.session.user, questionsStatus : 'unanswered' };
     users.getQuestionsList(request, function(err, results) {
-        return res.render('home', {
-            user: req.session.user,
-            questions: results
+        if (err) {
+            return res.status(500).send();
+        }
+
+        users.getStudentById(req.session.user.id, function(err, userFound) {
+            if (err) {
+                return res.status(500).send();
+            }
+
+            return res.status(200).render('home', {
+                user: userFound,
+                questions: results
+            });
         });
     });
 });
@@ -643,7 +653,15 @@ app.post('/usermod', function(req, res) {
     var updateId = req.body.id;
 
     users.updateStudentById(userId, req.body, function(err, result) {
-        users.getStudentById(updateId, function(err, userFound){
+        if (err) {
+            return res.status(500).send();
+        }
+
+        users.getStudentById(updateId, function(err, userFound) {
+            if (err) {
+                return res.status(500).send();
+            }
+
             var html = accountEdit({
                 user: userFound,
                 cdate: creationDate(userFound.ctime)
