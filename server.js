@@ -424,7 +424,6 @@ app.post('/questionedit', function(req, res) {
             res.status(500).send('Question not found');
         }
 
-        console.log("tyoe: " + question.type)
         var html = questionEdit({
             question: question,
             getQuestionForm: function(){
