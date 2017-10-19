@@ -822,6 +822,13 @@ app.get('/questionpreview', function(req, res) {
     });
 });
 
+/* Display some charts and graphs */
+app.get('/analytics', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+});
+
 // 404 route
 app.use(function(req, res, next){
     return res.status(404).render('page-not-found');
