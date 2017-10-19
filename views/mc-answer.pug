@@ -2,13 +2,14 @@ if answerForm
 	.form-group
 		each index in [1,2,3,4]
 			p
-				| Is Correct:
-				input(type='radio', name='radbutton', value='mcans'+index, required)
+				input(type='radio', name='radbutton', value='mcans'+index, id='mcans'+index required)
+				label(for='mcans'+index) Is Correct
 				input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required, style='float:left;')
-				button(onclick='$(this).parent().remove()') delete
+				a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
+					i.tiny.material-icons close
 
 	#addMoreAnswersButton
-		button(onclick="addMCAnswers('qAnswer')") add answer
+		a.waves-effect.waves-light.btn(onclick="addMCAnswers('qAnswer')") add answer
 
 else if studentQuestionForm
 	form.form-question#mc_answerform
@@ -28,7 +29,9 @@ else if adminQuestionEdit
 				else
 					input(type='radio', name='radbutton', value=i, required)
 				input.form-control(type='text', name=i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
-				button(onclick='$(this).parent().remove()') delete
+				a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
+					i.tiny.material-icons close
 
 	#addMoreAnswersButton
-		button(onclick="addMCAnswers('qAnswer')") add answer
+		a.waves-effect.waves-light.btn(onclick="addMCAnswers('qAnswer')") add answer
+

@@ -1,56 +1,40 @@
-.question-info.text-center
-  h4.text-center ID #{question.id}
-  h4.text-center #{question.title}
-  p.text-center #{question.points} Points
-  p.text-center Current Hint: #{question.hint}
-  p.text-center Current Answer: #{question.answer}
-
-  p#question-edit-result
-
-form.form-edit#question-edit-form
-
-  .form-group.row
-    label.col-sm-2.col-form-label(for='qtitle') Title
-    .col-sm-10
-      input.form-control#qtitle(type='text' name='title' placeholder='New title' value=question.title
-                                autofocus)
-
-  .form-group.row
-    label(for='qtext') Question Body
-    .summernote#qtext(value=question.text)
-
-  #qAnswer
-    | !{getQuestionForm()}
-
-  .form-group.row
-    label.col-sm-2.col-form-label(for='qtopic') Topic
-    .col-sm-10
-      input.form-control#qtopic(type='text' name='topic'
-                                placeholder='New topic' value=question.topic)
-
-  .form-group.row
-    label.col-sm-2.col-form-label(for='qpoints') Points
-    .col-sm-10
-      input.form-control#qpoints(type='number' name='points'
-                                 placeholder='New point count' value=question.points min="0")
-  .form-group.row
-    label.col-sm-2.col-form-label(for='qhint') Hint
-    .col-sm-10
-      input.form-control#qhint(type='text' name='hint'
-                                  placeholder='New hint' value=question.hint)
-
-  .form-group.row
-    label.col-sm-2.col-form-label(for='successmsg') Message
-    .col-sm-10
-      input.form-control#successmsg(type='text' name='successMessage'
-                                    placeholder='New message'
-                                    aria-describedby='success-msg-help' value=question.successMessage)
-
-    .row
-      .col-sm-2
-      p.col-sm-10.form-text.text-muted#success-msg-help
-        | This is a message that will be displayed to the user after they
-        | successfully answer a question. It can be used to provide additional
-        | information on the topic.
-
-  button.btn.btn-lg.btn-primary.btn-block(type='submit') Edit
+.row
+  .col.s12
+    .card.center
+      .card-content
+        h5.card-title Question Edit
+        h6 Modify and update question's information.
+      .card-action
+        form.form-edit#question-edit-form
+          .form-group.row
+            label.col-sm-2.col-form-label(for='qtitle') Title
+            .col-sm-10
+              input.form-control#qtitle(type='text' name='title' placeholder='New title' value=question.title autofocus)
+          .form-group.row
+            label(for='qtext') Question Body
+            .summernote#qtext(value=question.text)
+          #qAnswer
+            | !{getQuestionForm()}
+          .form-group.row
+            label.col-sm-2.col-form-label(for='qtopic') Topic
+            .col-sm-10
+              input.form-control#qtopic(type='text' name='topic' placeholder='New topic' value=question.topic)
+          .form-group.row
+            label.col-sm-2.col-form-label(for='qpoints') Points
+            .col-sm-10
+              input.form-control#qpoints(type='number' name='points' placeholder='New point count' value=question.points min="0")
+          .form-group.row
+            label.col-sm-2.col-form-label(for='qhint') Hint
+            .col-sm-10
+              input.form-control#qhint(type='text' name='hint' placeholder='New hint' value=question.hint)
+          .form-group.row
+            label.col-sm-2.col-form-label(for='successmsg') Message
+            .col-sm-10
+              input.form-control#successmsg(type='text' name='successMessage' placeholder='New message' aria-describedby='success-msg-help' value=question.successMessage)
+            .row
+              .col-sm-2
+              p.col-sm-10.form-text.text-muted#success-msg-help
+                | This is a message that will be displayed to the user after they
+                | successfully answer a question. It can be used to provide additional
+                | information on the topic.
+          button.btn.btn-lg.btn-primary.btn-block(type='submit') Update

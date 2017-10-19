@@ -1,12 +1,20 @@
-h4.sidebar-item#sidebar-name #{user.fname} #{user.lname}
-h3.sidebar-item#sidebar-points #{user.points} Points
-p.sidebar-item Questions attempted: #{user.totalAttemptsCount}
-p.sidebar-item Questions successfully answered: #{user.correctAttemptsCount}
-if user.totalAttemptsCount === 0
-  p.sidebar-item You have not yet attempted any questions.
-else
-  p.sidebar-item You have a #{((user.correctAttemptsCount / user.totalAttemptsCount) * 100).toFixed(2)}% success rate.
-
-.leaderboard-sidebar
-  h4.sidebar-item Leaderboard
-  .leaderboard-small
+.row
+  .col.s12
+    .card.center
+      .card-content
+        h5.card-title#sidebar-name #{user.fname} #{user.lname}
+      .card-action
+        h5.sidebar-item#sidebar-points #{user.points} Points
+        p.sidebar-item Questions attempted: #{user.totalAttemptsCount}
+        p.sidebar-item Questions answered: #{user.correctAttemptsCount}
+        if user.totalAttemptsCount === 0
+          p.sidebar-item You have not yet attempted any questions.
+        else
+          p.sidebar-item You have a #{((user.correctAttemptsCount / user.totalAttemptsCount) * 100).toFixed(2)}% success rate.
+.row
+  .col.s12
+    .card.center
+      .card-content
+        h4.center Leaderboard
+      .card-action
+        .leaderboard-small
