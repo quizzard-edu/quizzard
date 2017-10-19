@@ -14,26 +14,7 @@
             label(for='qtext') Question Body
             .summernote#qtext(value=question.text)
           #qAnswer
-            case question.type
-              when 0
-                .form-group.row
-                  label.col-sm-2.col-form-label(for='qanswer') Answer (regex)
-                  .col-sm-10
-                    input.form-control#qanswer(type='text', name='answer',value=question.answer)
-              when 1
-                .form-group.row
-                  each option, i in question.choices
-                    p
-                      if question.answer === option
-                        input(type='radio', name='radbutton', id='mcans'+i, required, checked)
-                      else
-                        input(type='radio', name='radbutton', id='mcans'+i, required)
-                      label(for='mcans'+i) Is Correct
-                      input.form-control(type='text', name='mcans'+i, value=option, placeholder='Enter Answer Here', required, style='float:left;')
-                      a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
-                        i.tiny.material-icons close
-                #addMoreAnswersButton
-                  button(onclick="addMCAnswers('qAnswer')") add answer
+            | !{getQuestionForm()}
           .form-group.row
             label.col-sm-2.col-form-label(for='qtopic') Topic
             .col-sm-10

@@ -11,9 +11,9 @@
         .row
           .input-field.col.s12
             select#qType(name='qType' )
-              option(value='0' disabled selected) -- Select Question Type --
-              option(value='re') Regex Question Answer
-              option(value='mc') Multiple Choice
+              option(selected disabled) -- Select Question Type --
+              each type, i in questionType
+                option(value=type.value) #{type.name}
             label Choose a Question Type:
             
           form.form-user#questionform(style='display:none')
@@ -37,9 +37,7 @@
               .form-group
                 label(for='qtext') Question Body
                 .summernote#qtext
-
               #qAnswer
-
               .form-group
                 label(for='successmsg') Follow up message
                 input.form-control#successmsg(type='text' name='successMessage'
