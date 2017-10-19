@@ -31,29 +31,8 @@ block content
             h4.qtext #{question.title}
           .card-action
             h5.qtext !{question.text}
-            case question.type
-              when 0
-                form.form-question#re_answerform
-                  label.sr-only(for='answer') Answer
-                  if answered
-                    input.form-control#answer(name='answer' placeholder='Enter your answer here' required disabled)
-                    button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
-                  else
-                    input.form-control#answer(name='answer' placeholder='Enter your answer here' required autofocus)
-                    button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
-              when 1
-                form.form-question#mc_answerform
-                  each val, index in question.choices
-                    p
-                      if answered
-                        input(type='radio', name='answer', value=val, id=index, required, autofocus, disabled)
-                      else
-                        input(type='radio', name='answer', value=val, id=index, required, autofocus)
-                      label(for=index) #{val}
-                  if answered
-                    button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
-                  else
-                    button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+            | !{getQuestionForm()}
+
         if answered
           .success
             h4.text-center#success-header Learn more

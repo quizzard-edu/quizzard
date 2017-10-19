@@ -96,7 +96,7 @@ var addQuestion = function(qTopic, id) {
         text: '<p>'+qTopic+' Text</p>',
         answer: 'KonniChiwa',
         points: Math.floor(Math.random()*questionsMaxValue),
-        type: common.questionTypes.REGULAR,
+        type: common.questionTypes.REGULAR.value,
         hint: 'KonniChiwa',
         visible: 'true'
     };

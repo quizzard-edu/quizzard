@@ -139,7 +139,7 @@ var displayQuestionForm = function() {
             $('#qType').change(function(evt) {
                 // get the answer part for the form requested
                 // id to replace is qAnswer
-                var form = "/" + $(this).val();
+                const form = $(this).val();
                 getQuestionFormAnswer(form);
                 $('#questionform').show();
             });
@@ -180,7 +180,8 @@ var addMCAnswers = function(dom){
 var getQuestionFormAnswer = function(form){
     $.ajax({
         type: 'GET',
-        url: form,
+        url: '/answerForm',
+        data: {qType:form},
         success: function(data){
             $('#qAnswer').html(data);
         },
