@@ -1,7 +1,7 @@
 /* This is the index for referencing colours for the snackbars */
 var colours = Object.freeze({
-    SUCCESS_GREEN: '#4BB543',
-    FAIL_RED: '#D93232',
+    SUCCESS_GREEN: 'green',
+    FAIL_RED: 'red darken-4',
 });
 
 /* set home as the active navbar element */
@@ -435,7 +435,10 @@ var updateVisibility = function(qid) {
         },
         success: function(data) {
             displayQuestionTable();
-            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' is now visible to the students');
+
+            var msg = question['visible'] ? ' is now visible to the students' : ' is now invisible to the students';
+
+            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + msg);
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -657,48 +660,8 @@ var sortAccountsTable = function(type) {
     });
 }
 
-var debounce = false; // helps delfect spam from snackbar
-
 /* This function slides down a snakbar */
 function dropSnack(colour, msg) {
-
-    var x = document.getElementById("snackbar");
-
-    // set specific colour and message for snackbar
-    x.style.backgroundColor=colour;
-    x.innerHTML=msg;
-
-    if(!debounce) { // if no snackbar is visible
-        x.className = "slideDown"; // show the snackbar
-        debounce = true; // set flag saying snackbar is currently visible
-
-        // wait 3 seconds and then run the animation to fade the snackbar out,
-        // reset flag
-        fadeOut = setTimeout(function(){
-            x.className = x.className.replace("slideDown", "slideUp");
-            debounce = false;
-        }, 3000);
-    
-        // clear the animations after 3.5s (effectively 0.5s after the snackbar
-        // animation is complete)
-        clearAnimation = setTimeout(function(){
-            x.className = x.className.replace("slideUp", "");
-        }, 3500);
-
-    } else { // if there is curently a snakbar
-
-        // clear the olf timeouts
-        clearTimeout(fadeOut);
-        clearTimeout(clearAnimation);
-
-        // set new timeouts so that snackbar persists a little
-        fadeOut = setTimeout(function(){
-            x.className = x.className.replace("slideDown", "slideUp");
-            debounce = false;
-        }, 4000);
-    
-        clearAnimation = setTimeout(function(){
-            x.className = x.className.replace("slideUp", "");
-        }, 4500);
-    }
+    // runs the toast function for 3s with given msg and colour
+    Materialize.toast(msg, 3000, 'rounded ' + colour);
 }
