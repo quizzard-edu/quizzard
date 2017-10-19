@@ -30,6 +30,7 @@ var log = require('./server/log.js');
 var logger = log.logger;
 var pug = require('pug');
 var common = require('./server/common.js');
+var analytics = require('./server/analytics.js');
 
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
@@ -212,7 +213,6 @@ const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const mcForm = pug.compileFile('views/mc-answer.pug');
-
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
@@ -829,6 +829,17 @@ app.get('/analytics', function(req, res){
     }
 
     return res.status(200).render('analytics', {user: req.session.user});
+});
+
+
+app.get('/getAnalytics', function(req,res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    analytics.getChart(function(err, result){
+        return res.status(200).send(result);
+    });
 });
 
 // 404 route

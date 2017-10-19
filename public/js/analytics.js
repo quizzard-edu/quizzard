@@ -1,29 +1,43 @@
-document.addEventListener('DOMContentLoaded', function() {
-  var config = {
-    type: 'pie',
-    data: {
-      datasets: [{
-        data: [14, 10, 5, 30],
-        backgroundColor: [
-          "#4B515D",
-          "#4285F4",
-          "#ff4444",
-          "#00C851"
-        ],
-        label: 'Dataset 1'
-      }],
-      labels: [
-        "ON-HOLD",
-        "IN-DEVELOPMENT",
-        "CANCELLED",
-        "COMPLETED"
-      ]
+$(function() {
+  $.ajax({
+    type: 'GET',
+    url: '/getAnalytics',
+    success: function(data) {
+      var config = {
+        type: 'pie',
+        data: {
+          datasets: [{
+            data: data,
+            backgroundColor: [
+              "#4B515D",
+              "#4285F4",
+              "#ff4444",
+              "#00C851"
+            ],
+            label: 'Dataset 1'
+          }],
+          labels: [
+            "ON-HOLD",
+            "IN-DEVELOPMENT",
+            "CANCELLED",
+            "COMPLETED"
+          ]
+        },
+        options: {
+          responsive: true
+        }
+      };
+      var ctx = $("#questionsAnsweredVsClass");
+      new Chart(ctx, config);
+      var ctx = $("#accuracyVsClass");
+      new Chart(ctx, config);
+      var ctx = $("#pointsVsClass");
+      new Chart(ctx, config);
+      var ctx = $("#ratingVsClass");
+      new Chart(ctx, config);
     },
-    options: {
-      responsive: true
+    error: function(data) {
+      $('#invalid').html(failedLogin);
     }
-  };
-  var ctx = $("#myChart");
-  new Chart(ctx, config);
-
-}, false);
+  });
+});
