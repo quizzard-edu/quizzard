@@ -1,0 +1,18 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/navbar.css')
+
+block title
+  title Quizzard - Analytics
+
+block content
+  include navbar
+
+  .container
+    .include student-analytics
+
+block scripts
+  script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/lib/bootstrap/js/bootstrap.min.js')
+  script(src='/js/navbar.js')
