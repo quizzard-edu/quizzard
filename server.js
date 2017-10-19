@@ -827,6 +827,8 @@ app.get('/analytics', function(req, res){
     if (!req.session.user) {
         return res.redirect('/');
     }
+
+    return res.status(200).render('analytics', {user: req.session.user});
 });
 
 // 404 route
