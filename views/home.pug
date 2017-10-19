@@ -5,6 +5,8 @@ block styles
   link(rel='stylesheet' href='/css/leaderboard-table.css')
   link(rel='stylesheet' href='/css/sidebar.css')
   link(rel='stylesheet' href='/css/navbar.css')
+  link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
+  link(rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons')
 
 block title
   title Quizzard - Home
@@ -12,36 +14,24 @@ block title
 block content
   include navbar
 
+  br
   .container
     .row
-      .col-md-8
+      .col.s12.m8
         .row
-          .btn-group.col-md-10(data-toggle='buttons')
-            if answered
-              label.btn.btn-default#qlist-unanswered.
-                <input type="radio" name="qlist-type"> Unanswered
-              label.btn.btn-default.active#qlist-answered.
-                <input type="radio" name="qlist-type" checked> Answered
-            else
-              label.btn.btn-default.active#qlist-unanswered.
-                <input type="radio" name="qlist-type" checked> Unanswered
-              label.btn.btn-default#qlist-answered.
-                <input type="radio" name="qlist-type"> Answered
-          .dropdown.col-md-2
-            button.btn.btn-default.dropdown-toggle#sort(type='button' data-toggle='dropdown') Sort by
-              span.caret
-            ul.dropdown-menu
-              li
-                a#sort-topic(href='#') Topic
-              li
-                a#sort-point(href='#') Points
-        .question-list
-          include questionlist
-      .sidebar.col-md-4
+          ul.tabs
+            li.tab.col.s6
+              a.noLineLink.active(href='#test1')#qlist-unanswered Unanswered
+            li.tab.col.s6
+              a.noLineLink(href='#test2')#qlist-answered Answered
+          .question-list
+            include questionlist
+      .col.s12.m4
         include home-sidebar
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
   script(src='/lib/bootstrap/js/bootstrap.min.js')
+  script(src='/lib/materialize/js/materialize.min.js')
   script(src='/js/home.js')
   script(src='/js/navbar.js')

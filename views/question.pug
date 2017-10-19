@@ -3,6 +3,8 @@ extends layout
 block styles
   link(rel='stylesheet' href='/css/question.css')
   link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
+  link(rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons')
   if !preview
     link(rel='stylesheet' href='/css/navbar.css')
     link(rel='stylesheet' href='/lib/sweetalert/sweetalert.css')
@@ -17,58 +19,66 @@ block content
   if !preview
     include navbar
 
+  br
   .container
-    .row
-      .col-md-8
-
-        h2.qtext #{question.title}
-        h5.qtext !{question.text}
-        // view question type in server/questions.js
-        case question.type
-          when 0
-            form.form-question#re_answerform
-              label.sr-only(for='answer') Answer
-              if answered
-                input.form-control#answer(name='answer' placeholder='Enter your answer here'
-                                          required disabled)
-                button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
-              else
-                input.form-control#answer(name='answer' placeholder='Enter your answer here'
-                                          required autofocus)
-                button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
-
-          when 1
-            form.form-question#mc_answerform
-              each answer in question.choices
-                input(type='radio' name='answer', value=answer, required, autofocus)
-                | #{answer}
-              if answered
-                button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
-              else
-                button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
-
-
+    .row.center
+      .col.s12.m8
+        .card
+          .card-image
+            a.btn-floating.halfway-fab.waves-effect.waves-light.red.left(href='/')
+              i.material-icons arrow_back
+          .card-content
+            h4.qtext #{question.title}
+          .card-action
+            h5.qtext !{question.text}
+            case question.type
+              when 0
+                form.form-question#re_answerform
+                  label.sr-only(for='answer') Answer
+                  if answered
+                    input.form-control#answer(name='answer' placeholder='Enter your answer here' required disabled)
+                    button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
+                  else
+                    input.form-control#answer(name='answer' placeholder='Enter your answer here' required autofocus)
+                    button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+              when 1
+                form.form-question#mc_answerform
+                  each val, index in question.choices
+                    p
+                      if answered
+                        input(type='radio', name='answer', value=val, id=index, required, autofocus, disabled)
+                      else
+                        input(type='radio', name='answer', value=val, id=index, required, autofocus)
+                      label(for=index) #{val}
+                  if answered
+                    button(class='btn btn-lg btn-primary btn-block' type='submit' disabled) Submit
+                  else
+                    button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
         if answered
           .success
             h4.text-center#success-header Learn more
             p#success-message #{question.successMessage}
-      .sidebar.col-md-4
-        h3.sidebar-item#topic #{question.topic}
-        h3.sidebar-item#points #{question.points} Points
-        p.sidebar-item#attempts This question has been attempted #{question.attemptsCount} times.
-        if question.answeredCount == 0
-          p.sidebar-item#first-answer You could be the first person to correctly answer this question!
-        else
-          p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
-        if preview
-          h4.sidebar-item#hint Hint: #{question.hint}
-        else
-          h4.sidebar-item#hint.hidden Hint: #{question.hint}
+      .col.s12.m4
+        .card
+          .card-content
+            h4.sidebar-item#topic #{question.topic}
+          .card-action
+            h5.sidebar-item#points #{question.points} Points
+            p.sidebar-item#attempts This question has been attempted #{question.totalCount} times.
+            if question.answeredCount == 0
+              p.sidebar-item#first-answer You could be the first person to correctly answer this question!
+            else
+              p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
+            if preview
+              h4.sidebar-item#hint Hint: #{question.hint}
+            else
+              h4.sidebar-item#hint.hidden Hint: #{question.hint}
 
 block scripts
   if !preview
     script(src='/lib/jquery/jquery-3.1.1.min.js')
     script(src='/lib/bootstrap/js/bootstrap.min.js')
     script(src='/lib/sweetalert/sweetalert.min.js')
+    script(src='/lib/materialize/js/materialize.min.js')
     script(src='/js/question.js')
     script(src='/js/navbar.js')

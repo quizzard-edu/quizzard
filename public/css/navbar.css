@@ -1,27 +1,13 @@
-.navbar-brand {
-  cursor: default;
+.navbarLink:link, .navbarLink:visited, .navbarLink:hover, .navbarLink:active {
+  text-decoration: none;
+  color: white;
 }
 
-#nav-logout {
-  padding-right: 10px;
+.noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
+  text-decoration: none;
 }
 
-.form-changepass {
-  margin: 0 auto;
-  margin-top: -20px;
-  padding: 10px;
-  font-size: 12px;
-}
-
-.form-changepass .form-control {
-  position: relative;
-  height: 25px;
-}
-
-.form-changepass label {
-  margin-top: 10px;
-}
-
-.form-changepass #changepass-result {
-  margin-top: 10px;
+.navbarLinkHidden:link, .navbarLinkHidden:visited, .navbarLinkHidden:hover, .navbarLinkHidden:active {
+  text-decoration: none;
+  color: black;
 }
