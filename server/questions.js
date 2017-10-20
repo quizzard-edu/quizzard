@@ -36,6 +36,7 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.text = question.text;
 	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
+	questionToAdd.rating = question.rating;
 	questionToAdd.points = parseInt(question.points);
 	questionToAdd.visible = (question.visible === 'true');
 	questionToAdd.attempted = [];

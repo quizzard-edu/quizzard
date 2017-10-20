@@ -97,7 +97,7 @@ var displayQuestionTable = function() {
 
             $('#question-creation-button').click(function(evt) {
                 displayQuestionForm();
-            });            
+            });
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -476,6 +476,7 @@ var submitQuestionForm = function() {
         return;
     }
 
+    question['rating'] = getRating();
     question['text'] = $('#qtext').summernote('code');
     question['type'] = $('#qType').select().val();
     question['visible'] = $('#visible').is(':checked');
@@ -577,6 +578,7 @@ var editQuestion = function(qid) {
                 evt.preventDefault();
                 submitQEditForm(qid);
             });
+            setRating(data.qrating);
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -601,6 +603,7 @@ var submitQEditForm = function(qid) {
     });
 
     question['text'] = $('#qtext').summernote('code');
+    question['rating'] = getRating();
 
     $.ajax({
         type: 'POST',
