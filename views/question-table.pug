@@ -1,30 +1,46 @@
-table.table
-  thead
-    tr
-      th
-        button(id='vis' type='button' value='true' onClick='toggleButtonVisibility()') Visiblity
-      th ID
-      th Title
-      th Topic
-      th Type
-      th Action
-  tbody
-    each q in questions
-      tr
-        td
-          input.checked(id='checked-' + q.id type='checkbox' checked=q.visible class='visbox')
-        td #{q.id}
-        td #{q.title}
-        td #{q.topic}
-        if q.type == 0
-          td Regular
-        else
-          td Multiple Choice
-        td
-          button.btn.btn-default.view-button(id='view-' + q.id type='button' aria-label='View')
-            span.glyphicon.glyphicon-eye-open(aria-hidden='true')
-          button.btn.btn-default.edit-button(id='edit-' + q.id type='button' aria-label='Edit')
-            span.glyphicon.glyphicon-pencil(aria-hidden='true')
-          button.btn.btn-default.delete-button(id='delete-' + q.id type='button' aria-label='Delete')
-            span.glyphicon.glyphicon-remove(aria-hidden='true')
-
+.row
+  .col.s12
+    .card.center
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light#question-creation-button
+            i.material-icons playlist_add
+      .card-content
+        h5.card-title Manage Questions
+        h6 Add, modify or delete questions.
+      .card-action
+        table.bordered
+          thead
+            tr
+              th Visiblity
+                .switch
+                  label
+                    | Hide
+                    input(id='sw' type="checkbox" checked=true onClick='toggleButtonVisibility()')
+                    span.lever
+                    | Show
+              th ID
+              th Title
+              th Topic
+              th Type
+              th Action
+          tbody
+            each q in questions
+              tr
+                td
+                  p
+                    input.checked(id='checked-' + q.id type='checkbox' checked=q.visible)
+                    label.visbox(for='checked-' + q.id)
+                td #{q.id}
+                td #{q.title}
+                td #{q.topic}
+                if q.type == 0
+                  td Regular
+                else
+                  td Multiple Choice
+                td
+                  button.btn.btn-default.view-button(id='view-' + q.id type='button' aria-label='View')
+                    span.glyphicon.glyphicon-eye-open(aria-hidden='true')
+                  button.btn.btn-default.edit-button(id='edit-' + q.id type='button' aria-label='Edit')
+                    span.glyphicon.glyphicon-pencil(aria-hidden='true')
+                  button.btn.btn-default.delete-button(id='delete-' + q.id type='button' aria-label='Delete')
+                    span.glyphicon.glyphicon-remove(aria-hidden='true')

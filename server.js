@@ -71,6 +71,10 @@ app.get('/', function(req, res) {
 
 /* check username and password and send appropriate response */
 app.post('/login', function(req, res) {
+    if (req.session.user) {
+        req.session.destroy();
+    }
+
     if(!req.body.user || !req.body.passwd){
         return res.status(400).send('missing requirement');
     }
@@ -132,10 +136,9 @@ app.get('/logout', function(req, res) {
     if (req.session.user) {
         logger.info('User %s logged out.', req.session.user.id);
         req.session.destroy();
-        return res.status(200).send();
     }
 
-    return res.status(500).send();
+    return res.status(200).send();
 });
 
 /* Display the home page. */
@@ -151,9 +154,19 @@ app.get('/home', function(req, res) {
 
     var request = { user : req.session.user, questionsStatus : 'unanswered' };
     users.getQuestionsList(request, function(err, results) {
-        return res.render('home', {
-            user: req.session.user,
-            questions: results
+        if (err) {
+            return res.status(500).send();
+        }
+
+        users.getStudentById(req.session.user.id, function(err, userFound) {
+            if (err) {
+                return res.status(500).send();
+            }
+
+            return res.status(200).render('home', {
+                user: userFound,
+                questions: results
+            });
         });
     });
 });
@@ -197,10 +210,8 @@ const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
 const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
-
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const multipleChoiceForm = pug.compileFile('views/mc-answer.pug');
-
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
@@ -588,12 +599,8 @@ app.put('/useradd', function(req, res) {
     }
 
     users.addStudent(req.body, function(err, result) {
-        if (err == 'failure') {
-            return res.status(500).send('Could not add user');
-        }
-
-        if (err == 'exists') {
-            return res.status(500).send('User already exists');
+        if (err) {
+            return res.status(500).send(err);
         }
 
         if (req.session.adminStudentList != null) {
@@ -647,7 +654,15 @@ app.post('/usermod', function(req, res) {
     var updateId = req.body.id;
 
     users.updateStudentById(userId, req.body, function(err, result) {
-        users.getStudentById(updateId, function(err, userFound){
+        if (err) {
+            return res.status(500).send();
+        }
+
+        users.getStudentById(updateId, function(err, userFound) {
+            if (err) {
+                return res.status(500).send();
+            }
+
             var html = accountEdit({
                 user: userFound,
                 cdate: creationDate(userFound.ctime)
@@ -765,4 +780,9 @@ app.get('/questionpreview', function(req, res) {
             preview: true
         });
     });
+});
+
+// 404 route
+app.use(function(req, res, next){
+    return res.status(404).render('page-not-found');
 });

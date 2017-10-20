@@ -29,8 +29,8 @@ body {
   position: absolute;
 }
 
-.check-box {
-  text-align: left;
+.checked {
+  text-align: center;
   display: block;
 
 }
