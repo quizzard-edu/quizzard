@@ -29,7 +29,7 @@ exports.getChart = function(query, callback){
         case 'AccuracyVsClass':
             return callback(null, [5,3]);
         case 'PointsVsClass':
-            return callback(null, [9,4]);
+            return getPointsVsClass(query, callback);
         case 'RatingVsClass':
             return callback(null, [2,1]);
         default:
@@ -62,9 +62,67 @@ var getQuestionsAnsweredVsClass = function(query, callback){
             }
         }
 
-        classAnsweredAverage = (classAnswered / classCount).toFixed(2);
-        console.log(studentAnswered);
-        console.log(classAnsweredAverage);
+        classAnsweredAverage = Math.ceil(classAnswered / classCount);
         return callback(null, [studentAnswered, classAnsweredAverage]);
+    });
+}
+
+var getPointsVsClass = function(query, callback){
+    users.getStudentsList(function(err, students) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!students) {
+            return  callback('no results', null);
+        }
+
+        var studentId = query.user.id;
+        var studentPoints = 0;
+        var classPoints = 0;
+        var classCount = 0;
+        var classPointsAverage = 0;
+
+        for (i in students) {
+            if (students[i].id === studentId) {
+                studentPoints = students[i].points;
+            } else {
+                classPoints += students[i].points;
+                classCount++;
+            }
+        }
+
+        classPointsAverage = Math.ceil(classPoints / classCount);
+        return callback(null, [studentPoints, classPointsAverage]);
+    });
+}
+
+var getRatingVsClass = function(query, callback){
+    users.getStudentsList(function(err, students) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!students) {
+            return  callback('no results', null);
+        }
+
+        var studentId = query.user.id;
+        var studentRating = 0;
+        var classRating = 0;
+        var classCount = 0;
+        var classRatingAverage = 0;
+
+        for (i in students) {
+            if (students[i].id === studentId) {
+                studentRating = students[i].ratings;
+            } else {
+                classRating += students[i].ratings;
+                classCount++;
+            }
+        }
+
+        classRatingAverage = Math.ceil(classRating / classCount);
+        return callback(null, [studentRating, classRatingAverage]);
     });
 }
