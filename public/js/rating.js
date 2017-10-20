@@ -17,12 +17,13 @@ function highlight(selectedStar) {
  Gets the rating selected
 */
 function getRating() {
-  return rating
+  return rating + 1
 }
 
 /**
  Sets the rating
 */
 function setRating(newRating) {
-  rating = newRating;
+  rating = newRating - 1;
+  highlight(rating);
 }

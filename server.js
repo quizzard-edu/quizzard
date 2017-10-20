@@ -441,7 +441,8 @@ app.post('/questionedit', function(req, res) {
 
         return res.status(200).send({
             html: html,
-            qtext: question.text
+            qtext: question.text,
+            qrating: parseInt(question.rating)
         });
     });
 });

@@ -1,6 +1,6 @@
 .rating
   each _, val in Array(5)
-    i.medium.material-icons(id=val onmouseover='highlight(' + val + ')' onmouseout='highlight(rating)' onclick='setRating(' + val + ')') star_border
+    i.medium.material-icons(id=val onmouseover='highlight(' + val + ')' onmouseout='highlight(rating)' onclick='setRating(' + (val + 1) + ')') star_border
 
 block scripts
   script(src='/js/rating.js')
