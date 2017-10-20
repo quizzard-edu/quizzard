@@ -319,7 +319,7 @@ app.get('/questionform', function(req, res) {
 });
 
 app.get('/answerForm', function(req, res){
-    switch (req.param('qType')){
+    switch (req.query.qType){
         case common.questionTypes.REGULAR.value:
             res.status(200).render(
                 common.questionTypes.REGULAR.template,{
