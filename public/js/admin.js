@@ -2,6 +2,7 @@
 var colours = Object.freeze({
     SUCCESS_GREEN: 'green',
     FAIL_RED: 'red darken-4',
+    WARNING_YELLOW: 'orange accent-4',
 });
 
 /* set home as the active navbar element */
@@ -436,10 +437,10 @@ var updateVisibility = function(qid) {
         },
         success: function(data) {
             displayQuestionTable();
-
-            var msg = question['visible'] ? ' is now visible to the students' : ' is now invisible to the students';
-
-            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + msg);
+            var msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
+            var colour = question['visible'] ? colours.SUCCESS_GREEN : colours.WARNING_YELLOW;
+            var warn = question['visible'] ? '<i class="material-icons check">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons warning">warning</i>&nbsp&nbsp&nbsp';
+            dropSnack(colour, warn + 'Question ' + qid + msg);
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -664,5 +665,9 @@ var sortAccountsTable = function(type) {
 /* This function slides down a snakbar */
 function dropSnack(colour, msg) {
     // runs the toast function for 3s with given msg and colour
-    Materialize.toast(msg, 3000, 'rounded ' + colour);
+    Materialize.toast(msg + '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>', 5000, 'rounded ' + colour);
 }
+
+$(document).on('click', '#closeSnack', function() {
+    $(this).parent().fadeOut();
+});
