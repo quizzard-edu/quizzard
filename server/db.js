@@ -588,6 +588,10 @@ exports.updateQuestionById = function(questionId, request, callback){
       update.$set.points = request.points;
     }
 
+    if (request.choices) {
+      update.$set.choices = request.choices;
+    }
+    
     if (request.visible) {
         update.$set.visible = (request.visible === 'true');
     }

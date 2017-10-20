@@ -28,7 +28,7 @@ else if adminQuestionEdit
 				else
 					input(type='radio', name='radbutton', id=i, value=i, required)
 				label(for=i) Is Correct
-				input.form-control(type='text', name=i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
+				input.form-control(type='text', name='mcans'+i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
 				a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
 					i.tiny.material-icons close
 
