@@ -668,7 +668,7 @@ function dropSnack(colour, msg) {
     Materialize.toast(msg + '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>', 5000, 'rounded ' + colour);
 }
 
-/* Listner for the "x" on the snackbar/toasts */
+/* Listener for the `x` on the snackbar/toasts */
 $(document).on('click', '#closeSnack', function() {
     $(this).parent().fadeOut();
 });
