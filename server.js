@@ -836,9 +836,9 @@ app.get('/getAnalytics', function(req,res){
         return res.redirect('/');
     }
 
-    var type = req.query.type;
+    var query = {user: req.session.user, type: req.query.type};
 
-    analytics.getChart(type, function(err, result){
+    analytics.getChart(query, function(err, result){
         return res.status(200).send(result);
     });
 });

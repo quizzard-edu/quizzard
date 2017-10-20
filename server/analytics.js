@@ -18,10 +18,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-exports.getChart = function(type, callback){
-    switch(type) {
+var users = require('./users.js');
+var logger = require('./log.js').logger;
+var common = require('./common.js');
+
+exports.getChart = function(query, callback){
+    switch(query.type) {
         case 'QuestionsAnsweredVsClass':
-            return callback(null, [1,2]);
+            getQuestionsAnsweredVsClass(query, callback);
         case 'AccuracyVsClass':
             return callback(null, [5,3]);
         case 'PointsVsClass':
@@ -31,4 +35,8 @@ exports.getChart = function(type, callback){
         default:
             return callback('notFound', null);
     }
+}
+
+var getQuestionsAnsweredVsClass = function(query, callback){
+    return callback(null, [1,1]);
 }
