@@ -25,7 +25,7 @@ var common = require('./common.js');
 exports.getChart = function(query, callback){
     switch(query.type) {
         case 'QuestionsAnsweredVsClass':
-            getQuestionsAnsweredVsClass(query, callback);
+            return getQuestionsAnsweredVsClass(query, callback);
         case 'AccuracyVsClass':
             return callback(null, [5,3]);
         case 'PointsVsClass':
@@ -38,5 +38,33 @@ exports.getChart = function(query, callback){
 }
 
 var getQuestionsAnsweredVsClass = function(query, callback){
-    return callback(null, [1,1]);
+    users.getStudentsList(function(err, students) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!students) {
+            return  callback('no results', null);
+        }
+
+        var studentId = query.user.id;
+        var studentAnswered = 0;
+        var classAnswered = 0;
+        var classCount = 0;
+        var classAnsweredAverage = 0;
+
+        for (i in students) {
+            if (students[i].id === studentId) {
+                studentAnswered = students[i].correctAttemptsCount;
+            } else {
+                classAnswered += students[i].correctAttemptsCount;
+                classCount++;
+            }
+        }
+
+        classAnsweredAverage = (classAnswered / classCount).toFixed(2);
+        console.log(studentAnswered);
+        console.log(classAnsweredAverage);
+        return callback(null, [studentAnswered, classAnsweredAverage]);
+    });
 }

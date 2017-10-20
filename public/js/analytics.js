@@ -1,4 +1,6 @@
 $(function() {
+  $('#nav-analytics').addClass('active');
+
   getQuestionsAnsweredVsClass();
   getAccuracyVsClass();
   getPointsVsClass();
