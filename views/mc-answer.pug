@@ -1,11 +1,37 @@
-.form-group
-	each index in [1,2,3,4]
-		p
-			input(type='radio', name='radbutton', value='mcans'+index, id='mcans'+index required)
-			label(for='mcans'+index) Is Correct
-			input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required, style='float:left;')
-			a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
-				i.tiny.material-icons close
+if answerForm
+	.form-group
+		each index in [1,2,3,4]
+			p
+				input(type='radio', name='radbutton', value='mcans'+index, id='mcans'+index required)
+				label(for='mcans'+index) Is Correct
+				input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required, style='float:left;')
+				a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
+					i.tiny.material-icons close
 
-#addMoreAnswersButton
-	a.waves-effect.waves-light.btn(onclick="addMCAnswers('qAnswer')") add answer
+	#addMoreAnswersButton
+		a.waves-effect.waves-light.btn(onclick="addMCAnswers('qAnswer')") add answer
+
+else if studentQuestionForm
+	form.form-question#mc_answerform
+		each answer in question.choices
+			input(type='radio' name='answer', value=answer, required, autofocus)
+			| #{answer}
+
+		button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+
+else if adminQuestionEdit
+	.form-group.row
+		each option, i in question.choices
+			p
+				| Is Correct:
+				if question.answer == option
+					input(type='radio', name='radbutton', value=i, required, checked)
+				else
+					input(type='radio', name='radbutton', value=i, required)
+				input.form-control(type='text', name=i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
+				a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
+					i.tiny.material-icons close
+
+	#addMoreAnswersButton
+		a.waves-effect.waves-light.btn(onclick="addMCAnswers('qAnswer')") add answer
+
