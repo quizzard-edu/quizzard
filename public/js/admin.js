@@ -1,8 +1,8 @@
 /* This is the index for referencing colours for the snackbars */
 var colours = Object.freeze({
-    SUCCESS_GREEN: 'green',
-    FAIL_RED: 'red darken-4',
-    WARNING_YELLOW: 'orange accent-4',
+    SUCCESS: 'green',
+    FAIL: 'red darken-4',
+    WARNING: 'orange accent-4',
 });
 
 /* set home as the active navbar element */
@@ -284,13 +284,13 @@ var deleteUser = function(id) {
             data: { userid: id },
             success: function(data) {
                 displayAccountsTable();
-                dropSnack(colours.SUCCESS_GREEN, 'User ' + id + ' was removed from the database');
+                dropSnack(colours.SUCCESS, 'User ' + id + ' was removed from the database');
             },
             error: function(data){
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    dropSnack(colours.FAIL_RED, 'Failed to remove user ' + id + ' from the database');
+                    dropSnack(colours.FAIL, 'Failed to remove user ' + id + ' from the database');
                 }
             }
         });
@@ -340,15 +340,15 @@ var submitUserForm = function() {
         data: user,
         success: function(data) {
             displayAccountsTable();
-            dropSnack(colours.SUCCESS_GREEN, 'User ' + user.id + ' added to database');
+            dropSnack(colours.SUCCESS, 'User ' + user.id + ' added to database');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['responseText'] === 'failure') {
-                dropSnack(colours.FAIL_RED, 'User could not be added');
+                dropSnack(colours.FAIL, 'User could not be added');
             } else if (data['responseText'] === 'exists') {
-                dropSnack(colours.FAIL_RED, 'User ' + user.id + ' already exists');
+                dropSnack(colours.FAIL, 'User ' + user.id + ' already exists');
             }
         }
     });
@@ -373,14 +373,14 @@ var submitUploadForm = function() {
         processData: false,
         contentType: false,
         success: function(data) {
-            dropSnack(colours.SUCCESS_GREEN, 'File successfully uploaded');
+            dropSnack(colours.SUCCESS, 'File successfully uploaded');
             setTimeout(displayAccountsTable, 3000);
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                dropSnack(colours.FAIL_RED, 'Upload failed');
+                dropSnack(colours.FAIL, 'Upload failed');
             }
         }
     });
@@ -409,15 +409,15 @@ var submitEditForm = function(id) {
                 submitEditForm(user.id ? user.id : id);
             });
             displayAccountsTable();		
-            dropSnack(colours.SUCCESS_GREEN, 'User ' + id + ' has been updated');
+            dropSnack(colours.SUCCESS, 'User ' + id + ' has been updated');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data.result === 'failure') {
-                dropSnack(colours.FAIL_RED, 'User could not be updated. Please try again');
+                dropSnack(colours.FAIL, 'User could not be updated. Please try again');
             } else if (data.result === 'dupid') {
-                dropSnack(colours.FAIL_RED, 'User ID ' + user.id + ' is taken');
+                dropSnack(colours.FAIL, 'User ID ' + user.id + ' is taken');
             }
         }
     });
@@ -437,9 +437,9 @@ var updateVisibility = function(qid) {
         },
         success: function(data) {
             displayQuestionTable();
-            var msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
-            var colour = question['visible'] ? colours.SUCCESS_GREEN : colours.WARNING_YELLOW;
-            var warn = question['visible'] ? '<i class="material-icons check">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons warning">warning</i>&nbsp&nbsp&nbsp';
+            const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
+            const colour = question['visible'] ? colours.SUCCESS : colours.WARNING;
+            const warn = question['visible'] ? '<i class="material-icons check">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons warning">warning</i>&nbsp&nbsp&nbsp';
             dropSnack(colour, warn + 'Question ' + qid + msg);
         },
         error: function(data){
@@ -447,7 +447,7 @@ var updateVisibility = function(qid) {
                 window.location.href = '/';
             } else {
                 displayQuestionTable();
-                dropSnack(colours.FAIL_RED, 'Could not change visibility of question');
+                dropSnack(colours.FAIL, 'Could not change visibility of question');
             }
         }
     });
@@ -472,7 +472,7 @@ var submitQuestionForm = function() {
     });
 
     if ($('#qtext').summernote('isEmpty')) {
-        dropSnack(colours.FAIL_RED, 'Please enter a question body in the editor.');
+        dropSnack(colours.FAIL, 'Please enter a question body in the editor.');
         return;
     }
 
@@ -485,14 +485,14 @@ var submitQuestionForm = function() {
         url: '/questionadd',
         data: question,
         success: function(data) {
-            dropSnack(colours.SUCCESS_GREEN, 'Question added to database');
+            dropSnack(colours.SUCCESS, 'Question added to database');
             displayQuestionTable();
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                dropSnack(colours.FAIL_RED, 'Question could not be added');
+                dropSnack(colours.FAIL, 'Question could not be added');
             }
         }
     });
@@ -543,14 +543,14 @@ var deleteQuestion = function(qid) {
             url: '/questiondel',
             data: { qid: qid },
             success: function(data) {
-                dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' was removed from the database');
+                dropSnack(colours.SUCCESS, 'Question ' + qid + ' was removed from the database');
                 displayQuestionTable();
             },
             error: function(data){
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    dropSnack(colours.FAIL_RED, 'Coud not remove question ' + qid + ' from the database');
+                    dropSnack(colours.FAIL, 'Coud not remove question ' + qid + ' from the database');
                 }
             }
         });
@@ -592,7 +592,7 @@ var submitQEditForm = function(qid) {
     var qbody;
 
     if ($('#qtext').summernote('isEmpty')) {
-        dropSnack(colours.FAIL_RED, 'Please enter a question body in the editor.');
+        dropSnack(colours.FAIL, 'Please enter a question body in the editor.');
         return;
     }
 
@@ -610,14 +610,14 @@ var submitQEditForm = function(qid) {
             id: qid
         },
         success: function(data) {
-            dropSnack(colours.SUCCESS_GREEN, 'Question ' + qid + ' has been modified.');
+            dropSnack(colours.SUCCESS, 'Question ' + qid + ' has been modified.');
             displayQuestionTable();
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                dropSnack(colours.FAIL_RED, 'Question could not be edited.');
+                dropSnack(colours.FAIL, 'Question could not be edited.');
             }
         }
     });
@@ -664,7 +664,7 @@ var sortAccountsTable = function(type) {
 
 /* This function slides down a snakbar */
 function dropSnack(colour, msg) {
-    // runs the toast function for 3s with given msg and colour
+    // runs the toast function for 5s with given msg and colour
     Materialize.toast(msg + '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>', 5000, 'rounded ' + colour);
 }
 
