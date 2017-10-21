@@ -622,6 +622,8 @@ var submitQEditForm = function(qid) {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 403){
+                dropSnack(colours.FAIL_RED, data['responseText']);
             } else {
                 dropSnack(colours.FAIL_RED, 'Question could not be edited.');
             }

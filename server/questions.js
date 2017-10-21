@@ -95,7 +95,26 @@ exports.updateQuestionById = function(questionId, info, callback) {
 }
 
 var updateQuestionById = function(questionId, info, callback) {
-	db.updateQuestionById(questionId, info, callback);
+	lookupQuestionType(questionId,info,updateQuestionByType,callback);
+}
+
+var updateQuestionByType = function(qID, qType, info, callback){
+	switch (qType) {
+		case common.questionTypes.REGULAR.value:
+			break;
+
+		case common.questionTypes.MULTIPLECHOICE.value:
+			if (info.choices.length < 2){
+				console.log("less than 2");
+				return callback(null, "Need two or more options for Multiple Choice Question");
+			}
+			break;
+
+		default:
+			break;
+	}
+
+	db.updateQuestionById(qID, info, callback);
 }
 
 /* Remove the question with ID qid from the database. */
@@ -118,6 +137,15 @@ exports.lookupQuestionById = function(questionId, callback) {
 
 var lookupQuestionById = function(questionId, callback) {
 	db.lookupQuestionById(questionId, callback);
+}
+
+var lookupQuestionType = function(qId, info, updateFunction, callback){
+	db.lookupQuestionById(qId, function(err, question){
+		if(err){
+			return callback(err,null);
+		}
+		return updateFunction(qId, question.type, info, callback);
+	});
 }
 
 /*
