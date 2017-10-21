@@ -90,6 +90,7 @@ exports.addStudent = function(user, callback) {
 		userToAdd.email = user.email ? user.email : '';
 		userToAdd.type = common.userTypes.STUDENT;
 		userToAdd.password = hash;
+		userToAdd.active = true;
 
 		userToAdd.points = 0.0;
 		userToAdd.correctAttempts = [];
@@ -143,6 +144,10 @@ exports.getStudentsList = function(callback) {
     db.getStudentsList(callback);
 }
 
+exports.getStudentsListWithStatus = function(active, callback) {
+    db.getStudentsListWithStatus(active, callback);
+}
+
 /* Return an array of users in the database, sorted by rank. */
 exports.getStudentsListSorted = function(lim, callback) {
 	db.getStudentsListSorted(lim, callback);
@@ -176,4 +181,8 @@ exports.getAdminById = function(adminId, callback) {
  */
 exports.getQuestionsList = function(request, callback) {
 	db.getQuestionsListByUser(request, callback);
+}
+
+exports.setUserStatus = function(studentId, newStatus, callback){
+	db.updateUserById(studentId,{active: newStatus}, callback);
 }

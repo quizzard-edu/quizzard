@@ -5,6 +5,8 @@ var colours = Object.freeze({
     WARNING: 'orange accent-4',
 });
 
+var usersTableActive = true;
+
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
@@ -13,11 +15,17 @@ $(function(){
     displayAccountsTable();
 });
 
+var toggleUsersSwitch = function() {
+    usersTableActive = !usersTableActive;
+    displayAccountsTable();
+}
+
 /* Display the table of user accounts. */
 var displayAccountsTable = function() {
+    //var status = $('#userStatusSwitch').is(':checked');
     $.ajax({
         type: 'GET',
-        url: '/studentlist',
+        url: '/studentlist?active='+usersTableActive,
         success: function(data) {
             $('#admin-content').html(data);
 
@@ -31,6 +39,8 @@ var displayAccountsTable = function() {
             $('#account-creation-button').click(function(){
                 displayAccountForm();
             });
+
+            $('#usersSwitch').prop('checked', usersTableActive);
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -42,9 +52,13 @@ var displayAccountsTable = function() {
 
 /* Add click events to the buttons in the account table. */
 var addAccountsTableEvents = function() {
-    $('.delete-button').click(function(evt) {
+    $('.deactivate-button').click(function(evt) {
         /* cut off the delete- */
-        deleteUser(this.id.substring(7));
+        deactivateUser(this.id.substring(7));
+    });
+    $('.activate-button').click(function(evt) {
+        /* cut off the delete- */
+        activateUser(this.id.substring(7));
     });
     $('.edit-button').click(function(evt) {
         /* cut off the edit- */
@@ -265,32 +279,71 @@ $('#option-settings').click(function(evt) {
 });
 
 /*
- * Process user deletion request.
- * First, display a confirmation message and then request the user's removal.
+ * Process user deactiavtion request.
+ * First, display a confirmation message and then request the user's deactivation.
  */
-var deleteUser = function(id) {
+var deactivateUser = function(id) {
     swal({
-        title: 'Confirm deletion',
-        text: 'User ' + id + ' will be removed from the database.',
+        title: 'Confirm deactivation',
+        text: id + '\'s  account will be deactivated.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
-        confirmButtonText: 'Delete',
+        confirmButtonText: 'Deactivate',
         closeOnConfirm: true
     }, function() {
         $.ajax({
             type: 'POST',
-            url: '/userdel',
-            data: { userid: id },
+            url: '/setUserStatus',
+            data: { userid: id, active: false },
             success: function(data) {
                 displayAccountsTable();
-                dropSnack(colours.SUCCESS, 'User ' + id + ' was removed from the database');
+                const msg = ' has been&nbsp;<u><b>deactivated</b></u>&nbsp;';
+                const colour = colours.WARNING;
+                const icon = '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
+                dropSnack(colour, icon + id + ' account' + msg);
             },
             error: function(data){
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    dropSnack(colours.FAIL, 'Failed to remove user ' + id + ' from the database');
+                    dropSnack(colours.FAIL, 'Failed to deactivate user ' + id + ' from the database');
+                }
+            }
+        });
+    });
+}
+
+/*
+ * Process user actiavtion request.
+ * First, display a confirmation message and then request the user's activation.
+ */
+var activateUser = function(id) {
+    swal({
+        title: 'Confirm Activation',
+        text: id + '\'s  account will be activated.',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Activate',
+        closeOnConfirm: true
+    }, function() {
+        $.ajax({
+            type: 'POST',
+            url: '/setUserStatus',
+            data: { userid: id, active: true },
+            success: function(data) {
+                displayAccountsTable();
+                const msg = ' has been activated';
+                const colour = colours.SUCCESS;
+                const icon = '<i class="material-icons">check</i>&nbsp&nbsp&nbsp';
+                dropSnack(colour, icon + id + ' account' + msg);
+            },
+            error: function(data){
+                if (data['status'] === 401) {
+                    window.location.href = '/';
+                } else {
+                    dropSnack(colours.FAIL, 'Failed to deactivate user ' + id + ' from the database');
                 }
             }
         });
@@ -439,7 +492,7 @@ var updateVisibility = function(qid) {
             displayQuestionTable();
             const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
             const colour = question['visible'] ? colours.SUCCESS : colours.WARNING;
-            const warn = question['visible'] ? '<i class="material-icons check">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons warning">warning</i>&nbsp&nbsp&nbsp';
+            const warn = question['visible'] ? '<i class="material-icons">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
             dropSnack(colour, warn + 'Question ' + qid + msg);
         },
         error: function(data){
