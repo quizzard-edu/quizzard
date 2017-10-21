@@ -253,6 +253,7 @@ var updateUserById = function(userId, info, callback){
     if (info.email) {
         update.$set.email = info.email;
     }
+
     if (typeof info.active !== 'undefined') {
         update.$set.active = info.active;
     }

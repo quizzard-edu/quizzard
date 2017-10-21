@@ -33,8 +33,8 @@
                   button.btn.btn-default.edit-button(id='edit-' + s.id type='button' aria-label='Edit')
                     span.glyphicon.glyphicon-pencil(aria-hidden='true')
                   if (s.active)
-                    button.btn.btn-default.deactivate-button(id='delete-' + s.id type='button' aria-label='Delete')
+                    button.btn.btn-default.deactivate-button(id='deactivate-' + s.id type='button' aria-label='Delete')
                       i.material-icons close
                   else
-                    button.btn.btn-default.activate-button(id='delete-' + s.id type='button' aria-label='Delete')
+                    button.btn.btn-default.activate-button(id='activate-' + s.id type='button' aria-label='Delete')
                       i.material-icons check

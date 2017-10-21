@@ -54,11 +54,11 @@ var displayAccountsTable = function() {
 var addAccountsTableEvents = function() {
     $('.deactivate-button').click(function(evt) {
         /* cut off the delete- */
-        deactivateUser(this.id.substring(7));
+        deactivateUser(this.id.substring(11));
     });
     $('.activate-button').click(function(evt) {
         /* cut off the delete- */
-        activateUser(this.id.substring(7));
+        activateUser(this.id.substring(8));
     });
     $('.edit-button').click(function(evt) {
         /* cut off the edit- */
@@ -284,7 +284,7 @@ $('#option-settings').click(function(evt) {
  */
 var deactivateUser = function(id) {
     swal({
-        title: 'Confirm deactivation',
+        title: 'Confirm Deactivation',
         text: id + '\'s  account will be deactivated.',
         type: 'warning',
         showCancelButton: true,
@@ -343,7 +343,7 @@ var activateUser = function(id) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    dropSnack(colours.FAIL, 'Failed to deactivate user ' + id + ' from the database');
+                    dropSnack(colours.FAIL, 'Failed to activate user ' + id + ' from the database');
                 }
             }
         });
