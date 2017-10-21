@@ -58,7 +58,7 @@ var addAccountsTableEvents = function() {
     });
     $('.activate-button').click(function(evt) {
         /* cut off the delete- */
-        activateUser(this.id.substring(8));
+        activateUser(this.id.substring(9));
     });
     $('.edit-button').click(function(evt) {
         /* cut off the edit- */
@@ -307,7 +307,8 @@ var deactivateUser = function(id) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    dropSnack(colours.FAIL, 'Failed to deactivate user ' + id + ' from the database');
+                    const icon = '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp';
+                    dropSnack(colours.FAIL, icon + 'Failed to deactivate ' + id + '\' account');
                 }
             }
         });
@@ -343,7 +344,8 @@ var activateUser = function(id) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    dropSnack(colours.FAIL, 'Failed to activate user ' + id + ' from the database');
+                    const icon = '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp';
+                    dropSnack(colours.FAIL, icon + 'Failed to activate ' + id + '\'s account');
                 }
             }
         });
@@ -353,16 +355,12 @@ var activateUser = function(id) {
 /* Fetch data for the user editing form. */
 var editUser = function(id) {
     $.ajax({
-        type: 'POST',
-        url: '/accountedit',
+        type: 'GET',
+        url: '/accounteditform',
         data: { userid: id },
         success: function(data) {
-            $('#admin-label').html('Edit Account');
             $('#admin-content').html(data);
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').show();
-            $('#admin-back').click(function(evt) {
+            $('#account-edit-back-button').click(function(evt) {
                 displayAccountsTable();
             });
             $('#account-edit-form').submit(function(evt) {

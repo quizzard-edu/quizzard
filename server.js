@@ -311,25 +311,27 @@ var creationDate = function(timestamp) {
 }
 
 /* Send the account editing form HTML. */
-app.post('/accountedit', function(req, res) {
+app.get('/accounteditform', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    /* Find the requested user */
-    var ind;
-    for (ind in req.session.adminStudentList) {
-        if (req.session.adminStudentList[ind].id == req.body.userid) {
-            break;
-        }
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
     }
 
-    var html = accountEdit({
-        user: req.session.adminStudentList[ind],
-        cdate: creationDate(req.session.adminStudentList[ind].ctime * 1000)
-    });
+    users.getStudentById(req.query.userid, function(err, student){
+        if (err || !student) {
+            return res.status(500).send('Could not fetch user information');
+        }
 
-    return res.status(200).send(html);
+        var html = accountEdit({
+            user: student,
+            cdate: student.ctime
+        });
+
+        return res.status(200).send(html);
+    });
 });
 
 /* Send the question table HTML. */
@@ -637,7 +639,7 @@ app.post('/usermod', function(req, res) {
     }
 
     var userId = req.body.originalID;
-    var updateId = req.body.id;
+    var updateId = req.body.id ? req.body.id : userId;
 
     users.updateStudentById(userId, req.body, function(err, result) {
         if (err) {

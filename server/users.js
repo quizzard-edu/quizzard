@@ -48,6 +48,7 @@ exports.addAdmin = function(user, callback) {
 		userToAdd.email = user.email ? user.email : '';
 		userToAdd.type = common.userTypes.ADMIN;
 		userToAdd.password = hash;
+		userToAdd.active = true;
 
 		db.addAdmin(userToAdd, function(err, res){
 			if(err){
