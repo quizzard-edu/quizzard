@@ -543,8 +543,10 @@ var submitQuestionForm = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 400){
+                dropSnack(colours.WARNING, data['responseText']);
             } else {
-                dropSnack(colours.FAIL, 'Question could not be added');
+                dropSnack(colours.FAIL, 'Question could not be added.');
             }
         }
     });

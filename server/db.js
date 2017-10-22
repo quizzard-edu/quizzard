@@ -353,7 +353,7 @@ exports.addQuestion = function(question, callback){
     questionsCollection.insert(question, function(err, res) {
         if(err){
             logger.error(err);
-            return callback(err, null);
+            return callback({status:500, msg:err}, null);
         }
 
         return callback(null, res);

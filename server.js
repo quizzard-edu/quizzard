@@ -682,7 +682,7 @@ app.put('/questionadd', function(req, res) {
 
     questions.addQuestionByType(req.body.type, req.body, function(err, result) {
         if (err) {
-            return res.status(500).send('Could not create question');
+            return res.status(err.status).send(err.msg);
         }
 
         return res.status(201).send('Question created');

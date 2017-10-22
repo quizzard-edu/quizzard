@@ -52,12 +52,17 @@ exports.addQuestionByType = function(qType, question, callback) {
 
 		case common.questionTypes.MULTIPLECHOICE.value:
 			questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
-			questionToAdd.choices = question.choices;
+			questionToAdd.choices = question.choices ? question.choices : [];
 			break;
 
 		default:
-			//callback('type is not defined', null);
-			questionToAdd.type = common.questionTypes.REGULAR.value;
+			return callback({status:400, msg:'Type of Question is Undefined'}, null)
+	}
+
+	// validate question by its type
+	var result = validateQuestionByType(questionToAdd, questionToAdd.type);
+	if (result != null){
+		return callback({status:400, msg:result}, null)
 	}
 
 	db.addQuestion(questionToAdd, callback);
@@ -108,7 +113,6 @@ var updateQuestionByType = function(qId, infoToUpdate, callback){
 
 		// validate question by its type
 		var result = validateQuestionByType(infoToUpdate, question.type);
-		console.log(result != null);
 		if (result != null){
 			return callback({status:400, msg:result}, null)
 		}
@@ -133,8 +137,9 @@ var validateQuestionByType = function(question, type){
 }
 
 var multipleChoiceValidator = function(question){
+
 	if (question.choices.length < 2){
-		return "Need two or more options for Multiple Choice Question";
+		return 'Need two or more options for Multiple Choice Question';
 	}
 
 	return null;
