@@ -9,7 +9,25 @@ block title
 
 block content
   include navbar
-  include student-analytics
+
+  br
+  .container
+    .row
+      .col.s12
+        .row
+          ul.tabs
+            li.tab.col.s6
+              a.noLineLink.active#option-class(href='#') Class Analytics
+            li.tab.col.s6
+              a.noLineLink#option-student(href='#') Student Analytics
+  .container
+    .row
+      .col.s12
+        .card.white
+          include student-analytics
+          include class-analytics
+
+
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')

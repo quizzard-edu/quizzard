@@ -1,11 +1,32 @@
 $(function() {
   $('#nav-analytics').addClass('active');
 
+  displayClassStatistics();
   getQuestionsAnsweredVsClass();
   getAccuracyVsClass();
   getPointsVsClass();
   getRatingVsClass();
 });
+
+$('#option-class').click(function(evt) {
+    displayClassStatistics();
+});
+
+$('#option-student').click(function(evt) {
+    displayStudentStatistics();
+});
+
+var displayClassStatistics = function() {
+    // Card visibilty
+    $('#student-analytics-card').addClass('hidden');
+    $('#class-analytics-card').removeClass('hidden');
+}
+
+var displayStudentStatistics = function() {
+    // Card visibilty
+    $('#student-analytics-card').removeClass('hidden');
+    $('#class-analytics-card').addClass('hidden');
+}
 
 var getQuestionsAnsweredVsClass = function() {
   $.ajax({
