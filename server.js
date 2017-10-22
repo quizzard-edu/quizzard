@@ -753,10 +753,7 @@ app.post('/questionmod', function(req, res) {
 
     questions.updateQuestionById(qid, q, function(err, result) {
         if (err){
-            res.status(500).send(result);
-        }
-        if (result != 'success'){
-            return res.status(403).send(result)
+            return res.status(err.status).send(err.msg);
         }
         return res.status(200).send(result);
     });

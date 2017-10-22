@@ -95,26 +95,48 @@ exports.updateQuestionById = function(questionId, info, callback) {
 }
 
 var updateQuestionById = function(questionId, info, callback) {
-	lookupQuestionType(questionId,info,updateQuestionByType,callback);
+	updateQuestionByType(questionId,info,callback);
 }
 
-var updateQuestionByType = function(qID, qType, info, callback){
-	switch (qType) {
+var updateQuestionByType = function(qId, infoToUpdate, callback){
+	// Get Type of question and validate it
+	db.lookupQuestionById(qId, function(err, question){
+		if(err){
+			return callback({status:500, msg:err},null);
+		}
+
+		// validate question by its type
+		var result = validateQuestionByType(infoToUpdate, question.type);
+		console.log(result != null);
+		if (result != null){
+			return callback({status:400, msg:result}, null)
+		}
+		db.updateQuestionById(qId, infoToUpdate, callback);
+	});
+}
+
+var validateQuestionByType = function(question, type){
+	var result = null;
+	switch (type) {
 		case common.questionTypes.REGULAR.value:
 			break;
 
 		case common.questionTypes.MULTIPLECHOICE.value:
-			if (info.choices.length < 2){
-				console.log("less than 2");
-				return callback(null, "Need two or more options for Multiple Choice Question");
-			}
+			result = multipleChoiceValidator(question);
 			break;
 
 		default:
 			break;
 	}
+	return result;
+}
 
-	db.updateQuestionById(qID, info, callback);
+var multipleChoiceValidator = function(question){
+	if (question.choices.length < 2){
+		return "Need two or more options for Multiple Choice Question";
+	}
+
+	return null;
 }
 
 /* Remove the question with ID qid from the database. */
@@ -137,15 +159,6 @@ exports.lookupQuestionById = function(questionId, callback) {
 
 var lookupQuestionById = function(questionId, callback) {
 	db.lookupQuestionById(questionId, callback);
-}
-
-var lookupQuestionType = function(qId, info, updateFunction, callback){
-	db.lookupQuestionById(qId, function(err, question){
-		if(err){
-			return callback(err,null);
-		}
-		return updateFunction(qId, question.type, info, callback);
-	});
 }
 
 /*

@@ -625,7 +625,7 @@ exports.updateQuestionById = function(questionId, request, callback){
 
     questionsCollection.update(query, update, function(err, info) {
         if (err) {
-            logger.error(err);
+            logger.error({status:500, msg:err});
             return callback(err, null);
         }
 
