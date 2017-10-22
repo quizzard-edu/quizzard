@@ -773,12 +773,13 @@ app.get('/questionpreview', function(req, res) {
     });
 });
 
+/* get the list of students' ids*/
 app.get('/studentsListofIds', function(req, res){
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    if (!req.session.user.type === common.userTypes.ADMIN) {
+    if (req.session.user.type !== common.userTypes.ADMIN) {
         return res.status(403).send('Permission Denied');
     }
 
@@ -804,9 +805,27 @@ app.get('/analytics', function(req, res){
     return res.status(200).render('analytics', {user: req.session.user});
 });
 
-app.get('/getAnalytics', function(req,res){
+/* get analytics for a student*/
+app.get('/studentAnalytics', function(req,res){
     if (!req.session.user) {
         return res.redirect('/');
+    }
+
+    var query = {user: req.session.user, type: req.query.type};
+
+    analytics.getChart(query, function(err, result){
+        return res.status(200).send(result);
+    });
+});
+
+/* get analytics for a admins*/
+app.get('/adminAnalytics', function(req,res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
     }
 
     var query = {user: req.session.user, type: req.query.type};

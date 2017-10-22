@@ -31,7 +31,7 @@ var displayStudentStatistics = function() {
 var getQuestionsAnsweredVsClass = function() {
   $.ajax({
     type: 'GET',
-    url: '/getAnalytics',
+    url: '/studentAnalytics',
     data: {
       type: 'QuestionsAnsweredVsClass'
     },
@@ -69,7 +69,7 @@ var getQuestionsAnsweredVsClass = function() {
 var getAccuracyVsClass = function() {
   $.ajax({
     type: 'GET',
-    url: '/getAnalytics',
+    url: '/studentAnalytics',
     data: {
       type: 'AccuracyVsClass'
     },
@@ -107,7 +107,7 @@ var getAccuracyVsClass = function() {
 var getPointsVsClass = function() {
   $.ajax({
     type: 'GET',
-    url: '/getAnalytics',
+    url: '/studentAnalytics',
     data: {
       type: 'PointsVsClass'
     },
@@ -145,7 +145,7 @@ var getPointsVsClass = function() {
 var getRatingVsClass = function() {
   $.ajax({
     type: 'GET',
-    url: '/getAnalytics',
+    url: '/studentAnalytics',
     data: {
       type: 'RatingVsClass'
     },
