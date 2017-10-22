@@ -10,14 +10,17 @@ $(function() {
   getPointsVsClass();
   getRatingVsClass();
 
-  $('#the-basics .typeahead').typeahead({
-    hint: true,
-    highlight: true,
-    minLength: 1
-  },
-  {
-    name: 'states',
-    source: substringMatcher(states)
+  var studentList = {};
+  for (var s in states) {
+    studentList[states[s]] = "hi";
+  }
+  $('#autocomplete-input').autocomplete({
+    data: studentList,
+    limit: 20,
+    onAutocomplete: function(val) {
+      // Callback function when value is autcompleted.
+    },
+    minLength: 1, 
   });
 });
 

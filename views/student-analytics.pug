@@ -1,8 +1,13 @@
 .row#student-analytics-card
   if (isAdmin())
-    .row
-        #the-basics
-          input.typeahead(type='text', placeholder='States of USA')
+    .container
+      .row
+        .col.s12
+          .row
+            .input-field.col.s12
+              input#autocomplete-input.autocomplete(type='text')
+              label(for='autocomplete-input') Autocomplete
+
   .col.s3
     canvas#questionsAnsweredVsClass
   .col.s3
