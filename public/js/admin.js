@@ -25,7 +25,7 @@ var displayAccountsTable = function() {
     //var status = $('#userStatusSwitch').is(':checked');
     $.ajax({
         type: 'GET',
-        url: '/studentlist?active='+usersTableActive,
+        url: '/studentlist?active=' + usersTableActive,
         success: function(data) {
             $('#admin-content').html(data);
 

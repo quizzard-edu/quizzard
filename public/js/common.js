@@ -8,14 +8,14 @@ String.prototype.format = function (args) {
         if (intVal >= 0) {
             replace = args[intVal];
         } else if (intVal === -1) {
-            replace = "{";
+            replace = '{';
         } else if (intVal === -2) {
-            replace = "}";
+            replace = '}';
         } else {
-            replace = "";
+            replace = '';
         }
         return replace;
     });
 };
 
-String.prototype.format.regex = new RegExp("{-?[0-9]+}", "g");
+String.prototype.format.regex = new RegExp('{-?[0-9]+}', 'g');
