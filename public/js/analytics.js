@@ -2,7 +2,6 @@ $(function() {
   $('#nav-analytics').addClass('active');
 
   //getStudentList();
-substringMatcher();
   displayClassStatistics();
   getQuestionsAnsweredVsClass();
   getAccuracyVsClass();
@@ -11,16 +10,14 @@ substringMatcher();
 });
 
 var getStudentList = function() {
-  /* show the account table by default */
-  displayAccountsTable();
   $.ajax({
     type: 'GET',
     url: '/studentsListofIds',
     success: function(data) {
-
+      return data;
     },
     error: function(data){
-
+      return ['Error'];
     }
   });
 }
