@@ -222,7 +222,7 @@ exports.updateAdminById = function(userId, info, callback){
 }
 
 var updateUserById = function(userId, info, callback){
-    var currentDate = new Date().toString();    
+    var currentDate = new Date().toString();
     var query = { id : userId };
     var update = {};
 
@@ -248,8 +248,8 @@ var updateUserById = function(userId, info, callback){
         update.$set.email = info.email;
     }
 
-    if (typeof info.correct !== 'undefined') {    
-        query['correctAttempts.id'] = { $ne : info.questionId };    
+    if (typeof info.correct !== 'undefined') {
+        query['correctAttempts.id'] = { $ne : info.questionId };
         if (info.correct) {
             update.$inc.points = info.points;
             update.$inc.correctAttemptsCount = 1;
@@ -584,6 +584,10 @@ exports.updateQuestionById = function(questionId, request, callback){
 
     if (request.hint) {
       update.$set.hint = request.hint;
+    }
+
+    if (request.rating) {
+      update.$set.rating = request.rating;
     }
 
     if (request.points) {
