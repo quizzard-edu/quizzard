@@ -10,21 +10,6 @@ var usersTableActive = true;
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
-$(function(){
-    /* show the account table by default */
-    displayAccountsTable();
-    $.ajax({
-        type: 'GET',
-        url: '/studentsListofIds',
-        success: function(data) {
-            
-        },
-        error: function(data){
-            
-        }
-    });
-});
-
 var toggleUsersSwitch = function() {
     usersTableActive = !usersTableActive;
     displayAccountsTable();
@@ -469,7 +454,7 @@ var submitEditForm = function(id) {
                 evt.preventDefault();
                 submitEditForm(user.id ? user.id : id);
             });
-            displayAccountsTable();		
+            displayAccountsTable();
             dropSnack(colours.SUCCESS, 'User ' + id + ' has been updated');
         },
         error: function(data){
