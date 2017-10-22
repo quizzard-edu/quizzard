@@ -9,11 +9,22 @@ $(function() {
   getAccuracyVsClass();
   getPointsVsClass();
   getRatingVsClass();
+
+  $('#the-basics .typeahead').typeahead({
+    hint: true,
+    highlight: true,
+    minLength: 1
+  },
+  {
+    name: 'states',
+    source: substringMatcher(states)
+  });
 });
 
 var getStudentList = function() {
   $.ajax({
     type: 'GET',
+    async: false,
     url: '/studentsListofIds',
     success: function(data) {
       states = data;
@@ -244,15 +255,3 @@ var substringMatcher = function(strs) {
 //   'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
 //   'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
 // ];
-
-$(function() {
-  $('#the-basics .typeahead').typeahead({
-    hint: true,
-    highlight: true,
-    minLength: 1
-  },
-  {
-    name: 'states',
-    source: substringMatcher(states)
-  });
-});
