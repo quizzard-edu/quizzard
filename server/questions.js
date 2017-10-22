@@ -126,15 +126,21 @@ var lookupQuestionById = function(questionId, callback) {
  * Update the question object in the database and call the callback function
  * with the result of the comparison and the new question object.
  */
-exports.checkAnswer = function(questionId, userId, answer, callback) {
+exports.checkAnswer = function(questionId, user, answer, callback) {
     logger.info('User %s attempted to answer question %d with "%s"', userId, questionId, answer);
+	var userType = user.type;
+	var userId = user.id;
 
 	lookupQuestionById(questionId, function(err, question){
-		if(err){
-			return callback(err, null);
+		if(err || !question){
+			return callback('error', null);
 		}
 
-		var value = answer===question.answer;
+		var value = (answer === question.answer);
+
+		if (userType === common.userTypes.ADMIN) {
+			return callback(null, value);
+		}
 
 		db.updateStudentById(
 			userId,
