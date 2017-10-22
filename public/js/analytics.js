@@ -1,7 +1,9 @@
+var states;
+
 $(function() {
   $('#nav-analytics').addClass('active');
 
-  //getStudentList();
+  getStudentList();
   displayClassStatistics();
   getQuestionsAnsweredVsClass();
   getAccuracyVsClass();
@@ -14,10 +16,10 @@ var getStudentList = function() {
     type: 'GET',
     url: '/studentsListofIds',
     success: function(data) {
-      return data;
+      states = data;
     },
     error: function(data){
-      return ['Error'];
+      states = ['Error'];
     }
   });
 }
@@ -232,16 +234,16 @@ var substringMatcher = function(strs) {
   };
 };
 
-var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-  'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-  'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-  'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-];
+// var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
+//   'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+//   'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+//   'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+//   'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+//   'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+//   'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+//   'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+//   'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+// ];
 
 $(function() {
   $('#the-basics .typeahead').typeahead({
