@@ -13,6 +13,16 @@ $('#nav-home').addClass('active');
 $(function(){
     /* show the account table by default */
     displayAccountsTable();
+    $.ajax({
+        type: 'GET',
+        url: '/studentsListofIds',
+        success: function(data) {
+            
+        },
+        error: function(data){
+            
+        }
+    });
 });
 
 var toggleUsersSwitch = function() {

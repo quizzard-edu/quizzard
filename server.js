@@ -773,6 +773,28 @@ app.get('/questionpreview', function(req, res) {
     });
 });
 
+app.get('/studentsListofIds', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (!req.session.user.type === common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    users.getStudentsList(function(err, studentList) {
+        if (err) {
+            return res.status(500).send('Could not fetch student list');
+        }
+
+        var idsList = [];
+        for (s in studentList) {
+            idsList.push(studentList[s].id);
+        }
+        return res.status(200).send(idsList);
+    });
+});
+
 /* Display some charts and graphs */
 app.get('/analytics', function(req, res){
     if (!req.session.user) {
