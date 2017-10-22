@@ -7,6 +7,11 @@ var colours = Object.freeze({
 
 var usersTableActive = true;
 
+$(function(){
+    /* show the account table by default */
+    displayAccountsTable();
+});
+
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
