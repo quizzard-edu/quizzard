@@ -4,7 +4,7 @@ $(function() {
   $('#nav-analytics').addClass('active');
 
   getStudentList();
-  displayClassStatistics();
+  displayStudentStatistics();
   getQuestionsAnsweredVsClass();
   getAccuracyVsClass();
   getPointsVsClass();
@@ -20,7 +20,7 @@ $(function() {
     onAutocomplete: function(val) {
       alert(val);
     },
-    minLength: 1, 
+    minLength: 1,
   });
 });
 

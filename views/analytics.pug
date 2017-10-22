@@ -18,16 +18,15 @@ block content
           .row
             ul.tabs
               li.tab.col.s6
-                a.noLineLink.active#option-class(href='#') Class Analytics
+                a.noLineLink.active#option-student(href='#') Student Analytics
               li.tab.col.s6
-                a.noLineLink#option-student(href='#') Student Analytics
+                a.noLineLink#option-class(href='#') Class Analytics
   .container
     .row
       .col.s12
         .card.white
           include student-analytics
-          if (isAdmin())
-            include class-analytics
+          include class-analytics
 
 
 
