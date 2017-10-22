@@ -69,20 +69,19 @@ var getQuestionsAnsweredVsClass = function() {
     },
     success: function(data) {
       new Chart($("#questionsAnsweredVsClass"), {
-        type: 'doughnut',
+        type: 'bar',
         data: {
           datasets: [{
             data: data,
-            backgroundColor: ["#ff4444", "#00C851"],
-            label: 'Dataset 1'
+            backgroundColor: ['rgba(43, 244, 33, 0.5)', 'rgba(243, 13, 20, 0.5)'],
+            borderColor: ['rgba(43, 163, 0, 1)', 'rgba(243, 13, 20, 1)'],
+            borderWidth: '3',
+            label: 'Your answered questions vs. the class'
           }],
-          labels: ["CANCELLED", "COMPLETED"]
+          labels: ["You", "Class"]
         },
         options: {
           responsive: true,
-          legend:{
-            display: false
-          },
           title: {
             display: true,
             text: 'Answered Vs Class'
