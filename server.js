@@ -567,19 +567,12 @@ app.post('/submitanswer', function(req, res) {
 
     questions.checkAnswer(
         parseInt(req.body.questionId),
-        req.session.user.id,
+        req.session.user,
         req.body.answer,
-        function(err, result) {
-            var data = {};
-
-            result = result ? 'correct' : 'incorrect';
-            data.result = result;
-
-            if (err) {
-                return res.status(500).send(data);
-            }
-
-            return res.status(200).send(data);
+        function(err, value) {
+            var result = value ? 'correct' : 'incorrect';
+            var status = value ? 200 : 500;
+            return res.status(status).send(result);
         }
     );
 });
@@ -777,6 +770,28 @@ app.get('/questionpreview', function(req, res) {
                 }
             }
         });
+    });
+});
+
+app.get('/studentsListofIds', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (!req.session.user.type === common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    users.getStudentsList(function(err, studentList) {
+        if (err) {
+            return res.status(500).send('Could not fetch student list');
+        }
+
+        var idsList = [];
+        for (s in studentList) {
+            idsList.push(studentList[s].id);
+        }
+        return res.status(200).send(idsList);
     });
 });
 

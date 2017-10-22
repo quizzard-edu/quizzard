@@ -13,6 +13,16 @@ $('#nav-home').addClass('active');
 $(function(){
     /* show the account table by default */
     displayAccountsTable();
+    $.ajax({
+        type: 'GET',
+        url: '/studentsListofIds',
+        success: function(data) {
+            
+        },
+        error: function(data){
+            
+        }
+    });
 });
 
 var toggleUsersSwitch = function() {
@@ -123,7 +133,7 @@ var displayQuestionTable = function() {
 
 var addQuestionsTableEvents = function(){
     $('.view-button').click(function(evt) {
-        viewQuestion(this.id.substring(5));
+        window.location.href = '/question?id=' + this.id.substring(5);
     });
     $('.delete-button').click(function(evt) {
         deleteQuestion(this.id.substring(7));
@@ -545,36 +555,6 @@ var submitQuestionForm = function() {
                 window.location.href = '/';
             } else {
                 dropSnack(colours.FAIL, 'Question could not be added');
-            }
-        }
-    });
-}
-
-var viewQuestion = function(qid) {
-    $.ajax({
-        type: 'GET',
-        url: '/questionpreview',
-        data: {
-            qid: qid
-        },
-        success: function(data) {
-            if (data != 'failure' && data != 'invalid') {
-                $('#admin-label').html('Question Preview');
-                $('#admin-content').html(data);
-                $('#admin-button').off();
-                $('#admin-button').hide();
-                $('#admin-back').show();
-                $('#admin-back').click(function(evt) {
-                    displayQuestionTable();
-                });
-                $('#answerform').submit(function(evt) {
-                    evt.preventDefault();
-                });
-            }
-        },
-        error: function(data){
-            if (data['status'] === 401) {
-                window.location.href = '/';
             }
         }
     });
