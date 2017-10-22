@@ -19,13 +19,13 @@ $('#option-student').click(function(evt) {
 var displayClassStatistics = function() {
     // Card visibilty
     $('#student-analytics-card').addClass('hidden');
-    $('#instructor-analytics-card').removeClass('hidden');
+    $('#class-analytics-card').removeClass('hidden');
 }
 
 var displayStudentStatistics = function() {
     // Card visibilty
     $('#student-analytics-card').removeClass('hidden');
-    $('#instructor-analytics-card').addClass('hidden');
+    $('#class-analytics-card').addClass('hidden');
 }
 
 var getQuestionsAnsweredVsClass = function() {
