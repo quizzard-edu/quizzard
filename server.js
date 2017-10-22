@@ -88,45 +88,13 @@ app.post('/login', function(req, res) {
         if(err){
             logger.info('User %s failed logged in.', username);
             req.session.user = null;
-            return res.status(403).send('invalid');
+            return res.status(403).send(err);
         }
 
         if(user){
             logger.info('User %s logged in.', username);
             req.session.user = user;
             return res.status(200).send('success');
-        }
-    });
-});
-
-/* Process a password changing request. */
-app.post('/changepass', function(req, res) {
-    if(!req.session.user){
-        return res.status(403).send('Session does not exist');
-    }
-
-    if(req.body.newpass != req.body.newpass2){
-        return res.status(400).send('mismatch');
-    }
-
-    var userId = req.session.user.id;
-    var currentPass = req.body.currpass;
-    var newPass = req.body.newpass;
-
-    users.checkLogin(userId, currentPass, function(err, user) {
-        if(err){
-            return res.status(400).send('invalid');
-        }
-
-        if(user){
-            users.updateUserByIdWithRedirection(user.id, {newPassword:newPass}, function(err, result){
-                if (result == 'success') {
-                    logger.info('User %s changed their password.', user.id);
-                }
-
-                var code = (result === 'success') ? 200 : 500;
-                return res.status(code).send(result);
-            });
         }
     });
 });
@@ -243,23 +211,22 @@ app.get('/leaderboard-table', function(req, res) {
     });
 });
 
-/* refetch users from database instead of using stored list */
-var refetch = false;
-
 /* Send the student table HTML. */
 app.get('/studentlist', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
+    if (typeof req.query.active === 'undefined') {
+        return res.status(500).send('Could not fetch student list');
+    }
+
     /* only fetch student list once, then store it */
-    users.getStudentsList(function(err, studentlist) {
+    users.getStudentsListWithStatus(req.query.active === 'true', function(err, studentlist) {
         if (err) {
             return res.status(500).send('Could not fetch student list');
         }
 
-        refetch = false;
-        req.session.adminStudentList = studentlist;
         var html = studentTable({
             students: studentlist
         });
@@ -319,7 +286,7 @@ app.get('/questionform', function(req, res) {
 });
 
 app.get('/answerForm', function(req, res){
-    switch (req.param('qType')){
+    switch (req.query.qType){
         case common.questionTypes.REGULAR.value:
             res.status(200).render(
                 common.questionTypes.REGULAR.template,{
@@ -344,25 +311,27 @@ var creationDate = function(timestamp) {
 }
 
 /* Send the account editing form HTML. */
-app.post('/accountedit', function(req, res) {
+app.get('/accounteditform', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    /* Find the requested user */
-    var ind;
-    for (ind in req.session.adminStudentList) {
-        if (req.session.adminStudentList[ind].id == req.body.userid) {
-            break;
-        }
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
     }
 
-    var html = accountEdit({
-        user: req.session.adminStudentList[ind],
-        cdate: creationDate(req.session.adminStudentList[ind].ctime * 1000)
-    });
+    users.getStudentById(req.query.userid, function(err, student){
+        if (err || !student) {
+            return res.status(500).send('Could not fetch user information');
+        }
 
-    return res.status(200).send(html);
+        var html = accountEdit({
+            user: student,
+            cdate: student.ctime
+        });
+
+        return res.status(200).send(html);
+    });
 });
 
 /* Send the question table HTML. */
@@ -441,7 +410,8 @@ app.post('/questionedit', function(req, res) {
 
         return res.status(200).send({
             html: html,
-            qtext: question.text
+            qtext: question.text,
+            qrating: parseInt(question.rating)
         });
     });
 });
@@ -597,19 +567,12 @@ app.post('/submitanswer', function(req, res) {
 
     questions.checkAnswer(
         parseInt(req.body.questionId),
-        req.session.user.id,
+        req.session.user,
         req.body.answer,
-        function(err, result) {
-            var data = {};
-
-            result = result ? 'correct' : 'incorrect';
-            data.result = result;
-
-            if (err) {
-                return res.status(500).send(data);
-            }
-
-            return res.status(200).send(data);
+        function(err, value) {
+            var result = value ? 'correct' : 'incorrect';
+            var status = value ? 200 : 500;
+            return res.status(status).send(result);
         }
     );
 });
@@ -632,10 +595,6 @@ app.put('/useradd', function(req, res) {
             return res.status(500).send(err);
         }
 
-        if (req.session.adminStudentList != null) {
-            req.session.adminStudentList.push(req.body);
-        }
-
         return res.status(201).send('User created');
     });
 });
@@ -645,28 +604,21 @@ app.put('/useradd', function(req, res) {
  * The request body is an object with a single 'userid' field,
  * containing the ID of the user to be deleted.
  */
-app.post('/userdel', function(req, res) {
+app.post('/setUserStatus', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    students.deleteAccount(req.body.userid, function(err, result) {
-        if (result == 'failure') {
-            return res.status(500);
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    users.setUserStatus(req.body.userid, req.body.active === 'true' , function(err, result) {
+        if (err) {
+            return res.status(500).send('Failed to deactivate student account');
         }
 
-        if (req.session.adminStudentList != null) {
-            /* Remove the deleted user from the stored student list. */
-            var ind;
-            for (ind in req.session.adminStudentList) {
-                if (req.session.adminStudentList[ind].id == req.body.userid) {
-                    break;
-                }
-            }
-            req.session.adminStudentList.splice(ind, 1);
-        }
-
-        return res.status(200);
+        return res.status(200).send('Student account has been deactivcated');
     });
 });
 
@@ -680,7 +632,7 @@ app.post('/usermod', function(req, res) {
     }
 
     var userId = req.body.originalID;
-    var updateId = req.body.id;
+    var updateId = req.body.id ? req.body.id : userId;
 
     users.updateStudentById(userId, req.body, function(err, result) {
         if (err) {
@@ -714,7 +666,6 @@ app.post('/userupload', upload.single('usercsv'), function(req, res) {
         res.status(200).send('invalid');
 
     students.parseFile(req.file.path, function(account) {
-        refetch = true;
     }, function() {
         res.status(200).send('uploaded');
     });
