@@ -12,13 +12,13 @@ $(function() {
 
   var studentList = {};
   for (var s in states) {
-    studentList[states[s]] = "hi";
+    studentList[states[s]] = null;
   }
   $('#autocomplete-input').autocomplete({
     data: studentList,
     limit: 20,
     onAutocomplete: function(val) {
-      // Callback function when value is autcompleted.
+      alert(val);
     },
     minLength: 1, 
   });
