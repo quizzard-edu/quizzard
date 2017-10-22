@@ -658,7 +658,7 @@ var sortAccountsTable = function(type) {
     });
 }
 
-//toggles the view of Visiblility button in the Question-Table View
+// Toggles the view of the Visibility Checkboxes in the Question-Table View
 var toggleButtonVisibility = function(){
     if (document.getElementById('sw').checked === true) {
         $('.visbox').show();
