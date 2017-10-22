@@ -80,16 +80,20 @@ var addUser = function(user, callback) {
 
 /* Return an array of users in the database. */
 exports.getAdminsList = function(callback) {
-    getUsersList(common.userTypes.ADMIN, callback);
+    getUsersList({type: common.userTypes.ADMIN}, {id: 1}, callback);
 }
 
 exports.getStudentsList = function(callback) {
-    getUsersList(common.userTypes.STUDENT, callback);
+    getUsersList({type: common.userTypes.STUDENT}, {id: 1}, callback);
+}
+
+exports.getStudentsListWithStatus = function(status, callback) {
+    getUsersList({type: common.userTypes.STUDENT, active: status}, {id: 1}, callback);
 }
 
 /* Return an array of users in the database, sorted by rank. */
-var getUsersList = function(type, callback){
-    usersCollection.find({type : type}).sort({id: 1}).toArray(function(err, docs) {
+var getUsersList = function(findQuery, sortQuery, callback){
+    usersCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
             return callback(err, []);
         }
@@ -139,7 +143,7 @@ var getUserById = function(userId, callback) {
  * user type of null
  */
 exports.checkLogin = function(userId, pass, callback) {
-    usersCollection.findOne({'id' : userId}, function(err, obj) {
+    usersCollection.findOne({id : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
@@ -147,6 +151,10 @@ exports.checkLogin = function(userId, pass, callback) {
 
         if (!obj) {
             return callback('notExist', null);
+        }
+
+        if (!obj.active) {
+            return callback('notActive', null);
         }
 
         validatePassword(obj, pass, function(err, valid) {
@@ -220,7 +228,7 @@ exports.updateAdminById = function(userId, info, callback){
 }
 
 var updateUserById = function(userId, info, callback){
-    var currentDate = new Date().toString();    
+    var currentDate = new Date().toString();
     var query = { id : userId };
     var update = {};
 
@@ -246,8 +254,12 @@ var updateUserById = function(userId, info, callback){
         update.$set.email = info.email;
     }
 
-    if (typeof info.correct !== 'undefined') {    
-        query['correctAttempts.id'] = { $ne : info.questionId };    
+    if (typeof info.active !== 'undefined') {
+        update.$set.active = info.active;
+    }
+
+    if (typeof info.correct !== 'undefined') {
+        query['correctAttempts.id'] = { $ne : info.questionId };
         if (info.correct) {
             update.$inc.points = info.points;
             update.$inc.correctAttemptsCount = 1;
@@ -582,6 +594,10 @@ exports.updateQuestionById = function(questionId, request, callback){
 
     if (request.hint) {
       update.$set.hint = request.hint;
+    }
+
+    if (request.rating) {
+      update.$set.rating = request.rating;
     }
 
     if (request.points) {
