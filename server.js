@@ -802,7 +802,12 @@ app.get('/analytics', function(req, res){
         return res.redirect('/');
     }
 
-    return res.status(200).render('analytics', {user: req.session.user});
+    return res.status(200).render('analytics', {
+        user: req.session.user,
+        isAdmin : function() {
+            return req.session.user.type === common.userTypes.ADMIN;
+        }
+    });
 });
 
 /* get analytics for a student*/
