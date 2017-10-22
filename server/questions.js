@@ -23,10 +23,10 @@ var logger = require('./log.js').logger;
 var common = require('./common.js');
 
 /*
- * Insert a new regular question into the database.
- * The question object passed to the function should have
- * the text, topic, type, answer, points and hint set.
- */
+* Insert a new regular question into the database.
+* The question object passed to the function should have
+* the text, topic, type, answer, points and hint set.
+*/
 exports.addQuestionByType = function(qType, question, callback) {
 	var currentDate = new Date().toString();
 	var questionToAdd = {};
@@ -64,22 +64,22 @@ exports.addQuestionByType = function(qType, question, callback) {
 }
 
 /*
- * Fetch amount questions from the database, using findType to
- * determine how to select and sort them.
- *
- * findType is laid out as follows:
- *
- * SORTING
- * The first bit that matches is the sort criterion. If none match, don't sort.
- * 0th bit: default sort
- * 1st bit: randomly shuffle
- * 2nd bit: sort by topic
- * 3rd bit: sort by points
- *
- * QUERYING
- * 4th bit: if 1, allow questions that have already been answered by user.
- * 5th bit: if 1, only show those questions that have been answered (with bit 4).
- */
+* Fetch amount questions from the database, using findType to
+* determine how to select and sort them.
+*
+* findType is laid out as follows:
+*
+* SORTING
+* The first bit that matches is the sort criterion. If none match, don't sort.
+* 0th bit: default sort
+* 1st bit: randomly shuffle
+* 2nd bit: sort by topic
+* 3rd bit: sort by points
+*
+* QUERYING
+* 4th bit: if 1, allow questions that have already been answered by user.
+* 5th bit: if 1, only show those questions that have been answered (with bit 4).
+*/
 exports.findQuestions = function(amount, findType, user, callback) {
 	db.findQuestions(amount, findType, user, callback);
 }
@@ -122,10 +122,10 @@ var lookupQuestionById = function(questionId, callback) {
 }
 
 /*
- * Check if the provided answer matches the answer in the question object.
- * Update the question object in the database and call the callback function
- * with the result of the comparison and the new question object.
- */
+* Check if the provided answer matches the answer in the question object.
+* Update the question object in the database and call the callback function
+* with the result of the comparison and the new question object.
+*/
 exports.checkAnswer = function(questionId, user, answer, callback) {
     logger.info('User %s attempted to answer question %d with "%s"', userId, questionId, answer);
 	var userType = user.type;
