@@ -1,0 +1,13 @@
+[type="checkbox"]+label{
+  position:relative;
+  padding-left:35px;
+  cursor:pointer;
+  display:inline-block;
+  height:0px;
+  line-height:25px;
+  font-size:1rem;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none
+}
