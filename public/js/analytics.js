@@ -72,13 +72,19 @@ var getQuestionsAnsweredVsClass = function() {
         type: 'bar',
         data: {
           datasets: [{
-            data: data,
-            backgroundColor: ['rgba(43, 244, 33, 0.5)', 'rgba(243, 13, 20, 0.5)'],
-            borderColor: ['rgba(43, 163, 0, 1)', 'rgba(243, 13, 20, 1)'],
+            data: [data[0]],
+            backgroundColor: 'rgba(43, 244, 33, 0.5)',
+            borderColor: 'rgba(43, 163, 0, 1)',
             borderWidth: '3',
-            label: 'Questions Answered'
+            label: 'Your Questions Answered'
+          },
+          {
+            data: [data[1]],
+            backgroundColor: 'rgba(243, 13, 20, 0.5)',
+            borderColor: 'rgba(243, 13, 20, 1)',
+            borderWidth: '3',
+            label: 'Class Questions Answered'
           }],
-          labels: ["You", "Class"]
         },
         options: {
           responsive: true,
@@ -87,11 +93,15 @@ var getQuestionsAnsweredVsClass = function() {
             text: 'Your Answered Questions VS. The Class'
           },
           scales: {
-              yAxes: [{
-                  ticks: {
-                      suggestedMin: 0
-                  }
-              }]
+            yAxes: [{
+              ticks: {
+                suggestedMin: 0
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Number of Answered Questions'
+              },
+            }]
           }
         }
       });
@@ -116,8 +126,10 @@ var getAccuracyVsClass = function() {
         type: 'doughnut',
         data: {
           datasets: [{
-            data: data,
-            backgroundColor: ["#ff4444", "#00C851"],
+            data: [data[0], 100 - data[0]],
+            backgroundColor: ['rgba(43, 244, 33, 0.5)', 'rgba(243, 13, 20, 0.5)'],
+            borderColor: ['rgba(43, 163, 0, 1)', 'rgba(243, 13, 20, 1)'],
+            borderWidth: '3',
             label: 'Dataset 1'
           }],
           labels: ["CANCELLED", "COMPLETED"]
