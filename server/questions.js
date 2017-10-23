@@ -90,8 +90,8 @@ exports.addQuestionByType = function(qType, question, callback) {
 * 4th bit: if 1, allow questions that have already been answered by user.
 * 5th bit: if 1, only show those questions that have been answered (with bit 4).
 */
-exports.findQuestions = function(amount, findType, user, callback) {
-	db.findQuestions(amount, findType, user, callback);
+exports.getQuestionsList = function(callback) {
+	db.getQuestionsList(callback);
 }
 
 /* Sort questions by the given sort type. */
@@ -191,7 +191,7 @@ var lookupQuestionById = function(questionId, callback) {
 * with the result of the comparison and the new question object.
 */
 exports.checkAnswer = function(questionId, user, answer, callback) {
-    logger.info('User %s attempted to answer question %d with "%s"', userId, questionId, answer);
+    logger.info('User %s attempted to answer question %d with "%s"', user.id, questionId, answer);
 	var userType = user.type;
 	var userId = user.id;
 
@@ -214,7 +214,7 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 					questionId,
 					{ userId:userId, correct:value, attempt:answer },
 					function(err, res) {
-						return callback(err, value);
+						return callback(err, {correct: value, points: question.points});
 					}
 				);
 			}
