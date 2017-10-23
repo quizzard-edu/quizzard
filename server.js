@@ -570,8 +570,8 @@ app.post('/submitanswer', function(req, res) {
         req.session.user,
         req.body.answer,
         function(err, value) {
-            var result = value ? 'correct' : 'incorrect';
-            var status = value ? 200 : 500;
+            var result = value.correct ? value : 'incorrect';
+            var status = value.correct ? 200 : 500;
             return res.status(status).send(result);
         }
     );
@@ -682,7 +682,7 @@ app.put('/questionadd', function(req, res) {
 
     questions.addQuestionByType(req.body.type, req.body, function(err, result) {
         if (err) {
-            return res.status(500).send('Could not create question');
+            return res.status(err.status).send(err.msg);
         }
 
         return res.status(201).send('Question created');
@@ -703,6 +703,9 @@ app.post('/questionmod', function(req, res) {
     var q = req.body.question;
 
     questions.updateQuestionById(qid, q, function(err, result) {
+        if (err){
+            return res.status(err.status).send(err.msg);
+        }
         return res.status(200).send(result);
     });
 });
