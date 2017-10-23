@@ -699,6 +699,15 @@ var sortAccountsTable = function(type) {
     });
 }
 
+// Toggles the view of the Visibility Checkboxes in the Question-Table View
+var toggleButtonVisibility = function(){
+    if (document.getElementById('sw').checked) {
+        $('.visbox').show();
+    } else {
+        $('.visbox').hide();
+    }
+} 
+
 /* This function slides down a snakbar */
 function dropSnack(colour, msg) {
     // runs the toast function for 5s with given msg and colour
