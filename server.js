@@ -304,7 +304,7 @@ app.get('/answerForm', function(req, res){
                 answerForm:true});
             break;
         default:
-            return res.redirect('/');
+            return res.status(400).send('Please select an appropriate question Type.')
     }
 })
 
@@ -559,7 +559,7 @@ app.get('/question', function(req, res) {
                     case common.questionTypes.MULTIPLECHOICE.value:
                         return mcForm({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.TRUEFALSE.value:
-                        return mcForm({studentQuestionForm:true, question:questionFound})
+                        return tfForm({studentQuestionForm:true, question:questionFound})
                     default:
                         break;
                 }
