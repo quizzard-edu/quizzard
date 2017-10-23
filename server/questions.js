@@ -55,6 +55,11 @@ exports.addQuestionByType = function(qType, question, callback) {
 			questionToAdd.choices = question.choices ? question.choices : [];
 			break;
 
+		case common.questionTypes.TRUEFALSE.value:
+			questionToAdd.type = common.questionTypes.TRUEFALSE.value;
+			questionToAdd.choices = question.choices ? question.choices : [];
+			break;
+
 		default:
 			return callback({status:400, msg:'Type of Question is Undefined'}, null)
 	}
@@ -130,6 +135,10 @@ var validateQuestionByType = function(question, type){
 			result = multipleChoiceValidator(question);
 			break;
 
+		case common.questionTypes.TRUEFALSE.value:
+			result = trueAndFalseValidator(question);
+			break;
+
 		default:
 			break;
 	}
@@ -137,11 +146,20 @@ var validateQuestionByType = function(question, type){
 }
 
 var multipleChoiceValidator = function(question){
-
-	if (question.choices.length < 2){
-		return 'Need two or more options for Multiple Choice Question';
+	if (question.choices){
+		if (question.choices.length < 2){
+			return 'Need two or more options for Multiple Choice Question';
+		}
 	}
+	return null;
+}
 
+var trueAndFalseValidator = function(question){
+	if (question.choices){
+		if (question.choices.length !== 2){
+			return 'True and False can only have 2 options!';
+		}
+	}
 	return null;
 }
 

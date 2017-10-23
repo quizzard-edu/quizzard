@@ -180,6 +180,7 @@ const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const mcForm = pug.compileFile('views/mc-answer.pug');
+const tfForm = pug.compileFile('views/tf-answer.pug');
 
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
@@ -297,6 +298,11 @@ app.get('/answerForm', function(req, res){
                 common.questionTypes.MULTIPLECHOICE.template,{
                 answerForm:true});
             break;
+        case common.questionTypes.TRUEFALSE.value:
+            res.status(200).render(
+                common.questionTypes.TRUEFALSE.template,{
+                answerForm:true});
+            break;
         default:
             return res.redirect('/');
     }
@@ -401,6 +407,8 @@ app.post('/questionedit', function(req, res) {
                         return regexForm({adminQuestionEdit:true, question:question})
                     case common.questionTypes.MULTIPLECHOICE.value:
                         return mcForm({adminQuestionEdit:true, question:question})
+                    case common.questionTypes.TRUEFALSE.value:
+                        return tfForm({adminQuestionEdit:true, question:question})
                     default:
                         return res.redirect('/')
                         break;
@@ -550,8 +558,9 @@ app.get('/question', function(req, res) {
                         return regexForm({studentQuestionForm:true})
                     case common.questionTypes.MULTIPLECHOICE.value:
                         return mcForm({studentQuestionForm:true, question:questionFound})
+                    case common.questionTypes.TRUEFALSE.value:
+                        return mcForm({studentQuestionForm:true, question:questionFound})
                     default:
-                        return res.redirect('/');
                         break;
                 }
             }
@@ -737,42 +746,6 @@ app.post('/questiondel', function(req, res) {
         }
 
         return res.status(200);
-    });
-});
-
-/* Respond with question page HTML for a dummy user. */
-app.get('/questionpreview', function(req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    if (!req.query.qid) {
-        return res.status(400).send();
-    }
-
-    var qid = parseInt(req.query.qid);
-    questions.lookupQuestionById(qid, function(err, q) {
-        if (err) {
-            return res.status(200).send(q);
-        }
-
-        return res.render('question', {
-            user: 'Username',
-            question: q,
-            answered: false,
-            preview: true,
-            getQuestionForm: function(){
-                switch (q.type){
-                    case common.questionTypes.REGULAR.value:
-                        return regexForm({studentQuestionForm:true})
-                    case common.questionTypes.MULTIPLECHOICE.value:
-                        return mcForm({studentQuestionForm:true, question:q})
-                    default:
-                        return res.redirect('/');
-                        break;
-                }
-            }
-        });
     });
 });
 
