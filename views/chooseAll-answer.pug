@@ -2,19 +2,19 @@ if answerForm
 	.form-group
 		each index in [1,2,3,4]
 			p
-				input(type='radio', name='radbutton', value='mcans'+index, id='mcans'+index required)
+				input(type='checkbox', name='radbutton', value='mcans'+index, id='mcans'+index required)
 				label(for='mcans'+index) Is Correct
 				input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required, style='float:left;')
 				a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
 					i.tiny.material-icons close
 
 	#addMoreAnswersButton
-		a.waves-effect.waves-light.btn(onclick="addMCAnswers('radio')") add answer
+		a.waves-effect.waves-light.btn(onclick="addMCAnswers('checkbox')") add answer
 
 else if studentQuestionForm
 	form.form-question#mc_answerform
 		each answer in question.choices
-			input(type='radio' name='answer', value=answer, id=answer, required, autofocus)
+			input(type='checkbox' name='answer', value=answer, id=answer, required, autofocus)
 			label(for=answer) #{answer}
 
 		button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
@@ -24,14 +24,14 @@ else if adminQuestionEdit
 		each option, i in question.choices
 			p
 				if question.answer == option
-					input(type='radio', name='radbutton', id=i, value=i, required, checked)
+					input(type='checkbox', name='radbutton', id=i, value=i, required, checked)
 				else
-					input(type='radio', name='radbutton', id=i, value=i, required)
+					input(type='checkbox', name='radbutton', id=i, value=i, required)
 				label(for=i) Is Correct
 				input.form-control(type='text', name='mcans'+i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
 				a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
 					i.tiny.material-icons close
 
 	#addMoreAnswersButton
-		a.waves-effect.waves-light.btn(onclick="addMCAnswers('radio')") add answer
+		a.waves-effect.waves-light.btn(onclick="addMCAnswers('checkbox')") add answer
 

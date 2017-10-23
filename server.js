@@ -181,7 +181,7 @@ const statistics = pug.compileFile('views/statistics.pug');
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
-
+const chooseAllForm = pug.compileFile('views/chooseAll-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
@@ -290,18 +290,19 @@ app.get('/answerForm', function(req, res){
     switch (req.query.qType){
         case common.questionTypes.REGULAR.value:
             res.status(200).render(
-                common.questionTypes.REGULAR.template,{
-                answerForm:true});
+                common.questionTypes.REGULAR.template,{answerForm:true});
             break;
         case common.questionTypes.MULTIPLECHOICE.value:
             res.status(200).render(
-                common.questionTypes.MULTIPLECHOICE.template,{
-                answerForm:true});
+                common.questionTypes.MULTIPLECHOICE.template,{answerForm:true});
             break;
         case common.questionTypes.TRUEFALSE.value:
             res.status(200).render(
-                common.questionTypes.TRUEFALSE.template,{
-                answerForm:true});
+                common.questionTypes.TRUEFALSE.template,{answerForm:true});
+            break;
+        case common.questionTypes.CHOOSEALL.value:
+            res.status(200).render(
+                common.questionTypes.CHOOSEALL.template,{answerForm:true});
             break;
         default:
             return res.redirect('/');
@@ -409,6 +410,8 @@ app.post('/questionedit', function(req, res) {
                         return mcForm({adminQuestionEdit:true, question:question})
                     case common.questionTypes.TRUEFALSE.value:
                         return tfForm({adminQuestionEdit:true, question:question})
+                    case common.questionTypes.CHOOSEALL.value:
+                        return chooseAllForm({adminQuestionEdit:true, question:question})
                     default:
                         return res.redirect('/')
                         break;
@@ -560,6 +563,8 @@ app.get('/question', function(req, res) {
                         return mcForm({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.TRUEFALSE.value:
                         return mcForm({studentQuestionForm:true, question:questionFound})
+                    case common.questionTypes.TRUEFALSE.value:
+                        return chooseAllForm({studentQuestionForm:true, question:questionFound})
                     default:
                         break;
                 }

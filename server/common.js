@@ -19,6 +19,7 @@ exports.userTypes = userTypes;
 const questionTypes = Object.freeze({
     REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer'},
     MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer'},
-    TRUEFALSE  : {name: 'True and False', value: 'tf', template: 'tf-answer'}
+    TRUEFALSE  : {name: 'True and False', value: 'tf', template: 'tf-answer'},
+    CHOOSEALL  : {name: 'Choose All That Apply', value: 'ca', template: 'chooseAll-answer'}
 });
 exports.questionTypes = questionTypes;
