@@ -422,28 +422,28 @@ app.get('/statistics', function(req, res) {
         return res.redirect('/');
     }
 
-    if (req.session.adminQuestionList == null) {
-        questions.findQuestions(
-            0,
-            common.sortTypes.SORT_DEFAULT,
-            null,
-            function(err, questionlist) {
-                req.session.adminQuestionList = questionlist;
-                var html = statistics({
-                    students: req.session.adminStudentList,
-                    questions: req.session.adminQuestionList
-                });
-
-                return res.status(200).send(html);
-            });
-    } else {
-        var html = statistics({
-            students: req.session.adminStudentList,
-            questions: req.session.adminQuestionList
-        });
-
-        return res.status(200).send(html);
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        res.status(403).send('Permission Denied');
     }
+
+    questions.getQuestionsList(function(err, questionslist) {
+        if (err) {
+            res.status(500).send(err);
+        }
+
+        users.getStudentsList(function(err, studentslist) {
+            if (err) {
+                res.status(500).send(err);
+            }
+
+            var html = statistics({
+                students: studentslist,
+                questions: questionslist
+            });
+
+            return res.status(200).send(html);
+        });
+    });
 });
 
 app.get('/sortlist', function(req, res) {
