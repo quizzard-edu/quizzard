@@ -52,12 +52,17 @@ exports.addQuestionByType = function(qType, question, callback) {
 
 		case common.questionTypes.MULTIPLECHOICE.value:
 			questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
-			questionToAdd.choices = question.choices;
+			questionToAdd.choices = question.choices ? question.choices : [];
 			break;
 
 		default:
-			//callback('type is not defined', null);
-			questionToAdd.type = common.questionTypes.REGULAR.value;
+			return callback({status:400, msg:'Type of Question is Undefined'}, null)
+	}
+
+	// validate question by its type
+	var result = validateQuestionByType(questionToAdd, questionToAdd.type);
+	if (result !== null){
+		return callback({status:400, msg:result}, null)
 	}
 
 	db.addQuestion(questionToAdd, callback);
@@ -96,7 +101,48 @@ exports.updateQuestionById = function(questionId, info, callback) {
 }
 
 var updateQuestionById = function(questionId, info, callback) {
-	db.updateQuestionById(questionId, info, callback);
+	updateQuestionByType(questionId,info,callback);
+}
+
+var updateQuestionByType = function(qId, infoToUpdate, callback){
+	// Get Type of question and validate it
+	db.lookupQuestionById(qId, function(err, question){
+		if(err){
+			return callback({status:500, msg:err},null);
+		}
+
+		// validate question by its type
+		var result = validateQuestionByType(infoToUpdate, question.type);
+		if (result !== null){
+			return callback({status:400, msg:result}, null)
+		}
+		db.updateQuestionById(qId, infoToUpdate, callback);
+	});
+}
+
+var validateQuestionByType = function(question, type){
+	var result = null;
+	switch (type) {
+		case common.questionTypes.REGULAR.value:
+			break;
+
+		case common.questionTypes.MULTIPLECHOICE.value:
+			result = multipleChoiceValidator(question);
+			break;
+
+		default:
+			break;
+	}
+	return result;
+}
+
+var multipleChoiceValidator = function(question){
+
+	if (question.choices.length < 2){
+		return 'Need two or more options for Multiple Choice Question';
+	}
+
+	return null;
 }
 
 /* Remove the question with ID qid from the database. */
