@@ -185,8 +185,8 @@ String.prototype.format = function() {
 var mcAnswerCount = 4;
 var addMCAnswers = function(dom){
     mcAnswerCount++;
-    var newdiv = document.createElement('div');
-    var inputdiv = '<p><input type="radio" name="radbutton" value="mcans{0}" id="mcans{1}" required/><label for="mcans{2}">Is Correct</label><input type="text" name="mcans{3}" placeholder="Enter Answer Here" required style="float:left;" class="form-control"/><a onclick="$(this).parent().remove()" class="btn-floating btn-tiny waves-effect waves-light red"><i class="tiny material-icons">close</i></a></p>';
+    var newdiv = document.createElement('p');
+    var inputdiv = '<input type="radio" name="radbutton" value="mcans{0}" id="mcans{1}" required/><label for="mcans{2}">Is Correct</label><input type="text" name="mcans{3}" placeholder="Enter Answer Here" required style="float:left;" class="form-control"/><a onclick="$(this).parent().remove()" class="btn-floating btn-tiny waves-effect waves-light red"><i class="tiny material-icons">close</i></a>';
     newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount,mcAnswerCount,mcAnswerCount);
     $('#qAnswer > div.form-group').append(newdiv);
 }
@@ -543,8 +543,10 @@ var submitQuestionForm = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 400){
+                dropSnack(colours.WARNING, data['responseText']);
             } else {
-                dropSnack(colours.FAIL, 'Question could not be added');
+                dropSnack(colours.FAIL, 'Question could not be added.');
             }
         }
     });
@@ -612,7 +614,7 @@ var editQuestion = function(qid) {
 var submitQEditForm = function(qid) {
     var fields = $('#question-edit-form').serializeArray();
     var question = {};
-    var qbody;
+    question['choices'] = [];
 
     if ($('#qtext').summernote('isEmpty')) {
         dropSnack(colours.FAIL, 'Please enter a question body in the editor.');
@@ -620,10 +622,19 @@ var submitQEditForm = function(qid) {
     }
 
     jQuery.each(fields, function(i, field) {
+        if(field.name.startsWith('radbutton')){
+            question['answer'] = fields[i+1].value;
+        }
+
+        if(field.name.startsWith('mcans')){
+            question['choices'].push(field.value);
+        }
+
         question[field.name] = field.value;
     });
 
     question['text'] = $('#qtext').summernote('code');
+    question['visible'] = $('#visible').is(':checked');
     question['rating'] = getRating();
 
     $.ajax({
@@ -640,6 +651,8 @@ var submitQEditForm = function(qid) {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 400){
+                dropSnack(colours.WARNING, data['responseText']);
             } else {
                 dropSnack(colours.FAIL, 'Question could not be edited.');
             }
@@ -685,6 +698,15 @@ var sortAccountsTable = function(type) {
         }
     });
 }
+
+// Toggles the view of the Visibility Checkboxes in the Question-Table View
+var toggleButtonVisibility = function(){
+    if (document.getElementById('sw').checked) {
+        $('.visbox').show();
+    } else {
+        $('.visbox').hide();
+    }
+} 
 
 /* This function slides down a snakbar */
 function dropSnack(colour, msg) {

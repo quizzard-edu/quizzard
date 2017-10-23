@@ -355,7 +355,7 @@ exports.addQuestion = function(question, callback){
     questionsCollection.insert(question, function(err, res) {
         if(err){
             logger.error(err);
-            return callback(err, null);
+            return callback({status:500, msg:err}, null);
         }
 
         return callback(null, res);
@@ -606,6 +606,10 @@ exports.updateQuestionById = function(questionId, request, callback){
       update.$set.points = request.points;
     }
 
+    if (request.choices) {
+      update.$set.choices = request.choices;
+    }
+    
     if (request.visible) {
         update.$set.visible = (request.visible === 'true');
     }
@@ -639,7 +643,7 @@ exports.updateQuestionById = function(questionId, request, callback){
 
     questionsCollection.update(query, update, function(err, info) {
         if (err) {
-            logger.error(err);
+            logger.error({status:500, msg:err});
             return callback(err, null);
         }
 
