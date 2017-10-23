@@ -305,7 +305,7 @@ app.get('/answerForm', function(req, res){
             break;
         default:
             return res.redirect('/');
-    }tfForm
+    }
 })
 
 /* Return a formatted date for the given timestamp. */
