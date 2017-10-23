@@ -173,7 +173,7 @@ var lookupQuestionById = function(questionId, callback) {
 * with the result of the comparison and the new question object.
 */
 exports.checkAnswer = function(questionId, user, answer, callback) {
-    logger.info('User %s attempted to answer question %d with "%s"', userId, questionId, answer);
+    logger.info('User %s attempted to answer question %d with "%s"', user.id, questionId, answer);
 	var userType = user.type;
 	var userId = user.id;
 
@@ -196,7 +196,7 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 					questionId,
 					{ userId:userId, correct:value, attempt:answer },
 					function(err, res) {
-						return callback(err, value);
+						return callback(err, {correct: value, points: question.points});
 					}
 				);
 			}
