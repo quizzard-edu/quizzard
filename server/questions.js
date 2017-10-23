@@ -61,7 +61,7 @@ exports.addQuestionByType = function(qType, question, callback) {
 
 	// validate question by its type
 	var result = validateQuestionByType(questionToAdd, questionToAdd.type);
-	if (result != null){
+	if (result !== null){
 		return callback({status:400, msg:result}, null)
 	}
 
@@ -113,7 +113,7 @@ var updateQuestionByType = function(qId, infoToUpdate, callback){
 
 		// validate question by its type
 		var result = validateQuestionByType(infoToUpdate, question.type);
-		if (result != null){
+		if (result !== null){
 			return callback({status:400, msg:result}, null)
 		}
 		db.updateQuestionById(qId, infoToUpdate, callback);

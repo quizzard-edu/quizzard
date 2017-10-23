@@ -616,7 +616,6 @@ var submitQEditForm = function(qid) {
     var question = {};
     question['choices'] = [];
 
-
     if ($('#qtext').summernote('isEmpty')) {
         dropSnack(colours.FAIL, 'Please enter a question body in the editor.');
         return;
