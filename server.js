@@ -570,8 +570,8 @@ app.post('/submitanswer', function(req, res) {
         req.session.user,
         req.body.answer,
         function(err, value) {
-            var result = value ? 'correct' : 'incorrect';
-            var status = value ? 200 : 500;
+            var result = value.correct ? value : 'incorrect';
+            var status = value.correct ? 200 : 500;
             return res.status(status).send(result);
         }
     );
