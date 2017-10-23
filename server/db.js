@@ -465,36 +465,14 @@ var getListFromJSONList = function (JSONList) {
     return list;
 }
 
-exports.findQuestions = function(amount, findType, user, callback){
-    var criteria, query;
+exports.getQuestionsList = function(callback) {
+    getQuestions({}, {id:1}, callback);
+}
 
-    if (findType & common.sortTypes.SORT_DEFAULT) {
-        criteria = {id: 1};
-    } else if (findType & common.sortTypes.SORT_TOPIC) {
-        critera = {topic : 1};
-    } else if (findType & common.sortTypes.SORT_POINTS) {
-        critera = {points : -1};
-    } else {
-        criteria = {};
-    }
-
-    if (findType & common.sortTypes.QUERY_ANSWERED) {
-        if (findType & common.sortTypes.QUERY_ANSONLY) {
-            query = { id: { $in: user.answered } };
-        } else {
-            query = {};
-        }
-    } else if (user != null) {
-        query = { id: { $nin: user.answered } };
-    }
-
-    questionsCollection.find(query).sort(criteria).limit(amount).toArray(function(err, docs) {
+var getQuestions = function(findQuery, sortQuery, callback){
+    questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
             return callback(err, null);
-        }
-
-        if (findType & common.sortTypes.SORT_RANDOM) {
-            shuffle(docs);
         }
 
         for (q in docs) {
