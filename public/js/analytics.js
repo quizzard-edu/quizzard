@@ -76,7 +76,7 @@ var getQuestionsAnsweredVsClass = function() {
             backgroundColor: ['rgba(43, 244, 33, 0.5)', 'rgba(243, 13, 20, 0.5)'],
             borderColor: ['rgba(43, 163, 0, 1)', 'rgba(243, 13, 20, 1)'],
             borderWidth: '3',
-            label: 'Your answered questions vs. the class'
+            label: 'Questions Answered'
           }],
           labels: ["You", "Class"]
         },
@@ -84,7 +84,14 @@ var getQuestionsAnsweredVsClass = function() {
           responsive: true,
           title: {
             display: true,
-            text: 'Answered Vs Class'
+            text: 'Your Answered Questions VS. The Class'
+          },
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      suggestedMin: 0
+                  }
+              }]
           }
         }
       });
