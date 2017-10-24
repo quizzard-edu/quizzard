@@ -766,20 +766,20 @@ app.post('/submitQuestionRating', function(req, res){
 // question rating from both students and admins
 var submitQuestionRating = function (req, res) {
     var userId = req.session.user.id;
-    var questionId = req.body.qId;
+    var questionId = parseInt(req.body.qId);
     var rating = parseInt(req.body.rating);
-    console.log(userId+'   '+questionId+'   '+rating);
+
     questions.submitRating(questionId, userId, rating, function(err, result) {
         if (err) {
-            res.status(500).send('could not submit rating');
+            return res.status(500).send('could not submit rating');
         }
 
         users.submitRating(userId, questionId, rating, function(err, result){
             if (err) {
-                res.status(500).send('could not submit rating');
+                return res.status(500).send('could not submit rating');
             }
 
-            res.status(200).send('rating submitted');
+            return res.status(200).send('rating submitted');
         });
     });
 }
