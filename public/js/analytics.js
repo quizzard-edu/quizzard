@@ -122,29 +122,50 @@ var getAccuracyVsClass = function() {
       type: 'AccuracyVsClass'
     },
     success: function(data) {
-      new Chart($("#accuracyVsClass"), {
+      new Chart($("#accuracyVsClassYours"), {
         type: 'doughnut',
         data: {
           datasets: [{
             data: [data[0], 100 - data[0]],
             backgroundColor: ['rgba(43, 244, 33, 0.5)', 'rgba(243, 13, 20, 0.5)'],
             borderColor: ['rgba(43, 163, 0, 1)', 'rgba(243, 13, 20, 1)'],
-            borderWidth: '3',
-            label: 'Dataset 1'
+            borderWidth: '2',
+            label: 'Your Accuracy'
           }],
-          labels: ["CANCELLED", "COMPLETED"]
+          labels: ['% Correct', "% Incorrect"]
         },
         options: {
           responsive: true,
-          legend:{
-            display: false
-          },
           title: {
             display: true,
-            text: 'Accuracy Vs Class'
+            text: 'Your Accuracy'
           }
         }
       });
+
+
+
+      new Chart($("#accuracyVsClassClass"), {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: [data[1], 100 - data[1]],
+            backgroundColor: ['rgba(43, 244, 33, 0.5)', 'rgba(243, 13, 20, 0.5)'],
+            borderColor: ['rgba(43, 163, 0, 1)', 'rgba(243, 13, 20, 1)'],
+            borderWidth: '2',
+            label: 'The Class Accuracy'
+          }],
+          labels: ['% Correct', "% Incorrect"]
+        },
+        options: {
+          responsive: true,
+          title: {
+            display: true,
+            text: 'The Class Accuracy'
+          }
+        }
+      });
+
     },
     error: function(data) {
       if (data['status'] === 401) {
