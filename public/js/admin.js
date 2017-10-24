@@ -9,7 +9,7 @@ var usersTableActive = true;
 
 $(function(){
     /* show the account table by default */
-    displayAccountsTable();
+    displayQuestionTable();
 });
 
 /* set home as the active navbar element */
@@ -614,6 +614,8 @@ var editQuestion = function(qid) {
 var submitQEditForm = function(qid) {
     var fields = $('#question-edit-form').serializeArray();
     var question = {};
+    var rating = getRating();
+    
     question['choices'] = [];
 
     if ($('#qtext').summernote('isEmpty')) {
@@ -635,7 +637,10 @@ var submitQEditForm = function(qid) {
 
     question['text'] = $('#qtext').summernote('code');
     question['visible'] = $('#visible').is(':checked');
-    question['rating'] = getRating();
+
+    if (rating > 0 && rating < 6) {
+        submitQuestionRating(rating, qid);
+    }
 
     $.ajax({
         type: 'POST',
@@ -655,6 +660,28 @@ var submitQEditForm = function(qid) {
                 dropSnack(colours.WARNING, data['responseText']);
             } else {
                 dropSnack(colours.FAIL, 'Question could not be edited.');
+            }
+        }
+    });
+}
+
+// submit question rating
+var submitQuestionRating = function (rating, qid) {
+    $.ajax({
+        type: 'POST',
+        url: '/submitQuestionRating',
+        data: {
+            rating: rating,
+            qId: qid
+        },
+        success: function(data) {
+            dropSnack(colours.SUCCESS, 'Question ' + qid + ' rating has been updated.');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                dropSnack(colours.FAIL, 'Question could not be updated.');
             }
         }
     });
@@ -706,7 +733,7 @@ var toggleButtonVisibility = function(){
     } else {
         $('.visbox').hide();
     }
-} 
+}
 
 /* This function slides down a snakbar */
 function dropSnack(colour, msg) {

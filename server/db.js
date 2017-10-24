@@ -249,6 +249,14 @@ var updateUserById = function(userId, info, callback){
         update.$set.email = info.email;
     }
 
+    if (info.rating) {
+        update.$push.ratings = {
+            question: info.questionId,
+            date: currentDate,
+            rating: info.rating
+        }
+    }
+
     if (typeof info.active !== 'undefined') {
         update.$set.active = info.active;
     }
@@ -351,7 +359,7 @@ exports.addQuestion = function(question, callback){
             return callback({status:500, msg:err}, null);
         }
 
-        return callback(null, res);
+        return callback(null, question.id);
     });
 }
 
@@ -541,6 +549,7 @@ exports.lookupQuestionById = function(questionId, callback) {
 
 // update a question record based on its id
 exports.updateQuestionById = function(questionId, request, callback){
+    var currentDate = new Date().toString();
     var query = { id:questionId };
     var update = {};
 
@@ -569,16 +578,20 @@ exports.updateQuestionById = function(questionId, request, callback){
       update.$set.hint = request.hint;
     }
 
-    if (request.rating) {
-      update.$set.rating = request.rating;
-    }
-
     if (request.points) {
       update.$set.points = request.points;
     }
 
     if (request.choices) {
       update.$set.choices = request.choices;
+    }
+
+    if (request.rating) {
+        update.$push.ratings = {
+            user: request.userId,
+            date: currentDate,
+            rating: request.rating
+        }
     }
     
     if (request.visible) {

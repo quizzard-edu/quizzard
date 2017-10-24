@@ -69,6 +69,37 @@ var getQuestionsAnsweredVsClass = function(query, callback) {
     });
 }
 
+// get questions answered vs class
+var getQuestionsAnsweredVsClass = function(query, callback) {
+    users.getStudentsList(function(err, students) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!students) {
+            return  callback('no results', null);
+        }
+
+        var studentId = query.user.id;
+        var studentAnswered = 0;
+        var classAnswered = 0;
+        var classCount = 0;
+        var classAnsweredAverage = 0;
+
+        for (i in students) {
+            if (students[i].id === studentId) {
+                studentAnswered = students[i].correctAttemptsCount;
+            } else {
+                classAnswered += students[i].correctAttemptsCount;
+                classCount++;
+            }
+        }
+
+        classAnsweredAverage = Math.ceil(classAnswered / classCount);
+        return callback(null, [studentAnswered, classAnsweredAverage]);
+    });
+}
+
 // get points vs class
 var getPointsVsClass = function(query, callback) {
     users.getStudentsList(function(err, students) {

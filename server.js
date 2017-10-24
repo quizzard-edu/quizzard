@@ -689,9 +689,14 @@ app.put('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByType(req.body.type, req.body, function(err, result) {
+    questions.addQuestionByType(req.body.type, req.body, function(err, qId) {
         if (err) {
             return res.status(err.status).send(err.msg);
+        }
+
+        if (req.body.rating && parseInt(req.body.rating) > 0 && parseInt(req.body.rating) < 6) {
+            req.body.qId = qId;
+            return submitQuestionRating(req, res);
         }
 
         return res.status(201).send('Question created');
@@ -749,41 +754,38 @@ app.post('/questiondel', function(req, res) {
     });
 });
 
-/* Respond with question page HTML for a dummy user. */
-app.get('/questionpreview', function(req, res) {
+// submit question rating from both students and admins
+app.post('/submitQuestionRating', function(req, res){
     if (!req.session.user) {
         return res.redirect('/');
     }
+    return submitQuestionRating(req, res);
+});
 
-    if (!req.query.qid) {
-        return res.status(400).send();
+// question rating from both students and admins
+var submitQuestionRating = function (req, res) {
+    var userId = req.session.user.id;
+    var questionId = parseInt(req.body.qId);
+    var rating = parseInt(req.body.rating);
+
+    if (rating > 0 && rating < 6) {
+        return res.status(400).send('bad rating');
     }
 
-    var qid = parseInt(req.query.qid);
-    questions.lookupQuestionById(qid, function(err, q) {
+    questions.submitRating(questionId, userId, rating, function(err, result) {
         if (err) {
-            return res.status(200).send(q);
+            return res.status(500).send('could not submit rating');
         }
 
-        return res.render('question', {
-            user: 'Username',
-            question: q,
-            answered: false,
-            preview: true,
-            getQuestionForm: function(){
-                switch (q.type){
-                    case common.questionTypes.REGULAR.value:
-                        return regexForm({studentQuestionForm:true})
-                    case common.questionTypes.MULTIPLECHOICE.value:
-                        return mcForm({studentQuestionForm:true, question:q})
-                    default:
-                        return res.redirect('/');
-                        break;
-                }
+        users.submitRating(userId, questionId, rating, function(err, result){
+            if (err) {
+                return res.status(500).send('could not submit rating');
             }
+
+            return res.status(200).send('rating submitted');
         });
     });
-});
+}
 
 /* get the list of students' ids*/
 app.get('/studentsListofIds', function(req, res){
