@@ -1,21 +1,22 @@
-if (isAdmin())
-  .container
-    .row
-      .col.s12
-        .row
-          .input-field.col.s12
-            input#autocomplete-input.autocomplete(type='text')
-            label(for='autocomplete-input') Select a student by ID
 .row#student-analytics-card
-  .row
-    .col.s2
-    .col.s8
-      canvas#questionsAnsweredVsClass
-    .col.s2
-  .row
-    .col.s4
-      canvas#accuracyVsClass
-    .col.s4
-      canvas#pointsVsClass
-    .col.s4
-      canvas#ratingVsClass
+  if (isAdmin())
+    .container
+      .row
+        .col.s12
+          .row
+            .input-field.col.s12
+              input#autocomplete-input.autocomplete(type='text')
+              label(for='autocomplete-input') Select a student by ID
+  #student-analytics-card-content
+    .row
+      .col.s2
+      .col.s8
+        canvas#questionsAnsweredVsClass
+      .col.s2
+    .row
+      .col.s4
+        canvas#accuracyVsClass
+      .col.s4
+        canvas#pointsVsClass
+      .col.s4
+        canvas#ratingVsClass

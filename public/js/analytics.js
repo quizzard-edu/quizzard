@@ -24,11 +24,11 @@ $(function() {
   });
 
   $('#autocomplete-input').focus(function() {
-    $('#student-analytics-card').addClass('hidden');
+    $('#student-analytics-card-content').addClass('hidden');
   });
 
   $('#autocomplete-input').focusout(function() {
-    $('#student-analytics-card').removeClass('hidden');
+    $('#student-analytics-card-content').removeClass('hidden');
   });
 });
 
