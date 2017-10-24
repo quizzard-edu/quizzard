@@ -1,3 +1,12 @@
+// Set of colour variables to be unified
+const colours = Object.freeze({
+    blue          : 'rgb(54, 162, 235)',
+    greenBorder   : 'rgba(43, 163, 0, 1)',
+    greenLight    : 'rgba(43, 244, 33, 0.5)',
+    pink          : 'rgb(255, 99, 132)',
+    redBorder     : 'rgba(243, 13, 20, 1)',
+    redLight      : 'rgba(243, 13, 20, 0.5)'
+});
 
 // This is the function.
 String.prototype.format = function (args) {

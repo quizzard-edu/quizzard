@@ -127,15 +127,15 @@ var getQuestionsAnsweredVsClass = function(path) {
           data: {
             datasets: [{
               data: [data[0]],
-              backgroundColor: 'rgba(43, 244, 33, 0.5)',
-              borderColor: 'rgba(43, 163, 0, 1)',
+              backgroundColor: colours.greenLight,
+              borderColor: colours.greenBorder,
               borderWidth: '3',
               label: 'Your Questions Answered'
             },
             {
               data: [data[1]],
-              backgroundColor: 'rgba(243, 13, 20, 0.5)',
-              borderColor: 'rgba(243, 13, 20, 1)',
+              backgroundColor: colours.redLight,
+              borderColor: colours.redBorder,
               borderWidth: '3',
               label: 'Class Questions Answered'
             }],
@@ -196,7 +196,7 @@ var getAccuracyVsClass = function(path) {
           data: {
             datasets: [{
               data: data,
-              backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
+              backgroundColor: [colours.blue, colours.pink],
             }],
             labels: ['Your Accuracy', 'Average Class Accuracy']
           },
@@ -248,7 +248,7 @@ var getPointsVsClass = function(path) {
           data: {
             datasets: [{
               data: data,
-              backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
+              backgroundColor: [colours.blue, colours.pink],
             }],
             labels: ['Your Points', 'Average Class Points']
           },
@@ -300,7 +300,7 @@ var getRatingVsClass = function(path) {
           data: {
             datasets: [{
               data: data,
-              backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
+              backgroundColor: [colours.blue, colours.pink],
               label: 'Dataset 1'
             }],
             labels: ['Your Average Rating', 'Average Class Rating']

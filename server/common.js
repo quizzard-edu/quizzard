@@ -18,6 +18,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const questionTypes = Object.freeze({
+    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer'},
+    REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer'},
+    TRUEFALSE  : {name: 'True and False', value: 'tf', template: 'tf-answer'}
+});
+exports.questionTypes = questionTypes;
+
 /* the field to sort by */
 const sortTypes = Object.freeze({
     SORT_NOSORT    : 0x0,
@@ -35,10 +42,3 @@ const userTypes = Object.freeze({
     STUDENT   : 1
 });
 exports.userTypes = userTypes;
-
-const questionTypes = Object.freeze({
-    REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer'},
-    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer'},
-    TRUEFALSE  : {name: 'True and False', value: 'tf', template: 'tf-answer'}
-});
-exports.questionTypes = questionTypes;
