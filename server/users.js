@@ -49,6 +49,7 @@ exports.addAdmin = function(user, callback) {
 		userToAdd.type = common.userTypes.ADMIN;
 		userToAdd.password = hash;
 		userToAdd.active = true;
+		userToAdd.ratings = [];
 
 		db.addAdmin(userToAdd, function(err, res){
 			if(err){
@@ -92,6 +93,7 @@ exports.addStudent = function(user, callback) {
 		userToAdd.type = common.userTypes.STUDENT;
 		userToAdd.password = hash;
 		userToAdd.active = true;
+		userToAdd.ratings = [];
 
 		userToAdd.points = 0.0;
 		userToAdd.correctAttempts = [];
@@ -184,6 +186,12 @@ exports.getQuestionsList = function(request, callback) {
 	db.getQuestionsListByUser(request, callback);
 }
 
+// set the atatus of the user to active or in-active
 exports.setUserStatus = function(studentId, newStatus, callback){
 	db.updateUserById(studentId,{active: newStatus}, callback);
+}
+
+// adding rating to question collection
+exports.submitRating = function (userId, questionId, rating, callback) {
+	db.updateUserById(userId, {questionId: questionId, rating: rating}, callback);
 }

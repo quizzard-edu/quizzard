@@ -689,9 +689,14 @@ app.put('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByType(req.body.type, req.body, function(err, result) {
+    questions.addQuestionByType(req.body.type, req.body, function(err, qId) {
         if (err) {
             return res.status(err.status).send(err.msg);
+        }
+
+        if (req.body.rating && parseInt(req.body.rating) > 0 && parseInt(req.body.rating) < 6) {
+            req.body.qId = qId;
+            return submitQuestionRating(req, res);
         }
 
         return res.status(201).send('Question created');
@@ -748,6 +753,36 @@ app.post('/questiondel', function(req, res) {
         return res.status(200);
     });
 });
+
+// submit question rating from both students and admins
+app.post('/submitQuestionRating', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    return submitQuestionRating(req, res);
+});
+
+// question rating from both students and admins
+var submitQuestionRating = function (req, res) {
+    var userId = req.session.user.id;
+    var questionId = req.body.qId;
+    var rating = parseInt(req.body.rating);
+    console.log(userId+'   '+questionId+'   '+rating);
+    questions.submitRating(questionId, userId, rating, function(err, result) {
+        if (err) {
+            res.status(500).send('could not submit rating');
+        }
+
+        users.submitRating(userId, questionId, rating, function(err, result){
+            if (err) {
+                res.status(500).send('could not submit rating');
+            }
+
+            res.status(200).send('rating submitted');
+        });
+    });
+}
 
 // 404 route
 app.use(function(req, res, next){
