@@ -181,6 +181,7 @@ const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const mcForm = pug.compileFile('views/mc-answer.pug');
+const tfForm = pug.compileFile('views/tf-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
@@ -297,8 +298,13 @@ app.get('/answerForm', function(req, res){
                 common.questionTypes.MULTIPLECHOICE.template,{
                 answerForm:true});
             break;
+        case common.questionTypes.TRUEFALSE.value:
+            res.status(200).render(
+                common.questionTypes.TRUEFALSE.template,{
+                answerForm:true});
+            break;
         default:
-            return res.redirect('/');
+            return res.status(400).send('Please select an appropriate question Type.')
     }
 })
 
@@ -401,6 +407,8 @@ app.post('/questionedit', function(req, res) {
                         return regexForm({adminQuestionEdit:true, question:question})
                     case common.questionTypes.MULTIPLECHOICE.value:
                         return mcForm({adminQuestionEdit:true, question:question})
+                    case common.questionTypes.TRUEFALSE.value:
+                        return tfForm({adminQuestionEdit:true, question:question})
                     default:
                         return res.redirect('/')
                         break;
@@ -550,8 +558,9 @@ app.get('/question', function(req, res) {
                         return regexForm({studentQuestionForm:true})
                     case common.questionTypes.MULTIPLECHOICE.value:
                         return mcForm({studentQuestionForm:true, question:questionFound})
+                    case common.questionTypes.TRUEFALSE.value:
+                        return tfForm({studentQuestionForm:true, question:questionFound})
                     default:
-                        return res.redirect('/');
                         break;
                 }
             }
