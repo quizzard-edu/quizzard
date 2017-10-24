@@ -1,4 +1,5 @@
 var students;
+var studentList;
 
 $(function() {
   $('#nav-analytics').addClass('active');
@@ -8,7 +9,7 @@ $(function() {
 
   // Loads the list of students so that the instructor can select one
   getStudentList();
-  var studentList = {};
+  studentList = {};
   for (var s in students) {
     studentList[students[s]] = null;
   }
@@ -18,18 +19,25 @@ $(function() {
     data: studentList,
     limit: 20,
     onAutocomplete: function(val) {
+      $('#student-analytics-card-content').removeClass('hidden');
       displayStudentStatistics(val);
     },
     minLength: 1,
   });
 
-  // Setting up in-focus and out-of-focus of student autocomplete list
-  $('#autocomplete-input').focus(function() {
-    $('#student-analytics-card-content').addClass('hidden');
-  });
+  // Showing the analytics automatically
+  $('#autocomplete-input').keyup(function() {
+    const autocompleteValue = $('#autocomplete-input').val();
 
-  $('#autocomplete-input').focusout(function() {
-    $('#student-analytics-card-content').removeClass('hidden');
+    for (var s in studentList) {
+      if (s === autocompleteValue) {
+        $('#student-analytics-card-content').removeClass('hidden');
+        displayStudentStatistics(autocompleteValue);
+        return;
+      }
+    }
+
+    $('#student-analytics-card-content').addClass('hidden');
   });
 });
 
@@ -102,6 +110,8 @@ var getQuestionsAnsweredVsClass = function(path) {
       type: 'QuestionsAnsweredVsClass'
     },
     success: function(data) {
+      $('#questionsAnsweredVsClass').removeClass('hidden');
+
       if (data[0] === 0 && data[1] === 0) {
         new Chart($('#questionsAnsweredVsClass'), {
           options: {
@@ -154,6 +164,8 @@ var getQuestionsAnsweredVsClass = function(path) {
     error: function(data) {
       if (data['status'] === 401) {
         window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#questionsAnsweredVsClass').addClass('hidden');
       }
     }
   });
@@ -167,6 +179,8 @@ var getAccuracyVsClass = function(path) {
       type: 'AccuracyVsClass'
     },
     success: function(data) {
+      $('#accuracyVsClass').removeClass('hidden');
+
       if (data[0] === 0 && data[1] === 0) {
         new Chart($('#accuracyVsClass'), {
           options: {
@@ -202,6 +216,8 @@ var getAccuracyVsClass = function(path) {
     error: function(data) {
       if (data['status'] === 401) {
         window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#accuracyVsClass').addClass('hidden');
       }
     }
   });
@@ -215,6 +231,8 @@ var getPointsVsClass = function(path) {
       type: 'PointsVsClass'
     },
     success: function(data) {
+      $('#pointsVsClass').removeClass('hidden');
+
       if (data[0] === 0 && data[1] === 0) {
         new Chart($('#pointsVsClass'), {
           options: {
@@ -250,6 +268,8 @@ var getPointsVsClass = function(path) {
     error: function(data) {
       if (data['status'] === 401) {
         window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#pointsVsClass').addClass('hidden');
       }
     }
   });
@@ -263,6 +283,8 @@ var getRatingVsClass = function(path) {
       type: 'RatingVsClass'
     },
     success: function(data) {
+      $('#ratingVsClass').removeClass('hidden');
+
       if (data[0] === 0 && data[1] === 0) {
         new Chart($('#ratingVsClass'), {
           options: {
@@ -299,6 +321,8 @@ var getRatingVsClass = function(path) {
     error: function(data) {
       if (data['status'] === 401) {
         window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#ratingVsClass').addClass('hidden');
       }
     }
   });
