@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var db = require('./db.js');
 var logger = require('./log.js').logger;
 var common = require('./common.js');
+var validator = require('./validation.js');
 
 /*
 * Insert a new regular question into the database.
@@ -45,6 +46,9 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.mtime = currentDate;
 	questionToAdd.ratings = [];
 
+	var validation = validator.questionCreationValidation(questionToAdd);
+
+	//validate by question Type
 	switch (question.type) {
 		case common.questionTypes.REGULAR.value:
 			questionToAdd.type = common.questionTypes.REGULAR.value;

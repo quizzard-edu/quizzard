@@ -19,20 +19,23 @@ exports.userTypes = userTypes;
 const questionTypes = Object.freeze({
     REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer'},
     MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer'},
-    TRUEFALSE  : {name: 'True and False', value: 'tf', template: 'tf-answer'}
+    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'tf-answer'}
 });
 exports.questionTypes = questionTypes;
 
 const questionAttributes = Object.freeze({
-    String 
+    topic       : {type:'[object String]'},
+    title       : {type:'[object String]'},
+    text        : {type:'[object String]'},
+    answer      : {type:'[object String]'},
+    hint        : {type:'[object String]'},
+    points      : {type:'[object Number]'},
+    visible     : {type:'[object Boolean]'},
+    attempted   : {type:'[object Array]'},
+    answered    : {type:'[object Array]'},
+    attempts    :  {type:'[object Array]'},
+    ctime       : {type:'[object String]'},
+    mtime       : {type:'[object String]'},
+    ratings     : {type:'[object Array]'}
 });
-
- '[object Number]'
-true
->'[object Number]'
-true
-'[object Number]'
-false
-'[object Object]'
-true
-'[object Array]'
+exports.questionAttributes = questionAttributes;
