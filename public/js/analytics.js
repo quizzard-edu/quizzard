@@ -4,7 +4,7 @@ $(function() {
   $('#nav-analytics').addClass('active');
 
   // Loads the Student statistics by default
-  displayStudentStatistics();
+  displayStudentStatistics(null);
 
   // Loads the list of students so that the instructor can select one
   getStudentList();
@@ -18,7 +18,7 @@ $(function() {
     data: studentList,
     limit: 20,
     onAutocomplete: function(val) {
-      alert(val);
+      displayStudentStatistics(val);
     },
     minLength: 1,
   });
@@ -61,7 +61,7 @@ $('#option-class').click(function(evt) {
 * Switching to student statistics tab
 */
 $('#option-student').click(function(evt) {
-    displayStudentStatistics();
+    displayStudentStatistics(null);
 });
 
 /**
@@ -80,22 +80,24 @@ var displayClassStatistics = function() {
 * Sets up the card visibility
 * Calls requested charts to update
 */
-var displayStudentStatistics = function() {
+var displayStudentStatistics = function(studentId) {
     // Card visibilty
     $('#student-analytics-card').removeClass('hidden');
     $('#class-analytics-card').addClass('hidden');
 
+    var path = studentId ? '/studentAnalytics?studentId=' + studentId : '/studentAnalytics';
+
     // Request statistics
-    getQuestionsAnsweredVsClass();
-    getAccuracyVsClass();
-    getPointsVsClass();
-    getRatingVsClass();
+    getQuestionsAnsweredVsClass(path);
+    getAccuracyVsClass(path);
+    getPointsVsClass(path);
+    getRatingVsClass(path);
 }
 
-var getQuestionsAnsweredVsClass = function() {
+var getQuestionsAnsweredVsClass = function(path) {
   $.ajax({
     type: 'GET',
-    url: '/studentAnalytics',
+    url: path,
     data: {
       type: 'QuestionsAnsweredVsClass'
     },
@@ -157,10 +159,10 @@ var getQuestionsAnsweredVsClass = function() {
   });
 }
 
-var getAccuracyVsClass = function() {
+var getAccuracyVsClass = function(path) {
   $.ajax({
     type: 'GET',
-    url: '/studentAnalytics',
+    url: path,
     data: {
       type: 'AccuracyVsClass'
     },
@@ -205,10 +207,10 @@ var getAccuracyVsClass = function() {
   });
 }
 
-var getPointsVsClass = function() {
+var getPointsVsClass = function(path) {
   $.ajax({
     type: 'GET',
-    url: '/studentAnalytics',
+    url: path,
     data: {
       type: 'PointsVsClass'
     },
@@ -253,10 +255,10 @@ var getPointsVsClass = function() {
   });
 }
 
-var getRatingVsClass = function() {
+var getRatingVsClass = function(path) {
   $.ajax({
     type: 'GET',
-    url: '/studentAnalytics',
+    url: path,
     data: {
       type: 'RatingVsClass'
     },

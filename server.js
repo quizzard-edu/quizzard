@@ -830,7 +830,11 @@ app.get('/studentAnalytics', function(req,res){
         return res.redirect('/');
     }
 
-    var query = {user: req.session.user, type: req.query.type};
+    var query = {userId: req.session.user.id, type: req.query.type};
+
+    if (req.session.user.type === common.userTypes.ADMIN && req.query.studentId) {
+        query.userId = req.query.studentId;
+    }
 
     analytics.getChart(query, function(err, result){
         return res.status(200).send(result);

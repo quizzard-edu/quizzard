@@ -49,7 +49,7 @@ var getQuestionsAnsweredVsClass = function(query, callback) {
             return  callback('no results', null);
         }
 
-        var studentId = query.user.id;
+        var studentId = query.userId;
         var studentAnswered = 0;
         var classAnswered = 0;
         var classCount = 0;
@@ -80,7 +80,7 @@ var getAccuracyVsClass = function(query, callback) {
             return  callback('no results', null);
         }
 
-        var studentId = query.user.id;
+        var studentId = query.userId;
         var studentAccuracy = 0;
         var classAccuracy = 0;
         var classCount = 0;
@@ -111,7 +111,7 @@ var getPointsVsClass = function(query, callback) {
             return  callback('no results', null);
         }
 
-        var studentId = query.user.id;
+        var studentId = query.userId;
         var studentPoints = 0;
         var classPoints = 0;
         var classCount = 0;
@@ -142,7 +142,7 @@ var getRatingVsClass = function(query, callback) {
             return  callback('no results', null);
         }
 
-        var studentId = query.user.id;
+        var studentId = query.userId;
         var studentRating = 0;
         var classRating = 0;
         var classCount = 0;
