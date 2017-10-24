@@ -22,3 +22,17 @@ const questionTypes = Object.freeze({
     TRUEFALSE  : {name: 'True and False', value: 'tf', template: 'tf-answer'}
 });
 exports.questionTypes = questionTypes;
+
+const questionAttributes = Object.freeze({
+    String 
+});
+
+ '[object Number]'
+true
+>'[object Number]'
+true
+'[object Number]'
+false
+'[object Object]'
+true
+'[object Array]'
