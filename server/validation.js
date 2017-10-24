@@ -7,3 +7,37 @@ exports.questionCreationValidation = function(info) {
 	}
 	return true
 }
+
+exports.validateQuestionByType = function(question, type){
+	var result = false;
+	switch (type) {
+		case common.questionTypes.REGULAR.value:
+			break;
+
+		case common.questionTypes.MULTIPLECHOICE.value:
+			result = multipleChoiceValidator(question);
+			break;
+
+		case common.questionTypes.TRUEFALSE.value:
+			result = trueAndFalseValidator(question);
+			break;
+
+		default:
+			break;
+	}
+	return result;
+}
+
+var multipleChoiceValidator = function(question){
+	if (question.choices && question.choices.length < 2){
+		return 'Need two or more options for Multiple Choice Question';
+	}
+	return false;
+}
+
+var trueAndFalseValidator = function(question){
+	if (question.choices && question.choices.length !== 2){
+		return 'True and False can only have 2 options!';
+	}
+	return false;
+}

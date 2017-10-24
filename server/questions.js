@@ -45,9 +45,7 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
 	questionToAdd.ratings = [];
-
-	var validation = validator.questionCreationValidation(questionToAdd);
-
+	
 	//validate by question Type
 	switch (question.type) {
 		case common.questionTypes.REGULAR.value:
@@ -69,12 +67,18 @@ exports.addQuestionByType = function(qType, question, callback) {
 	}
 
 	// validate question by its type
-	var result = validateQuestionByType(questionToAdd, questionToAdd.type);
-	if (result !== null){
+	var result = validator.validateQuestionByType(questionToAdd, questionToAdd.type);
+	if (result){
 		return callback({status:400, msg:result}, null)
 	}
 
-	db.addQuestion(questionToAdd, callback);
+	// validate constant question attributes
+	var valid = validator.questionCreationValidation(questionToAdd);
+	if (valid){
+		db.addQuestion(questionToAdd, callback);
+	} else{
+		return callback({status:400, msg:'Form is Invalid.'}, null)
+	}
 }
 
 /*
@@ -119,48 +123,13 @@ var updateQuestionByType = function(qId, infoToUpdate, callback){
 		if(err){
 			return callback({status:500, msg:err},null);
 		}
-
 		// validate question by its type
-		var result = validateQuestionByType(infoToUpdate, question.type);
-		if (result !== null){
+		var result = validator.validateQuestionByType(infoToUpdate, question.type);
+		if (result){
 			return callback({status:400, msg:result}, null)
 		}
 		db.updateQuestionById(qId, infoToUpdate, callback);
 	});
-}
-
-var validateQuestionByType = function(question, type){
-	var result = null;
-	switch (type) {
-		case common.questionTypes.REGULAR.value:
-			break;
-
-		case common.questionTypes.MULTIPLECHOICE.value:
-			result = multipleChoiceValidator(question);
-			break;
-
-		case common.questionTypes.TRUEFALSE.value:
-			result = trueAndFalseValidator(question);
-			break;
-
-		default:
-			break;
-	}
-	return result;
-}
-
-var multipleChoiceValidator = function(question){
-	if (question.choices && question.choices.length < 2){
-		return 'Need two or more options for Multiple Choice Question';
-	}
-	return null;
-}
-
-var trueAndFalseValidator = function(question){
-	if (question.choices && question.choices.length !== 2){
-		return 'True and False can only have 2 options!';
-	}
-	return null;
 }
 
 /* Remove the question with ID qid from the database. */

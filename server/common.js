@@ -33,9 +33,10 @@ const questionAttributes = Object.freeze({
     visible     : {type:'[object Boolean]'},
     attempted   : {type:'[object Array]'},
     answered    : {type:'[object Array]'},
-    attempts    :  {type:'[object Array]'},
+    attempts    : {type:'[object Array]'},
     ctime       : {type:'[object String]'},
     mtime       : {type:'[object String]'},
-    ratings     : {type:'[object Array]'}
+    ratings     : {type:'[object Array]'},
+    type        : {type:'[object String]'}
 });
 exports.questionAttributes = questionAttributes;
