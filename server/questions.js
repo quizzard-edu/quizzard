@@ -67,9 +67,9 @@ exports.addQuestionByType = function(qType, question, callback) {
 	}
 
 	// validate question by its type
-	var result = validator.validateQuestionByType(questionToAdd, questionToAdd.type);
-	if (result){
-		return callback({status:400, msg:result}, null)
+	var message = validator.validateQuestionByType(questionToAdd, questionToAdd.type);
+	if (message){
+		return callback({status:400, msg:message}, null)
 	}
 
 	// validate constant question attributes

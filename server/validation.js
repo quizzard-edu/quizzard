@@ -8,6 +8,23 @@ exports.questionCreationValidation = function(info) {
 	return true
 }
 
+exports.validateAttributeFields = function(question,type){
+	for (var key in question){
+		// check const attributes
+		if (key in common.questionAttributes){
+			if(Object.prototype.toString.call(question[key]) !== common.questionAttributes[key].type)
+				return false
+		// not a const attribute, then validate by question type
+		} else {
+			var result = validateQuestionByType(question,type)
+			if(result){
+				return result
+			}
+		}
+	}
+	return true
+}
+
 exports.validateQuestionByType = function(question, type){
 	var result = false;
 	switch (type) {
