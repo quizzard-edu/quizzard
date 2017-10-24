@@ -22,6 +22,14 @@ $(function() {
     },
     minLength: 1,
   });
+
+  $('#autocomplete-input').focus(function() {
+    $('#student-analytics-card').addClass('hidden');
+  });
+
+  $('#autocomplete-input').focusout(function() {
+    $('#student-analytics-card').removeClass('hidden');
+  });
 });
 
 var getStudentList = function() {
@@ -68,7 +76,7 @@ var getQuestionsAnsweredVsClass = function() {
       type: 'QuestionsAnsweredVsClass'
     },
     success: function(data) {
-      new Chart($("#questionsAnsweredVsClass"), {
+      new Chart($('#questionsAnsweredVsClass'), {
         type: 'bar',
         data: {
           datasets: [{
@@ -90,7 +98,7 @@ var getQuestionsAnsweredVsClass = function() {
           responsive: true,
           title: {
             display: true,
-            text: 'Your Answered Questions VS. The Class'
+            text: 'Your Answered Questions VS. Average Class Answered Questions'
           },
           scales: {
             yAxes: [{
@@ -122,14 +130,14 @@ var getAccuracyVsClass = function() {
       type: 'AccuracyVsClass'
     },
     success: function(data) {
-      new Chart($("#accuracyVsClass"), {
+      new Chart($('#accuracyVsClass'), {
         type: 'doughnut',
         data: {
           datasets: [{
             data: data,
             backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
           }],
-          labels: ['Your Accuracy', "The Class Accuracy"]
+          labels: ['Your Accuracy', 'Average Class Accuracy']
         },
         options: {
           legend:{
@@ -138,7 +146,7 @@ var getAccuracyVsClass = function() {
           responsive: true,
           title: {
             display: true,
-            text: 'Your Accuracy VS. The Class Accuracy'
+            text: 'Your Accuracy VS. Average Class Accuracy'
           }
         }
       });
@@ -159,24 +167,23 @@ var getPointsVsClass = function() {
       type: 'PointsVsClass'
     },
     success: function(data) {
-      new Chart($("#pointsVsClass"), {
+      new Chart($('#pointsVsClass'), {
         type: 'doughnut',
         data: {
           datasets: [{
             data: data,
-            backgroundColor: ["#ff4444", "#00C851"],
-            label: 'Dataset 1'
+            backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
           }],
-          labels: ["CANCELLED", "COMPLETED"]
+          labels: ['Your Points', 'Average Class Points']
         },
         options: {
-          responsive: true,
           legend:{
             display: false
           },
+          responsive: true,
           title: {
             display: true,
-            text: 'Points Vs Class'
+            text: 'Your Points Vs Average Class Points'
           }
         }
       });
@@ -197,24 +204,24 @@ var getRatingVsClass = function() {
       type: 'RatingVsClass'
     },
     success: function(data) {
-      new Chart($("#ratingVsClass"), {
+      new Chart($('#ratingVsClass'), {
         type: 'doughnut',
         data: {
           datasets: [{
             data: data,
-            backgroundColor: ["#ff4444", "#00C851"],
+            backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
             label: 'Dataset 1'
           }],
-          labels: ["CANCELLED", "COMPLETED"]
+          labels: ['Your Average Rating', 'Average Class Rating']
         },
         options: {
-          responsive: true,
           legend:{
             display: false
           },
+          responsive: true,
           title: {
             display: true,
-            text: 'Rating Vs Class'
+            text: 'Your Average Rating Vs Average Class Rating'
           }
         }
       });
