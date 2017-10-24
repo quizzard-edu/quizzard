@@ -12,7 +12,7 @@ $('#nav-home').addClass('active');
 
 $(function(){
     /* show the account table by default */
-    displayAccountsTable();
+    displayQuestionTable();
 });
 
 var toggleUsersSwitch = function() {
@@ -459,7 +459,7 @@ var submitEditForm = function(id) {
                 evt.preventDefault();
                 submitEditForm(user.id ? user.id : id);
             });
-            displayAccountsTable();		
+            displayAccountsTable();
             dropSnack(colours.SUCCESS, 'User ' + id + ' has been updated');
         },
         error: function(data){
@@ -706,7 +706,7 @@ var toggleButtonVisibility = function(){
     } else {
         $('.visbox').hide();
     }
-} 
+}
 
 /* This function slides down a snakbar */
 function dropSnack(colour, msg) {
