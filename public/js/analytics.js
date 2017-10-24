@@ -1,19 +1,19 @@
-var states;
+var students;
 
 $(function() {
   $('#nav-analytics').addClass('active');
 
-  getStudentList();
+  // Loads the Student statistics by default
   displayStudentStatistics();
-  getQuestionsAnsweredVsClass();
-  getAccuracyVsClass();
-  getPointsVsClass();
-  getRatingVsClass();
 
+  // Loads the list of students so that the instructor can select one
+  getStudentList();
   var studentList = {};
-  for (var s in states) {
-    studentList[states[s]] = null;
+  for (var s in students) {
+    studentList[students[s]] = null;
   }
+
+  // Setting up the autocomplete search for the student IDs
   $('#autocomplete-input').autocomplete({
     data: studentList,
     limit: 20,
@@ -23,6 +23,7 @@ $(function() {
     minLength: 1,
   });
 
+  // Setting up in-focus and out-of-focus of student autocomplete list
   $('#autocomplete-input').focus(function() {
     $('#student-analytics-card-content').addClass('hidden');
   });
@@ -32,40 +33,63 @@ $(function() {
   });
 });
 
+/**
+* Gets the list of student IDs
+*/
 var getStudentList = function() {
   $.ajax({
     type: 'GET',
     async: false,
     url: '/studentsListofIds',
     success: function(data) {
-      states = data;
+      students = data;
     },
     error: function(data){
-      states = ['Error'];
+      students = ['Error'];
     }
   });
 }
 
-
-
+/**
+* Switching to class statistics tab
+*/
 $('#option-class').click(function(evt) {
     displayClassStatistics();
 });
 
+/**
+* Switching to student statistics tab
+*/
 $('#option-student').click(function(evt) {
     displayStudentStatistics();
 });
 
+/**
+* Class statistics
+* Sets up the card visibility
+* Calls requested charts to update
+*/
 var displayClassStatistics = function() {
     // Card visibilty
     $('#student-analytics-card').addClass('hidden');
     $('#class-analytics-card').removeClass('hidden');
 }
 
+/**
+* Student statistics
+* Sets up the card visibility
+* Calls requested charts to update
+*/
 var displayStudentStatistics = function() {
     // Card visibilty
     $('#student-analytics-card').removeClass('hidden');
     $('#class-analytics-card').addClass('hidden');
+
+    // Request statistics
+    getQuestionsAnsweredVsClass();
+    getAccuracyVsClass();
+    getPointsVsClass();
+    getRatingVsClass();
 }
 
 var getQuestionsAnsweredVsClass = function() {
@@ -233,50 +257,3 @@ var getRatingVsClass = function() {
     }
   });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var substringMatcher = function(strs) {
-  return function findMatches(q, cb) {
-    var matches, substringRegex;
-
-    // an array that will be populated with substring matches
-    matches = [];
-
-    // regex used to determine if a string contains the substring `q`
-    substrRegex = new RegExp(q, 'i');
-
-    // iterate through the pool of strings and for any string that
-    // contains the substring `q`, add it to the `matches` array
-    $.each(strs, function(i, str) {
-      if (substrRegex.test(str)) {
-        matches.push(str);
-      }
-    });
-
-    cb(matches);
-  };
-};
-
-// var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-//   'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-//   'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-//   'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-//   'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-//   'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-//   'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-//   'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-//   'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-// ];
