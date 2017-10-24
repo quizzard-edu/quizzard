@@ -88,14 +88,14 @@ var getAccuracyVsClass = function(query, callback) {
 
         for (i in students) {
             if (students[i].id === studentId) {
-                studentAccuracy = Math.ceil(students[i].correctAttemptsCount / students[i].totalAttemptsCount);
+                studentAccuracy = parseFloat(students[i].totalAttemptsCount ? ((students[i].correctAttemptsCount / students[i].totalAttemptsCount)*100).toFixed(2) : 0);
             } else {
-                classAccuracy += Math.ceil(students[i].correctAttemptsCount / students[i].totalAttemptsCount);
+                classAccuracy += parseFloat(students[i].totalAttemptsCount ? ((students[i].correctAttemptsCount / students[i].totalAttemptsCount)*100).toFixed(2) : 0);
                 classCount++;
             }
         }
 
-        classAverageAccuracy = Math.ceil(classAccuracy / classCount);
+        classAverageAccuracy = parseFloat(classCount ? ((classAccuracy / classCount)).toFixed(2) : 0);
         return callback(null, [studentAccuracy, classAverageAccuracy]);
     });
 }
