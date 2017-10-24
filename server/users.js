@@ -186,7 +186,7 @@ exports.getQuestionsList = function(request, callback) {
 	db.getQuestionsListByUser(request, callback);
 }
 
-// set the atatus of the user to active or in-active
+// set the status of the user to active or in-active
 exports.setUserStatus = function(studentId, newStatus, callback){
 	db.updateUserById(studentId,{active: newStatus}, callback);
 }

@@ -769,6 +769,10 @@ var submitQuestionRating = function (req, res) {
     var questionId = parseInt(req.body.qId);
     var rating = parseInt(req.body.rating);
 
+    if (rating > 0 && rating < 6) {
+        return res.status(400).send('bad rating');
+    }
+
     questions.submitRating(questionId, userId, rating, function(err, result) {
         if (err) {
             return res.status(500).send('could not submit rating');
