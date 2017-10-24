@@ -122,50 +122,26 @@ var getAccuracyVsClass = function() {
       type: 'AccuracyVsClass'
     },
     success: function(data) {
-      new Chart($("#accuracyVsClassYours"), {
+      new Chart($("#accuracyVsClass"), {
         type: 'doughnut',
         data: {
           datasets: [{
-            data: [data[0], 100 - data[0]],
-            backgroundColor: ['rgba(43, 244, 33, 0.5)', 'rgba(243, 13, 20, 0.5)'],
-            borderColor: ['rgba(43, 163, 0, 1)', 'rgba(243, 13, 20, 1)'],
-            borderWidth: '2',
-            label: 'Your Accuracy'
+            data: data,
+            backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
           }],
-          labels: ['% Correct', "% Incorrect"]
+          labels: ['Your Accuracy', "The Class Accuracy"]
         },
         options: {
+          legend:{
+            display: false
+          },
           responsive: true,
           title: {
             display: true,
-            text: 'Your Accuracy'
+            text: 'Your Accuracy VS. The Class Accuracy'
           }
         }
       });
-
-
-
-      new Chart($("#accuracyVsClassClass"), {
-        type: 'doughnut',
-        data: {
-          datasets: [{
-            data: [data[1], 100 - data[1]],
-            backgroundColor: ['rgba(43, 244, 33, 0.5)', 'rgba(243, 13, 20, 0.5)'],
-            borderColor: ['rgba(43, 163, 0, 1)', 'rgba(243, 13, 20, 1)'],
-            borderWidth: '2',
-            label: 'The Class Accuracy'
-          }],
-          labels: ['% Correct', "% Incorrect"]
-        },
-        options: {
-          responsive: true,
-          title: {
-            display: true,
-            text: 'The Class Accuracy'
-          }
-        }
-      });
-
     },
     error: function(data) {
       if (data['status'] === 401) {
