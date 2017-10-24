@@ -28,7 +28,7 @@ exports.getChart = function(query, callback) {
         case 'QuestionsAnsweredVsClass':
             return getQuestionsAnsweredVsClass(query, callback);
         case 'AccuracyVsClass':
-            return callback(null, [5,3]);
+            return getAccuracyVsClass(query, callback);
         case 'PointsVsClass':
             return getPointsVsClass(query, callback);
         case 'RatingVsClass':
@@ -70,7 +70,7 @@ var getQuestionsAnsweredVsClass = function(query, callback) {
 }
 
 // get questions answered vs class
-var getQuestionsAnsweredVsClass = function(query, callback) {
+var getAccuracyVsClass = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
             return callback(err, null);
@@ -81,22 +81,22 @@ var getQuestionsAnsweredVsClass = function(query, callback) {
         }
 
         var studentId = query.user.id;
-        var studentAnswered = 0;
-        var classAnswered = 0;
+        var studentAccuracy = 0;
+        var classAccuracy = 0;
         var classCount = 0;
-        var classAnsweredAverage = 0;
+        var classAverageAccuracy = 0;
 
         for (i in students) {
             if (students[i].id === studentId) {
-                studentAnswered = students[i].correctAttemptsCount;
+                studentAccuracy = Math.ceil(students[i].correctAttemptsCount / students[i].totalAttemptsCount);
             } else {
-                classAnswered += students[i].correctAttemptsCount;
+                classAccuracy += Math.ceil(students[i].correctAttemptsCount / students[i].totalAttemptsCount);
                 classCount++;
             }
         }
 
-        classAnsweredAverage = Math.ceil(classAnswered / classCount);
-        return callback(null, [studentAnswered, classAnsweredAverage]);
+        classAverageAccuracy = Math.ceil(classAccuracy / classCount);
+        return callback(null, [studentAccuracy, classAverageAccuracy]);
     });
 }
 
