@@ -22,7 +22,8 @@ var users = require('./users.js');
 var logger = require('./log.js').logger;
 var common = require('./common.js');
 
-exports.getChart = function(query, callback){
+// get charts
+exports.getChart = function(query, callback) {
     switch(query.type) {
         case 'QuestionsAnsweredVsClass':
             return getQuestionsAnsweredVsClass(query, callback);
@@ -31,13 +32,14 @@ exports.getChart = function(query, callback){
         case 'PointsVsClass':
             return getPointsVsClass(query, callback);
         case 'RatingVsClass':
-            return callback(null, [2,1]);
+            return getRatingVsClass(query, callback);
         default:
             return callback('notFound', null);
     }
 }
 
-var getQuestionsAnsweredVsClass = function(query, callback){
+// get questions answered vs class
+var getQuestionsAnsweredVsClass = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
             return callback(err, null);
@@ -67,7 +69,8 @@ var getQuestionsAnsweredVsClass = function(query, callback){
     });
 }
 
-var getPointsVsClass = function(query, callback){
+// get points vs class
+var getPointsVsClass = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
             return callback(err, null);
@@ -97,8 +100,9 @@ var getPointsVsClass = function(query, callback){
     });
 }
 
-var getRatingVsClass = function(query, callback){
-    users.getStudentsList(function(err, students) {
+// get rating vs class
+var getRatingVsClass = function(query, callback) {
+    users.getUsersList(function(err, students) {
         if (err) {
             return callback(err, null);
         }
@@ -114,15 +118,28 @@ var getRatingVsClass = function(query, callback){
         var classRatingAverage = 0;
 
         for (i in students) {
-            if (students[i].id === studentId) {
-                studentRating = students[i].ratings;
-            } else {
-                classRating += students[i].ratings;
-                classCount++;
+            if (students[i].ratings.length!==0) {
+                if (students[i].id === studentId) {
+                    studentRating = getAverageRating(students[i].ratings);
+                } else {
+                    classRating += getAverageRating(students[i].ratings);
+                    classCount++;
+                }
             }
         }
 
-        classRatingAverage = Math.ceil(classRating / classCount);
+        classRatingAverage = classRating ? Math.ceil(classRating / classCount) : 0;
         return callback(null, [studentRating, classRatingAverage]);
     });
+}
+
+// get average rating
+var getAverageRating = function(ratingsList) {
+    var totalRate = 0;
+
+    for (i in ratingsList) {
+        totalRate += ratingsList[i].rating;
+    }
+
+    return Math.ceil(totalRate / ratingsList.length);
 }

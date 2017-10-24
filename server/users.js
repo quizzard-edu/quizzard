@@ -149,6 +149,10 @@ exports.getStudentsListWithStatus = function(active, callback) {
     db.getStudentsListWithStatus(active, callback);
 }
 
+exports.getUsersList = function(callback) {
+    db.getUsersList(callback);
+}
+
 /* Return an array of users in the database, sorted by rank. */
 exports.getStudentsListSorted = function(lim, callback) {
 	db.getStudentsListSorted(lim, callback);

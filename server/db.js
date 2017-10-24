@@ -89,6 +89,10 @@ exports.getStudentsList = function(callback) {
     getUsersList({type: common.userTypes.STUDENT}, {id: 1}, callback);
 }
 
+exports.getUsersList = function(callback) {
+    getUsersList({}, {id: 1}, callback);
+}
+
 exports.getStudentsListWithStatus = function(status, callback) {
     getUsersList({type: common.userTypes.STUDENT, active: status}, {id: 1}, callback);
 }
@@ -127,17 +131,6 @@ exports.getStudentsListSorted = function(lim, callback){
 
 exports.getUserById = function(userId, callback){
     getUserById(userId, callback);
-}
-
-var getUserById = function(userId, callback) {
-    usersCollection.findOne({id: userId}, function(err, user) {
-        if (err) {
-            return callback('failure', null);
-        }
-
-        delete user._id;
-        return callback(null, user);
-    });
 }
 
 /*
