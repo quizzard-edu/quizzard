@@ -100,43 +100,54 @@ var getQuestionsAnsweredVsClass = function() {
       type: 'QuestionsAnsweredVsClass'
     },
     success: function(data) {
-      new Chart($('#questionsAnsweredVsClass'), {
-        type: 'bar',
-        data: {
-          datasets: [{
-            data: [data[0]],
-            backgroundColor: 'rgba(43, 244, 33, 0.5)',
-            borderColor: 'rgba(43, 163, 0, 1)',
-            borderWidth: '3',
-            label: 'Your Questions Answered'
-          },
-          {
-            data: [data[1]],
-            backgroundColor: 'rgba(243, 13, 20, 0.5)',
-            borderColor: 'rgba(243, 13, 20, 1)',
-            borderWidth: '3',
-            label: 'Class Questions Answered'
-          }],
-        },
-        options: {
-          responsive: true,
-          title: {
-            display: true,
-            text: 'Your Answered Questions VS. Average Class Answered Questions'
-          },
-          scales: {
-            yAxes: [{
-              ticks: {
-                suggestedMin: 0
-              },
-              scaleLabel: {
-                display: true,
-                labelString: 'Number of Answered Questions'
-              },
-            }]
+      if (data[0] === 0 && data[1] === 0) {
+        new Chart($('#questionsAnsweredVsClass'), {
+          options: {
+            title: {
+              display: true,
+              text: 'No Data for Answered Questions'
+            }
           }
-        }
-      });
+        });
+      } else {
+        new Chart($('#questionsAnsweredVsClass'), {
+          type: 'bar',
+          data: {
+            datasets: [{
+              data: [data[0]],
+              backgroundColor: 'rgba(43, 244, 33, 0.5)',
+              borderColor: 'rgba(43, 163, 0, 1)',
+              borderWidth: '3',
+              label: 'Your Questions Answered'
+            },
+            {
+              data: [data[1]],
+              backgroundColor: 'rgba(243, 13, 20, 0.5)',
+              borderColor: 'rgba(243, 13, 20, 1)',
+              borderWidth: '3',
+              label: 'Class Questions Answered'
+            }],
+          },
+          options: {
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Answered Questions'
+            },
+            scales: {
+              yAxes: [{
+                ticks: {
+                  suggestedMin: 0
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Number of Answered Questions'
+                },
+              }]
+            }
+          }
+        });
+      }
     },
     error: function(data) {
       if (data['status'] === 401) {
@@ -154,26 +165,37 @@ var getAccuracyVsClass = function() {
       type: 'AccuracyVsClass'
     },
     success: function(data) {
-      new Chart($('#accuracyVsClass'), {
-        type: 'doughnut',
-        data: {
-          datasets: [{
-            data: data,
-            backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
-          }],
-          labels: ['Your Accuracy', 'Average Class Accuracy']
-        },
-        options: {
-          legend:{
-            display: false
-          },
-          responsive: true,
-          title: {
-            display: true,
-            text: 'Your Accuracy VS. Average Class Accuracy'
+      if (data[0] === 0 && data[1] === 0) {
+        new Chart($('#accuracyVsClass'), {
+          options: {
+            title: {
+              display: true,
+              text: 'No Data for Accuracy'
+            }
           }
-        }
-      });
+        });
+      } else {
+        new Chart($('#accuracyVsClass'), {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: data,
+              backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
+            }],
+            labels: ['Your Accuracy', 'Average Class Accuracy']
+          },
+          options: {
+            legend:{
+              display: false
+            },
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Accuracy'
+            }
+          }
+        });
+      }
     },
     error: function(data) {
       if (data['status'] === 401) {
@@ -191,26 +213,37 @@ var getPointsVsClass = function() {
       type: 'PointsVsClass'
     },
     success: function(data) {
-      new Chart($('#pointsVsClass'), {
-        type: 'doughnut',
-        data: {
-          datasets: [{
-            data: data,
-            backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
-          }],
-          labels: ['Your Points', 'Average Class Points']
-        },
-        options: {
-          legend:{
-            display: false
-          },
-          responsive: true,
-          title: {
-            display: true,
-            text: 'Your Points Vs Average Class Points'
+      if (data[0] === 0 && data[1] === 0) {
+        new Chart($('#pointsVsClass'), {
+          options: {
+            title: {
+              display: true,
+              text: 'No Data for Points'
+            }
           }
-        }
-      });
+        });
+      } else {
+        new Chart($('#pointsVsClass'), {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: data,
+              backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
+            }],
+            labels: ['Your Points', 'Average Class Points']
+          },
+          options: {
+            legend:{
+              display: false
+            },
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Points'
+            }
+          }
+        });
+      }
     },
     error: function(data) {
       if (data['status'] === 401) {
@@ -228,27 +261,38 @@ var getRatingVsClass = function() {
       type: 'RatingVsClass'
     },
     success: function(data) {
-      new Chart($('#ratingVsClass'), {
-        type: 'doughnut',
-        data: {
-          datasets: [{
-            data: data,
-            backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
-            label: 'Dataset 1'
-          }],
-          labels: ['Your Average Rating', 'Average Class Rating']
-        },
-        options: {
-          legend:{
-            display: false
-          },
-          responsive: true,
-          title: {
-            display: true,
-            text: 'Your Average Rating Vs Average Class Rating'
+      if (data[0] === 0 && data[1] === 0) {
+        new Chart($('#ratingVsClass'), {
+          options: {
+            title: {
+              display: true,
+              text: 'No Data for Average Rating'
+            }
           }
-        }
-      });
+        });
+      } else {
+        new Chart($('#ratingVsClass'), {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: data,
+              backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
+              label: 'Dataset 1'
+            }],
+            labels: ['Your Average Rating', 'Average Class Rating']
+          },
+          options: {
+            legend:{
+              display: false
+            },
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Average Rating'
+            }
+          }
+        });
+      }
     },
     error: function(data) {
       if (data['status'] === 401) {
