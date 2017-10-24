@@ -146,19 +146,15 @@ var validateQuestionByType = function(question, type){
 }
 
 var multipleChoiceValidator = function(question){
-	if (question.choices){
-		if (question.choices.length < 2){
-			return 'Need two or more options for Multiple Choice Question';
-		}
+	if (question.choices && question.choices.length < 2){
+		return 'Need two or more options for Multiple Choice Question';
 	}
 	return null;
 }
 
 var trueAndFalseValidator = function(question){
-	if (question.choices){
-		if (question.choices.length !== 2){
-			return 'True and False can only have 2 options!';
-		}
+	if (question.choices && question.choices.length !== 2){
+		return 'True and False can only have 2 options!';
 	}
 	return null;
 }
