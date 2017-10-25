@@ -5,9 +5,9 @@ const colours = Object.freeze({
     greenBorder   : 'rgba(43, 163, 0, 1)',
     greenLight    : 'rgba(43, 244, 33, 0.5)',
     pink          : 'rgb(255, 99, 132)',
-    SUCCESS       : 'green',
     redBorder     : 'rgba(243, 13, 20, 1)',
     redLight      : 'rgba(243, 13, 20, 0.5)',
+    SUCCESS       : 'green',
     WARNING       : 'orange accent-4'
 });
 
