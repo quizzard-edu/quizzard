@@ -1,10 +1,3 @@
-/* This is the index for referencing colours for the snackbars */
-var colours = Object.freeze({
-    SUCCESS: 'green',
-    FAIL: 'red darken-4',
-    WARNING: 'orange accent-4',
-});
-
 var usersTableActive = true;
 
 $(function(){
