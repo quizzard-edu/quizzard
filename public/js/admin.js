@@ -182,15 +182,6 @@ String.prototype.format = function() {
   return a
 }
 
-var mcAnswerCount = 4;
-var addMCAnswers = function(dom){
-    mcAnswerCount++;
-    var newdiv = document.createElement('p');
-    var inputdiv = '<input type="radio" name="radbutton" value="mcans{0}" id="mcans{1}" required/><label for="mcans{2}">Is Correct</label><input type="text" name="mcans{3}" placeholder="Enter Answer Here" required style="float:left;" class="form-control"/><a onclick="$(this).parent().remove()" class="btn-floating btn-tiny waves-effect waves-light red"><i class="tiny material-icons">close</i></a>';
-    newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount,mcAnswerCount,mcAnswerCount);
-    $('#qAnswer > div.form-group').append(newdiv);
-}
-
 // replace the answer field in Question-creation.pug for specific question
 var getQuestionFormAnswer = function(form){
     $.ajax({
@@ -250,15 +241,6 @@ var displaySettings = function() {
     $('#admin-button').off();
     $('#admin-button').hide();
     $('#admin-back').hide();
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/statistics',
-        success: function(data) {
-        }
-    });
-    */
 }
 
 /* Set up events for the sidebar buttons. */
@@ -615,7 +597,7 @@ var submitQEditForm = function(qid) {
     var fields = $('#question-edit-form').serializeArray();
     var question = {};
     var rating = getRating();
-    
+
     question['choices'] = [];
 
     if ($('#qtext').summernote('isEmpty')) {
