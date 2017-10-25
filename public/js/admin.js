@@ -7,13 +7,13 @@ var colours = Object.freeze({
 
 var usersTableActive = true;
 
-/* set home as the active navbar element */
-$('#nav-home').addClass('active');
-
 $(function(){
     /* show the account table by default */
     displayQuestionTable();
 });
+
+/* set home as the active navbar element */
+$('#nav-home').addClass('active');
 
 var toggleUsersSwitch = function() {
     usersTableActive = !usersTableActive;

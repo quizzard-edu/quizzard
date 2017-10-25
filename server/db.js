@@ -33,6 +33,7 @@ var db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 var nextId = 0;
 var usersCollection;
 var questionsCollection;
+var analyticsCollection;
 
 /* Open a connection to the database. */
 exports.initialize = function(callback) {
@@ -45,6 +46,7 @@ exports.initialize = function(callback) {
         logger.info('Connection to Quizzard database successful.');
         usersCollection = db.collection('users');
         questionsCollection = db.collection('questions');
+        analyticsCollection = db.collection('analytics');
 
         getNextQuestionId(function(){
             logger.info('next question: %d', nextId);
@@ -87,6 +89,10 @@ exports.getStudentsList = function(callback) {
     getUsersList({type: common.userTypes.STUDENT}, {id: 1}, callback);
 }
 
+exports.getUsersList = function(callback) {
+    getUsersList({}, {id: 1}, callback);
+}
+
 exports.getStudentsListWithStatus = function(status, callback) {
     getUsersList({type: common.userTypes.STUDENT, active: status}, {id: 1}, callback);
 }
@@ -125,17 +131,6 @@ exports.getStudentsListSorted = function(lim, callback){
 
 exports.getUserById = function(userId, callback){
     getUserById(userId, callback);
-}
-
-var getUserById = function(userId, callback) {
-    usersCollection.findOne({id: userId}, function(err, user) {
-        if (err) {
-            return callback('failure', null);
-        }
-
-        delete user._id;
-        return callback(null, user);
-    });
 }
 
 /*
@@ -637,5 +632,14 @@ exports.updateQuestionById = function(questionId, request, callback){
         }
 
         return callback(null, 'success');
+    });
+}
+
+// update the analytics collection by pulling the latest changes to the users collection
+var updateAnalytics = function() {
+    analyticsCollection.insert({name:'hi'}, function(err, info){
+        console.log(err);
+        console.log(info);
+        return;
     });
 }
