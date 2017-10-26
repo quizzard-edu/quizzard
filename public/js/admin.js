@@ -1,10 +1,3 @@
-/* This is the index for referencing colours for the snackbars */
-var colours = Object.freeze({
-    SUCCESS: 'green',
-    FAIL: 'red darken-4',
-    WARNING: 'orange accent-4',
-});
-
 var usersTableActive = true;
 
 $(function(){
@@ -182,15 +175,6 @@ String.prototype.format = function() {
   return a
 }
 
-var mcAnswerCount = 4;
-var addMCAnswers = function(dom){
-    mcAnswerCount++;
-    var newdiv = document.createElement('p');
-    var inputdiv = '<input type="radio" name="radbutton" value="mcans{0}" id="mcans{1}" required/><label for="mcans{2}">Is Correct</label><input type="text" name="mcans{3}" placeholder="Enter Answer Here" required style="float:left;" class="form-control"/><a onclick="$(this).parent().remove()" class="btn-floating btn-tiny waves-effect waves-light red"><i class="tiny material-icons">close</i></a>';
-    newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount,mcAnswerCount,mcAnswerCount);
-    $('#qAnswer > div.form-group').append(newdiv);
-}
-
 // replace the answer field in Question-creation.pug for specific question
 var getQuestionFormAnswer = function(form){
     $.ajax({
@@ -250,15 +234,6 @@ var displaySettings = function() {
     $('#admin-button').off();
     $('#admin-button').hide();
     $('#admin-back').hide();
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/statistics',
-        success: function(data) {
-        }
-    });
-    */
 }
 
 /* Set up events for the sidebar buttons. */
@@ -299,7 +274,7 @@ var deactivateUser = function(id) {
             success: function(data) {
                 displayAccountsTable();
                 const msg = ' has been&nbsp;<u><b>deactivated</b></u>&nbsp;';
-                const colour = colours.WARNING;
+                const colour = colours.orange;
                 const icon = '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
                 dropSnack(colour, icon + id + ' account' + msg);
             },
@@ -308,7 +283,7 @@ var deactivateUser = function(id) {
                     window.location.href = '/';
                 } else {
                     const icon = '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp';
-                    dropSnack(colours.FAIL, icon + 'Failed to deactivate ' + id + '\' account');
+                    dropSnack(colours.redDark, icon + 'Failed to deactivate ' + id + '\' account');
                 }
             }
         });
@@ -336,7 +311,7 @@ var activateUser = function(id) {
             success: function(data) {
                 displayAccountsTable();
                 const msg = ' has been activated';
-                const colour = colours.SUCCESS;
+                const colour = colours.green;
                 const icon = '<i class="material-icons">check</i>&nbsp&nbsp&nbsp';
                 dropSnack(colour, icon + id + ' account' + msg);
             },
@@ -345,7 +320,7 @@ var activateUser = function(id) {
                     window.location.href = '/';
                 } else {
                     const icon = '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp';
-                    dropSnack(colours.FAIL, icon + 'Failed to activate ' + id + '\'s account');
+                    dropSnack(colours.redDark, icon + 'Failed to activate ' + id + '\'s account');
                 }
             }
         });
@@ -391,15 +366,15 @@ var submitUserForm = function() {
         data: user,
         success: function(data) {
             displayAccountsTable();
-            dropSnack(colours.SUCCESS, 'User ' + user.id + ' added to database');
+            dropSnack(colours.green, 'User ' + user.id + ' added to database');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['responseText'] === 'failure') {
-                dropSnack(colours.FAIL, 'User could not be added');
+                dropSnack(colours.redDark, 'User could not be added');
             } else if (data['responseText'] === 'exists') {
-                dropSnack(colours.FAIL, 'User ' + user.id + ' already exists');
+                dropSnack(colours.redDark, 'User ' + user.id + ' already exists');
             }
         }
     });
@@ -424,14 +399,14 @@ var submitUploadForm = function() {
         processData: false,
         contentType: false,
         success: function(data) {
-            dropSnack(colours.SUCCESS, 'File successfully uploaded');
+            dropSnack(colours.green, 'File successfully uploaded');
             setTimeout(displayAccountsTable, 3000);
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                dropSnack(colours.FAIL, 'Upload failed');
+                dropSnack(colours.redDark, 'Upload failed');
             }
         }
     });
@@ -460,15 +435,15 @@ var submitEditForm = function(id) {
                 submitEditForm(user.id ? user.id : id);
             });
             displayAccountsTable();
-            dropSnack(colours.SUCCESS, 'User ' + id + ' has been updated');
+            dropSnack(colours.green, 'User ' + id + ' has been updated');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data.result === 'failure') {
-                dropSnack(colours.FAIL, 'User could not be updated. Please try again');
+                dropSnack(colours.redDark, 'User could not be updated. Please try again');
             } else if (data.result === 'dupid') {
-                dropSnack(colours.FAIL, 'User ID ' + user.id + ' is taken');
+                dropSnack(colours.redDark, 'User ID ' + user.id + ' is taken');
             }
         }
     });
@@ -489,7 +464,7 @@ var updateVisibility = function(qid) {
         success: function(data) {
             displayQuestionTable();
             const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
-            const colour = question['visible'] ? colours.SUCCESS : colours.WARNING;
+            const colour = question['visible'] ? colours.green : colours.orange;
             const warn = question['visible'] ? '<i class="material-icons">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
             dropSnack(colour, warn + 'Question ' + qid + msg);
         },
@@ -498,7 +473,7 @@ var updateVisibility = function(qid) {
                 window.location.href = '/';
             } else {
                 displayQuestionTable();
-                dropSnack(colours.FAIL, 'Could not change visibility of question');
+                dropSnack(colours.redDark, 'Could not change visibility of question');
             }
         }
     });
@@ -523,7 +498,7 @@ var submitQuestionForm = function() {
     });
 
     if ($('#qtext').summernote('isEmpty')) {
-        dropSnack(colours.FAIL, 'Please enter a question body in the editor.');
+        dropSnack(colours.redDark, 'Please enter a question body in the editor.');
         return;
     }
 
@@ -537,16 +512,16 @@ var submitQuestionForm = function() {
         url: '/questionadd',
         data: question,
         success: function(data) {
-            dropSnack(colours.SUCCESS, 'Question added to database');
+            dropSnack(colours.green, 'Question added to database');
             displayQuestionTable();
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 400){
-                dropSnack(colours.WARNING, data['responseText']);
+                dropSnack(colours.orange, data['responseText']);
             } else {
-                dropSnack(colours.FAIL, 'Question could not be added.');
+                dropSnack(colours.redDark, 'Question could not be added.');
             }
         }
     });
@@ -567,14 +542,14 @@ var deleteQuestion = function(qid) {
             url: '/questiondel',
             data: { qid: qid },
             success: function(data) {
-                dropSnack(colours.SUCCESS, 'Question ' + qid + ' was removed from the database');
+                dropSnack(colours.green, 'Question ' + qid + ' was removed from the database');
                 displayQuestionTable();
             },
             error: function(data){
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    dropSnack(colours.FAIL, 'Coud not remove question ' + qid + ' from the database');
+                    dropSnack(colours.redDark, 'Coud not remove question ' + qid + ' from the database');
                 }
             }
         });
@@ -615,11 +590,11 @@ var submitQEditForm = function(qid) {
     var fields = $('#question-edit-form').serializeArray();
     var question = {};
     var rating = getRating();
-    
+
     question['choices'] = [];
 
     if ($('#qtext').summernote('isEmpty')) {
-        dropSnack(colours.FAIL, 'Please enter a question body in the editor.');
+        dropSnack(colours.redDark, 'Please enter a question body in the editor.');
         return;
     }
 
@@ -650,16 +625,16 @@ var submitQEditForm = function(qid) {
             id: qid
         },
         success: function(data) {
-            dropSnack(colours.SUCCESS, 'Question ' + qid + ' has been modified.');
+            dropSnack(colours.green, 'Question ' + qid + ' has been modified.');
             displayQuestionTable();
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 400){
-                dropSnack(colours.WARNING, data['responseText']);
+                dropSnack(colours.orange, data['responseText']);
             } else {
-                dropSnack(colours.FAIL, 'Question could not be edited.');
+                dropSnack(colours.redDark, 'Question could not be edited.');
             }
         }
     });
@@ -675,13 +650,13 @@ var submitQuestionRating = function (rating, qid) {
             qId: qid
         },
         success: function(data) {
-            dropSnack(colours.SUCCESS, 'Question ' + qid + ' rating has been updated.');
+            dropSnack(colours.green, 'Question ' + qid + ' rating has been updated.');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                dropSnack(colours.FAIL, 'Question could not be updated.');
+                dropSnack(colours.redDark, 'Question could not be updated.');
             }
         }
     });
