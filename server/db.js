@@ -586,6 +586,14 @@ exports.updateQuestionById = function(questionId, request, callback){
       update.$set.choices = request.choices;
     }
 
+    if (request.leftSide) {
+      update.$set.leftSide = request.leftSide;
+    }
+
+    if (request.rightSide) {
+      update.$set.rightSide = request.rightSide;
+    }
+
     if (request.rating) {
         update.$push.ratings = {
             user: request.userId,
@@ -593,7 +601,7 @@ exports.updateQuestionById = function(questionId, request, callback){
             rating: request.rating
         }
     }
-    
+
     if (request.visible) {
         update.$set.visible = (request.visible === 'true');
     }

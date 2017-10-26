@@ -17,11 +17,36 @@ if answerForm
           a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
             i.tiny.material-icons close
 
+  #addMoreAnswersButton
+    a.waves-effect.waves-light.btn(onclick="addMatchAnswers('qAnswer')") add answer
 
-
+else if adminQuestionEdit
+  .form-group
+    .row
+      h5.left Description:
+      .col.s10
+        p.left Place one item of the matching pair on the left side, and the corresponding one beside it the right side
+    each index in Array(question.leftSide.length) //TODO: figure out how to use that index to get the items and populate the message list ALSO dont forget to add a validator for matching
+      .row
+        hr
+        .col.s5
+          .card.white
+            textarea.form-control(name='matchLeft'+index, placeholder='Enter Left Side', rows='3', required)
+        .col.s5
+          .card.white
+            textarea.form-control(name='matchRight'+index, placeholder='Enter Right Side', rows='3', required)
+        .col.s2
+          a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
+            i.tiny.material-icons close
 
   #addMoreAnswersButton
-    a.waves-effect.waves-light.btn(onclick="addMCAnswers('qAnswer')") add answer
+    a.waves-effect.waves-light.btn(onclick="addMatchAnswers('qAnswer')") add answer
+
+
+
+
+
+
 
 block scripts
   script(src='/js/matching-answer.js')

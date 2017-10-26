@@ -62,7 +62,8 @@ exports.addQuestionByType = function(qType, question, callback) {
 
 		case common.questionTypes.MATCHING.value:
 			questionToAdd.type = common.questionTypes.MATCHING.value;
-			questionToAdd.choices = question.choices ? question.choices : [];
+			questionToAdd.leftSide = question.leftSide ? question.leftSide : [];
+			questionToAdd.rightSide = question.rightSide ? question.rightSide : [];
 			break;
 
 		default:
