@@ -449,34 +449,54 @@ var submitEditForm = function(id) {
     });
 }
 
+/* Updates the Vilibility of a Question */
 var updateVisibility = function(qid) {
     var question = {};
-
-    question['visible'] = $('#checked-' + qid).is(':checked');
-
-    $.ajax({
-        type: 'POST',
-        url: '/questionmod',
-        data: {
-            question: question,
-            id: qid
+    swal({
+        type: 'warning',
+        title: 'Visibilty Change',
+        text: 'You are about to change the visibility status of question ' + qid,
+        showCancelButton: true,
+        showConfirmButton: true,
+        // User can only close the swal if they click one of the buttons
+        allowEscapeKey: false,
+        allowClickOutside: false,
         },
-        success: function(data) {
-            displayQuestionTable();
-            const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
-            const colour = question['visible'] ? colours.green : colours.orange;
-            const warn = question['visible'] ? '<i class="material-icons">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
-            dropSnack(colour, warn + 'Question ' + qid + msg);
-        },
-        error: function(data){
-            if (data['status'] === 401) {
-                window.location.href = '/';
+        function (isConfirm) {
+            // User confirms the visiblity change
+            if (isConfirm) {
+                question['visible'] = $('#checked-' + qid).is(':checked');          
+                $.ajax({
+                    type: 'POST',
+                    url: '/questionmod',
+                    data: {
+                        question: question,
+                        id: qid
+                    },
+                    success: function(data) {
+                        displayQuestionTable();
+                        // Toast notifiation
+                        const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
+                        const colour = question['visible'] ? colours.green : colours.orange;
+                        const warn = question['visible'] ? '<i class="material-icons">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
+                        dropSnack(colour, warn + 'Question ' + qid + msg);
+                    },
+                    error: function(data){
+                        if (data['status'] === 401) {
+                            window.location.href = '/';
+                        } else {
+                            displayQuestionTable();
+                            // Toast notification
+                            dropSnack(colours.redDark, 'Could not change visibility of question');
+                        }
+                    }
+                });
+            // User cancels the visibility change
             } else {
                 displayQuestionTable();
-                dropSnack(colours.redDark, 'Could not change visibility of question');
             }
         }
-    });
+    );
 }
 
 /* Process submitted question edit form. */
