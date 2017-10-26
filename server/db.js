@@ -104,10 +104,6 @@ var getUsersList = function(findQuery, sortQuery, callback){
             return callback(err, []);
         }
 
-        for (s in docs) {
-            delete docs[s]._id;
-        }
-
         return callback(null, docs);
     });
 }
@@ -641,5 +637,50 @@ var updateAnalytics = function() {
         console.log(err);
         console.log(info);
         return;
+    });
+}
+
+/*
+add student analytics
+if there are no records of the student, create a new record
+if there are recards of the student, get the last recard and compute the deltas
+*/
+exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
+    var query = {_id: studentId};
+    var update = {};
+
+    analyticsCollection.findOne(query, function(err, student) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!student) {
+            info.correctAttemptsDelta = 0;
+            info.wrongAttemptsDelta = 0;
+            info.totalAttemptsDelta = 0;
+            update._id = studentId;
+            update.dates = [{date: date, info: info}];
+
+            analyticsCollection.insert(update, function(err, obj){
+                if (err) {
+                    return callback(err, null);
+                }
+                return callback(null, obj);
+            });
+        }
+
+        if (student) {
+            info.correctAttemptsDelta = info.correctAttemptsCount - student.dates[student.dates.length-1].info.correctAttemptsCount;
+            info.wrongAttemptsDelta = info.wrongAttemptsCount - student.dates[student.dates.length-1].info.wrongAttemptsCount;
+            info.totalAttemptsDelta = info.totalAttemptsCount - student.dates[student.dates.length-1].info.totalAttemptsCount;
+            update.$push = {dates: {date: date, info: info}};
+
+            analyticsCollection.update(query, update, function(err, info) {
+                if (err) {
+                    return callback(err, null);
+                }
+                return callback(null, info);
+            });
+        }
     });
 }

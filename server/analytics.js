@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var users = require('./users.js');
 var logger = require('./log.js').logger;
 var common = require('./common.js');
+var db = require('./db.js');
 
 // get charts
 exports.getChart = function(query, callback) {
@@ -173,4 +174,13 @@ var getAverageRating = function(ratingsList) {
     }
 
     return Math.ceil(totalRate / ratingsList.length);
+}
+
+/*
+add student analytics
+if there are no records of the student, create a new record
+if there are recards of the student, get the last recard and compute the deltas
+*/
+exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
+    db.addStudentAnalyticsWithDate(studentId, date, info, callback);
 }
