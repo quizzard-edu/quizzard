@@ -166,15 +166,6 @@ var displayQuestionForm = function() {
     });
 }
 
-/*String Formating option*/
-String.prototype.format = function() {
-  a = this;
-  for (k in arguments) {
-    a = a.replace("{" + k + "}", arguments[k])
-  }
-  return a
-}
-
 // replace the answer field in Question-creation.pug for specific question
 var getQuestionFormAnswer = function(form){
     $.ajax({
