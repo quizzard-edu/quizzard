@@ -182,6 +182,7 @@ const statistics = pug.compileFile('views/statistics.pug');
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
+const mForm = pug.compileFile('views/tf-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
@@ -303,6 +304,11 @@ app.get('/answerForm', function(req, res){
                 common.questionTypes.TRUEFALSE.template,{
                 answerForm:true});
             break;
+        case common.questionTypes.MATCHING.value:
+            res.status(200).render(
+                common.questionTypes.MATCHING.template,{
+                answerForm:true});
+            break;
         default:
             return res.status(400).send('Please select an appropriate question Type.')
     }
@@ -409,6 +415,8 @@ app.post('/questionedit', function(req, res) {
                         return mcForm({adminQuestionEdit:true, question:question})
                     case common.questionTypes.TRUEFALSE.value:
                         return tfForm({adminQuestionEdit:true, question:question})
+                    case common.questionTypes.MATCHING.value:
+                        return matchingForm({adminQuestionEdit:true, question:question})
                     default:
                         return res.redirect('/')
                         break;
@@ -560,6 +568,8 @@ app.get('/question', function(req, res) {
                         return mcForm({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.TRUEFALSE.value:
                         return tfForm({studentQuestionForm:true, question:questionFound})
+                    case common.questionTypes.MATCHING.value:
+                        return matchingForm({studentQuestionForm:true, question:questionFound})
                     default:
                         break;
                 }
