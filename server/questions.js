@@ -60,6 +60,11 @@ exports.addQuestionByType = function(qType, question, callback) {
 			questionToAdd.choices = question.choices ? question.choices : [];
 			break;
 
+		case common.questionTypes.MATCHING.value:
+			questionToAdd.type = common.questionTypes.MATCHING.value;
+			questionToAdd.choices = question.choices ? question.choices : [];
+			break;
+
 		default:
 			return callback({status:400, msg:'Type of Question is Undefined'}, null)
 	}
