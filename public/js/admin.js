@@ -477,7 +477,6 @@ var submitEditForm = function(id) {
 /* Updates the Vilibility of a Question */
 var updateVisibility = function(qid) {
     var question = {};
-
     swal({
         type: 'warning',
         title: 'Visibilty Change',
@@ -487,43 +486,38 @@ var updateVisibility = function(qid) {
         // User can only close the swal if they click one of the buttons
         allowEscapeKey: false,
         allowClickOutside: false,
-        // Clicking the buttons does not close the swal, it opens one of the swals below
-        closeOnConfirm: false,
-        closeOnCancel: false,
         },
         function (isConfirm) {
             // User confirms the visiblity change
             if (isConfirm) {
-            swal('Changed!', 'The visibility of the quesiton has been changed', 'success');
-            question['visible'] = $('#checked-' + qid).is(':checked');          
-            $.ajax({
-                type: 'POST',
-                url: '/questionmod',
-                data: {
-                    question: question,
-                    id: qid
-                },
-                success: function(data) {
-                    displayQuestionTable();
-                    // Toast notifiation
-                    const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
-                    const colour = question['visible'] ? colours.SUCCESS : colours.WARNING;
-                    const warn = question['visible'] ? '<i class="material-icons">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
-                    dropSnack(colour, warn + 'Question ' + qid + msg);
-                },
-                error: function(data){
-                    if (data['status'] === 401) {
-                        window.location.href = '/';
-                    } else {
+                question['visible'] = $('#checked-' + qid).is(':checked');          
+                $.ajax({
+                    type: 'POST',
+                    url: '/questionmod',
+                    data: {
+                        question: question,
+                        id: qid
+                    },
+                    success: function(data) {
                         displayQuestionTable();
-                        // Toast notification
-                        dropSnack(colours.FAIL, 'Could not change visibility of question');
+                        // Toast notifiation
+                        const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
+                        const colour = question['visible'] ? colours.SUCCESS : colours.WARNING;
+                        const warn = question['visible'] ? '<i class="material-icons">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
+                        dropSnack(colour, warn + 'Question ' + qid + msg);
+                    },
+                    error: function(data){
+                        if (data['status'] === 401) {
+                            window.location.href = '/';
+                        } else {
+                            displayQuestionTable();
+                            // Toast notification
+                            dropSnack(colours.FAIL, 'Could not change visibility of question');
+                        }
                     }
-                }
-            });
+                });
             // User cancels the visibility change
             } else {
-                swal('Cancelled', 'The visibility of the question was not changed.', 'error');
                 displayQuestionTable();
             }
         }
