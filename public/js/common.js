@@ -9,7 +9,7 @@ const colours = Object.freeze({
     pink          : 'rgb(255, 99, 132)',
     redBorder     : 'rgba(243, 13, 20, 1)',
     redDark       : 'red darken-4',
-    redLight      : 'rgba(243, 13, 20, 0.5)'
+    redLight      : 'rgba(243, 13, 20, 0.5)',
     white         : 'white'
 });
 

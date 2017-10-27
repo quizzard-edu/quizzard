@@ -2,6 +2,7 @@ if answerForm
   .form-group
     .row
       h5.left Description:
+      br
       .col.s10
         p.left Place one item of the matching pair on the left side, and the corresponding one beside it the right side
     each index in [1,2,3]
@@ -22,14 +23,15 @@ if answerForm
 
 else if studentQuestionForm
   .form-group
-    each item, index in question.leftSide
-      .row
-        .col.s6
+    .row
+      .col.s6
+        each item, index in question.leftSide
           .card(id='matchLeft'+index, onclick="selectAnswer($(this))")
             p(id='textLeft'+index)=item
-        .col.s6
+      .col.s6
+        each item, index in question.leftSide
           .card(id='matchRight'+index, onclick="selectAnswer($(this))")
-            p(id='textRight'+index)=question.rightSide[index]
+            p(id='textRight'+index)=item
 
 else if adminQuestionEdit
   .form-group

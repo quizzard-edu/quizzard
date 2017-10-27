@@ -15,11 +15,51 @@ var addMatchAnswers = function(dom) {
     $('#qAnswer > div.form-group').append(inputdiv);
 }
 
-var selectAnswer = function(test) {
-    //if (currentSelected) {
-        // $('#' + test.attr('id').replace('match', 'text')).removeClass('white')
-        // $('#' + test.attr('id').replace('match', 'text')).addClass('black')
-        test.removeClass(colours.white);
-        test.addClass(colours.grayLight);
-    //}
+var selectAnswer = function(newItem) {
+    var location = null;
+
+    if (currentSelected) {
+        // If selecting the same item
+        if (currentSelected.attr('id') === newItem.attr('id')) {
+            return;
+        }
+
+        // Which side was selected
+        if (newItem.attr('id').indexOf('Left') !== -1) {
+            location = 'Left';
+        } else {
+            location = 'Right';
+        }
+
+        // Is it the same side as the one previously selected
+        if (currentSelected.attr('id').indexOf(location) !== -1) {
+            newItem.removeClass(colours.white);
+            newItem.addClass(colours.grayLight);
+            currentSelected = newItem;
+        } else {
+            newItem.addClass(colours.white);
+            newItem.removeClass(colours.grayLight);
+            createMatch(currentSelected, newItem);
+        }
+
+
+        // $('#' + newItem.attr('id').replace('match', 'text')).removeClass('white')
+        // $('#' + newItem.attr('id').replace('match', 'text')).addClass('black')
+
+
+
+
+        //newItem.removeClass(colours.white);
+        //newItem.addClass(colours.grayLight);
+    } else {
+      newItem.removeClass(colours.white);
+      newItem.addClass(colours.grayLight);
+      currentSelected = newItem;
+    }
+}
+
+var createMatch = function(item1, item2) {
+    currentSelected = null;
+    item1.addClass('hidden');
+    item2.addClass('hidden');
 }
