@@ -1,20 +1,15 @@
-if questions.length == 0
-  .no-questions
-    h4.text-center You have completed all currently available questions. Well done!
-    p.text-center Check back later for more...
-else
-  ul.collection
-    each q in questions
-      li.collection-item.avatar
-        if q.type == 0
-          i.material-icons.circle font_download
-        else
-          i.material-icons.circle format_list_bulleted
-        span.title #{q.title}
-        p
-          | #{q.topic}
-          br
-          |          #{q.points}
-        a.secondary-content.question-block.noLineLink(id=q.id, style='cursor: pointer;')
-          i.material-icons send
-          p.text-center.title 
+ul.collection
+  each q in questions
+    li.collection-item.avatar
+      if q.type == 0
+        i.material-icons.circle font_download
+      else
+        i.material-icons.circle format_list_bulleted
+      span.title #{q.title}
+      p
+        | #{q.topic}
+        br
+        | #{q.points}
+      a.secondary-content.question-block.noLineLink(id=q.id, style='cursor: pointer;')
+        i.material-icons send
+        p.text-center.title

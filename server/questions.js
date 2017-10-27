@@ -36,7 +36,6 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.text = question.text;
 	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
-	questionToAdd.rating = question.rating;
 	questionToAdd.points = parseInt(question.points);
 	questionToAdd.visible = (question.visible === 'true');
 	questionToAdd.attempted = [];
@@ -44,6 +43,7 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.attempts = [];
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
+	questionToAdd.ratings = [];
 
 	switch (question.type) {
 		case common.questionTypes.REGULAR.value:
@@ -52,6 +52,11 @@ exports.addQuestionByType = function(qType, question, callback) {
 
 		case common.questionTypes.MULTIPLECHOICE.value:
 			questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
+			questionToAdd.choices = question.choices ? question.choices : [];
+			break;
+
+		case common.questionTypes.TRUEFALSE.value:
+			questionToAdd.type = common.questionTypes.TRUEFALSE.value;
 			questionToAdd.choices = question.choices ? question.choices : [];
 			break;
 
@@ -85,8 +90,8 @@ exports.addQuestionByType = function(qType, question, callback) {
 * 4th bit: if 1, allow questions that have already been answered by user.
 * 5th bit: if 1, only show those questions that have been answered (with bit 4).
 */
-exports.findQuestions = function(amount, findType, user, callback) {
-	db.findQuestions(amount, findType, user, callback);
+exports.getQuestionsList = function(callback) {
+	db.getQuestionsList(callback);
 }
 
 /* Sort questions by the given sort type. */
@@ -130,6 +135,10 @@ var validateQuestionByType = function(question, type){
 			result = multipleChoiceValidator(question);
 			break;
 
+		case common.questionTypes.TRUEFALSE.value:
+			result = trueAndFalseValidator(question);
+			break;
+
 		default:
 			break;
 	}
@@ -137,11 +146,16 @@ var validateQuestionByType = function(question, type){
 }
 
 var multipleChoiceValidator = function(question){
-
-	if (question.choices.length < 2){
+	if (question.choices && question.choices.length < 2){
 		return 'Need two or more options for Multiple Choice Question';
 	}
+	return null;
+}
 
+var trueAndFalseValidator = function(question){
+	if (question.choices && question.choices.length !== 2){
+		return 'True and False can only have 2 options!';
+	}
 	return null;
 }
 
@@ -173,7 +187,7 @@ var lookupQuestionById = function(questionId, callback) {
 * with the result of the comparison and the new question object.
 */
 exports.checkAnswer = function(questionId, user, answer, callback) {
-    logger.info('User %s attempted to answer question %d with "%s"', userId, questionId, answer);
+    logger.info('User %s attempted to answer question %d with "%s"', user.id, questionId, answer);
 	var userType = user.type;
 	var userId = user.id;
 
@@ -196,10 +210,15 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 					questionId,
 					{ userId:userId, correct:value, attempt:answer },
 					function(err, res) {
-						return callback(err, value);
+						return callback(err, {correct: value, points: question.points});
 					}
 				);
 			}
 		);
 	});
+}
+
+// adding rating to question collection
+exports.submitRating = function (questionId, userId, rating, callback) {
+	db.updateQuestionById(questionId, {userId: userId, rating: rating}, callback);
 }

@@ -125,7 +125,7 @@ var answerQuestion = function(questionId) {
             answer = 'KonniChiwa';
         }
 
-        questions.checkAnswer(questionId, studentId, answer, function(err, res) {
+        questions.checkAnswer(questionId, {id: studentId, type: common.userTypes.STUDENT}, answer, function(err, res) {
             if (res == 'failure') {
                 logger.error('Questions %d answered incorrectly by %s', questionId, studentId);
             } else {
