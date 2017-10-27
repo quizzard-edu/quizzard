@@ -17,8 +17,9 @@ if answerForm
 else if studentQuestionForm
 	form.form-question#mc_answerform
 		each answer in question.choices
-			input(type='radio' name='answer', value=answer, id=answer, required, autofocus)
-			label(for=answer) #{answer}
+			.row
+				input(type='radio' name='answer', value=answer, id=answer, required, autofocus)
+				label(for=answer) #{answer}
 
 		button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
 
