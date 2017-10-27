@@ -107,7 +107,7 @@ app.get('/logout', function(req, res) {
         req.session.destroy();
     }
 
-    return res.status(200).send();
+    return res.redirect('/');
 });
 
 /* Display the home page. */
