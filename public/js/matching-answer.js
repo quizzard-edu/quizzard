@@ -1,9 +1,10 @@
 var matchAnswerCount = 3; // default number of options
 
 // Answering Variables
-answerLeft = [];
-answerRight = [];
-currentSelected = null;
+var answeredId = 0;
+var answerLeft = [];
+var answerRight = [];
+var currentSelected = null;
 
 /**
 * Adds an option to the multiple choice
@@ -31,16 +32,17 @@ var selectAnswer = function(newItem) {
             location = 'Right';
         }
 
+        currentSelected[0].style.backgroundColor = colours.white;
+
         // Is it the same side as the one previously selected
         if (currentSelected.attr('id').indexOf(location) !== -1) {
-            newItem.removeClass(colours.white);
-            newItem.addClass(colours.grayLight);
+            newItem[0].style.backgroundColor = colours.grayLight;
             currentSelected = newItem;
         } else {
-            newItem.addClass(colours.white);
-            newItem.removeClass(colours.grayLight);
+            newItem[0].style.backgroundColor = colours.white;
             createMatch(currentSelected, newItem);
         }
+
 
 
         // $('#' + newItem.attr('id').replace('match', 'text')).removeClass('white')
@@ -52,8 +54,7 @@ var selectAnswer = function(newItem) {
         //newItem.removeClass(colours.white);
         //newItem.addClass(colours.grayLight);
     } else {
-      newItem.removeClass(colours.white);
-      newItem.addClass(colours.grayLight);
+      newItem[0].style.backgroundColor = colours.grayLight;
       currentSelected = newItem;
     }
 }
@@ -62,4 +63,13 @@ var createMatch = function(item1, item2) {
     currentSelected = null;
     item1.addClass('hidden');
     item2.addClass('hidden');
+
+    answeredId++;
+    var inputdiv = '<div class="row"><div class="col s5"><div class="card white"><p id="ansLeft{0}">{1}</p></div></div><div class="col s5"><div class="card white"><p id="ansRight{0}">{2}</p></div></div><div class="col s2"><a class="btn-floating btn-tiny waves-effect waves-light red" onclick="$(this).parent().parent().remove()"><i class="tiny material-icons">close</i></a></div></div>';
+    inputdiv = inputdiv.format([answeredId, item1.text(), item2.text()]);
+    $('#answers').append(inputdiv);
+}
+
+var deleteMatch = function() {
+
 }

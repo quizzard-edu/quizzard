@@ -32,6 +32,14 @@ else if studentQuestionForm
         each item, index in question.leftSide
           .card(id='matchRight'+index, onclick="selectAnswer($(this))")
             p(id='textRight'+index)=item
+  hr
+  .form-group
+    .row
+      h5.left Matches:
+    #answers
+
+
+
 
 else if adminQuestionEdit
   .form-group
