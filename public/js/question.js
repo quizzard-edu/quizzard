@@ -44,7 +44,7 @@ var sendAnswerRequest = function(ans) {
             }, function (isConfirm) {
                 if(isConfirm) {
                     alert(getRating() + " " + questionId)
-                    submitQuestionRating(getRating(), questionId);
+                    submitQuestionRating(getRating(), questionId)
                     window.location.href = '/';
                 }
             });
