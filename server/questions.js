@@ -23,6 +23,15 @@ var logger = require('./log.js').logger;
 var common = require('./common.js');
 var validator = require('./validation.js');
 
+var prepareQuestionData = function(data){
+	var newData = data;
+	if ('points' in data)
+		newData.points = parseInt(data.points);
+
+	if ('visible' in data)
+		newData.visible = (data.visible === 'true');
+	return newData;
+}
 /*
 * Insert a new regular question into the database.
 * The question object passed to the function should have
@@ -37,14 +46,15 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.text = question.text;
 	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
-	questionToAdd.points = parseInt(question.points);
-	questionToAdd.visible = (question.visible === 'true');
+	questionToAdd.points = question.points
+	questionToAdd.visible = question.visible
 	questionToAdd.attempted = [];
 	questionToAdd.answered = [];
 	questionToAdd.attempts = [];
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
 	questionToAdd.ratings = [];
+	questionToAdd = prepareQuestionData(questionToAdd);
 	
 	//validate by question Type
 	switch (question.type) {
@@ -66,18 +76,12 @@ exports.addQuestionByType = function(qType, question, callback) {
 			return callback({status:400, msg:'Type of Question is Undefined'}, null)
 	}
 
-	// validate question by its type
-	var message = validator.validateQuestionByType(questionToAdd, questionToAdd.type);
-	if (message){
-		return callback({status:400, msg:message}, null)
-	}
-
 	// validate constant question attributes
-	var valid = validator.questionCreationValidation(questionToAdd);
-	if (valid){
+	result = validator.questionCreationValidation(questionToAdd);
+	if (result.success){
 		db.addQuestion(questionToAdd, callback);
 	} else{
-		return callback({status:400, msg:'Form is Invalid.'}, null)
+		return callback({status:400, msg:result.msg}, null)
 	}
 }
 
@@ -123,12 +127,14 @@ var updateQuestionByType = function(qId, infoToUpdate, callback){
 		if(err){
 			return callback({status:500, msg:err},null);
 		}
-		// validate question by its type
-		var result = validator.validateQuestionByType(infoToUpdate, question.type);
-		if (result){
-			return callback({status:400, msg:result}, null)
+		infoToUpdate = prepareQuestionData(infoToUpdate);
+		// validate each field that will be updated
+		var result = validator.validateAttributeFields(infoToUpdate, question.type);
+		if (result.success){
+			db.updateQuestionById(qId, infoToUpdate, callback);
+		} else {
+			return callback({status:400, msg:result.msg}, null)
 		}
-		db.updateQuestionById(qId, infoToUpdate, callback);
 	});
 }
 

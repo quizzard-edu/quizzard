@@ -44,13 +44,6 @@ const userTypes = Object.freeze({
 
 exports.userTypes = userTypes;
 
-const questionTypes = Object.freeze({
-    REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer'},
-    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer'},
-    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'tf-answer'}
-});
-exports.questionTypes = questionTypes;
-
 const questionAttributes = Object.freeze({
     topic       : {type:'[object String]'},
     title       : {type:'[object String]'},
