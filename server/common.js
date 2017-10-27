@@ -43,3 +43,17 @@ const userTypes = Object.freeze({
     STUDENT   : 1
 });
 exports.userTypes = userTypes;
+
+var randomize = function(data) {
+    var oldIndex, newIndex, tempHolder;
+
+    for (oldIndex=data.length-1; oldIndex > 0; oldIndex--) {
+        newIndex = Math.floor(Math.random() * (oldIndex + 1));
+        tempHolder = data[oldIndex];
+        data[oldIndex] = data[newIndex];
+        data[newIndex] = tempHolder;
+    }
+
+    return data;
+};
+exports.randomize = randomize;

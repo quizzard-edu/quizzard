@@ -15,6 +15,18 @@ var addMatchAnswers = function(dom) {
     $('#qAnswer > div.form-group').append(inputdiv);
 }
 
+var cardHoverOn = function(card) {
+    if (card[0].style.backgroundColor !== colours.grayLight){
+        card[0].style.backgroundColor = colours.blueLight;
+    }
+}
+
+var cardHoverAway = function(card) {
+    if (card[0].style.backgroundColor !== colours.grayLight){
+        card[0].style.backgroundColor = colours.white;
+    }
+}
+
 var selectAnswer = function(newItem) {
     var location = null;
 

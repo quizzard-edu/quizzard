@@ -569,6 +569,9 @@ app.get('/question', function(req, res) {
                     case common.questionTypes.TRUEFALSE.value:
                         return tfForm({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.MATCHING.value:
+                        // randomize the order of the matching
+                        questionFound.leftSide = common.randomize(questionFound.leftSide);
+                        questionFound.rightSide = common.randomize(questionFound.rightSide);
                         return matchingForm({studentQuestionForm:true, question:questionFound})
                     default:
                         break;

@@ -26,11 +26,11 @@ else if studentQuestionForm
     .row
       .col.s6
         each item, index in question.leftSide
-          .card(id='matchLeft'+index, onclick="selectAnswer($(this))")
+          .card(id='matchLeft'+index, onclick='selectAnswer($(this))', onmouseover='cardHoverOn($(this))' onmouseout='cardHoverAway($(this))')
             p(id='textLeft'+index)=item
       .col.s6
         each item, index in question.rightSide
-          .card(id='matchRight'+index, onclick="selectAnswer($(this))")
+          .card(id='matchRight'+index, onclick='selectAnswer($(this))', onmouseover='cardHoverOn($(this))' onmouseout='cardHoverAway($(this))')
             p(id='textRight'+index)=item
   hr
   form.form-question#match_answerform
