@@ -669,6 +669,7 @@ var submitQuestionRating = function (rating, qid) {
             rating: rating,
             qId: qid
         },
+        async: false,
         success: function(data) {
             dropSnack(colours.green, 'Question ' + qid + ' rating has been updated.');
         },
