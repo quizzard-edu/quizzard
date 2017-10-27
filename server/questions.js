@@ -204,23 +204,29 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 
 		var value = null;
 
-		if (question.type === common.questionTypes.MATCHING.value) {
+		if (question.type === common.questionTypes.MATCHING.value && answer) {
 		    const ansLeftSide = answer[0];
 				const ansRightSide = answer[1];
 
-				var checkIndexLeft;
-				var checkIndexRight;
+				if (ansLeftSide.length === question.leftSide.length) {
+					var checkIndexLeft;
+					var checkIndexRight;
 
-				for (i=0; i<ansLeftSide.length; i++) {
-				    checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
-						checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
-						if (checkIndexLeft !== checkIndexRight) {
-						    value = false;
-						}
-				}
+					for (i=0; i<ansLeftSide.length; i++) {
+					    checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+							checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+							console.log(checkIndexLeft);
+							console.log(checkIndexRight);
+							if (checkIndexLeft !== checkIndexRight) {
+							    value = false;
+							}
+					}
 
-				if (value === null) {
-					  value = true;
+					if (value === null) {
+						  value = true;
+					}
+				} else {
+					value = false
 				}
 		} else {
 		    value = (answer === question.answer);

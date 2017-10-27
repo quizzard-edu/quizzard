@@ -18,8 +18,8 @@ $('#match_answerform').submit(function(evt) {
     var rightAnswers = [];
 
     for (i=0; i<answerList.length; i++) {
-      leftAnswers.push($('#ansLeft' + i).text());
-      rightAnswers.push($('#ansRight' + i).text());
+      leftAnswers.push($('#ansLeft' + answerList[i]).text());
+      rightAnswers.push($('#ansRight' + answerList[i]).text());
     }
 
     sendAnswerRequest([leftAnswers,rightAnswers]);
