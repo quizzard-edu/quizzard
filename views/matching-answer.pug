@@ -20,6 +20,17 @@ if answerForm
   #addMoreAnswersButton
     a.waves-effect.waves-light.btn(onclick="addMatchAnswers('qAnswer')") add answer
 
+else if studentQuestionForm
+  .form-group
+    each item, index in question.leftSide
+      .row
+        .col.s6
+          .card(id='matchLeft'+index, onclick="selectAnswer($(this))")
+            p(id='textLeft'+index)=item
+        .col.s6
+          .card(id='matchRight'+index, onclick="selectAnswer($(this))")
+            p(id='textRight'+index)=question.rightSide[index]
+
 else if adminQuestionEdit
   .form-group
     .row
