@@ -22,6 +22,8 @@ var selectAnswer = function(newItem) {
     if (currentSelected) {
         // If selecting the same item
         if (currentSelected.attr('id') === newItem.attr('id')) {
+            newItem[0].style.backgroundColor = colours.white;
+            currentSelected = null;
             return;
         }
 
@@ -40,7 +42,12 @@ var selectAnswer = function(newItem) {
             currentSelected = newItem;
         } else {
             newItem[0].style.backgroundColor = colours.white;
-            createMatch(currentSelected, newItem);
+
+            if (location === 'Left') {
+                createMatch(newItem, currentSelected);
+            } else {
+                createMatch(currentSelected, newItem);
+            }
         }
 
 
@@ -63,13 +70,14 @@ var createMatch = function(item1, item2) {
     currentSelected = null;
     item1.addClass('hidden');
     item2.addClass('hidden');
-
     answeredId++;
-    var inputdiv = '<div class="row"><div class="col s5"><div class="card white"><p id="ansLeft{0}">{1}</p></div></div><div class="col s5"><div class="card white"><p id="ansRight{0}">{2}</p></div></div><div class="col s2"><a class="btn-floating btn-tiny waves-effect waves-light red" onclick="$(this).parent().parent().remove()"><i class="tiny material-icons">close</i></a></div></div>';
-    inputdiv = inputdiv.format([answeredId, item1.text(), item2.text()]);
+    var inputdiv = '<div class="row"><div class="col s5"><div class="card white"><p name="originalLeft{3}" id="ansLeft{0}">{1}</p></div></div><div class="col s5"><div class="card white"><p name="originalRight{4}" id="ansRight{0}">{2}</p></div></div><div class="col s2"><a class="btn-floating btn-tiny waves-effect waves-light red" id="delete{0}" onclick="deleteMatch($(this))"><i class="tiny material-icons">close</i></a></div></div>';
+    inputdiv = inputdiv.format([answeredId, item1.text(), item2.text(), item1.attr('id'), item2.attr('id')]);
     $('#answers').append(inputdiv);
 }
 
-var deleteMatch = function() {
-
+var deleteMatch = function(deleteButton) {
+    $('#' + $('#ansLeft' + deleteButton.attr('id').replace('delete', '')).attr('name').replace('originalLeft', '')).removeClass('hidden');
+    $('#' + $('#ansRight' + deleteButton.attr('id').replace('delete', '')).attr('name').replace('originalRight', '')).removeClass('hidden');
+    deleteButton.parent().parent().remove();
 }

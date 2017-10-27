@@ -29,7 +29,7 @@ else if studentQuestionForm
           .card(id='matchLeft'+index, onclick="selectAnswer($(this))")
             p(id='textLeft'+index)=item
       .col.s6
-        each item, index in question.leftSide
+        each item, index in question.rightSide
           .card(id='matchRight'+index, onclick="selectAnswer($(this))")
             p(id='textRight'+index)=item
   hr
