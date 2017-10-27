@@ -86,8 +86,3 @@ var deleteMatch = function(deleteButton) {
     $('#' + $('#ansRight' + deleteButton.attr('id').replace('delete', '')).attr('name').replace('originalRight', '')).removeClass('hidden');
     deleteButton.parent().parent().remove();
 }
-
-//TODO:
-// add hover highlight
-// add randomizer on BE side
-// add validator when creating the questionToAdd
