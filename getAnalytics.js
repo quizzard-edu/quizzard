@@ -32,17 +32,16 @@ var getAnalytics = function() {
         if (err) {
             return logger.info(err);
         }
-    
+
         for (var i in studentsList) {
             var student = studentsList[i];
             var row = {};
-            var obj = {_id: student.id};
+            var obj = {id: student.id};
 
             row.correctAttemptsCount = student.correctAttemptsCount;
             row.wrongAttemptsCount = student.wrongAttemptsCount;
             row.totalAttemptsCount = student.totalAttemptsCount;
 
-            obj[currentDate] = row;
             analytics.addStudentAnalyticsWithDate(
                 student.id,
                 currentDate,

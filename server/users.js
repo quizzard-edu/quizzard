@@ -199,3 +199,7 @@ exports.setUserStatus = function(studentId, newStatus, callback){
 exports.submitRating = function (userId, questionId, rating, callback) {
 	db.updateUserById(userId, {questionId: questionId, rating: rating}, callback);
 }
+
+exports.getStudentRank = function (studentId, callback) {
+	db.getStudentRank(studentId, callback);
+}

@@ -218,6 +218,10 @@ exports.updateAdminById = function(userId, info, callback){
     updateUserById(userId, info, callback);
 }
 
+exports.getStudentRank = function (studentId, callback) {
+	db.getStudentRank(studentId, callback);
+}
+
 var updateUserById = function(userId, info, callback){
     var currentDate = new Date().toString();
     var query = { id : userId };
@@ -631,22 +635,13 @@ exports.updateQuestionById = function(questionId, request, callback){
     });
 }
 
-// update the analytics collection by pulling the latest changes to the users collection
-var updateAnalytics = function() {
-    analyticsCollection.insert({name:'hi'}, function(err, info){
-        console.log(err);
-        console.log(info);
-        return;
-    });
-}
-
 /*
 add student analytics
 if there are no records of the student, create a new record
 if there are recards of the student, get the last recard and compute the deltas
 */
 exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
-    var query = {_id: studentId};
+    var query = {id: studentId};
     var update = {};
 
     analyticsCollection.findOne(query, function(err, student) {
@@ -658,7 +653,7 @@ exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback)
             info.correctAttemptsDelta = 0;
             info.wrongAttemptsDelta = 0;
             info.totalAttemptsDelta = 0;
-            update._id = studentId;
+            update.id = studentId;
             update.dates = [{date: date, info: info}];
 
             analyticsCollection.insert(update, function(err, obj){
