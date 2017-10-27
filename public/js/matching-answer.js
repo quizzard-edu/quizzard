@@ -2,8 +2,7 @@ var matchAnswerCount = 3; // default number of options
 
 // Answering Variables
 var answeredId = 0;
-var answerLeft = [];
-var answerRight = [];
+var answerList = [];
 var currentSelected = null;
 
 /**
@@ -49,17 +48,6 @@ var selectAnswer = function(newItem) {
                 createMatch(currentSelected, newItem);
             }
         }
-
-
-
-        // $('#' + newItem.attr('id').replace('match', 'text')).removeClass('white')
-        // $('#' + newItem.attr('id').replace('match', 'text')).addClass('black')
-
-
-
-
-        //newItem.removeClass(colours.white);
-        //newItem.addClass(colours.grayLight);
     } else {
       newItem[0].style.backgroundColor = colours.grayLight;
       currentSelected = newItem;
@@ -70,13 +58,18 @@ var createMatch = function(item1, item2) {
     currentSelected = null;
     item1.addClass('hidden');
     item2.addClass('hidden');
-    answeredId++;
+    answerList.push(answeredId);
     var inputdiv = '<div class="row"><div class="col s5"><div class="card white"><p name="originalLeft{3}" id="ansLeft{0}">{1}</p></div></div><div class="col s5"><div class="card white"><p name="originalRight{4}" id="ansRight{0}">{2}</p></div></div><div class="col s2"><a class="btn-floating btn-tiny waves-effect waves-light red" id="delete{0}" onclick="deleteMatch($(this))"><i class="tiny material-icons">close</i></a></div></div>';
     inputdiv = inputdiv.format([answeredId, item1.text(), item2.text(), item1.attr('id'), item2.attr('id')]);
     $('#answers').append(inputdiv);
+    answeredId++;
 }
 
 var deleteMatch = function(deleteButton) {
+    var deleteAt = answerList.indexOf(parseInt(deleteButton.attr('id').replace('delete', '')));
+    if (deleteAt > -1) {
+        answerList.splice(deleteAt, 1);
+    }
     $('#' + $('#ansLeft' + deleteButton.attr('id').replace('delete', '')).attr('name').replace('originalLeft', '')).removeClass('hidden');
     $('#' + $('#ansRight' + deleteButton.attr('id').replace('delete', '')).attr('name').replace('originalRight', '')).removeClass('hidden');
     deleteButton.parent().parent().remove();

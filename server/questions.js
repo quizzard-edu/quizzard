@@ -202,7 +202,29 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 			return callback('error', null);
 		}
 
-		var value = (answer === question.answer);
+		var value = null;
+
+		if (question.type === common.questionTypes.MATCHING.value) {
+		    const ansLeftSide = answer[0];
+				const ansRightSide = answer[1];
+
+				var checkIndexLeft;
+				var checkIndexRight;
+
+				for (i=0; i<ansLeftSide.length; i++) {
+				    checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+						checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+						if (checkIndexLeft !== checkIndexRight) {
+						    value = false;
+						}
+				}
+
+				if (value === null) {
+					  value = true;
+				}
+		} else {
+		    value = (answer === question.answer);
+		}
 
 		if (userType === common.userTypes.ADMIN) {
 			return callback(null, value);

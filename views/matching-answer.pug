@@ -33,13 +33,11 @@ else if studentQuestionForm
           .card(id='matchRight'+index, onclick="selectAnswer($(this))")
             p(id='textRight'+index)=item
   hr
-  .form-group
+  form.form-question#match_answerform
     .row
       h5.left Matches:
     #answers
-
-
-
+    button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
 
 else if adminQuestionEdit
   .form-group
