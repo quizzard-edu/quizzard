@@ -36,7 +36,6 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.text = question.text;
 	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
-	questionToAdd.rating = question.rating;
 	questionToAdd.points = parseInt(question.points);
 	questionToAdd.visible = (question.visible === 'true');
 	questionToAdd.attempted = [];
@@ -44,6 +43,7 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.attempts = [];
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
+	questionToAdd.ratings = [];
 
 	switch (question.type) {
 		case common.questionTypes.REGULAR.value:
@@ -146,19 +146,15 @@ var validateQuestionByType = function(question, type){
 }
 
 var multipleChoiceValidator = function(question){
-	if (question.choices){
-		if (question.choices.length < 2){
-			return 'Need two or more options for Multiple Choice Question';
-		}
+	if (question.choices && question.choices.length < 2){
+		return 'Need two or more options for Multiple Choice Question';
 	}
 	return null;
 }
 
 var trueAndFalseValidator = function(question){
-	if (question.choices){
-		if (question.choices.length !== 2){
-			return 'True and False can only have 2 options!';
-		}
+	if (question.choices && question.choices.length !== 2){
+		return 'True and False can only have 2 options!';
 	}
 	return null;
 }
@@ -220,4 +216,9 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 			}
 		);
 	});
+}
+
+// adding rating to question collection
+exports.submitRating = function (questionId, userId, rating, callback) {
+	db.updateQuestionById(questionId, {userId: userId, rating: rating}, callback);
 }
