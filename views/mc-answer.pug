@@ -2,11 +2,11 @@ if answerForm
 	.form-group.col.s12
 		each index in [1,2,3,4]
 			.row
-				.col.s1
-					input(type='radio', name='radbutton', value='mcans'+index, id='mcans'+index required)
+				.input-field.col.s1
+					input(type='radio', name='radbutton', value='mcans'+index, id='mcans'+index, required)
 					label(for='mcans'+index)
 				.input-field.col.s10
-					input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required, style='float:left;')
+					input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required)
 				.input-field.col.s1
 					a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
 						i.tiny.material-icons close
@@ -27,7 +27,7 @@ else if adminQuestionEdit
 	.form-group.col.s12
 		each option, i in question.choices
 			.row
-				.col.s1
+				.input-field.col.s1
 					if question.answer == option
 						input(type='radio', name='radbutton', id=i, value=i, required, checked)
 					else
