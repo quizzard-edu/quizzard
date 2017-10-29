@@ -817,10 +817,18 @@ app.get('/accountsExportForm', function(req, res){
     }
 
     return res.status(200).render('users/accounts-export', {
-        user: req.session.user,
-        isAdmin : function() {
-            return req.session.user.type === common.userTypes.ADMIN;
-        }
+        user: req.session.user
+    });
+});
+
+/* Display accounts import form */
+app.get('/accountsImportForm', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    return res.status(200).render('users/accounts-import', {
+        user: req.session.user
     });
 });
 

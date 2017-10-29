@@ -77,7 +77,27 @@ var displayExportAccountsForm = function() {
 
 /* display Import Accounts Form */
 var displayImportAccountsForm = function() {
-    alert('trying to import');
+    $.ajax({
+        type: 'GET',
+        url: '/accountsImportForm',
+        success: function(data) {
+            $('#admin-content').html(data);
+
+            $('#account-import-back-button').click(function(){
+                displayAccountsTable();
+            });
+
+            $('#userform').submit(function(evt) {
+                evt.preventDefault();
+                submitUserForm();
+            });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
+        }
+    });
 }
 
 /* Add click events to the buttons in the account table. */
