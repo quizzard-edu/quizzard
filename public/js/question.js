@@ -25,10 +25,11 @@ var sendAnswerRequest = function(ans) {
                 type: 'success'
             }, function (isConfirm) {
                 if(isConfirm) {
-                    alert(getRating() + " " + questionId)
-                    submitQuestionRating(getRating(), questionId)
-                    window.location.href = '/';
+                    if(getRating() > 0) {
+                        submitQuestionRating(getRating(), questionId);
+                    }
                 }
+                window.location.href = '/';
             });
         },
         error: function(data){
