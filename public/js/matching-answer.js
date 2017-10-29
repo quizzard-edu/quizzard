@@ -15,18 +15,28 @@ var addMatchAnswers = function(dom) {
     $('#qAnswer > div.form-group').append(inputdiv);
 }
 
+/**
+* Changes the colour of the card when hovering over it
+*/
 var cardHoverOn = function(card) {
     if (card[0].style.backgroundColor !== colours.grayLight){
         card[0].style.backgroundColor = colours.blueLight;
     }
 }
 
+/**
+* Changes the colour of the card when un-hovering from it
+*/
 var cardHoverAway = function(card) {
     if (card[0].style.backgroundColor !== colours.grayLight){
         card[0].style.backgroundColor = colours.white;
     }
 }
 
+/**
+* Selects the answer that the user clicks on. This function figures out the logic between
+* selecting a card on the same side or a different side
+*/
 var selectAnswer = function(newItem) {
     var location = null;
 
@@ -66,8 +76,12 @@ var selectAnswer = function(newItem) {
     }
 }
 
+/**
+* Marks the two cards selected as a match, and displays it appropriately to the user
+*/
 var createMatch = function(item1, item2) {
     $('#noAnswers').addClass('hidden');
+    $('#clearBtn').removeClass('hidden');
     currentSelected = null;
     item1.addClass('hidden');
     item2.addClass('hidden');
@@ -78,6 +92,9 @@ var createMatch = function(item1, item2) {
     answeredId++;
 }
 
+/**
+* Deletes a match if the user hits the "X" button
+*/
 var deleteMatch = function(deleteButton) {
     var deleteAt = answerList.indexOf(parseInt(deleteButton.attr('id').replace('delete', '')));
 
@@ -91,5 +108,15 @@ var deleteMatch = function(deleteButton) {
 
     if(answerList.length === 0) {
         $('#noAnswers').removeClass('hidden');
+        $('#clearBtn').addClass('hidden');
+    }
+}
+
+/**
+* Deletes all currently selected matches
+*/
+var clearAll = function() {
+    while (answerList.length > 0) {
+      deleteMatch($('#delete' + answerList[0]));
     }
 }
