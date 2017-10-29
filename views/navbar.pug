@@ -21,7 +21,7 @@
         li#nav-profile
           a.navbarLink(href='#') Profile
         li#nav-logout
-          a.navbarLink(href='#') Logout
+          a.navbarLink(href='/logout') Logout
 ul#mobile.side-nav
   if user.type == 0
     li#nav-home
@@ -38,4 +38,4 @@ ul#mobile.side-nav
   li#nav-about
     a.navbarLinkHidden(href='/about') About
   li#nav-logout
-    a.navbarLinkHidden(href='#') Logout
+    a.navbarLinkHidden(href='/logout') Logout
