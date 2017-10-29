@@ -816,8 +816,15 @@ app.get('/accountsExportForm', function(req, res){
         return res.redirect('/');
     }
 
-    return res.status(200).render('users/accounts-export', {
-        user: req.session.user
+    users.getStudentsList(function(err, studentsList) {
+        if (err) {
+            return res.status(500).send('Failed to get students list');
+        }
+
+        return res.status(200).render('users/accounts-export', {
+            user: req.session.user,
+            students: studentsList
+        });
     });
 });
 
