@@ -15,10 +15,10 @@ if answerForm
 		a.waves-effect.waves-light.btn(onclick="addMCAnswers('qAnswer')") add answer
 
 else if studentQuestionForm
-	form.form-question#mc_answerform
+	form.form-question#mc_answerform(style='text-align: left;')
 		each answer in question.choices
 			.row
-				input(type='radio' name='answer', value=answer, id=answer, required, autofocus)
+				input(type='radio' name='answer', value=answer, id=answer, required)
 				label(for=answer) #{answer}
 
 		button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
