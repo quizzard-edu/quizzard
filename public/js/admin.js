@@ -52,7 +52,27 @@ var displayAccountsTable = function() {
 
 /* display Export Accounts Form */
 var displayExportAccountsForm = function() {
-    alert('trying to export');
+    $.ajax({
+        type: 'GET',
+        url: '/accountsExportForm',
+        success: function(data) {
+            $('#admin-content').html(data);
+
+            $('#account-export-back-button').click(function(){
+                displayAccountsTable();
+            });
+
+            $('#userform').submit(function(evt) {
+                evt.preventDefault();
+                submitUserForm();
+            });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
+        }
+    });
 }
 
 /* display Import Accounts Form */

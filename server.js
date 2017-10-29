@@ -810,6 +810,20 @@ app.get('/studentsListofIds', function(req, res){
     });
 });
 
+/* Display accounts export form */
+app.get('/accountsExportForm', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    return res.status(200).render('users/accounts-export', {
+        user: req.session.user,
+        isAdmin : function() {
+            return req.session.user.type === common.userTypes.ADMIN;
+        }
+    });
+});
+
 /* Display some charts and graphs */
 app.get('/analytics', function(req, res){
     if (!req.session.user) {
