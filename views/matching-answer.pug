@@ -2,7 +2,7 @@ if answerForm
   .form-group
     .row
       h5.left Description:
-      br
+    .row
       .col.s10
         p.left Place one item of the matching pair on the left side, and the corresponding one beside it the right side
     each index in [1,2,3]
@@ -36,6 +36,9 @@ else if studentQuestionForm
   form.form-question#match_answerform
     .row
       h5.left Matches:
+    .row
+      .col.s11
+        p#noAnswers No matches have been selected, please select 2 answers from the above list of choices
     #answers
     button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
 
@@ -43,6 +46,7 @@ else if adminQuestionEdit
   .form-group
     .row
       h5.left Description:
+    .row
       .col.s10
         p.left Place one item of the matching pair on the left side, and the corresponding one beside it the right side
     each item, index in question.leftSide

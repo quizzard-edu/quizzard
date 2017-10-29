@@ -67,6 +67,7 @@ var selectAnswer = function(newItem) {
 }
 
 var createMatch = function(item1, item2) {
+    $('#noAnswers').addClass('hidden');
     currentSelected = null;
     item1.addClass('hidden');
     item2.addClass('hidden');
@@ -79,10 +80,16 @@ var createMatch = function(item1, item2) {
 
 var deleteMatch = function(deleteButton) {
     var deleteAt = answerList.indexOf(parseInt(deleteButton.attr('id').replace('delete', '')));
+
     if (deleteAt > -1) {
         answerList.splice(deleteAt, 1);
     }
+
     $('#' + $('#ansLeft' + deleteButton.attr('id').replace('delete', '')).attr('name').replace('originalLeft', '')).removeClass('hidden');
     $('#' + $('#ansRight' + deleteButton.attr('id').replace('delete', '')).attr('name').replace('originalRight', '')).removeClass('hidden');
     deleteButton.parent().parent().remove();
+
+    if(answerList.length === 0) {
+        $('#noAnswers').removeClass('hidden');
+    }
 }
