@@ -12,10 +12,10 @@ const colours = Object.freeze({
 });
 
 const snack = Object.freeze({
-    success     :   '<i class="material-icons">check</i>' + '&nbsp&nbsp&nbsp',
-    warning     :   '<i class="material-icons">warning</i>' + '&nbsp&nbsp&nbsp',
-    fail        :   '<i class="material-icons">block</i>' + '&nbsp&nbsp&nbsp',
-    close       :   '&nbsp&nbsp&nbsp' + '<i id=closeSnack class="material-icons">close</i>'
+    success     :   '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
+    warning     :   '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
+    fail        :   '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
+    close       :   '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
 })
 
 // This is the function.
