@@ -33,6 +33,13 @@ var displayAccountsTable = function() {
                 displayAccountForm();
             });
 
+            $('#account-export-button').click(function(){
+                displayExportAccountsForm();
+            });
+            $('#account-import-button').click(function(){
+                displayImportAccountsForm();
+            });
+
             $('#usersSwitch').prop('checked', usersTableActive);
         },
         error: function(data){
@@ -41,6 +48,16 @@ var displayAccountsTable = function() {
             }
         }
     });
+}
+
+/* display Export Accounts Form */
+var displayExportAccountsForm = function() {
+    alert('trying to export');
+}
+
+/* display Import Accounts Form */
+var displayImportAccountsForm = function() {
+    alert('trying to import');
 }
 
 /* Add click events to the buttons in the account table. */
