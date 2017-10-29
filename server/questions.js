@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var db = require('./db.js');
 var logger = require('./log.js').logger;
 var common = require('./common.js');
-var validator = require('./validation.js');
+var questionValidator = require('./questionValidator.js');
 
 var prepareQuestionData = function(data){
 	var newData = data;
@@ -46,8 +46,8 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.text = question.text;
 	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
-	questionToAdd.points = question.points
-	questionToAdd.visible = question.visible
+	questionToAdd.points = question.points;
+	questionToAdd.visible = question.visible;
 	questionToAdd.attempted = [];
 	questionToAdd.answered = [];
 	questionToAdd.attempts = [];
@@ -77,7 +77,7 @@ exports.addQuestionByType = function(qType, question, callback) {
 	}
 
 	// validate constant question attributes
-	result = validator.questionCreationValidation(questionToAdd);
+	result = questionValidator.questionCreationValidation(questionToAdd);
 	if (result.success){
 		db.addQuestion(questionToAdd, callback);
 	} else{
@@ -129,7 +129,7 @@ var updateQuestionByType = function(qId, infoToUpdate, callback){
 		}
 		infoToUpdate = prepareQuestionData(infoToUpdate);
 		// validate each field that will be updated
-		var result = validator.validateAttributeFields(infoToUpdate, question.type);
+		var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
 		if (result.success){
 			db.updateQuestionById(qId, infoToUpdate, callback);
 		} else {

@@ -1,5 +1,5 @@
 /*
-question.js
+questionValidator.js
 
 Copyright (C) 2017  Alexei Frolov, Larry Zhang
 Developed at University of Toronto
@@ -21,9 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var common = require('./common.js');
 
 var validateAttributeType = function(valueToCheck,key){
-	if(Object.prototype.toString.call(valueToCheck) !== common.questionAttributes[key].type)
-		return false
-	return true
+	return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[key].type;
 }
 
 const successMsg = {success:true, msg:'Validation Passed'}
@@ -85,7 +83,7 @@ var validateQuestionByType = function(question, type){
 }
 
 var multipleChoiceValidator = function(question){
-	if (question.choices && question.choices.length < 2){
+	if (!question.choices || question.choices.length < 2){
 		return qTypeFailMsg('Need two or more options for Multiple Choice Question!');
 	}
 	return successMsg;
