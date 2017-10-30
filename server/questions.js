@@ -36,7 +36,6 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.text = question.text;
 	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
-	questionToAdd.rating = question.rating;
 	questionToAdd.points = parseInt(question.points);
 	questionToAdd.visible = (question.visible === 'true');
 	questionToAdd.attempted = [];
@@ -44,6 +43,7 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.attempts = [];
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
+	questionToAdd.ratings = [];
 
 	switch (question.type) {
 		case common.questionTypes.REGULAR.value:
@@ -199,7 +199,7 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 		var value = (answer === question.answer);
 
 		if (userType === common.userTypes.ADMIN) {
-			return callback(null, value);
+			return callback(null, {correct: value, points: question.points});
 		}
 
 		db.updateStudentById(
@@ -216,4 +216,9 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 			}
 		);
 	});
+}
+
+// adding rating to question collection
+exports.submitRating = function (questionId, userId, rating, callback) {
+	db.updateQuestionById(questionId, {userId: userId, rating: rating}, callback);
 }

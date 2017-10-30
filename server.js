@@ -30,6 +30,7 @@ var log = require('./server/log.js');
 var logger = log.logger;
 var pug = require('pug');
 var common = require('./server/common.js');
+var analytics = require('./server/analytics.js');
 
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
@@ -106,7 +107,7 @@ app.get('/logout', function(req, res) {
         req.session.destroy();
     }
 
-    return res.status(200).send();
+    return res.redirect('/');
 });
 
 /* Display the home page. */
@@ -181,7 +182,6 @@ const statistics = pug.compileFile('views/statistics.pug');
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
-
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
@@ -359,7 +359,17 @@ app.get('/questionlist', function(req, res) {
         var html = null;
 
         if (req.session.user.type == common.userTypes.ADMIN) {
-            html = questionTable({ questions : questionsList });
+            html = questionTable({
+                questions : questionsList,
+                questionType: function(type){
+                    for (var i in common.questionTypes) {
+                        if (type === common.questionTypes[i].value) {
+                            return common.questionTypes[i].name;
+                        }
+                    }
+                    return 'UNKNOWN';
+                }
+             });
         } else {
             html = questionList({ questions : questionsList });
         }
@@ -689,9 +699,14 @@ app.put('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByType(req.body.type, req.body, function(err, result) {
+    questions.addQuestionByType(req.body.type, req.body, function(err, qId) {
         if (err) {
             return res.status(err.status).send(err.msg);
+        }
+
+        if (req.body.rating && parseInt(req.body.rating) > 0 && parseInt(req.body.rating) < 6) {
+            req.body.qId = qId;
+            return submitQuestionRating(req, res);
         }
 
         return res.status(201).send('Question created');
@@ -746,6 +761,113 @@ app.post('/questiondel', function(req, res) {
         }
 
         return res.status(200);
+    });
+});
+
+// submit question rating from both students and admins
+app.post('/submitQuestionRating', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+    return submitQuestionRating(req, res);
+});
+
+// question rating from both students and admins
+var submitQuestionRating = function (req, res) {
+    var userId = req.session.user.id;
+    var questionId = parseInt(req.body.qId);
+    var rating = parseInt(req.body.rating);
+
+    if (rating < 1 || rating > 5) {
+        return res.status(400).send('bad rating');
+    }
+
+    questions.submitRating(questionId, userId, rating, function(err, result) {
+        if (err) {
+            return res.status(500).send('could not submit rating');
+        }
+
+        users.submitRating(userId, questionId, rating, function(err, result){
+            if (err) {
+                return res.status(500).send('could not submit rating');
+            }
+
+            return res.status(200).send('rating submitted');
+        });
+    });
+}
+
+/* get the list of students' ids*/
+app.get('/studentsListofIds', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    users.getStudentsList(function(err, studentList) {
+        if (err) {
+            return res.status(500).send('Could not fetch student list');
+        }
+
+        var idsList = [];
+        for (s in studentList) {
+            idsList.push(studentList[s].id);
+        }
+        return res.status(200).send(idsList);
+    });
+});
+
+/* Display some charts and graphs */
+app.get('/analytics', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    return res.status(200).render('analytics', {
+        user: req.session.user,
+        isAdmin : function() {
+            return req.session.user.type === common.userTypes.ADMIN;
+        }
+    });
+});
+
+/* get analytics for a student*/
+app.get('/studentAnalytics', function(req,res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var query = {userId: req.session.user.id, type: req.query.type};
+
+    if (req.session.user.type === common.userTypes.ADMIN) {
+        if (!req.query.studentId) {
+            return res.status(500).send('no student graphs for admins');
+        }
+        query.userId = req.query.studentId;
+    }
+
+    analytics.getChart(query, function(err, result){
+        return res.status(200).send(result);
+    });
+});
+
+/* get analytics for a admins*/
+app.get('/adminAnalytics', function(req,res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    var query = {user: req.session.user, type: req.query.type};
+
+    analytics.getChart(query, function(err, result){
+        return res.status(200).send(result);
     });
 });
 
