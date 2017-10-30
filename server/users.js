@@ -197,7 +197,9 @@ exports.getQuestionsListByUser = function(request, callback) {
     }
 
     if (user.type === common.userTypes.ADMIN) {
-        return db.getQuestionsList(questionsQuery, sortQuery, callback);
+        db.getQuestionsList(questionsQuery, sortQuery, function(err, docs){
+			return callback(err, docs);
+		});
 	}
 
 	if (user.type === common.userTypes.STUDENT) {
@@ -213,8 +215,6 @@ exports.getQuestionsListByUser = function(request, callback) {
 			var unansweredList = [];
 
 			for (q in docs) {
-				docs[q].firstAnswer = docs[q].correctAttempts[0] ? docs[q].correctAttempts[0].id : 'No One';
-
 				if (compareList.indexOf(docs[q].id) === -1) {
 					unansweredList.push(docs[q]);
 				} else {

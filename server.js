@@ -352,55 +352,42 @@ app.get('/questionlist', function(req, res) {
         return res.redirect('/');
     }
 
-    var request = {};
-    request.user = req.session.user;
-    request.questionsStatus = req.query.type;
-
-    users.getQuestionsListByUser(request, function(err, questionsList){
-        if (err) {
-            return res.status(500).send('Could not fetch questions list');
+    var userId = req.session.user.id;
+    users.getUserById(userId, function(err, user){
+        if (err || !user) {
+            res.status(400).send('bad request, user does not exist');
         }
 
-        req.session.adminQuestionList = null;
-        var html = null;
-
-        if (req.session.user.type == common.userTypes.ADMIN) {
-            html = questionTable({
-                questions : questionsList,
-                questionType: function(type){
-                    for (var i in common.questionTypes) {
-                        if (type === common.questionTypes[i].value) {
-                            return common.questionTypes[i].name;
-                        }
-                    }
-                    return 'UNKNOWN';
-                }
-             });
-        } else {
-            html = questionList({ questions : questionsList });
-        }
-
-        return res.status(200).send(html);
-    });
-
-    /* If this is the first time accessing it, fetch list from database.
-    questions.findQuestions(
-        0,
-        common.sortTypes.SORT_DEFAULT,
-        null,
-        function(err, questionlist) {
+        var request = {};
+        request.questionsStatus = req.query.type;
+        request.user = user;
+        users.getQuestionsListByUser(request, function(err, questionsList){
             if (err) {
                 return res.status(500).send('Could not fetch questions list');
             }
 
-            req.session.adminQuestionList = questionlist;
-            var html = questionTable({
-                questions: questionlist
-            });
+            var html = null;
+            if (req.session.user.type === common.userTypes.ADMIN) {
+                html = questionTable({
+                    questions : questionsList,
+                    questionType: function(type){
+                        for (var i in common.questionTypes) {
+                            if (type === common.questionTypes[i].value) {
+                                return common.questionTypes[i].name;
+                            }
+                        }
+                        return 'UNKNOWN';
+                    }
+                 });
+            }
+
+            if (req.session.user.type === common.userTypes.STUDENT) {
+                html = questionList({ questions : questionsList });
+            }
 
             return res.status(200).send(html);
-        }
-    );*/
+        });
+    });
 });
 
 /* Send the question editing form HTML. */

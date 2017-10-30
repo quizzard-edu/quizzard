@@ -391,11 +391,7 @@ var getNextQuestionId = function(callback){
     });
 }
 
-exports.getQuestionsList = function(callback) {
-    getQuestionsList({}, {id:1}, callback);
-}
-
-var getQuestionsList = function(findQuery, sortQuery, callback){
+exports.getQuestionsList = function(findQuery, sortQuery, callback){
     questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
             return callback(err, null);
