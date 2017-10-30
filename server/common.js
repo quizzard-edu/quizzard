@@ -44,7 +44,7 @@ const userTypes = Object.freeze({
 });
 exports.userTypes = userTypes;
 
-var randomize = function(data) {
+var randomizeList = function(data) {
     var oldIndex, newIndex, tempHolder;
 
     for (oldIndex=data.length-1; oldIndex > 0; oldIndex--) {
@@ -56,4 +56,4 @@ var randomize = function(data) {
 
     return data;
 };
-exports.randomize = randomize;
+exports.randomizeList = randomizeList;

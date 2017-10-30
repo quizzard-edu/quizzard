@@ -6,7 +6,7 @@ var answerList = [];
 var currentSelected = null;
 
 /**
-* Adds an option to the multiple choice
+* Adds an option to the matching
 */
 var addMatchAnswers = function(dom) {
     matchAnswerCount++;
