@@ -81,6 +81,9 @@ var displayClassStatistics = function() {
     // Card visibilty
     $('#student-analytics-card').addClass('hidden');
     $('#class-analytics-card').removeClass('hidden');
+
+    $('#studentAnalyticsHeadr').addClass('hidden');
+    $('#classAnalyticsHeadr').addClass('hidden');
 }
 
 /**
@@ -93,16 +96,27 @@ var displayStudentStatistics = function(studentId) {
     $('#student-analytics-card').removeClass('hidden');
     $('#class-analytics-card').addClass('hidden');
 
+    $('#studentAnalyticsHeadr').removeClass('hidden');
+    $('#classAnalyticsHeadr').removeClass('hidden');
+
     var path = studentId ? '/studentAnalytics?studentId=' + studentId : '/studentAnalytics';
 
     // Request statistics
-    getQuestionsAnsweredVsClass(path);
-    getAccuracyVsClass(path);
-    getPointsVsClass(path);
-    getRatingVsClass(path);
+
+    // Student Ratings
+    getQuestionsAnsweredStudent(path);
+    getAccuracyStudent(path);
+    getPointsStudent(path);
+    getRatingStudent(path);
+
+    // Class Ratings
+    getQuestionsAnsweredClass(path);
+    getAccuracyClass(path);
+    getPointsClass(path);
+    getRatingClass(path);
 }
 
-var getQuestionsAnsweredVsClass = function(path) {
+var getQuestionsAnsweredClass = function(path) {
   $.ajax({
     type: 'GET',
     url: path,
@@ -110,68 +124,19 @@ var getQuestionsAnsweredVsClass = function(path) {
       type: 'QuestionsAnsweredVsClass'
     },
     success: function(data) {
-      $('#questionsAnsweredVsClass').removeClass('hidden');
-
-      if (data[0] === 0 && data[1] === 0) {
-        new Chart($('#questionsAnsweredVsClass'), {
-          options: {
-            title: {
-              display: true,
-              text: 'No Data for Answered Questions'
-            }
-          }
-        });
-      } else {
-        new Chart($('#questionsAnsweredVsClass'), {
-          type: 'bar',
-          data: {
-            datasets: [{
-              data: [data[0]],
-              backgroundColor: colours.greenLight,
-              borderColor: colours.greenBorder,
-              borderWidth: '3',
-              label: 'Your Questions Answered'
-            },
-            {
-              data: [data[1]],
-              backgroundColor: colours.redLight,
-              borderColor: colours.redBorder,
-              borderWidth: '3',
-              label: 'Class Questions Answered'
-            }],
-          },
-          options: {
-            responsive: true,
-            title: {
-              display: true,
-              text: 'Answered Questions'
-            },
-            scales: {
-              yAxes: [{
-                ticks: {
-                  suggestedMin: 0
-                },
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Number of Answered Questions'
-                },
-              }]
-            }
-          }
-        });
-      }
+      $('#classAnswered').html(data[1]);
     },
     error: function(data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        $('#questionsAnsweredVsClass').addClass('hidden');
+        $('#classAnswered').html('No Data');
       }
     }
   });
 }
 
-var getAccuracyVsClass = function(path) {
+var getAccuracyClass = function(path) {
   $.ajax({
     type: 'GET',
     url: path,
@@ -179,51 +144,19 @@ var getAccuracyVsClass = function(path) {
       type: 'AccuracyVsClass'
     },
     success: function(data) {
-      $('#accuracyVsClass').removeClass('hidden');
-
-      if (data[0] === 0 && data[1] === 0) {
-        new Chart($('#accuracyVsClass'), {
-          options: {
-            title: {
-              display: true,
-              text: 'No Data for Accuracy'
-            }
-          }
-        });
-      } else {
-        new Chart($('#accuracyVsClass'), {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: data,
-              backgroundColor: [colours.blue, colours.pink],
-            }],
-            labels: ['Your Accuracy', 'Average Class Accuracy']
-          },
-          options: {
-            legend:{
-              display: false
-            },
-            responsive: true,
-            title: {
-              display: true,
-              text: 'Accuracy'
-            }
-          }
-        });
-      }
+      $('#classAccuracy').html(data[1]);
     },
     error: function(data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        $('#accuracyVsClass').addClass('hidden');
+        $('#classAccuracy').html('No Data');
       }
     }
   });
 }
 
-var getPointsVsClass = function(path) {
+var getPointsClass = function(path) {
   $.ajax({
     type: 'GET',
     url: path,
@@ -231,51 +164,19 @@ var getPointsVsClass = function(path) {
       type: 'PointsVsClass'
     },
     success: function(data) {
-      $('#pointsVsClass').removeClass('hidden');
-
-      if (data[0] === 0 && data[1] === 0) {
-        new Chart($('#pointsVsClass'), {
-          options: {
-            title: {
-              display: true,
-              text: 'No Data for Points'
-            }
-          }
-        });
-      } else {
-        new Chart($('#pointsVsClass'), {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: data,
-              backgroundColor: [colours.blue, colours.pink],
-            }],
-            labels: ['Your Points', 'Average Class Points']
-          },
-          options: {
-            legend:{
-              display: false
-            },
-            responsive: true,
-            title: {
-              display: true,
-              text: 'Points'
-            }
-          }
-        });
-      }
+      $('#classPoints').html(data[1]);
     },
     error: function(data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        $('#pointsVsClass').addClass('hidden');
+        $('#classPoints').html('No Data');
       }
     }
   });
 }
 
-var getRatingVsClass = function(path) {
+var getRatingClass = function(path) {
   $.ajax({
     type: 'GET',
     url: path,
@@ -283,46 +184,93 @@ var getRatingVsClass = function(path) {
       type: 'RatingVsClass'
     },
     success: function(data) {
-      $('#ratingVsClass').removeClass('hidden');
-
-      if (data[0] === 0 && data[1] === 0) {
-        new Chart($('#ratingVsClass'), {
-          options: {
-            title: {
-              display: true,
-              text: 'No Data for Average Rating'
-            }
-          }
-        });
-      } else {
-        new Chart($('#ratingVsClass'), {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: data,
-              backgroundColor: [colours.blue, colours.pink],
-              label: 'Dataset 1'
-            }],
-            labels: ['Your Average Rating', 'Average Class Rating']
-          },
-          options: {
-            legend:{
-              display: false
-            },
-            responsive: true,
-            title: {
-              display: true,
-              text: 'Average Rating'
-            }
-          }
-        });
-      }
+      $('#classRating').html(data[1]);
     },
     error: function(data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        $('#ratingVsClass').addClass('hidden');
+        $('#classRating').html('No Data');
+      }
+    }
+  });
+}
+
+var getQuestionsAnsweredStudent = function(path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'QuestionsAnsweredVsClass'
+    },
+    success: function(data) {
+      $('#studentAnswered').html(data[0]);
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#studentAnswered').html('No Data');
+      }
+    }
+  });
+}
+
+var getAccuracyStudent = function(path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'AccuracyVsClass'
+    },
+    success: function(data) {
+      $('#studentAccuracy').html(data[0]);
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#studentAccuracy').html('No Data');
+      }
+    }
+  });
+}
+
+var getPointsStudent = function(path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'PointsVsClass'
+    },
+    success: function(data) {
+      $('#studentPoints').html(data[0]);
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#studentPoints').html('No Data');
+      }
+    }
+  });
+}
+
+var getRatingStudent = function(path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'RatingVsClass'
+    },
+    success: function(data) {
+      $('#studentRating').html(data[0]);
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#studentRating').html('No Data');
       }
     }
   });
