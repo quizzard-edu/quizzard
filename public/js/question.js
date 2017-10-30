@@ -12,6 +12,19 @@ $('#mc_answerform').submit(function(evt) {
     sendAnswerRequest(ans);
 });
 
+$('#match_answerform').submit(function(evt) {
+    evt.preventDefault();
+    var leftAnswers = [];
+    var rightAnswers = [];
+
+    for (i=0; i<answerList.length; i++) {
+      leftAnswers.push($('#ansLeft' + answerList[i]).text());
+      rightAnswers.push($('#ansRight' + answerList[i]).text());
+    }
+
+    sendAnswerRequest([leftAnswers,rightAnswers]);
+});
+
 var sendAnswerRequest = function(ans) {
     $.ajax({
         type: 'POST',
