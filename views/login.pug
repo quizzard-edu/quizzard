@@ -12,7 +12,11 @@ block content
   .container
     img.hide-on-med-and-down#logo(src='img/logo.png')
     form.form-login#login
-      h2.form-login-heading.hide-on-large-only Quizzard
+      div.hide-on-large-only(style="text-align:center;")
+        span.col.s1(style="display:inline-block;")
+          img#logo(style='height:100px' src='img/logo.png')
+        span.col.s2(style="display:inline-block;")
+          h2.form-login-heading uizzard
       p#invalid
       .row
         .input-field.col.s12
