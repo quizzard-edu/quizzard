@@ -62,9 +62,9 @@ var displayExportAccountsForm = function() {
                 displayAccountsTable();
             });
 
-            $('#userform').submit(function(evt) {
+            $('#exportForm').submit(function(evt) {
                 evt.preventDefault();
-                submitUserForm();
+                submitExportForm();
             });
         },
         error: function(data){
@@ -86,11 +86,6 @@ var displayImportAccountsForm = function() {
             $('#account-import-back-button').click(function(){
                 displayAccountsTable();
             });
-
-            $('#userform').submit(function(evt) {
-                evt.preventDefault();
-                submitUserForm();
-            });
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -98,6 +93,11 @@ var displayImportAccountsForm = function() {
             }
         }
     });
+}
+
+/* submit export form */
+var submitExportForm = function() {
+    alert('hi');
 }
 
 /* Add click events to the buttons in the account table. */
