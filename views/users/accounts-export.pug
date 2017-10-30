@@ -8,7 +8,7 @@
         h5.card-title Accounts Export Form
         h6 Export the list of students' accounts as a csv file
       .card-action
-        form.form-user#exportForm
+        #exportForm
           table.bordered.highlight
               thead
                 tr
@@ -23,12 +23,14 @@
                   tr(class=s.active ? '' : 'grey lighten-2')
                     td
                       p
-                        input.checked(id='checked-' + s.id type='checkbox' checked=s.active)
-                        label.visbox(for='checked-' + s.id)
+                        input.checked(id='cb-' + s.id type='checkbox' checked=s.active)
+                        label.visbox(for='cb-' + s.id)
                     td #{s.fname}
                     td #{s.lname}
                     td #{s.id}
                     td #{s.email}
                     td #{s.active}
           br
-          button(class='btn' type='submit') Export
+          a.waves-effect.waves-light.btn(onClick='submitExportForm()')
+            i.material-icons.left cloud_download
+            | Export

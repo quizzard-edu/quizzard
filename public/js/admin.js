@@ -61,11 +61,6 @@ var displayExportAccountsForm = function() {
             $('#account-export-back-button').click(function(){
                 displayAccountsTable();
             });
-
-            $('#exportForm').submit(function(evt) {
-                evt.preventDefault();
-                submitExportForm();
-            });
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -97,7 +92,31 @@ var displayImportAccountsForm = function() {
 
 /* submit export form */
 var submitExportForm = function() {
-    alert('hi');
+    var selected = [];
+    $('div#exportForm input[type=checkbox]').each(function() {
+        if ($(this).is(":checked")) {
+            selected.push($(this).attr('id').substring(3));
+        }
+    });
+    alert(selected);
+
+    $.ajax({
+        type: 'POST',
+        url: '/accountsExportFile',
+        data: {studentList: selected},
+        success: function(data) {
+            $('#admin-content').html(data);
+
+            $('#account-import-back-button').click(function(){
+                displayAccountsTable();
+            });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
+        }
+    });
 }
 
 /* Add click events to the buttons in the account table. */

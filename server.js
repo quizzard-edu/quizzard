@@ -828,24 +828,6 @@ app.get('/accountsExportForm', function(req, res){
     });
 });
 
-/* Display accounts export form */
-app.get('/accountsExportFile', function(req, res){
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    users.getStudentsList(function(err, studentsList) {
-        if (err) {
-            return res.status(500).send('Failed to get students list');
-        }
-
-        return res.status(200).render('users/accounts-export', {
-            user: req.session.user,
-            students: studentsList
-        });
-    });
-});
-
 /* Display accounts import form */
 app.get('/accountsImportForm', function(req, res){
     if (!req.session.user) {
@@ -855,6 +837,16 @@ app.get('/accountsImportForm', function(req, res){
     return res.status(200).render('users/accounts-import', {
         user: req.session.user
     });
+});
+
+/* Display accounts export form */
+app.post('/accountsExportFile', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    console.log(req.body.studentList);
+    res.status(200).send();
 });
 
 /* Display some charts and graphs */
