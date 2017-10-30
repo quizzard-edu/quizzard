@@ -1,14 +1,6 @@
 .row#student-analytics-card
-  if (isAdmin())
-    .container
-      .row
-        .col.s12
-          .row
-            .input-field.col.s12
-              input#autocomplete-input.autocomplete(type='text')
-              label(for='autocomplete-input') Select a student by ID
   #student-analytics-card-content
-    h5#studentAnalyticsHeadr &nbsp Your Analytics
+    h5#studentAnalyticsHeader &nbsp Your Analytics
     .col.s6.m3
       .card#studentAnsweredCard
         .card-content.gradient-45deg-light-blue-cyan.white-text
@@ -42,7 +34,7 @@
           .col.s5.m5.right-align.padding-right-10
             h5#studentRating
 
-    h5#classAnalyticsHeadr &nbsp Class Analytics
+    h5#classAnalyticsHeader &nbsp Class Analytics
     .col.s6.m3
       .card#classAnsweredCard
         .card-content.gradient-45deg-light-blue-cyan.white-text

@@ -26,6 +26,17 @@ block content
   .container
     .row
       .col.s12
+        .card#studentSelector
+          if (isAdmin())
+            .container
+              .row
+                .col.s12
+                  .row
+                    .input-field.col.s12
+                      input#autocomplete-input.autocomplete(type='text')
+                      label(for='autocomplete-input') Select a student by ID
+    .row
+      .col.s12
         .card.white.padding-left-10.padding-right-10
           include student-analytics
           include class-analytics
