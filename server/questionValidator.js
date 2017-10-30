@@ -20,20 +20,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var common = require('./common.js');
 
-var validateAttributeType = function(valueToCheck,key){
-	return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[key].type;
-}
-
 const successMsg = {success:true, msg:'Validation Passed'}
 const failMsg = {success:false, msg:'Fields types are Incorrect'}
 
+var validateAttributeType = function(valueToCheck, key, attributeType){
+	return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;
+}
+
 /*Validate all question fields on first entry to db*/
 exports.questionCreationValidation = function(info) {
-	for (var key in common.questionAttributes){
-		if (!(key in info) || !validateAttributeType(info[key],key))
+	for (var key in common.questionAttributes.DEFAULT){
+		if (!(key in info) || !validateAttributeType(info[key], key, 'DEFAULT'))
 			return failMsg
 	}
-	return validateQuestionByType(info,info.type);
+	return validateQuestionAttributesByType(info,info.type);
 }
 
 /*Validate all fields that will be modified*/
@@ -42,8 +42,8 @@ exports.validateAttributeFields = function(question,type){
 
 	for (var key in question){
 		// check const attributes
-		if (key in common.questionAttributes){
-			if (!validateAttributeType(question[key],key)){
+		if (key in common.questionAttributes.DEFAULT){
+			if (!validateAttributeType(question[key], key, 'DEFAULT')){
 				return failMsg
 			}
 		// not common field found
@@ -54,12 +54,12 @@ exports.validateAttributeFields = function(question,type){
 
 	// check by question type to validate the extra fields
 	if (extraAttributes){
-		return validateQuestionByType(question,type);
+		return validateQuestionAttributesByType(question,type);
 	}
 	return successMsg
 }
 
-var validateQuestionByType = function(question, type){
+var validateQuestionAttributesByType = function(question, type){
 	var result;
 
 	switch (type) {
@@ -68,11 +68,11 @@ var validateQuestionByType = function(question, type){
 			break;
 
 		case common.questionTypes.MULTIPLECHOICE.value:
-			result = multipleChoiceValidator(question);
+			result = multipleChoiceAttributeValidator(question);
 			break;
 
 		case common.questionTypes.TRUEFALSE.value:
-			result = trueAndFalseValidator(question);
+			result = trueAndFalseAttributeValidator(question);
 			break;
 
 		default:
@@ -82,14 +82,14 @@ var validateQuestionByType = function(question, type){
 	return result;
 }
 
-var multipleChoiceValidator = function(question){
+var multipleChoiceAttributeValidator = function(question){
 	if (!question.choices || question.choices.length < 2){
 		return qTypeFailMsg('Need two or more options for Multiple Choice Question!');
 	}
 	return successMsg;
 }
 
-var trueAndFalseValidator = function(question){
+var trueAndFalseAttributeValidator = function(question){
 	if (question.choices && question.choices.length !== 2){
 		return qTypeFailMsg('True and False can only have 2 options!');
 	}

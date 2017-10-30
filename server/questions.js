@@ -23,21 +23,19 @@ var logger = require('./log.js').logger;
 var common = require('./common.js');
 var questionValidator = require('./questionValidator.js');
 
-var prepareQuestionData = function(data){
-	var newData = data;
-	if ('points' in data)
-		newData.points = parseInt(data.points);
-
-	if ('visible' in data)
-		newData.visible = (data.visible === 'true');
-	return newData;
+var questionUpdateParser = function(question){
+	var updatedQuestion = question;
+	if ('visible' in question){
+		updatedQuestion.visible = (question.visible === 'true');
+	}
+	if ('points' in question){
+		updatedQuestion.points = parseInt(question.points);
+	}
+	
+	return updatedQuestion;
 }
-/*
-* Insert a new regular question into the database.
-* The question object passed to the function should have
-* the text, topic, type, answer, points and hint set.
-*/
-exports.addQuestionByType = function(qType, question, callback) {
+var prepareQuestionData = function(question, callback){
+	// prepare regular data
 	var currentDate = new Date().toString();
 	var questionToAdd = {};
 
@@ -46,17 +44,16 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.text = question.text;
 	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
-	questionToAdd.points = question.points;
-	questionToAdd.visible = question.visible;
+	questionToAdd.points = parseInt(question.points);
+	questionToAdd.visible = (question.visible === 'true');
 	questionToAdd.attempted = [];
 	questionToAdd.answered = [];
 	questionToAdd.attempts = [];
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
 	questionToAdd.ratings = [];
-	questionToAdd = prepareQuestionData(questionToAdd);
-	
-	//validate by question Type
+
+	//Add specific attributes by Type
 	switch (question.type) {
 		case common.questionTypes.REGULAR.value:
 			questionToAdd.type = common.questionTypes.REGULAR.value;
@@ -64,44 +61,42 @@ exports.addQuestionByType = function(qType, question, callback) {
 
 		case common.questionTypes.MULTIPLECHOICE.value:
 			questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
-			questionToAdd.choices = question.choices ? question.choices : [];
+			questionToAdd.choices = question.choices;
 			break;
 
 		case common.questionTypes.TRUEFALSE.value:
 			questionToAdd.type = common.questionTypes.TRUEFALSE.value;
-			questionToAdd.choices = question.choices ? question.choices : [];
+			questionToAdd.choices = question.choices;
 			break;
 
 		default:
 			return callback({status:400, msg:'Type of Question is Undefined'}, null)
 	}
 
-	// validate constant question attributes
-	result = questionValidator.questionCreationValidation(questionToAdd);
-	if (result.success){
-		db.addQuestion(questionToAdd, callback);
-	} else{
-		return callback({status:400, msg:result.msg}, null)
-	}
+	return callback(null, questionToAdd);
 }
 
 /*
-* Fetch amount questions from the database, using findType to
-* determine how to select and sort them.
-*
-* findType is laid out as follows:
-*
-* SORTING
-* The first bit that matches is the sort criterion. If none match, don't sort.
-* 0th bit: default sort
-* 1st bit: randomly shuffle
-* 2nd bit: sort by topic
-* 3rd bit: sort by points
-*
-* QUERYING
-* 4th bit: if 1, allow questions that have already been answered by user.
-* 5th bit: if 1, only show those questions that have been answered (with bit 4).
+* Insert a new regular question into the database.
+* The question object passed to the function should have
+* the text, topic, type, answer, points and hint set.
 */
+exports.addQuestionByType = function(question, callback) {
+	prepareQuestionData(question, function(err, questionToAdd){
+		if(err){
+			return callback({status:400, msg:err.msg}, null)
+		}
+
+		// validate constant question attributes
+		result = questionValidator.questionCreationValidation(questionToAdd);
+		if (result.success){
+			db.addQuestion(questionToAdd, callback);
+		} else{
+			return callback({status:400, msg:result.msg}, null)
+		}
+	})
+}
+
 exports.getQuestionsList = function(callback) {
 	db.getQuestionsList(callback);
 }
@@ -127,7 +122,7 @@ var updateQuestionByType = function(qId, infoToUpdate, callback){
 		if(err){
 			return callback({status:500, msg:err},null);
 		}
-		infoToUpdate = prepareQuestionData(infoToUpdate);
+		infoToUpdate = questionUpdateParser(infoToUpdate);
 		// validate each field that will be updated
 		var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
 		if (result.success){

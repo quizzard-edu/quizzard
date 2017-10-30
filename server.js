@@ -699,7 +699,7 @@ app.put('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByType(req.body.type, req.body, function(err, qId) {
+    questions.addQuestionByType(req.body, function(err, qId) {
         if (err) {
             return res.status(err.status).send(err.msg);
         }
@@ -778,7 +778,7 @@ var submitQuestionRating = function (req, res) {
     var questionId = parseInt(req.body.qId);
     var rating = parseInt(req.body.rating);
 
-    if (rating < 1 || rating > 5) {
+    if (!rating || rating < 1 || rating > 5) {
         return res.status(400).send('bad rating');
     }
 

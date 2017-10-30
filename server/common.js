@@ -45,19 +45,29 @@ const userTypes = Object.freeze({
 exports.userTypes = userTypes;
 
 const questionAttributes = Object.freeze({
-    topic       : {type:'[object String]'},
-    title       : {type:'[object String]'},
-    text        : {type:'[object String]'},
-    answer      : {type:'[object String]'},
-    hint        : {type:'[object String]'},
-    points      : {type:'[object Number]'},
-    visible     : {type:'[object Boolean]'},
-    attempted   : {type:'[object Array]'},
-    answered    : {type:'[object Array]'},
-    attempts    : {type:'[object Array]'},
-    ctime       : {type:'[object String]'},
-    mtime       : {type:'[object String]'},
-    ratings     : {type:'[object Array]'},
-    type        : {type:'[object String]'}
+    DEFAULT: {
+        topic       : {type:'[object String]'},
+        title       : {type:'[object String]'},
+        text        : {type:'[object String]'},
+        answer      : {type:'[object String]'},
+        hint        : {type:'[object String]'},
+        points      : {type:'[object Number]'},
+        visible     : {type:'[object Boolean]'},
+        type        : {type:'[object String]'}
+    },
+    SERVER: {
+        attempted   : {type:'[object Array]'},
+        answered    : {type:'[object Array]'},
+        attempts    : {type:'[object Array]'},
+        ctime       : {type:'[object String]'},
+        mtime       : {type:'[object String]'},
+        ratings     : {type:'[object Array]'}
+    },
+    MULTIPLECHOICE: {
+        choices     : {type:'[object Array]'}
+    },
+    TRUEFALSE: {
+        choices     : {type:'[object Array]'}
+    }
 });
 exports.questionAttributes = questionAttributes;
