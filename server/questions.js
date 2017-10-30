@@ -69,6 +69,12 @@ var prepareQuestionData = function(question, callback){
 			questionToAdd.choices = question.choices;
 			break;
 
+		case common.questionTypes.MATCHING.value:
+			questionToAdd.type = common.questionTypes.MATCHING.value;
+			questionToAdd.leftSide = question.leftSide ? question.leftSide : [];
+			questionToAdd.rightSide = question.rightSide ? question.rightSide : [];
+			break;
+
 		default:
 			return callback({status:400, msg:'Type of Question is Undefined'}, null)
 	}
@@ -170,7 +176,33 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 			return callback('error', null);
 		}
 
-		var value = (answer === question.answer);
+		var value = null;
+
+		if (question.type === common.questionTypes.MATCHING.value && answer) {
+		    const ansLeftSide = answer[0];
+				const ansRightSide = answer[1];
+
+				if (ansLeftSide.length === question.leftSide.length) {
+					var checkIndexLeft;
+					var checkIndexRight;
+
+					for (i = 0; i < ansLeftSide.length; i++) {
+					    checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+							checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+							if (checkIndexLeft !== checkIndexRight) {
+							    value = false;
+							}
+					}
+
+					if (value === null) {
+						  value = true;
+					}
+				} else {
+					value = false
+				}
+		} else {
+		    value = (answer === question.answer);
+		}
 
 		if (userType === common.userTypes.ADMIN) {
 			return callback(null, {correct: value, points: question.points});

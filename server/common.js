@@ -21,7 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const questionTypes = Object.freeze({
     MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer'},
     REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer'},
-    TRUEFALSE  : {name: 'True and False', value: 'tf', template: 'tf-answer'}
+    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'tf-answer'},
+    MATCHING        : {name: 'Matching', value: 'matching', template: 'matching-answer'}
 });
 exports.questionTypes = questionTypes;
 
@@ -41,7 +42,6 @@ const userTypes = Object.freeze({
     ADMIN     : 0,
     STUDENT   : 1
 });
-
 exports.userTypes = userTypes;
 
 const questionAttributes = Object.freeze({
@@ -71,3 +71,17 @@ const questionAttributes = Object.freeze({
     }
 });
 exports.questionAttributes = questionAttributes;
+
+var randomizeList = function(data) {
+    var oldIndex, newIndex, tempHolder;
+
+    for (oldIndex = data.length-1; oldIndex > 0; oldIndex--) {
+        newIndex = Math.floor(Math.random() * (oldIndex + 1));
+        tempHolder = data[oldIndex];
+        data[oldIndex] = data[newIndex];
+        data[newIndex] = tempHolder;
+    }
+
+    return data;
+};
+exports.randomizeList = randomizeList;
