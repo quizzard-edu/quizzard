@@ -166,15 +166,6 @@ var displayQuestionForm = function() {
     });
 }
 
-/*String Formating option*/
-String.prototype.format = function() {
-  a = this;
-  for (k in arguments) {
-    a = a.replace("{" + k + "}", arguments[k])
-  }
-  return a
-}
-
 // replace the answer field in Question-creation.pug for specific question
 var getQuestionFormAnswer = function(form){
     $.ajax({
@@ -504,6 +495,8 @@ var submitQuestionForm = function() {
     var fields = $('#questionform').serializeArray();
     var question = {};
     question['choices'] = [];
+    question['leftSide'] = [];
+    question['rightSide'] = [];
 
     jQuery.each(fields, function(i, field) {
         if(field.name.startsWith('radbutton')){
@@ -512,6 +505,14 @@ var submitQuestionForm = function() {
 
         if(field.name.startsWith('mcans')){
             question['choices'].push(field.value);
+        }
+
+        if(field.name.startsWith('matchLeft')){
+            question['leftSide'].push(field.value);
+        }
+
+        if(field.name.startsWith('matchRight')){
+            question['rightSide'].push(field.value);
         }
 
         question[field.name] = field.value;
@@ -612,6 +613,8 @@ var submitQEditForm = function(qid) {
     var rating = getRating();
 
     question['choices'] = [];
+    question['leftSide'] = [];
+    question['rightSide'] = [];
 
     if ($('#qtext').summernote('isEmpty')) {
         dropSnack(colours.redDark, 'Please enter a question body in the editor.');
@@ -625,6 +628,14 @@ var submitQEditForm = function(qid) {
 
         if(field.name.startsWith('mcans')){
             question['choices'].push(field.value);
+        }
+
+        if(field.name.startsWith('matchLeft')){
+            question['leftSide'].push(field.value);
+        }
+
+        if(field.name.startsWith('matchRight')){
+            question['rightSide'].push(field.value);
         }
 
         question[field.name] = field.value;
