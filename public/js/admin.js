@@ -280,7 +280,7 @@ var deactivateUser = function(id) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Failed to deactivate ' + id + '\' account');
+                    failSnackbar('Failed to deactivate ' + id + '\'s account');
                 }
             }
         });
@@ -307,8 +307,7 @@ var activateUser = function(id) {
             data: { userid: id, active: true },
             success: function(data) {
                 displayAccountsTable();
-                const msg = ' has been activated';
-                successSnackbar(id + ' account' + msg);
+                successSnackbar(id + '\'s account has been activated');
             },
             error: function(data){
                 if (data['status'] === 401) {
