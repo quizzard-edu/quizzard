@@ -105,7 +105,7 @@ var displayStudentStatistics = function(studentId) {
 
     // Request statistics
 
-    // Student aned Class Statistics
+    // Student and Class Statistics
     getQuestionsAnsweredStudentAndClass(path);
     getAccuracyStudentAndClass(path);
     getPointsStudentAndClass(path);
