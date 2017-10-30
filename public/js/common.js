@@ -1,6 +1,8 @@
 // Set of colour variables to be unified
 const colours = Object.freeze({
     blue          : 'rgb(54, 162, 235)',
+    blueLight     : 'rgb(51, 102, 255)',
+    grayLight     : 'rgb(115, 124, 140)',
     green         : 'green',
     greenBorder   : 'rgba(43, 163, 0, 1)',
     greenLight    : 'rgba(43, 244, 33, 0.5)',
@@ -8,7 +10,8 @@ const colours = Object.freeze({
     pink          : 'rgb(255, 99, 132)',
     redBorder     : 'rgba(243, 13, 20, 1)',
     redDark       : 'red darken-4',
-    redLight      : 'rgba(243, 13, 20, 0.5)'
+    redLight      : 'rgba(243, 13, 20, 0.5)',
+    white         : 'white'
 });
 
 // This is the function.
