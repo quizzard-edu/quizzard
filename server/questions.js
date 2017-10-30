@@ -38,9 +38,12 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.hint = question.hint;
 	questionToAdd.points = parseInt(question.points);
 	questionToAdd.visible = (question.visible === 'true');
-	questionToAdd.attempted = [];
-	questionToAdd.answered = [];
-	questionToAdd.attempts = [];
+	questionToAdd.correctAttempts = [];
+	questionToAdd.wrongAttempts = [];
+	questionToAdd.totalAttempts = [];
+	questionToAdd.correctAttemptsCount = 0;
+	questionToAdd.wrongAttemptsCount = 0;
+	questionToAdd.totalAttemptsCount = 0;
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
 	questionToAdd.ratings = [];

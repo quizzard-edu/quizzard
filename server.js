@@ -122,7 +122,7 @@ app.get('/home', function(req, res) {
     }
 
     var request = { user : req.session.user, questionsStatus : 'unanswered' };
-    users.getQuestionsList(request, function(err, results) {
+    users.getQuestionsListByUser(request, function(err, results) {
         if (err) {
             return res.status(500).send();
         }
@@ -356,7 +356,7 @@ app.get('/questionlist', function(req, res) {
     request.user = req.session.user;
     request.questionsStatus = req.query.type;
 
-    users.getQuestionsList(request, function(err, questionsList){
+    users.getQuestionsListByUser(request, function(err, questionsList){
         if (err) {
             return res.status(500).send('Could not fetch questions list');
         }
@@ -500,7 +500,7 @@ app.post('/fetchqlist', function(req, res) {
     request.user = req.session.user;
     request.questionsStatus = req.body.type;
 
-    users.getQuestionsList(request, function(err, questionsList){
+    users.getQuestionsListByUser(request, function(err, questionsList){
         if (err) {
             return res.status(500).send('Could not fetch questions list');
         }

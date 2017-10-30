@@ -57,3 +57,12 @@ var randomizeList = function(data) {
     return data;
 };
 exports.randomizeList = randomizeList;
+
+/* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
+exports.getIdsListFromJSONList = function (JSONList) {
+    var list = [];
+    for (i in JSONList){
+        list.push(JSONList[i].id);
+    }
+    return list;
+}
