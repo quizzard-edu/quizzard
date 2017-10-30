@@ -178,7 +178,7 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 		var value = (answer === question.answer);
 
 		if (userType === common.userTypes.ADMIN) {
-			return callback(null, value);
+			return callback(null, {correct: value, points: question.points});
 		}
 
 		db.updateStudentById(
