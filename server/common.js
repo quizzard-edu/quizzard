@@ -47,7 +47,7 @@ exports.userTypes = userTypes;
 var randomizeList = function(data) {
     var oldIndex, newIndex, tempHolder;
 
-    for (oldIndex=data.length-1; oldIndex > 0; oldIndex--) {
+    for (oldIndex = data.length-1; oldIndex > 0; oldIndex--) {
         newIndex = Math.floor(Math.random() * (oldIndex + 1));
         tempHolder = data[oldIndex];
         data[oldIndex] = data[newIndex];

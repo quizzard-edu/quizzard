@@ -212,7 +212,7 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 					var checkIndexLeft;
 					var checkIndexRight;
 
-					for (i=0; i<ansLeftSide.length; i++) {
+					for (i = 0; i < ansLeftSide.length; i++) {
 					    checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
 							checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
 							if (checkIndexLeft !== checkIndexRight) {
