@@ -49,7 +49,6 @@ const questionAttributes = Object.freeze({
         topic       : {type:'[object String]'},
         title       : {type:'[object String]'},
         text        : {type:'[object String]'},
-        answer      : {type:'[object String]'},
         hint        : {type:'[object String]'},
         points      : {type:'[object Number]'},
         visible     : {type:'[object Boolean]'},
@@ -63,11 +62,22 @@ const questionAttributes = Object.freeze({
         mtime       : {type:'[object String]'},
         ratings     : {type:'[object Array]'}
     },
+    REGULAR:        {
+        answer      : {type:'[object String]'}
+    },
     MULTIPLECHOICE: {
-        choices     : {type:'[object Array]'}
+        choices     : {type:'[object Array]'},
+        answer      : {type:'[object String]'}
+
     },
     TRUEFALSE: {
-        choices     : {type:'[object Array]'}
+        choices     : {type:'[object Array]'},
+        answer      : {type:'[object String]'}
+
+    },
+    MATCHING: {
+        leftSide    : {type:'[object Array]'},
+        rightSide   : {type:'[object Array]'}
     }
 });
 exports.questionAttributes = questionAttributes;

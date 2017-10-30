@@ -64,7 +64,7 @@ var validateQuestionAttributesByType = function(question, type){
 
 	switch (type) {
 		case common.questionTypes.REGULAR.value:
-			result = successMsg;
+			result = regexAttributeValidator(question);
 			break;
 
 		case common.questionTypes.MULTIPLECHOICE.value:
@@ -73,6 +73,10 @@ var validateQuestionAttributesByType = function(question, type){
 
 		case common.questionTypes.TRUEFALSE.value:
 			result = trueAndFalseAttributeValidator(question);
+			break;		
+
+		case common.questionTypes.MATCHING.value:
+			result = matchingAttributeValidator(question);
 			break;
 
 		default:
@@ -80,6 +84,13 @@ var validateQuestionAttributesByType = function(question, type){
 			break;
 	}
 	return result;
+}
+
+var regexAttributeValidator = function(question){
+	if (!question.answer || !validateAttributeType(question.answer,'answer','REGULAR')){
+		return qTypeFailMsg('Missing answer field.');
+	}
+	return successMsg;
 }
 
 var multipleChoiceAttributeValidator = function(question){
@@ -93,6 +104,11 @@ var trueAndFalseAttributeValidator = function(question){
 	if (question.choices && question.choices.length !== 2){
 		return qTypeFailMsg('True and False can only have 2 options!');
 	}
+	return successMsg;
+}
+
+var matchingAttributeValidator = function(question){
+	// need to check for left and right columns
 	return successMsg;
 }
 

@@ -36,13 +36,13 @@ var questionUpdateParser = function(question){
 }
 var prepareQuestionData = function(question, callback){
 	// prepare regular data
+	console.log(question);
 	var currentDate = new Date().toString();
 	var questionToAdd = {};
 
 	questionToAdd.topic = question.topic;
 	questionToAdd.title = question.title;
 	questionToAdd.text = question.text;
-	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
 	questionToAdd.points = parseInt(question.points);
 	questionToAdd.visible = (question.visible === 'true');
@@ -57,22 +57,25 @@ var prepareQuestionData = function(question, callback){
 	switch (question.type) {
 		case common.questionTypes.REGULAR.value:
 			questionToAdd.type = common.questionTypes.REGULAR.value;
+			questionToAdd.answer = question.answer;
 			break;
 
 		case common.questionTypes.MULTIPLECHOICE.value:
 			questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
 			questionToAdd.choices = question.choices;
+			questionToAdd.answer = question.answer;
 			break;
 
 		case common.questionTypes.TRUEFALSE.value:
 			questionToAdd.type = common.questionTypes.TRUEFALSE.value;
 			questionToAdd.choices = question.choices;
+			questionToAdd.answer = question.answer;
 			break;
 
 		case common.questionTypes.MATCHING.value:
 			questionToAdd.type = common.questionTypes.MATCHING.value;
-			questionToAdd.leftSide = question.leftSide ? question.leftSide : [];
-			questionToAdd.rightSide = question.rightSide ? question.rightSide : [];
+			questionToAdd.leftSide = question.leftSide;
+			questionToAdd.rightSide = question.rightSide;
 			break;
 
 		default:
@@ -180,26 +183,26 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 
 		if (question.type === common.questionTypes.MATCHING.value && answer) {
 		    const ansLeftSide = answer[0];
-				const ansRightSide = answer[1];
+			const ansRightSide = answer[1];
 
-				if (ansLeftSide.length === question.leftSide.length) {
-					var checkIndexLeft;
-					var checkIndexRight;
+			if (ansLeftSide.length === question.leftSide.length) {
+				var checkIndexLeft;
+				var checkIndexRight;
 
-					for (i = 0; i < ansLeftSide.length; i++) {
-					    checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
-							checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
-							if (checkIndexLeft !== checkIndexRight) {
-							    value = false;
-							}
-					}
-
-					if (value === null) {
-						  value = true;
-					}
-				} else {
-					value = false
+				for (i = 0; i < ansLeftSide.length; i++) {
+				    checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+						checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+						if (checkIndexLeft !== checkIndexRight) {
+						    value = false;
+						}
 				}
+
+				if (value === null) {
+					  value = true;
+				}
+			} else {
+				value = false
+			}
 		} else {
 		    value = (answer === question.answer);
 		}
