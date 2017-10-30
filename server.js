@@ -365,7 +365,17 @@ app.get('/questionlist', function(req, res) {
         var html = null;
 
         if (req.session.user.type == common.userTypes.ADMIN) {
-            html = questionTable({ questions : questionsList });
+            html = questionTable({
+                questions : questionsList,
+                questionType: function(type){
+                    for (var i in common.questionTypes) {
+                        if (type === common.questionTypes[i].value) {
+                            return common.questionTypes[i].name;
+                        }
+                    }
+                    return 'UNKNOWN';
+                }
+             });
         } else {
             html = questionList({ questions : questionsList });
         }

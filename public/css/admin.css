@@ -11,3 +11,7 @@
   -ms-user-select:none;
   user-select:none
 }
+
+.input-field label {   
+    pointer-events: auto;
+}
