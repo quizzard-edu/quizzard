@@ -215,8 +215,6 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 					for (i=0; i<ansLeftSide.length; i++) {
 					    checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
 							checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
-							console.log(checkIndexLeft);
-							console.log(checkIndexRight);
 							if (checkIndexLeft !== checkIndexRight) {
 							    value = false;
 							}
