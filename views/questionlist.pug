@@ -1,10 +1,7 @@
 ul.collection
   each q in questions
     li.collection-item.avatar
-      if q.type == 0
-        i.material-icons.circle font_download
-      else
-        i.material-icons.circle format_list_bulleted
+      i.material-icons.circle #{getQuestionIcon(q.type)}
       span.title #{q.title}
       p
         | #{q.topic}

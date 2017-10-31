@@ -19,10 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const questionTypes = Object.freeze({
-    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer'},
-    REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer'},
-    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'tf-answer'},
-    MATCHING        : {name: 'Matching', value: 'matching', template: 'matching-answer'}
+    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer', icon: 'format_list_bulleted'},
+    REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer', icon: 'font_download'},
+    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'tf-answer', icon: 'check_circle'},
+    MATCHING        : {name: 'Matching', value: 'matching', template: 'matching-answer', icon: 'dashboard'}
 });
 exports.questionTypes = questionTypes;
 

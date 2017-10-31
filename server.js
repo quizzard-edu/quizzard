@@ -134,7 +134,15 @@ app.get('/home', function(req, res) {
 
             return res.status(200).render('home', {
                 user: userFound,
-                questions: results
+                questions: results,
+                getQuestionIcon: function(type) {
+                    for (var i in common.questionTypes) {
+                        if (type === common.questionTypes[i].value) {
+                            return common.questionTypes[i].icon;
+                        }
+                    }
+                    return 'help';
+                }
             });
         });
     });
@@ -184,6 +192,8 @@ const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
 const matchingForm = pug.compileFile('views/matching-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
+const questionList = pug.compileFile('views/questionlist.pug');
+
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
@@ -382,7 +392,17 @@ app.get('/questionlist', function(req, res) {
             }
 
             if (req.session.user.type === common.userTypes.STUDENT) {
-                html = questionList({ questions : questionsList });
+                html = questionList({ 
+                    questions : questionsList,
+                    getQuestionIcon: function(type) {
+                        for (var i in common.questionTypes) {
+                            if (type === common.questionTypes[i].value) {
+                                return common.questionTypes[i].icon;
+                            }
+                        }
+                        return 'help';
+                    }
+                 });
             }
 
             return res.status(200).send(html);
@@ -467,51 +487,6 @@ app.get('/sortlist', function(req, res) {
     return res.status(200).send(common.sortTypes);
 });
 
-const questionList = pug.compileFile('views/questionlist.pug');
-
-/* Respond with an HTML-formatted list of questions to display. */
-app.post('/fetchqlist', function(req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    var type = common.sortTypes.SORT_RANDOM;
-    var ans = false;
-
-    if (req.body.type == 'answered') {
-        type |= common.sortTypes.QUERY_ANSWERED | common.sortTypes.QUERY_ANSONLY;
-        ans = true;
-    }
-
-    var request = {};
-    request.user = req.session.user;
-    request.questionsStatus = req.body.type;
-
-    users.getQuestionsListByUser(request, function(err, questionsList){
-        if (err) {
-            return res.status(500).send('Could not fetch questions list');
-        }
-
-        req.session.adminQuestionList = null;
-        var html = questionList({
-            questions: questionsList
-        });
-
-        return res.status(200).send(html);
-    });
-
-    /*
-    questions.findQuestions(10, type, req.session.user, function(err, results) {
-        req.session.questions = results;
-        req.session.answeredQuestions = ans;
-        var html = questionList({
-            questions: results
-        });
-
-        return res.status(200).send(html);
-    });*/
-});
-
 /* Sort question list by specified criterion and send new HTML. */
 app.post('/sortlist', function(req, res) {
     if (!req.session.user) {
@@ -554,7 +529,6 @@ app.get('/question', function(req, res) {
         }
 
         var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts);
-        console.log(answeredList);
         return res.status(200).render('question', {
             user: req.session.user,
             question: questionFound,
