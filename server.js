@@ -810,6 +810,32 @@ var submitQuestionRating = function (req, res) {
     });
 }
 
+// questions list of topics
+app.get('/questionsListofTopics', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    questions.getQuestionsList(function(err, docs){
+        if (err) {
+            return res.status(500).send('could not get the list of questions topics');
+        }
+
+        var topicsList = [];
+        for (var i in docs) {
+            if (topicsList.indexOf(docs[i].topic) === -1) {
+                topicsList.push(docs[i].topic);
+            }
+        }
+
+        return res.status(200).send(topicsList);
+    });
+});
+
 /* get the list of students' ids*/
 app.get('/studentsListofIds', function(req, res){
     if (!req.session.user) {

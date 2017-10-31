@@ -3,6 +3,7 @@ var aaaa;
 $(function(){
     /* show the account table by default */
     displayQuestionTable();
+    getQuestionsTopicsList();
 });
 
 /* set home as the active navbar element */
@@ -751,4 +752,20 @@ var toggleButtonVisibility = function(){
     } else {
         $('.visbox').hide();
     }
+}
+
+// get questions topics list
+var getQuestionsTopicsList = function () {
+    $.ajax({
+        type: 'GET',
+        url: '/questionsListofTopics',
+        success: function(data) {
+            alert(data);
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            }
+        }
+    });
 }
