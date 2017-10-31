@@ -68,12 +68,9 @@ const questionAttributes = Object.freeze({
     MULTIPLECHOICE: {
         choices     : {type:'[object Array]'},
         answer      : {type:'[object String]'}
-
     },
     TRUEFALSE: {
-        choices     : {type:'[object Array]'},
         answer      : {type:'[object String]'}
-
     },
     MATCHING: {
         leftSide    : {type:'[object Array]'},

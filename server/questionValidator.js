@@ -111,8 +111,8 @@ var trueAndFalseAttributeValidator = function(question){
 	if (!validateAllAttributesInGroup(question,'TRUEFALSE')){
 		return qTypeFailMsg('Incorrect question answer fields!');
 	}
-	if (question.choices.length !== 2){
-		return qTypeFailMsg('True and False can only have 2 options!');
+	if (question.answer !== 'true' && question.answer !== 'false' ){
+		return qTypeFailMsg('Answer can only be True or False!');
 	}
 	return successMsg;
 }
