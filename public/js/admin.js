@@ -1,9 +1,31 @@
 var usersTableActive = true;
-
+var aaaa;
 $(function(){
     /* show the account table by default */
     displayQuestionTable();
+
+    aaaa = {};
+    var hi = ['aaaaa', 'aaaab', 'adsfwe', 'erg'];
+    for (var s in hi) {
+      aaaa[hi[s]] = null;
+    }
+
+    // Setting up the autocomplete search for topics
+    $('#qtopic').autocomplete({
+      data: aaaa,
+      limit: 20,
+      onAutocomplete: function(val) {
+          alert('hero');
+      },
+      minLength: 1,
+    });
+
 });
+
+
+
+
+
 
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
@@ -449,7 +471,7 @@ var updateVisibility = function(qid) {
         function (isConfirm) {
             // User confirms the visiblity change
             if (isConfirm) {
-                question['visible'] = $('#checked-' + qid).is(':checked');          
+                question['visible'] = $('#checked-' + qid).is(':checked');
                 $.ajax({
                     type: 'POST',
                     url: '/questionmod',
@@ -461,7 +483,7 @@ var updateVisibility = function(qid) {
                         displayQuestionTable();
                         // Toast notifiation
                         const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
-                        
+
                         if(question['visible']){
                             successSnackbar('Question ' + qid + msg);
                         } else {

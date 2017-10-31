@@ -25,13 +25,6 @@ $('#match_answerform').submit(function(evt) {
     sendAnswerRequest([leftAnswers,rightAnswers]);
 });
 
-// Setting up the autocomplete search for topics
-$('#qtopic').autocomplete({
-  data: {'aaaaa':null, 'aaaab':null, 'adsfwe':null, 'erg':null},
-  limit: 20,
-  minLength: 0,
-});
-
 var sendAnswerRequest = function(ans) {
     $.ajax({
         type: 'POST',
