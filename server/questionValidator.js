@@ -109,7 +109,7 @@ var multipleChoiceAttributeValidator = function(question){
 
 var trueAndFalseAttributeValidator = function(question){
 	if (!validateAllAttributesInGroup(question,'TRUEFALSE')){
-		return qTypeFailMsg('Please select answer True or False!');
+		return qTypeFailMsg('Incorrect question answer fields!');
 	}
 	if (question.choices.length !== 2){
 		return qTypeFailMsg('True and False can only have 2 options!');
