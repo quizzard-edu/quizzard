@@ -210,7 +210,7 @@ exports.getQuestionsListByUser = function(request, callback) {
 				return callback(err, null);
 			}
 
-			var compareList = common.getIdsListFromJSONList(requiredUser.correctAttempts);
+			var compareList = common.getIdsListFromJSONList(user.correctAttempts);
 			var answeredList = [];
 			var unansweredList = [];
 

@@ -552,11 +552,13 @@ app.get('/question', function(req, res) {
         if (!questionFound.visible) {
             return res.status(400).send('Question is not available');
         }
+
+        var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts);
+        console.log(answeredList);
         return res.status(200).render('question', {
             user: req.session.user,
             question: questionFound,
-            answered: !(questionFound.answered.indexOf(req.session.user.id) === -1),
-            preview: false,
+            answered: (answeredList.indexOf(req.session.user.id) !== -1),
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
