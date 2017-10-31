@@ -3,29 +3,7 @@ var aaaa;
 $(function(){
     /* show the account table by default */
     displayQuestionTable();
-
-    aaaa = {};
-    var hi = ['aaaaa', 'aaaab', 'adsfwe', 'erg'];
-    for (var s in hi) {
-      aaaa[hi[s]] = null;
-    }
-
-    // Setting up the autocomplete search for topics
-    $('#qtopic').autocomplete({
-      data: aaaa,
-      limit: 20,
-      onAutocomplete: function(val) {
-          alert('hero');
-      },
-      minLength: 1,
-    });
-
 });
-
-
-
-
-
 
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
@@ -179,6 +157,22 @@ var displayQuestionForm = function() {
                 submitQuestionForm();
             });
             $('select').material_select();
+
+            aaaa = {};
+            var hi = ['aaaaa', 'aaaab', 'adsfwe', 'erg'];
+            for (var s in hi) {
+              aaaa[hi[s]] = null;
+            }
+        
+            // Setting up the autocomplete search for topics
+            $('#qtopic').autocomplete({
+              data: aaaa,
+              limit: 20,
+              onAutocomplete: function(val) {
+                  alert('hero');
+              },
+              minLength: 0
+            });
         },
         error: function(data){
             if (data['status'] === 401) {
