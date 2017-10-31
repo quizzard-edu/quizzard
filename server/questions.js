@@ -99,8 +99,8 @@ exports.addQuestionByType = function(qType, question, callback) {
 * 4th bit: if 1, allow questions that have already been answered by user.
 * 5th bit: if 1, only show those questions that have been answered (with bit 4).
 */
-exports.getQuestionsList = function(callback) {
-	db.getQuestionsList(callback);
+exports.getAllQuestionsList = function(callback) {
+	db.getQuestionsList({}, {id: 1}, callback);
 }
 
 /* Sort questions by the given sort type. */

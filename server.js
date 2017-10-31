@@ -439,7 +439,7 @@ app.get('/statistics', function(req, res) {
         res.status(403).send('Permission Denied');
     }
 
-    questions.getQuestionsList(function(err, questionslist) {
+    questions.getAllQuestionsList(function(err, questionslist) {
         if (err) {
             res.status(500).send(err);
         }
