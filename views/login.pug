@@ -10,12 +10,12 @@ block title
 
 block content
   .container
-    img.hide-on-med-and-down#logo(src='img/logo.png' style="text-align:center; padding-top:50px;")
+    img.hide-on-med-and-down#logo(src='img/logo.png')
     form.form-login#login
-      div.hide-on-large-only(style="text-align:center; padding-top:15px;")
-        span.col.s1(style="display:inline-block; vertical-align:middle;")
-          img#logo(style='height:100px;' src='img/logo.png')
-        span.col.s2(style="display:inline-block;")
+      div.hide-on-large-only#mobileDiv
+        span.col.s1#logoDiv
+          img#logoMobile(src='img/logo.png')
+        span.col.s2#uizzardDiv
           h2.form-login-heading uizzard
       p#invalid
       .row
