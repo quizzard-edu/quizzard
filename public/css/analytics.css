@@ -37,3 +37,10 @@
 .padding-right-10 {
     padding-right: 10px;
 }
+
+.header-style {
+    width: fit-content;
+    background-color: #ee6e73;
+    padding: 5px;
+    color: white;
+}
