@@ -712,7 +712,7 @@ app.put('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByType(req.body, function(err, qId) {
+    questions.addQuestion(req.body, function(err, qId) {
         if (err) {
             return res.status(err.status).send(err.msg);
         }

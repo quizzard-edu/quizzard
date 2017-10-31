@@ -22,33 +22,34 @@ var common = require('./common.js');
 
 const successMsg = {success:true, msg:'Validation Passed'}
 const failMsg = {success:false, msg:'Fields types are Incorrect'}
-
-var validateAttributeType = function(valueToCheck, key, attributeType){
-	return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;
+/*Send back specific error message by question type*/
+var qTypeFailMsg = function(message){
+	return {success:false,msg:message};
 }
 
 /*Validate all question fields on first entry to db*/
 exports.questionCreationValidation = function(info) {
 	for (var key in common.questionAttributes.DEFAULT){
-		if (!(key in info) || !validateAttributeType(info[key], key, 'DEFAULT'))
-			return failMsg
+		if (!(key in info) || !validateAttributeType(info[key], key, 'DEFAULT')){
+			return failMsg;
+		}
 	}
 	return validateQuestionAttributesByType(info,info.type);
 }
 
 /*Validate all fields that will be modified*/
 exports.validateAttributeFields = function(question,type){
-	var extraAttributes = false
+	var extraAttributes = false;
 
 	for (var key in question){
 		// check const attributes
 		if (key in common.questionAttributes.DEFAULT){
 			if (!validateAttributeType(question[key], key, 'DEFAULT')){
-				return failMsg
+				return failMsg;
 			}
 		// not common field found
 		} else {
-			extraAttributes = true
+			extraAttributes = true;
 		}
 	}
 
@@ -56,7 +57,7 @@ exports.validateAttributeFields = function(question,type){
 	if (extraAttributes){
 		return validateQuestionAttributesByType(question,type);
 	}
-	return successMsg
+	return successMsg;
 }
 
 var validateQuestionAttributesByType = function(question, type){
@@ -87,32 +88,69 @@ var validateQuestionAttributesByType = function(question, type){
 }
 
 var regexAttributeValidator = function(question){
-	if (!question.answer || !validateAttributeType(question.answer,'answer','REGULAR')){
-		return qTypeFailMsg('Missing answer field.');
+	if (!validateAllAttributesInGroup(question,'MULTIPLECHOICE')){
+		return qTypeFailMsg('Incorrect question answer field!');
 	}
 	return successMsg;
 }
 
 var multipleChoiceAttributeValidator = function(question){
-	if (!question.choices || question.choices.length < 2){
-		return qTypeFailMsg('Need two or more options for Multiple Choice Question!');
+	if (!validateAllAttributesInGroup(question,'MULTIPLECHOICE')){
+		return qTypeFailMsg('Incorrect question answer fields!');
+	}
+	if (!validateArrayObject(question.choices,'String')){
+		return failMsg;
+	}
+	if (question.choices.length < 2){
+		return qTypeFailMsg('Need 2 or more options for Multiple Choice Question!');
 	}
 	return successMsg;
 }
 
 var trueAndFalseAttributeValidator = function(question){
-	if (question.choices && question.choices.length !== 2){
+	if (!validateAllAttributesInGroup(question,'TRUEFALSE')){
+		return qTypeFailMsg('Please select answer True or False!');
+	}
+	if (question.choices.length !== 2){
 		return qTypeFailMsg('True and False can only have 2 options!');
 	}
 	return successMsg;
 }
 
 var matchingAttributeValidator = function(question){
-	// need to check for left and right columns
+	if (!validateAllAttributesInGroup(question,'MATCHING')){
+		return qTypeFailMsg('Please select answer True or False!');
+	}
+	if (!validateArrayObject(question.leftSide,'String') || !validateArrayObject(question.rightSide,'String')){
+		return failMsg;
+	}
+	if (question.leftSide.length < 2 || question.rightSide.length < 2){
+		return qTypeFailMsg('Need 2 or more matching options!');
+	}
 	return successMsg;
 }
 
-/*Send back specific error message by question type*/
-var qTypeFailMsg = function(message){
-	return {success:false,msg:message};
+/*Validate specific value to it's attributeType in DB*/
+var validateAttributeType = function(valueToCheck, key, attributeType){
+	return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;
+}
+
+/*Validate all attributes in Object being passed and has correct field types*/
+var validateAllAttributesInGroup = function(objectToCheck, attributeType){
+	for (var key in common.questionAttributes[attributeType]){
+		if (!(key in objectToCheck) || !validateAttributeType(objectToCheck[key], key, attributeType)){
+			return false;
+		}
+	}
+	return true;
+}
+
+/*Validate an Array object to contain specific value types*/
+var validateArrayObject = function(arrayObject,typeOfvalue){
+	for (var value in arrayObject){
+		if(!validateAttributeType(value,typeOfvalue,'DATATYPES')){
+			return false;
+		}
+	}
+	return true;
 }

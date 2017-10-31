@@ -23,6 +23,7 @@ var logger = require('./log.js').logger;
 var common = require('./common.js');
 var questionValidator = require('./questionValidator.js');
 
+/*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question){
 	var updatedQuestion = question;
 	if ('visible' in question){
@@ -34,9 +35,10 @@ var questionUpdateParser = function(question){
 	
 	return updatedQuestion;
 }
+
+/*Prepare question data on first pass to DB*/
 var prepareQuestionData = function(question, callback){
 	// prepare regular data
-	console.log(question);
 	var currentDate = new Date().toString();
 	var questionToAdd = {};
 
@@ -90,7 +92,7 @@ var prepareQuestionData = function(question, callback){
 * The question object passed to the function should have
 * the text, topic, type, answer, points and hint set.
 */
-exports.addQuestionByType = function(question, callback) {
+exports.addQuestion = function(question, callback) {
 	prepareQuestionData(question, function(err, questionToAdd){
 		if(err){
 			return callback({status:400, msg:err.msg}, null)
@@ -121,11 +123,7 @@ exports.updateQuestionById = function(questionId, info, callback) {
 	updateQuestionById(questionId, info, callback);
 }
 
-var updateQuestionById = function(questionId, info, callback) {
-	updateQuestionByType(questionId,info,callback);
-}
-
-var updateQuestionByType = function(qId, infoToUpdate, callback){
+var updateQuestionById = function(qId, infoToUpdate, callback){
 	// Get Type of question and validate it
 	db.lookupQuestionById(qId, function(err, question){
 		if(err){
@@ -201,7 +199,7 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 					  value = true;
 				}
 			} else {
-				value = false
+				value = false;
 			}
 		} else {
 		    value = (answer === question.answer);

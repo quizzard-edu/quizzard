@@ -78,6 +78,13 @@ const questionAttributes = Object.freeze({
     MATCHING: {
         leftSide    : {type:'[object Array]'},
         rightSide   : {type:'[object Array]'}
+    },
+    DATATYPES: {
+        Array       : {type:'[object Array]'},
+        String      : {type:'[object String]'},
+        Number      : {type:'[object Number]'},
+        Boolean     : {type:'[object Boolean]'},
+        Object      : {type:'[object Object]'}
     }
 });
 exports.questionAttributes = questionAttributes;
