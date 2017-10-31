@@ -14,6 +14,13 @@ const colours = Object.freeze({
     white         : 'white'
 });
 
+const snack = Object.freeze({
+    success     :   '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
+    warning     :   '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
+    fail        :   '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
+    close       :   '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
+})
+
 // This is the function.
 String.prototype.format = function (args) {
     var str = this;
@@ -34,3 +41,26 @@ String.prototype.format = function (args) {
 };
 
 String.prototype.format.regex = new RegExp('{-?[0-9]+}', 'g');
+
+/* This function slides down a success snakbar */
+function successSnackbar(msg) {
+    // runs the toast function for 5s with given msg and colour
+    Materialize.toast(snack.success + msg + snack.close, 5000, 'rounded ' + colours.green);
+}
+
+/* This function slides down a warning snakbar */
+function warningSnackbar(msg) {
+    // runs the toast function for 5s with given msg and colour
+    Materialize.toast(snack.warning + msg + snack.close, 5000, 'rounded ' + colours.orange);
+}
+
+/* This function slides down a fail snakbar */
+function failSnackbar(msg) {
+    // runs the toast function for 5s with given msg and colour
+    Materialize.toast(snack.fail + msg + snack.close, 5000, 'rounded ' + colours.redDark);
+}
+
+/* Listener for the `x` on the snackbar/toasts */
+$(document).on('click', '#closeSnack', function() {
+    $(this).parent().fadeOut();
+});
