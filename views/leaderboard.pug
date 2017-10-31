@@ -18,11 +18,21 @@ block content
   .container
     .row
       .col.s12
-        .card.center
-          .card-content
-            h4.center Leaderboard
-          .card-action
-            .leaderboard-content
+        .row
+          ul.tabs
+            li.tab.col.s3
+              a.noLineLink.active#option-student(href='#') Overall Leaderboard
+            li.tab.col.s3
+              h6 Total Points Earned
+            li.tab.col.s3
+              h6 Accuracy
+            li.tab.col.s3
+              h6 Points Per Attempt
+  .container
+    .row
+      .col.s12
+        .card.white
+          .leaderboard-content
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
