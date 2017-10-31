@@ -767,6 +767,8 @@ var getQuestionsTopicsList = function () {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Sorry, something went wrong, please try again');
             }
         }
     });
