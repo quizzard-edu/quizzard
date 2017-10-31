@@ -56,6 +56,8 @@ block content
             else
               h4.sidebar-item#hint.hidden Hint: #{question.hint}
 
+  include modal-alert
+
 block scripts
   if !preview
     script(src='/lib/jquery/jquery-3.1.1.min.js')
@@ -66,5 +68,4 @@ block scripts
     script(src='/js/common.js')
     script(src='/js/question.js')
     script(src='/js/rating.js')
-    script(src='/js/common.js')
     script(src='/js/navbar.js')
