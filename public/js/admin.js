@@ -1,9 +1,9 @@
 var usersTableActive = true;
-var aaaa;
+var questionTopicsList;
+var autocompleteTopics;
 $(function(){
     /* show the account table by default */
     displayQuestionTable();
-    getQuestionsTopicsList();
 });
 
 /* set home as the active navbar element */
@@ -159,19 +159,18 @@ var displayQuestionForm = function() {
             });
             $('select').material_select();
 
-            aaaa = {};
-            var hi = ['aaaaa', 'aaaab', 'adsfwe', 'erg'];
-            for (var s in hi) {
-              aaaa[hi[s]] = null;
+            // gets the updated topics list
+            getQuestionsTopicsList();
+            autocompleteTopics = {};
+
+            for (var t in questionTopicsList) {
+                autocompleteTopics[questionTopicsList[t]] = null;
             }
-        
+
             // Setting up the autocomplete search for topics
             $('#qtopic').autocomplete({
-              data: aaaa,
+              data: autocompleteTopics,
               limit: 20,
-              onAutocomplete: function(val) {
-                  alert('hero');
-              },
               minLength: 0
             });
         },
@@ -611,6 +610,21 @@ var editQuestion = function(qid) {
                 submitQEditForm(qid);
             });
             setRating(data.qrating);
+
+            // gets the updated topics list
+            getQuestionsTopicsList();
+            autocompleteTopics = {};
+
+            for (var t in questionTopicsList) {
+                autocompleteTopics[questionTopicsList[t]] = null;
+            }
+
+            // Setting up the autocomplete search for topics
+            $('#qtopic').autocomplete({
+              data: autocompleteTopics,
+              limit: 20,
+              minLength: 0
+            });
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -757,10 +771,11 @@ var toggleButtonVisibility = function(){
 // get questions topics list
 var getQuestionsTopicsList = function () {
     $.ajax({
+        async: false,
         type: 'GET',
         url: '/questionsListofTopics',
         success: function(data) {
-            alert(data);
+            questionTopicsList = data;
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -768,4 +783,5 @@ var getQuestionsTopicsList = function () {
             }
         }
     });
+
 }
