@@ -182,6 +182,7 @@ const statistics = pug.compileFile('views/statistics.pug');
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
+const matchingForm = pug.compileFile('views/matching-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
@@ -303,6 +304,11 @@ app.get('/answerForm', function(req, res){
                 common.questionTypes.TRUEFALSE.template,{
                 answerForm:true});
             break;
+        case common.questionTypes.MATCHING.value:
+            res.status(200).render(
+                common.questionTypes.MATCHING.template,{
+                answerForm:true});
+            break;
         default:
             return res.status(400).send('Please select an appropriate question Type.')
     }
@@ -419,6 +425,8 @@ app.post('/questionedit', function(req, res) {
                         return mcForm({adminQuestionEdit:true, question:question})
                     case common.questionTypes.TRUEFALSE.value:
                         return tfForm({adminQuestionEdit:true, question:question})
+                    case common.questionTypes.MATCHING.value:
+                        return matchingForm({adminQuestionEdit:true, question:question})
                     default:
                         return res.redirect('/')
                         break;
@@ -570,6 +578,11 @@ app.get('/question', function(req, res) {
                         return mcForm({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.TRUEFALSE.value:
                         return tfForm({studentQuestionForm:true, question:questionFound})
+                    case common.questionTypes.MATCHING.value:
+                        // randomize the order of the matching
+                        questionFound.leftSide = common.randomizeList(questionFound.leftSide);
+                        questionFound.rightSide = common.randomizeList(questionFound.rightSide);
+                        return matchingForm({studentQuestionForm:true, question:questionFound})
                     default:
                         break;
                 }
@@ -699,7 +712,7 @@ app.put('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByType(req.body.type, req.body, function(err, qId) {
+    questions.addQuestion(req.body, function(err, qId) {
         if (err) {
             return res.status(err.status).send(err.msg);
         }
@@ -778,7 +791,7 @@ var submitQuestionRating = function (req, res) {
     var questionId = parseInt(req.body.qId);
     var rating = parseInt(req.body.rating);
 
-    if (rating < 1 || rating > 5) {
+    if (!rating || rating < 1 || rating > 5) {
         return res.status(400).send('bad rating');
     }
 
