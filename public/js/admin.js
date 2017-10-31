@@ -1,6 +1,6 @@
 var usersTableActive = true;
-var questionTopicsList;
 var autocompleteTopics;
+
 $(function(){
     /* show the account table by default */
     displayQuestionTable();
@@ -161,18 +161,6 @@ var displayQuestionForm = function() {
 
             // gets the updated topics list
             getQuestionsTopicsList();
-            autocompleteTopics = {};
-
-            for (var t in questionTopicsList) {
-                autocompleteTopics[questionTopicsList[t]] = null;
-            }
-
-            // Setting up the autocomplete search for topics
-            $('#qtopic').autocomplete({
-              data: autocompleteTopics,
-              limit: 20,
-              minLength: 0
-            });
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -613,18 +601,6 @@ var editQuestion = function(qid) {
 
             // gets the updated topics list
             getQuestionsTopicsList();
-            autocompleteTopics = {};
-
-            for (var t in questionTopicsList) {
-                autocompleteTopics[questionTopicsList[t]] = null;
-            }
-
-            // Setting up the autocomplete search for topics
-            $('#qtopic').autocomplete({
-              data: autocompleteTopics,
-              limit: 20,
-              minLength: 0
-            });
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -775,7 +751,18 @@ var getQuestionsTopicsList = function () {
         type: 'GET',
         url: '/questionsListofTopics',
         success: function(data) {
-            questionTopicsList = data;
+            autocompleteTopics = {};
+
+            for (var t in data) {
+                autocompleteTopics[data[t]] = null;
+            }
+
+            // Setting up the autocomplete search for topics
+            $('#qtopic').autocomplete({
+              data: autocompleteTopics,
+              limit: 20,
+              minLength: 0
+            });
         },
         error: function(data){
             if (data['status'] === 401) {
