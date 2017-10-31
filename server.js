@@ -182,7 +182,7 @@ const statistics = pug.compileFile('views/statistics.pug');
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
-const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
+var leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
@@ -194,6 +194,10 @@ app.get('/leaderboard-table', function(req, res) {
 
     ft = true;
     shrt = false;
+    t = req.query.type;
+    if (t == 'points'){
+        leaderboardTable = pug.compileFile('views/points-leaderboard.pug');
+    }
 
     if (req.query.fullTable == 'false')
         ft = false;

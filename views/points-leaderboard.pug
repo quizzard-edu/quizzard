@@ -1,4 +1,4 @@
-.row#overall-board-card
+.row#points-board-card
   table.bordered
     thead
       tr
@@ -6,9 +6,7 @@
         th User ID
         th Points
         if fullTable
-          th Attempts
-          th Correct Answers
-          th Success Rate
+          
     tbody
       each s in leaderboard
         if s.rank == 0
@@ -16,10 +14,6 @@
             td ...
             td ...
             td ...
-            if fullTable
-              td ...
-              td ...
-              td ...
         else
           if s.points != 0 && s.rank <= 3
             if s.rank == 1
@@ -37,9 +31,5 @@
             td #{s.id}
             td #{s.points}
             if fullTable
-              td #{s.totalAttemptsCount}
-              td #{s.correctAttemptsCount}
-              if s.totalAttemptsCount === 0
-                td 0%
-              else
-                td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%
+              
+
