@@ -1,37 +1,46 @@
 if answerForm
-	.form-group
+	.form-group.col.s12
 		each index in [1,2,3,4]
-			p
-				input(type='radio', name='radbutton', value='mcans'+index, id='mcans'+index required)
-				label(for='mcans'+index) Is Correct
-				input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required, style='float:left;')
-				a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
-					i.tiny.material-icons close
+			.row
+				.input-field.col.s1
+					input(type='radio', name='radbutton', value='mcans'+index, id='mcans'+index, required)
+					label(for='mcans'+index)
+				.input-field.col.s10
+					input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required)
+				.input-field.col.s1
+					a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
+						i.tiny.material-icons close
 
 	#addMoreAnswersButton
 		a.waves-effect.waves-light.btn(onclick="addMCAnswers('radio')") add answer
 
 else if studentQuestionForm
-	form.form-question#mc_answerform
+	form.form-question#mc_answerform(style='text-align: left;')
 		each answer in question.choices
-			input(type='radio' name='answer', value=answer, id=answer, required, autofocus)
-			label(for=answer) #{answer}
+			.row
+				input(type='radio' name='answer', value=answer, id=answer, required)
+				label(for=answer) #{answer}
 
 		button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
 
 else if adminQuestionEdit
-	.form-group
+	.form-group.col.s12
 		each option, i in question.choices
-			p
-				if question.answer == option
-					input(type='radio', name='radbutton', id=i, value=i, required, checked)
-				else
-					input(type='radio', name='radbutton', id=i, value=i, required)
-				label(for=i) Is Correct
-				input.form-control(type='text', name='mcans'+i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
+			.row
+				.input-field.col.s1
+					if question.answer == option
+						input(type='radio', name='radbutton', id=i, value=i, required, checked)
+					else
+						input(type='radio', name='radbutton', id=i, value=i, required)
+					label(for=i)
+				.input-field.col.s10
+					input.form-control(type='text', name='mcans'+i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
+				.input-field.col.s1
 				a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
 					i.tiny.material-icons close
 
 	#addMoreAnswersButton
 		a.waves-effect.waves-light.btn(onclick="addMCAnswers('radio')") add answer
 
+block scripts
+	script(src='/js/mc-answer.js')

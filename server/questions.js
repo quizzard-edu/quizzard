@@ -21,22 +21,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var db = require('./db.js');
 var logger = require('./log.js').logger;
 var common = require('./common.js');
+var questionValidator = require('./questionValidator.js');
 
-/*
-* Insert a new regular question into the database.
-* The question object passed to the function should have
-* the text, topic, type, answer, points and hint set.
-*/
-exports.addQuestionByType = function(qType, question, callback) {
+/*Preparing data on update/edit of a question */
+var questionUpdateParser = function(question){
+	var updatedQuestion = question;
+	if ('visible' in question){
+		updatedQuestion.visible = (question.visible === 'true');
+	}
+	if ('points' in question){
+		updatedQuestion.points = parseInt(question.points);
+	}
+	
+	return updatedQuestion;
+}
+
+/*Prepare question data on first pass to DB*/
+var prepareQuestionData = function(question, callback){
+	// prepare regular data
 	var currentDate = new Date().toString();
 	var questionToAdd = {};
 
 	questionToAdd.topic = question.topic;
 	questionToAdd.title = question.title;
 	questionToAdd.text = question.text;
-	questionToAdd.answer = question.answer;
 	questionToAdd.hint = question.hint;
-	questionToAdd.rating = question.rating;
 	questionToAdd.points = parseInt(question.points);
 	questionToAdd.visible = (question.visible === 'true');
 	questionToAdd.attempted = [];
@@ -44,20 +53,31 @@ exports.addQuestionByType = function(qType, question, callback) {
 	questionToAdd.attempts = [];
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
+	questionToAdd.ratings = [];
 
+	//Add specific attributes by Type
 	switch (question.type) {
 		case common.questionTypes.REGULAR.value:
 			questionToAdd.type = common.questionTypes.REGULAR.value;
+			questionToAdd.answer = question.answer;
 			break;
 
 		case common.questionTypes.MULTIPLECHOICE.value:
 			questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
-			questionToAdd.choices = question.choices ? question.choices : [];
+			questionToAdd.choices = question.choices;
+			questionToAdd.answer = question.answer;
 			break;
 
 		case common.questionTypes.TRUEFALSE.value:
 			questionToAdd.type = common.questionTypes.TRUEFALSE.value;
-			questionToAdd.choices = question.choices ? question.choices : [];
+			questionToAdd.choices = question.choices;
+			questionToAdd.answer = question.answer;
+			break;
+
+		case common.questionTypes.MATCHING.value:
+			questionToAdd.type = common.questionTypes.MATCHING.value;
+			questionToAdd.leftSide = question.leftSide;
+			questionToAdd.rightSide = question.rightSide;
 			break;
         case common.questionTypes.CHOOSEALL.value:
 			questionToAdd.type = common.questionTypes.CHOOSEALL.value;
@@ -67,32 +87,30 @@ exports.addQuestionByType = function(qType, question, callback) {
 			return callback({status:400, msg:'Type of Question is Undefined'}, null)
 	}
 
-	// validate question by its type
-	var result = validateQuestionByType(questionToAdd, questionToAdd.type);
-	if (result !== null){
-		return callback({status:400, msg:result}, null)
-	}
-
-	db.addQuestion(questionToAdd, callback);
+	return callback(null, questionToAdd);
 }
 
 /*
-* Fetch amount questions from the database, using findType to
-* determine how to select and sort them.
-*
-* findType is laid out as follows:
-*
-* SORTING
-* The first bit that matches is the sort criterion. If none match, don't sort.
-* 0th bit: default sort
-* 1st bit: randomly shuffle
-* 2nd bit: sort by topic
-* 3rd bit: sort by points
-*
-* QUERYING
-* 4th bit: if 1, allow questions that have already been answered by user.
-* 5th bit: if 1, only show those questions that have been answered (with bit 4).
+* Insert a new regular question into the database.
+* The question object passed to the function should have
+* the text, topic, type, answer, points and hint set.
 */
+exports.addQuestion = function(question, callback) {
+	prepareQuestionData(question, function(err, questionToAdd){
+		if(err){
+			return callback({status:400, msg:err.msg}, null)
+		}
+
+		// validate constant question attributes
+		result = questionValidator.questionCreationValidation(questionToAdd);
+		if (result.success){
+			db.addQuestion(questionToAdd, callback);
+		} else{
+			return callback({status:400, msg:result.msg}, null)
+		}
+	})
+}
+
 exports.getQuestionsList = function(callback) {
 	db.getQuestionsList(callback);
 }
@@ -108,73 +126,21 @@ exports.updateQuestionById = function(questionId, info, callback) {
 	updateQuestionById(questionId, info, callback);
 }
 
-var updateQuestionById = function(questionId, info, callback) {
-	updateQuestionByType(questionId,info,callback);
-}
-
-var updateQuestionByType = function(qId, infoToUpdate, callback){
+var updateQuestionById = function(qId, infoToUpdate, callback){
 	// Get Type of question and validate it
 	db.lookupQuestionById(qId, function(err, question){
 		if(err){
 			return callback({status:500, msg:err},null);
 		}
-
-		// validate question by its type
-		var result = validateQuestionByType(infoToUpdate, question.type);
-		if (result !== null){
-			return callback({status:400, msg:result}, null)
+		infoToUpdate = questionUpdateParser(infoToUpdate);
+		// validate each field that will be updated
+		var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
+		if (result.success){
+			db.updateQuestionById(qId, infoToUpdate, callback);
+		} else {
+			return callback({status:400, msg:result.msg}, null)
 		}
-		db.updateQuestionById(qId, infoToUpdate, callback);
 	});
-}
-
-var validateQuestionByType = function(question, type){
-	var result = null;
-	switch (type) {
-		case common.questionTypes.REGULAR.value:
-			break;
-
-		case common.questionTypes.MULTIPLECHOICE.value:
-			result = multipleChoiceValidator(question);
-			break;
-
-		case common.questionTypes.TRUEFALSE.value:
-			result = trueAndFalseValidator(question);
-			break;
-
-		case common.questionTypes.TRUEFALSE.value:
-			result = chooseAllValidator(question);
-			break;
-
-		default:
-			break;
-	}
-	return result;
-}
-
-var multipleChoiceValidator = function(question){
-	if (question.choices){
-		if (question.choices.length < 2){
-			return 'Need two or more options for Multiple Choice Question.';
-		}
-	}
-	return null;
-}
-
-var trueAndFalseValidator = function(question){
-	if (question.choices){
-		if (question.choices.length !== 2){
-			return 'True and False can only have 2 options!';
-		}
-	}
-	return null;
-}
-
-var chooseAllValidator = function(question){
-	if (question.choices && question.choices.length < 2){
-		return 'Need two or more options for Choose All that Apply Question.';
-	}
-	return null;
 }
 
 /* Remove the question with ID qid from the database. */
@@ -214,10 +180,36 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 			return callback('error', null);
 		}
 
-		var value = (answer === question.answer);
+		var value = null;
+
+		if (question.type === common.questionTypes.MATCHING.value && answer) {
+		    const ansLeftSide = answer[0];
+			const ansRightSide = answer[1];
+
+			if (ansLeftSide.length === question.leftSide.length) {
+				var checkIndexLeft;
+				var checkIndexRight;
+
+				for (i = 0; i < ansLeftSide.length; i++) {
+				    checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+						checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+						if (checkIndexLeft !== checkIndexRight) {
+						    value = false;
+						}
+				}
+
+				if (value === null) {
+					  value = true;
+				}
+			} else {
+				value = false;
+			}
+		} else {
+		    value = (answer === question.answer);
+		}
 
 		if (userType === common.userTypes.ADMIN) {
-			return callback(null, value);
+			return callback(null, {correct: value, points: question.points});
 		}
 
 		db.updateStudentById(
@@ -234,4 +226,9 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 			}
 		);
 	});
+}
+
+// adding rating to question collection
+exports.submitRating = function (questionId, userId, rating, callback) {
+	db.updateQuestionById(questionId, {userId: userId, rating: rating}, callback);
 }

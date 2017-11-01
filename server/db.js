@@ -33,6 +33,7 @@ var db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 var nextId = 0;
 var usersCollection;
 var questionsCollection;
+var analyticsCollection;
 
 /* Open a connection to the database. */
 exports.initialize = function(callback) {
@@ -45,6 +46,7 @@ exports.initialize = function(callback) {
         logger.info('Connection to Quizzard database successful.');
         usersCollection = db.collection('users');
         questionsCollection = db.collection('questions');
+        analyticsCollection = db.collection('analytics');
 
         getNextQuestionId(function(){
             logger.info('next question: %d', nextId);
@@ -87,6 +89,10 @@ exports.getStudentsList = function(callback) {
     getUsersList({type: common.userTypes.STUDENT}, {id: 1}, callback);
 }
 
+exports.getUsersList = function(callback) {
+    getUsersList({}, {id: 1}, callback);
+}
+
 exports.getStudentsListWithStatus = function(status, callback) {
     getUsersList({type: common.userTypes.STUDENT, active: status}, {id: 1}, callback);
 }
@@ -125,17 +131,6 @@ exports.getStudentsListSorted = function(lim, callback){
 
 exports.getUserById = function(userId, callback){
     getUserById(userId, callback);
-}
-
-var getUserById = function(userId, callback) {
-    usersCollection.findOne({id: userId}, function(err, user) {
-        if (err) {
-            return callback('failure', null);
-        }
-
-        delete user._id;
-        return callback(null, user);
-    });
 }
 
 /*
@@ -254,6 +249,14 @@ var updateUserById = function(userId, info, callback){
         update.$set.email = info.email;
     }
 
+    if (info.rating) {
+        update.$push.ratings = {
+            question: info.questionId,
+            date: currentDate,
+            rating: info.rating
+        }
+    }
+
     if (typeof info.active !== 'undefined') {
         update.$set.active = info.active;
     }
@@ -356,7 +359,7 @@ exports.addQuestion = function(question, callback){
             return callback({status:500, msg:err}, null);
         }
 
-        return callback(null, res);
+        return callback(null, question.id);
     });
 }
 
@@ -546,6 +549,7 @@ exports.lookupQuestionById = function(questionId, callback) {
 
 // update a question record based on its id
 exports.updateQuestionById = function(questionId, request, callback){
+    var currentDate = new Date().toString();
     var query = { id:questionId };
     var update = {};
 
@@ -574,10 +578,6 @@ exports.updateQuestionById = function(questionId, request, callback){
       update.$set.hint = request.hint;
     }
 
-    if (request.rating) {
-      update.$set.rating = request.rating;
-    }
-
     if (request.points) {
       update.$set.points = request.points;
     }
@@ -585,9 +585,25 @@ exports.updateQuestionById = function(questionId, request, callback){
     if (request.choices) {
       update.$set.choices = request.choices;
     }
+
+    if (request.leftSide) {
+      update.$set.leftSide = request.leftSide;
+    }
+
+    if (request.rightSide) {
+      update.$set.rightSide = request.rightSide;
+    }
+
+    if (request.rating) {
+        update.$push.ratings = {
+            user: request.userId,
+            date: currentDate,
+            rating: request.rating
+        }
+    }
     
-    if (request.visible) {
-        update.$set.visible = (request.visible === 'true');
+    if ('visible' in request) {
+        update.$set.visible = request.visible;
     }
 
     if (typeof request.correct !== 'undefined') {
@@ -624,5 +640,14 @@ exports.updateQuestionById = function(questionId, request, callback){
         }
 
         return callback(null, 'success');
+    });
+}
+
+// update the analytics collection by pulling the latest changes to the users collection
+var updateAnalytics = function() {
+    analyticsCollection.insert({name:'hi'}, function(err, info){
+        console.log(err);
+        console.log(info);
+        return;
     });
 }

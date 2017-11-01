@@ -1,19 +1,12 @@
-/* This is the index for referencing colours for the snackbars */
-var colours = Object.freeze({
-    SUCCESS: 'green',
-    FAIL: 'red darken-4',
-    WARNING: 'orange accent-4',
-});
-
 var usersTableActive = true;
-
-/* set home as the active navbar element */
-$('#nav-home').addClass('active');
 
 $(function(){
     /* show the account table by default */
-    displayAccountsTable();
+    displayQuestionTable();
 });
+
+/* set home as the active navbar element */
+$('#nav-home').addClass('active');
 
 var toggleUsersSwitch = function() {
     usersTableActive = !usersTableActive;
@@ -173,24 +166,6 @@ var displayQuestionForm = function() {
     });
 }
 
-/*String Formating option*/
-String.prototype.format = function() {
-  a = this;
-  for (k in arguments) {
-    a = a.replace("{" + k + "}", arguments[k])
-  }
-  return a
-}
-
-var mcAnswerCount = 4;
-var addMCAnswers = function(buttonType){
-    mcAnswerCount++;
-    var newdiv = document.createElement('p');
-    var inputdiv = '<input type="{0}" name="radbutton" value="mcans{1}" id="mcans{2}" required/><label for="mcans{3}">Is Correct</label><input type="text" name="mcans{4}" placeholder="Enter Answer Here" required style="float:left;" class="form-control"/><a onclick="$(this).parent().remove()" class="btn-floating btn-tiny waves-effect waves-light red"><i class="tiny material-icons">close</i></a>';
-    newdiv.innerHTML = inputdiv.format(buttonType,mcAnswerCount,mcAnswerCount,mcAnswerCount,mcAnswerCount);
-    $('#qAnswer > div.form-group').append(newdiv);
-}
-
 // replace the answer field in Question-creation.pug for specific question
 var getQuestionFormAnswer = function(form){
     $.ajax({
@@ -209,7 +184,6 @@ var getQuestionFormAnswer = function(form){
             }
         }
     });
-
 }
 
 /* Display the application statistics form. */
@@ -250,15 +224,6 @@ var displaySettings = function() {
     $('#admin-button').off();
     $('#admin-button').hide();
     $('#admin-back').hide();
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/statistics',
-        success: function(data) {
-        }
-    });
-    */
 }
 
 /* Set up events for the sidebar buttons. */
@@ -299,16 +264,13 @@ var deactivateUser = function(id) {
             success: function(data) {
                 displayAccountsTable();
                 const msg = ' has been&nbsp;<u><b>deactivated</b></u>&nbsp;';
-                const colour = colours.WARNING;
-                const icon = '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
-                dropSnack(colour, icon + id + ' account' + msg);
+                warningSnackbar(id + ' account' + msg);
             },
             error: function(data){
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    const icon = '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp';
-                    dropSnack(colours.FAIL, icon + 'Failed to deactivate ' + id + '\' account');
+                    failSnackbar('Failed to deactivate ' + id + '\'s account');
                 }
             }
         });
@@ -335,17 +297,13 @@ var activateUser = function(id) {
             data: { userid: id, active: true },
             success: function(data) {
                 displayAccountsTable();
-                const msg = ' has been activated';
-                const colour = colours.SUCCESS;
-                const icon = '<i class="material-icons">check</i>&nbsp&nbsp&nbsp';
-                dropSnack(colour, icon + id + ' account' + msg);
+                successSnackbar(id + '\'s account has been activated');
             },
             error: function(data){
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    const icon = '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp';
-                    dropSnack(colours.FAIL, icon + 'Failed to activate ' + id + '\'s account');
+                    failSnackbar('Failed to activate ' + id + '\'s account');
                 }
             }
         });
@@ -391,15 +349,15 @@ var submitUserForm = function() {
         data: user,
         success: function(data) {
             displayAccountsTable();
-            dropSnack(colours.SUCCESS, 'User ' + user.id + ' added to database');
+            successSnackbar('User ' + user.id + ' added to database');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['responseText'] === 'failure') {
-                dropSnack(colours.FAIL, 'User could not be added');
+                failSnackbar('User could not be added');
             } else if (data['responseText'] === 'exists') {
-                dropSnack(colours.FAIL, 'User ' + user.id + ' already exists');
+                failSnackbar('User ' + user.id + ' already exists');
             }
         }
     });
@@ -424,14 +382,14 @@ var submitUploadForm = function() {
         processData: false,
         contentType: false,
         success: function(data) {
-            dropSnack(colours.SUCCESS, 'File successfully uploaded');
+            successSnackbar('File successfully uploaded');
             setTimeout(displayAccountsTable, 3000);
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                dropSnack(colours.FAIL, 'Upload failed');
+                failSnackbar('Upload failed');
             }
         }
     });
@@ -459,49 +417,72 @@ var submitEditForm = function(id) {
                 evt.preventDefault();
                 submitEditForm(user.id ? user.id : id);
             });
-            displayAccountsTable();		
-            dropSnack(colours.SUCCESS, 'User ' + id + ' has been updated');
+            displayAccountsTable();
+            successSnackbar('User ' + id + ' has been updated');
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data.result === 'failure') {
-                dropSnack(colours.FAIL, 'User could not be updated. Please try again');
+                failSnackbar('User could not be updated. Please try again');
             } else if (data.result === 'dupid') {
-                dropSnack(colours.FAIL, 'User ID ' + user.id + ' is taken');
+                failSnackbar('User ID ' + user.id + ' is taken');
             }
         }
     });
 }
 
+/* Updates the Vilibility of a Question */
 var updateVisibility = function(qid) {
     var question = {};
-
-    question['visible'] = $('#checked-' + qid).is(':checked');
-
-    $.ajax({
-        type: 'POST',
-        url: '/questionmod',
-        data: {
-            question: question,
-            id: qid
+    swal({
+        type: 'warning',
+        title: 'Visibilty Change',
+        text: 'You are about to change the visibility status of question ' + qid,
+        showCancelButton: true,
+        showConfirmButton: true,
+        // User can only close the swal if they click one of the buttons
+        allowEscapeKey: false,
+        allowClickOutside: false,
         },
-        success: function(data) {
-            displayQuestionTable();
-            const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
-            const colour = question['visible'] ? colours.SUCCESS : colours.WARNING;
-            const warn = question['visible'] ? '<i class="material-icons">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
-            dropSnack(colour, warn + 'Question ' + qid + msg);
-        },
-        error: function(data){
-            if (data['status'] === 401) {
-                window.location.href = '/';
+        function (isConfirm) {
+            // User confirms the visiblity change
+            if (isConfirm) {
+                question['visible'] = $('#checked-' + qid).is(':checked');          
+                $.ajax({
+                    type: 'POST',
+                    url: '/questionmod',
+                    data: {
+                        question: question,
+                        id: qid
+                    },
+                    success: function(data) {
+                        displayQuestionTable();
+                        // Toast notifiation
+                        const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
+                        
+                        if(question['visible']){
+                            successSnackbar('Question ' + qid + msg);
+                        } else {
+                            warningSnackbar('Question ' + qid + msg);
+                        }
+                    },
+                    error: function(data){
+                        if (data['status'] === 401) {
+                            window.location.href = '/';
+                        } else {
+                            displayQuestionTable();
+                            // Toast notification
+                            failSnackbar('Could not change visibility of question');
+                        }
+                    }
+                });
+            // User cancels the visibility change
             } else {
                 displayQuestionTable();
-                dropSnack(colours.FAIL, 'Could not change visibility of question');
             }
         }
-    });
+    );
 }
 
 /* Process submitted question edit form. */
@@ -509,6 +490,8 @@ var submitQuestionForm = function() {
     var fields = $('#questionform').serializeArray();
     var question = {};
     question['choices'] = [];
+    question['leftSide'] = [];
+    question['rightSide'] = [];
 
     jQuery.each(fields, function(i, field) {
         if(field.name.startsWith('radbutton')){
@@ -519,11 +502,19 @@ var submitQuestionForm = function() {
             question['choices'].push(field.value);
         }
 
+        if(field.name.startsWith('matchLeft')){
+            question['leftSide'].push(field.value);
+        }
+
+        if(field.name.startsWith('matchRight')){
+            question['rightSide'].push(field.value);
+        }
+
         question[field.name] = field.value;
     });
 
     if ($('#qtext').summernote('isEmpty')) {
-        dropSnack(colours.FAIL, 'Please enter a question body in the editor.');
+        failSnackbar('Please enter a question body in the editor.');
         return;
     }
 
@@ -537,16 +528,16 @@ var submitQuestionForm = function() {
         url: '/questionadd',
         data: question,
         success: function(data) {
-            dropSnack(colours.SUCCESS, 'Question added to database');
+            successSnackbar('Question added to database');
             displayQuestionTable();
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 400){
-                dropSnack(colours.WARNING, data['responseText']);
+                warningSnackbar(data['responseText']);
             } else {
-                dropSnack(colours.FAIL, 'Question could not be added.');
+                failSnackbar('Question could not be added.');
             }
         }
     });
@@ -567,14 +558,14 @@ var deleteQuestion = function(qid) {
             url: '/questiondel',
             data: { qid: qid },
             success: function(data) {
-                dropSnack(colours.SUCCESS, 'Question ' + qid + ' was removed from the database');
+                successSnackbar('Question ' + qid + ' was removed from the database');
                 displayQuestionTable();
             },
             error: function(data){
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    dropSnack(colours.FAIL, 'Coud not remove question ' + qid + ' from the database');
+                    failSnackbar('Coud not remove question ' + qid + ' from the database');
                 }
             }
         });
@@ -614,10 +605,14 @@ var editQuestion = function(qid) {
 var submitQEditForm = function(qid) {
     var fields = $('#question-edit-form').serializeArray();
     var question = {};
+    var rating = getRating();
+
     question['choices'] = [];
+    question['leftSide'] = [];
+    question['rightSide'] = [];
 
     if ($('#qtext').summernote('isEmpty')) {
-        dropSnack(colours.FAIL, 'Please enter a question body in the editor.');
+        failSnackbar('Please enter a question body in the editor.');
         return;
     }
 
@@ -630,12 +625,23 @@ var submitQEditForm = function(qid) {
             question['choices'].push(field.value);
         }
 
+        if(field.name.startsWith('matchLeft')){
+            question['leftSide'].push(field.value);
+        }
+
+        if(field.name.startsWith('matchRight')){
+            question['rightSide'].push(field.value);
+        }
+
         question[field.name] = field.value;
     });
 
     question['text'] = $('#qtext').summernote('code');
     question['visible'] = $('#visible').is(':checked');
-    question['rating'] = getRating();
+
+    if (rating > 0 && rating < 6) {
+        submitQuestionRating(rating, qid);
+    }
 
     $.ajax({
         type: 'POST',
@@ -645,16 +651,38 @@ var submitQEditForm = function(qid) {
             id: qid
         },
         success: function(data) {
-            dropSnack(colours.SUCCESS, 'Question ' + qid + ' has been modified.');
+            successSnackbar('Question ' + qid + ' has been modified.');
             displayQuestionTable();
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 400){
-                dropSnack(colours.WARNING, data['responseText']);
+                warningSnackbar(data['responseText']);
             } else {
-                dropSnack(colours.FAIL, 'Question could not be edited.');
+                failSnackbar('Question could not be edited.');
+            }
+        }
+    });
+}
+
+// submit question rating
+var submitQuestionRating = function (rating, qid) {
+    $.ajax({
+        type: 'POST',
+        url: '/submitQuestionRating',
+        data: {
+            rating: rating,
+            qId: qid
+        },
+        success: function(data) {
+            successSnackbar('Question ' + qid + ' rating has been updated.');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Question could not be updated.');
             }
         }
     });
@@ -706,15 +734,4 @@ var toggleButtonVisibility = function(){
     } else {
         $('.visbox').hide();
     }
-} 
-
-/* This function slides down a snakbar */
-function dropSnack(colour, msg) {
-    // runs the toast function for 5s with given msg and colour
-    Materialize.toast(msg + '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>', 5000, 'rounded ' + colour);
 }
-
-/* Listener for the `x` on the snackbar/toasts */
-$(document).on('click', '#closeSnack', function() {
-    $(this).parent().fadeOut();
-});
