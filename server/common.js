@@ -46,45 +46,48 @@ exports.userTypes = userTypes;
 
 const questionAttributes = Object.freeze({
     DEFAULT: {
-        topic       : {type:'[object String]'},
-        title       : {type:'[object String]'},
-        text        : {type:'[object String]'},
-        hint        : {type:'[object String]'},
-        points      : {type:'[object Number]'},
-        visible     : {type:'[object Boolean]'},
-        type        : {type:'[object String]'}
+        topic                   : {type:'[object String]'},
+        title                   : {type:'[object String]'},
+        text                    : {type:'[object String]'},
+        hint                    : {type:'[object String]'},
+        points                  : {type:'[object Number]'},
+        visible                 : {type:'[object Boolean]'},
+        type                    : {type:'[object String]'}
     },
     SERVER: {
-        attempted   : {type:'[object Array]'},
-        answered    : {type:'[object Array]'},
-        attempts    : {type:'[object Array]'},
-        ctime       : {type:'[object String]'},
-        mtime       : {type:'[object String]'},
-        ratings     : {type:'[object Array]'}
+        correctAttempts         : {type:'[object Array]'},
+        wrongAttempts           : {type:'[object Array]'},
+        totalAttempts           : {type:'[object Array]'},
+        correctAttemptsCount    : {type:'[object Number]'},
+        wrongAttemptsCount      : {type:'[object Number]'},
+        totalAttemptsCount      : {type:'[object Number]'},
+        ctime                   : {type:'[object String]'},
+        mtime                   : {type:'[object String]'},
+        ratings                 : {type:'[object Array]'}
     },
     REGULAR:        {
-        answer      : {type:'[object String]'}
+        answer                  : {type:'[object String]'}
     },
     MULTIPLECHOICE: {
-        choices     : {type:'[object Array]'},
-        answer      : {type:'[object String]'}
+        choices                 : {type:'[object Array]'},
+        answer                  : {type:'[object String]'}
 
     },
     TRUEFALSE: {
-        choices     : {type:'[object Array]'},
-        answer      : {type:'[object String]'}
+        choices                 : {type:'[object Array]'},
+        answer                  : {type:'[object String]'}
 
     },
     MATCHING: {
-        leftSide    : {type:'[object Array]'},
-        rightSide   : {type:'[object Array]'}
+        leftSide                : {type:'[object Array]'},
+        rightSide               : {type:'[object Array]'}
     },
     DATATYPES: {
-        Array       : {type:'[object Array]'},
-        String      : {type:'[object String]'},
-        Number      : {type:'[object Number]'},
-        Boolean     : {type:'[object Boolean]'},
-        Object      : {type:'[object Object]'}
+        Array                   : {type:'[object Array]'},
+        String                  : {type:'[object String]'},
+        Number                  : {type:'[object Number]'},
+        Boolean                 : {type:'[object Boolean]'},
+        Object                  : {type:'[object Object]'}
     }
 });
 exports.questionAttributes = questionAttributes;
