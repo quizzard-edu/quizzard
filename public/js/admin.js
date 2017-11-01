@@ -1,4 +1,5 @@
 var usersTableActive = true;
+var autocompleteTopics;
 
 $(function(){
     /* show the account table by default */
@@ -157,6 +158,9 @@ var displayQuestionForm = function() {
                 submitQuestionForm();
             });
             $('select').material_select();
+
+            // gets the updated topics list
+            getQuestionsTopicsList();
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -449,7 +453,7 @@ var updateVisibility = function(qid) {
         function (isConfirm) {
             // User confirms the visiblity change
             if (isConfirm) {
-                question['visible'] = $('#checked-' + qid).is(':checked');          
+                question['visible'] = $('#checked-' + qid).is(':checked');
                 $.ajax({
                     type: 'POST',
                     url: '/questionmod',
@@ -461,7 +465,7 @@ var updateVisibility = function(qid) {
                         displayQuestionTable();
                         // Toast notifiation
                         const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
-                        
+
                         if(question['visible']){
                             successSnackbar('Question ' + qid + msg);
                         } else {
@@ -594,6 +598,9 @@ var editQuestion = function(qid) {
                 submitQEditForm(qid);
             });
             setRating(data.qrating);
+
+            // gets the updated topics list
+            getQuestionsTopicsList();
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -735,4 +742,35 @@ var toggleButtonVisibility = function(){
     } else {
         $('.visbox').hide();
     }
+}
+
+// get questions topics list
+var getQuestionsTopicsList = function () {
+    $.ajax({
+        async: false,
+        type: 'GET',
+        url: '/questionsListofTopics',
+        success: function(data) {
+            autocompleteTopics = {};
+
+            for (var t in data) {
+                autocompleteTopics[data[t]] = null;
+            }
+
+            // Setting up the autocomplete search for topics
+            $('#qtopic').autocomplete({
+              data: autocompleteTopics,
+              limit: 20,
+              minLength: 0
+            });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Sorry, something went wrong, please try again');
+            }
+        }
+    });
+
 }
