@@ -570,6 +570,7 @@ app.get('/question', function(req, res) {
             question: questionFound,
             answered: !(questionFound.answered.indexOf(req.session.user.id) === -1),
             preview: false,
+            hasQrating: true/*ADD QUESTION RATING GET FUNCTION HERE*/,
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
