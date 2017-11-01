@@ -392,7 +392,7 @@ app.get('/questionlist', function(req, res) {
             }
 
             if (req.session.user.type === common.userTypes.STUDENT) {
-                html = questionList({ 
+                html = questionList({
                     questions : questionsList,
                     getQuestionIcon: function(type) {
                         for (var i in common.questionTypes) {
@@ -533,6 +533,9 @@ app.get('/question', function(req, res) {
             user: req.session.user,
             question: questionFound,
             answered: (answeredList.indexOf(req.session.user.id) !== -1),
+            isAdmin : function() {
+                return req.session.user.type === common.userTypes.ADMIN;
+            },
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
