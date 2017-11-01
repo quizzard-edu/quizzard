@@ -84,7 +84,14 @@ var displayClassStatistics = function() {
     $('#class-analytics-card').removeClass('hidden');
 
     $('#studentAnalyticsHeader').addClass('hidden');
-    $('#classAnalyticsHeader').addClass('hidden');
+
+    var path = '/adminAnalytics';
+
+    // Class Statistics
+    getClassAnswered(path);
+    getClassAccuracy(path);
+    getClassPoints(path);
+    getClassRating(path);
 }
 
 /**
@@ -99,7 +106,6 @@ var displayStudentStatistics = function(studentId) {
     $('#class-analytics-card').addClass('hidden');
 
     $('#studentAnalyticsHeader').removeClass('hidden');
-    $('#classAnalyticsHeader').removeClass('hidden');
 
     var path = studentId ? '/studentAnalytics?studentId=' + studentId : '/studentAnalytics';
 
@@ -111,6 +117,8 @@ var displayStudentStatistics = function(studentId) {
     getPointsStudentAndClass(path);
     getRatingStudentAndClass(path);
 }
+
+// Student statistics
 
 var getQuestionsAnsweredStudentAndClass = function(path) {
   $.ajax({
@@ -195,6 +203,89 @@ var getRatingStudentAndClass = function(path) {
       } else if (data['status'] === 500) {
         $('#studentRating').html('No Data');
         $('#classRating').html('No Data');
+      }
+    }
+  });
+}
+
+// Class statistics
+
+var getClassAnswered = function(path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classAnswered'
+    },
+    success: function(data) {
+      $('#classAnsweredI').html(data[0]);
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#classAnsweredI').html('No Data');
+      }
+    }
+  });
+}
+
+
+var getClassAccuracy = function(path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classAccuracy'
+    },
+    success: function(data) {
+      $('#classAccuracyI').html(data[0]);
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#classAccuracyI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassPoints = function(path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classPoints'
+    },
+    success: function(data) {
+      $('#classPointsI').html(data[0]);
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#classPointsI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassRating = function(path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classRating'
+    },
+    success: function(data) {
+      $('#classRatingI').html(data[0]);
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#classRatingI').html('No Data');
       }
     }
   });
