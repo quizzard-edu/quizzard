@@ -39,12 +39,13 @@ var sendAnswerRequest = function(ans) {
                 window.location.href = '/';
             });
         },
-        error: function(data){
+        error: function(data) {
             $('#hint').removeClass('hidden');
             swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
+        },
+        complete: function(data) {
+            const numberOfAttempts = $('#attempts');
+            numberOfAttempts.html(parseInt(numberOfAttempts.html()) + 1);
         }
     });
-
-    const numberOfAttempts = $('#attempts');
-    numberOfAttempts.html(parseInt(numberOfAttempts.html()) + 1);
 }

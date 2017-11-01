@@ -46,7 +46,7 @@ block content
             span.sidebar-item This question has been attempted&nbsp
             span.sidebar-item#attempts #{question.totalAttemptsCount}
             span.sidebar-item &nbsptimes.
-            if question.correctAttemptsCount == 0
+            if question.correctAttemptsCount === 0
               p.sidebar-item#first-answer You could be the first person to correctly answer this question!
             else
               p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
