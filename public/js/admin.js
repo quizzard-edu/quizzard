@@ -46,6 +46,8 @@ var displayAccountsTable = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -66,6 +68,8 @@ var displayExportAccountsForm = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -86,6 +90,8 @@ var displayImportAccountsForm = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -99,7 +105,6 @@ var submitExportForm = function() {
             selected.push($(this).attr('id').substring(3));
         }
     });
-    alert(selected);
 
     $.ajax({
         type: 'POST',
@@ -108,13 +113,15 @@ var submitExportForm = function() {
         success: function(data) {
             $('#admin-content').html(data);
 
-            $('#account-import-back-button').click(function(){
+            $('#account-export-complete-back-button').click(function(){
                 displayAccountsTable();
             });
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -159,6 +166,8 @@ var displayAccountForm = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -186,6 +195,8 @@ var displayQuestionTable = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -241,6 +252,8 @@ var displayQuestionForm = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -288,6 +301,8 @@ var displayStatistics = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -410,6 +425,8 @@ var editUser = function(id) {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -439,6 +456,8 @@ var submitUserForm = function() {
                 failSnackbar('User could not be added');
             } else if (data['responseText'] === 'exists') {
                 failSnackbar('User ' + user.id + ' already exists');
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -484,8 +503,9 @@ var submitEditForm = function(id) {
     };
 
     jQuery.each(fields, function(i, field) {
-        if (field.value)
+        if (field.value) {
             user[field.name] = field.value;
+        }
     });
 
     $.ajax({
@@ -508,6 +528,8 @@ var submitEditForm = function(id) {
                 failSnackbar('User could not be updated. Please try again');
             } else if (data.result === 'dupid') {
                 failSnackbar('User ID ' + user.id + ' is taken');
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -683,6 +705,8 @@ var editQuestion = function(qid) {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -811,6 +835,8 @@ var sortAccountsTable = function(type) {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });

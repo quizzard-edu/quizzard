@@ -833,6 +833,10 @@ app.get('/accountsExportForm', function(req, res){
         return res.redirect('/');
     }
 
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
     users.getStudentsList(function(err, studentsList) {
         if (err) {
             return res.status(500).send('Failed to get students list');
@@ -851,6 +855,10 @@ app.get('/accountsImportForm', function(req, res){
         return res.redirect('/');
     }
 
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
     return res.status(200).render('users/accounts-import', {
         user: req.session.user
     });
@@ -860,6 +868,10 @@ app.get('/accountsImportForm', function(req, res){
 app.post('/accountsExportFile', function(req, res){
     if (!req.session.user) {
         return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
     }
 
     var requestedList = req.body.studentsList;
@@ -877,13 +889,19 @@ app.post('/accountsExportFile', function(req, res){
             studentsCount++;
             if (studentsCount === totalCount) {
                 var csv = json2csv({ data: studentsList, fields: ['id', 'fname'] });
+                var fileName = 'exportJob-'+new Date().toString()+'.csv';
+                var path = 'uploads/';
+                var file = path + fileName;
                 
-                fs.writeFile('uploads/exportJob-'+new Date().toString()+'.csv', csv, function(err) {
+                fs.writeFile(file, csv, function(err) {
                     if (err) {
                         logger.error(err);
                         return res.status(500).send('Export job failed');
                     }
-                    return res.status(200).send('Export job completed');
+                    return res.status(200).render('users/accounts-export-complete', {
+                        path: path,
+                        fileName: fileName
+                    });
                 });
             }
         });
