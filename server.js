@@ -562,7 +562,7 @@ app.get('/question', function(req, res) {
             return res.status(500).send();
         }
 
-        if (!questionFound.visible) {
+        if (!questionFound.visible && req.session.user.type === common.userTypes.STUDENT) {
             return res.status(400).send('Question is not available');
         }
         return res.status(200).render('question', {
