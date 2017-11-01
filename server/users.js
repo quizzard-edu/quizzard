@@ -186,8 +186,46 @@ exports.getAdminById = function(adminId, callback) {
 /*
  * Fetch the question list of userId
  */
-exports.getQuestionsList = function(request, callback) {
-	db.getQuestionsListByUser(request, callback);
+exports.getQuestionsListByUser = function(request, callback) {
+    var questionsQuery = {};
+    var sortQuery = {id: 1};
+    var user = request.user;
+    var questionsStatus = request.questionsStatus;
+
+    if (!user) {
+        return callback('No user object', null);
+    }
+
+    if (user.type === common.userTypes.ADMIN) {
+        db.getQuestionsList(questionsQuery, sortQuery, function(err, docs){
+			return callback(err, docs);
+		});
+	}
+
+	if (user.type === common.userTypes.STUDENT) {
+        questionsQuery.visible = true;
+
+		db.getQuestionsList(questionsQuery, sortQuery, function(err, docs) {
+			if (err) {
+				return callback(err, null);
+			}
+
+			var compareList = common.getIdsListFromJSONList(user.correctAttempts);
+			var answeredList = [];
+			var unansweredList = [];
+
+			for (q in docs) {
+				if (compareList.indexOf(docs[q].id) === -1) {
+					unansweredList.push(docs[q]);
+				} else {
+					answeredList.push(docs[q]);
+				}
+			}
+
+			var returnList = (questionsStatus === 'answered') ? answeredList : unansweredList;
+			return callback(null, returnList);
+		});
+    }
 }
 
 // set the status of the user to active or in-active
