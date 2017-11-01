@@ -104,7 +104,7 @@ var submitExportForm = function() {
     $.ajax({
         type: 'POST',
         url: '/accountsExportFile',
-        data: {studentList: selected},
+        data: {studentsList: selected},
         success: function(data) {
             $('#admin-content').html(data);
 

@@ -31,6 +31,8 @@ var logger = log.logger;
 var pug = require('pug');
 var common = require('./server/common.js');
 var analytics = require('./server/analytics.js');
+var json2csv = require('json2csv');
+var fs = require('fs');
 
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
@@ -860,8 +862,29 @@ app.post('/accountsExportFile', function(req, res){
         return res.redirect('/');
     }
 
-    console.log(req.body.studentList);
-    res.status(200).send();
+    var requestedList = req.body.studentsList;
+    var totalCount = requestedList.length;
+    var studentsCount = 0;
+    var studentsList = [];
+
+    for (var i in requestedList) {
+        users.getStudentById(requestedList[i], function(err, studentFound) {
+            if (err || !studentFound) {
+                res.status(500).send('Could not find a student from the export list');
+            }
+
+            studentsList.push(studentFound);
+            studentsCount++;
+            if (studentsCount === totalCount) {
+                var csv = json2csv({ data: studentsList, fields: ['id', 'fname'] });
+                
+                fs.writeFile('file.csv', csv, function(err) {
+                    if (err) throw err;
+                    res.status(200).send('Export job completed');
+                });
+            }
+        });
+    }    
 });
 
 /* Display some charts and graphs */
