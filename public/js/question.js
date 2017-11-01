@@ -44,4 +44,7 @@ var sendAnswerRequest = function(ans) {
             swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
         }
     });
+
+    const numberOfAttempts = $('#attempts');
+    numberOfAttempts.html(parseInt(numberOfAttempts.html()) + 1);
 }
