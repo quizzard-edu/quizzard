@@ -21,7 +21,7 @@ else if studentQuestionForm
 else if adminQuestionEdit
 	.form-group.col.s12
 		.row
-			if question.answer == 'true'
+			if question.answer === 'true'
 				.input-field.col.s6
 					input(type='radio', name='tfbutton', value='true', id='mcans1', required, checked)
 					label(for='mcans1') True
