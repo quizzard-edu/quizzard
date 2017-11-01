@@ -889,9 +889,7 @@ app.post('/accountsExportFile', function(req, res){
             studentsCount++;
             if (studentsCount === totalCount) {
                 var csv = json2csv({ data: studentsList, fields: ['id', 'fname'] });
-                var fileName = 'exportJob-'+new Date().toString()+'.csv';
-                var path = 'uploads/';
-                var file = path + fileName;
+                var file = 'uploads/exportJob-'+new Date().toString()+'.csv';
                 
                 fs.writeFile(file, csv, function(err) {
                     if (err) {
@@ -899,8 +897,7 @@ app.post('/accountsExportFile', function(req, res){
                         return res.status(500).send('Export job failed');
                     }
                     return res.status(200).render('users/accounts-export-complete', {
-                        path: path,
-                        fileName: fileName
+                        file: file
                     });
                 });
             }
