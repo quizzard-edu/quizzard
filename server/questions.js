@@ -156,11 +156,15 @@ exports.deleteQuestion = function(questionId, callback) {
 
 /* Extract a question object from the database using its ID. */
 exports.lookupQuestionById = function(questionId, callback) {
-    lookupQuestionById(questionId, callback);
+    lookupQuestion({id: questionId}, callback);
 }
 
-var lookupQuestionById = function(questionId, callback) {
-	db.lookupQuestionById(questionId, callback);
+exports.lookupQuestionBy_Id = function(questionId, callback) {
+    lookupQuestion({_id: questionId}, callback);
+}
+
+var lookupQuestion = function(findQuery, callback) {
+	db.lookupQuestion(findQuery, callback);
 }
 
 /*

@@ -444,8 +444,8 @@ exports.sortQuestions = function(questions, type, callback) {
 }
 
 /* Extract a question object from the database using its ID. */
-exports.lookupQuestionById = function(questionId, callback) {
-    questionsCollection.findOne({id: questionId}, function(err, question) {
+exports.lookupQuestion = function(findQuery, callback) {
+    questionsCollection.findOne(findQuery, function(err, question) {
         if (err) {
             return callback(err, null);
         }

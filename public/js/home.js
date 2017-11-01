@@ -9,14 +9,6 @@ $.ajax({
     }
 });*/
 
-
-/* Make questions clickable. */
-var setupQuestionListeners = function() {
-    $('.question-block').click(function(evt) {
-        window.location.href = '/question?id=' + this.id;
-    });
-}
-
 setupQuestionListeners();
 
 /* set home as the active navbar element */
