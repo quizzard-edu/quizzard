@@ -2,11 +2,11 @@
 $('#nav-leaderboard').addClass('active');
 
 /* Get HTML for the complete leaderboard table from the server and display it. */
-var fetchLeaderboard = function(path, t) {
+var fetchLeaderboard = function(t) {
     
     $.ajax({
         type: 'GET',
-        url: path,
+        url: '/leaderboard-table',
         data: {
             fullTable: true,
             longTable: true,
@@ -18,18 +18,18 @@ var fetchLeaderboard = function(path, t) {
     });
 }
 
-fetchLeaderboard('/leaderboard-table', 'overall');
+fetchLeaderboard('overall');
 
 $('#option-overall').click(function(evt) {
     $('#points-board-card').addClass('hidden');
     $('#overall-board-card').removeClass('hidden');
-    fetchLeaderboard('/leaderboard-table', 'overall');
+    fetchLeaderboard('overall');
 });
 
 $('#option-points').click(function(evt) {
     $('#overall-board-card').addClass('hidden');
     $('#points-board-card').removeClass('hidden');
-    fetchLeaderboard('/leaderboard-table', 'points');
+    fetchLeaderboard('points');
 });
 
 
