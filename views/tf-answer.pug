@@ -1,26 +1,37 @@
 if answerForm
-	.form-group
-		each index in [1,2]
-			p
-				input(type='radio', name='radbutton', value='mcans'+index, id='mcans'+index required)
-				label(for='mcans'+index) Is Correct
-				input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required, style='float:left;')
-
+	.form-group.col.s12
+		.row
+			.input-field.col.s6
+				input(type='radio', name='tfbutton', value='true', id='mcans1' required)
+				label(for='mcans1') True
+			.input-field.col.s6
+				input(type='radio', name='tfbutton', value='false', id='mcans2' required)
+				label(for='mcans2') False
 else if studentQuestionForm
-	form.form-question#mc_answerform
-		each answer in question.choices
-			input(type='radio' name='answer', value=answer, id=answer, required, autofocus)
-			label(for=answer) #{answer}
+	form.form-question#tf_answerform
+		.row
+			input(type='radio', name='tfbutton', value='true', id='mcans1' required)
+			label(for='mcans1') True
+		.row
+			input(type='radio', name='tfbutton', value='false', id='mcans2' required)
+			label(for='mcans2') False
 
 		button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
 
 else if adminQuestionEdit
-	.form-group
-		each option, i in question.choices
-			p
-				if question.answer == option
-					input(type='radio', name='radbutton', id=i, value=i, required, checked)
-				else
-					input(type='radio', name='radbutton', id=i, value=i, required)
-				label(for=i) Is Correct
-				input.form-control(type='text', name='mcans'+i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
+	.form-group.col.s12
+		.row
+			if question.answer === 'true'
+				.input-field.col.s6
+					input(type='radio', name='tfbutton', value='true', id='mcans1', required, checked)
+					label(for='mcans1') True
+				.input-field.col.s6
+					input(type='radio', name='tfbutton', value='false', id='mcans2' required)
+					label(for='mcans2') False
+			else
+				.input-field.col.s6
+					input(type='radio', name='tfbutton', value='true', id='mcans1', required)
+					label(for='mcans1') True
+				.input-field.col.s6
+					input(type='radio', name='tfbutton', value='false', id='mcans2', required, checked)
+					label(for='mcans2') False

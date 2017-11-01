@@ -18,7 +18,8 @@
           .form-group.row
             label.col-sm-2.col-form-label(for='qtopic') Topic
             .col-sm-10
-              input.form-control#qtopic(type='text' name='topic' placeholder='New topic' value=question.topic)
+              .input-field
+                input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='New topic' value=question.topic autocomplete='off' required)
           .form-group.row
             label.col-sm-2.col-form-label(for='qpoints') Points
             .col-sm-10

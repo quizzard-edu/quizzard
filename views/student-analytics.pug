@@ -1,22 +1,74 @@
 .row#student-analytics-card
-  if (isAdmin())
-    .container
-      .row
-        .col.s12
-          .row
-            .input-field.col.s12
-              input#autocomplete-input.autocomplete(type='text')
-              label(for='autocomplete-input') Select a student by ID
   #student-analytics-card-content
     .row
-      .col.s2
-      .col.s8
-        canvas#questionsAnsweredVsClass
-      .col.s2
+      .col.s12
+        h5.header-style#studentAnalyticsHeader &nbsp Your Analytics
+    .row.padding-left-10.padding-right-10
+      .col.s6.m3
+        .card#studentAnsweredCard
+          .card-content.gradient-45deg-light-blue-cyan.white-text
+            .col.s7.m7
+              i.material-icons.background-round.mt-5 playlist_add_check
+              p Questions Answered
+            .col.s5.m5.right-align.padding-right-10
+              h5#studentAnswered
+      .col.s6.m3
+        .card#studentAccuracyCard
+          .card-content.gradient-45deg-red-pink.white-text
+            .col.s7.m7
+              i.material-icons.background-round.mt-5 gps_fixed
+              p Accuracy
+            .col.s5.m5.right-align.padding-right-10
+              h5#studentAccuracy
+      .col.s6.m3
+        .card#studentPointsCard
+          .card-content.gradient-45deg-amber-amber.white-text
+            .col.s7.m7
+              i.material-icons.background-round.mt-5 bubble_chart
+              p Total Points
+            .col.s5.m5.right-align.padding-right-10
+                h5#studentPoints
+      .col.s6.m3
+        .card#studentRatingCard
+          .card-content.gradient-45deg-green-teal.white-text
+            .col.s7.m7
+              i.material-icons.background-round star
+              p Average Rating
+            .col.s5.m5.right-align.padding-right-10
+              h5#studentRating
     .row
-      .col.s4
-        canvas#accuracyVsClass
-      .col.s4
-        canvas#pointsVsClass
-      .col.s4
-        canvas#ratingVsClass
+      .col.s12
+        h5.header-style#classAnalyticsHeader &nbsp Class Analytics
+    .row.padding-left-10.padding-right-10
+      .col.s6.m3
+        .card#classAnsweredCard
+          .card-content.gradient-45deg-light-blue-cyan.white-text
+            .col.s7.m7
+              i.material-icons.background-round.mt-5 playlist_add_check
+              p Questions Answered
+            .col.s5.m5.right-align.padding-right-10
+              h5#classAnswered
+      .col.s6.m3
+        .card#classAccuracyCard
+          .card-content.gradient-45deg-red-pink.white-text
+            .col.s7.m7
+              i.material-icons.background-round.mt-5 gps_fixed
+              p Accuracy
+            .col.s5.m5.right-align.padding-right-10
+              h5#classAccuracy
+      .col.s6.m3
+        .card#classPointsCard
+          .card-content.gradient-45deg-amber-amber.white-text
+            .col.s7.m7
+              i.material-icons.background-round.mt-5 bubble_chart
+              p Total Points
+            .col.s5.m5.right-align.padding-right-10
+                h5#classPoints
+      .col.s6.m3
+        .card#classRatingCard
+          .card-content.gradient-45deg-green-teal.white-text
+            .col.s7.m7
+              i.material-icons.background-round star
+              p Average Rating
+            .col.s5.m5.right-align.padding-right-10
+              h5#classRating

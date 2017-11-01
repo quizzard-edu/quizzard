@@ -3,6 +3,7 @@ extends layout
 block styles
   link(rel='stylesheet' href='/css/icons.css')
   link(rel='stylesheet' href='/css/navbar.css')
+  link(rel='stylesheet' href='/css/analytics.css')
   link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
 
 block title
@@ -25,11 +26,20 @@ block content
   .container
     .row
       .col.s12
-        .card.white
+        .card#studentSelector
+          if (isAdmin())
+            .container
+              .row
+                .col.s12
+                  .row
+                    .input-field.col.s12
+                      input#autocomplete-input.autocomplete(type='text')
+                      label(for='autocomplete-input') Select a student by ID
+    .row
+      .col.s12
+        .card.white.padding-left-10.padding-right-10
           include student-analytics
           include class-analytics
-
-
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
