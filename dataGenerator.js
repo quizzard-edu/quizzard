@@ -101,7 +101,7 @@ var addQuestion = function(qTopic, id) {
         visible: 'true'
     };
 
-    questions.addQuestionByType(question.type, question, function(err, res) {
+    questions.addQuestion(question, function(err, res) {
         if (err == 'failure') {
             logger.error('Could not add question. Please try again.');
         } else {
