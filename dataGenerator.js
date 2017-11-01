@@ -51,7 +51,7 @@ var addAdmin = function(accid, pass, isAdmin) {
     };
 
     users.addAdmin(acc, function(err, account) {
-        if (err == 'failure') {
+        if (err) {
             logger.error('Could not create account %s. Please try again.', accid);
         } else if (err == 'exists') {
             logger.info('Account with username %s exists.', accid);
@@ -75,7 +75,7 @@ var addStudent = function(accid, pass, isAdmin) {
     };
 
     users.addStudent(acc, function(err, account) {
-        if (err == 'failure') {
+        if (err) {
             logger.error('Could not create account %s. Please try again.', accid);
         } else if (err == 'exists') {
             logger.info('Account with username %s exists.', accid);
@@ -101,8 +101,8 @@ var addQuestion = function(qTopic, id) {
         visible: 'true'
     };
 
-    questions.addQuestionByType(question.type, question, function(err, res) {
-        if (err == 'failure') {
+    questions.addQuestion(question, function(err, res) {
+        if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
@@ -126,7 +126,7 @@ var answerQuestion = function(questionId) {
         }
 
         questions.checkAnswer(questionId, {id: studentId, type: common.userTypes.STUDENT}, answer, function(err, res) {
-            if (res == 'failure') {
+            if (err) {
                 logger.error('Questions %d answered incorrectly by %s', questionId, studentId);
             } else {
                 logger.info('Questions %d answered correctly by %s', questionId, studentId);
@@ -166,13 +166,13 @@ var answerQuestions = function() {
 }
 
 db.initialize(function() {
-    db.removeAllUsers(function(res) {
-        if (res === 'failure') {
+    db.removeAllUsers(function(err, res) {
+        if (err) {
             process.exit(1);
         }
 
-        db.removeAllQuestions(function(res) {
-            if (res === 'failure') {
+        db.removeAllQuestions(function(err, res) {
+            if (err) {
                 process.exit(1);
             }
 

@@ -391,97 +391,14 @@ var getNextQuestionId = function(callback){
     });
 }
 
-exports.getQuestionsListByUser = function(request, callback) {
-    var questionsQuery = {};
-    var user = request.user;
-    var questionsStatus = request.questionsStatus;
-
-    if (!user) {
-        return callback('No user object', null);
-    }
-
-    if (user.type == common.userTypes.ADMIN) {
-        questionsCollection.find(questionsQuery).sort({id: 1}).toArray(function(err, docs) {
-            if (err) {
-                return callback(err, null);
-            }
-
-            for (q in docs) {
-                docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-                docs[q].attemptedCount = docs[q].attempted.length;
-                docs[q].answeredCount = docs[q].answered.length;
-                docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
-                delete docs[q]._id;
-            }
-
-            return callback(null, docs);
-        });
-    } else if (user.type == common.userTypes.STUDENT) {
-        questionsQuery.visible = true;
-
-        getUserById(user.id, function(err, requiredUser) {
-            if (err) {
-                return callback(err, null);
-            }
-
-            if (!requiredUser) {
-                return callback('user does not exist', null);
-            }
-
-            questionsCollection.find(questionsQuery).sort({id: 1}).toArray(function(err, docs) {
-                if (err) {
-                    return callback(err, null);
-                }
-
-                var compareList = getListFromJSONList(requiredUser.correctAttempts);
-                var answeredList = [];
-                var unansweredList = [];
-
-                for (q in docs) {
-                    docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-                    docs[q].attemptedCount = docs[q].attempted.length;
-                    docs[q].answeredCount = docs[q].answered.length;
-                    docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
-                    delete docs[q]._id;
-
-                    if (compareList.indexOf(docs[q].id) === -1) {
-                        unansweredList.push(docs[q]);
-                    } else {
-                        answeredList.push(docs[q]);
-                    }
-                }
-
-                var returnList = (questionsStatus === 'answered') ? answeredList : unansweredList;
-                return callback(null, returnList);
-            });
-        });
-    }
-}
-
-var getListFromJSONList = function (JSONList) {
-    var list = [];
-    for (i in JSONList){
-        list.push(JSONList[i].id);
-    }
-    return list;
-}
-
-exports.getQuestionsList = function(callback) {
-    getQuestions({}, {id:1}, callback);
-}
-
-var getQuestions = function(findQuery, sortQuery, callback){
+exports.getQuestionsList = function(findQuery, sortQuery, callback){
     questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
             return callback(err, null);
         }
 
         for (q in docs) {
-            docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-            docs[q].attemptedCount = docs[q].attempted.length;
-            docs[q].answeredCount = docs[q].answered.length;
-            docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
-            delete docs[q]._id;
+            docs[q].firstAnswer = docs[q].correctAttempts[0] ? docs[q].correctAttempts[0].id : 'No One';
         }
 
         return callback(null, docs);
@@ -538,11 +455,7 @@ exports.lookupQuestionById = function(questionId, callback) {
         }
 
         /* necessary for later database update */
-        question.firstAnswer = question.answered[0] ? question.answered[0] : 'No One';
-        question.attemptedCount = question.attempted.length;
-        question.answeredCount = question.answered.length;
-        question.totalCount = question.attempted.length + question.answered.length;
-        delete question._id;
+        question.firstAnswer = question.correctAttempts[0] ? question.correctAttempts[0].id : 'No One';
         return callback(null, question);
     });
 }
@@ -557,6 +470,7 @@ exports.updateQuestionById = function(questionId, request, callback){
     update.$push = {};
     update.$pull = {};
     update.$set = {};
+    update.$inc = {};
 
     if (request.topic) {
       update.$set.topic = request.topic;
@@ -607,14 +521,22 @@ exports.updateQuestionById = function(questionId, request, callback){
     }
 
     if (typeof request.correct !== 'undefined') {
+        query['correctAttempts.id'] = { $ne : request.userId };
         if (request.correct) {
-            update.$addToSet.answered = request.userId;
-            update.$pull.attempted = { $in : [request.userId] };
+            update.$inc.correctAttemptsCount = 1;
+            update.$push.correctAttempts = {
+                id : request.userId,
+                date : currentDate };
         } else {
-            update.$addToSet.attempted = request.userId;
-            update.$push.attempts = request.attempt;
-            update.$pull.answered = { $in : [request.userId] };//to be removed
+            update.$inc.wrongAttemptsCount = 1;
+            update.$push.wrongAttempts = {
+                id : request.userId,
+                date : currentDate };
         }
+        update.$inc.totalAttemptsCount = 1;
+        update.$push.totalAttempts = {
+            id : request.userId,
+            date : currentDate };
     }
 
     if (isEmptyObject(update.$addToSet)) {
@@ -631,6 +553,10 @@ exports.updateQuestionById = function(questionId, request, callback){
 
     if (isEmptyObject(update.$pull)) {
         delete update.$pull;
+    }
+
+    if (isEmptyObject(update.$inc)) {
+        delete update.$inc;
     }
 
     questionsCollection.update(query, update, function(err, info) {

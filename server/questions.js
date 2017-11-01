@@ -32,7 +32,7 @@ var questionUpdateParser = function(question){
 	if ('points' in question){
 		updatedQuestion.points = parseInt(question.points);
 	}
-	
+
 	return updatedQuestion;
 }
 
@@ -48,9 +48,12 @@ var prepareQuestionData = function(question, callback){
 	questionToAdd.hint = question.hint;
 	questionToAdd.points = parseInt(question.points);
 	questionToAdd.visible = (question.visible === 'true');
-	questionToAdd.attempted = [];
-	questionToAdd.answered = [];
-	questionToAdd.attempts = [];
+	questionToAdd.correctAttempts = [];
+	questionToAdd.wrongAttempts = [];
+	questionToAdd.totalAttempts = [];
+	questionToAdd.correctAttemptsCount = 0;
+	questionToAdd.wrongAttemptsCount = 0;
+	questionToAdd.totalAttemptsCount = 0;
 	questionToAdd.ctime = currentDate;
 	questionToAdd.mtime = currentDate;
 	questionToAdd.ratings = [];
@@ -111,15 +114,10 @@ exports.addQuestion = function(question, callback) {
 	})
 }
 
-exports.getQuestionsList = function(callback) {
-	db.getQuestionsList(callback);
-}
-
 /* Sort questions by the given sort type. */
 exports.sortQuestions = function(qs, type, callback) {
     db.sortQuestions(qs, type, callback);
 }
-
 
 /* Replace a question in the database with the provided question object. */
 exports.updateQuestionById = function(questionId, info, callback) {
@@ -133,6 +131,9 @@ var updateQuestionById = function(qId, infoToUpdate, callback){
 			return callback({status:500, msg:err},null);
 		}
 		infoToUpdate = questionUpdateParser(infoToUpdate);
+		if ('correct' in infoToUpdate) {
+			return db.updateQuestionById(qId, infoToUpdate, callback);
+		}
 		// validate each field that will be updated
 		var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
 		if (result.success){
@@ -231,4 +232,9 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 // adding rating to question collection
 exports.submitRating = function (questionId, userId, rating, callback) {
 	db.updateQuestionById(questionId, {userId: userId, rating: rating}, callback);
+}
+
+// get all questions list
+exports.getAllQuestionsList = function(callback) {
+	db.getQuestionsList({}, {id: 1}, callback);
 }
