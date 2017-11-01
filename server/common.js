@@ -19,10 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const questionTypes = Object.freeze({
-    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer'},
-    REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer'},
-    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'tf-answer'},
-    MATCHING        : {name: 'Matching', value: 'matching', template: 'matching-answer'}
+    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer', icon: 'format_list_bulleted'},
+    REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer', icon: 'font_download'},
+    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'tf-answer', icon: 'check_circle'},
+    MATCHING        : {name: 'Matching', value: 'matching', template: 'matching-answer', icon: 'dashboard'}
 });
 exports.questionTypes = questionTypes;
 
@@ -46,24 +46,27 @@ exports.userTypes = userTypes;
 
 const questionAttributes = Object.freeze({
     DEFAULT: {
-        topic       : {type:'[object String]'},
-        title       : {type:'[object String]'},
-        text        : {type:'[object String]'},
-        hint        : {type:'[object String]'},
-        points      : {type:'[object Number]'},
-        visible     : {type:'[object Boolean]'},
-        type        : {type:'[object String]'}
+        topic                   : {type:'[object String]'},
+        title                   : {type:'[object String]'},
+        text                    : {type:'[object String]'},
+        hint                    : {type:'[object String]'},
+        points                  : {type:'[object Number]'},
+        visible                 : {type:'[object Boolean]'},
+        type                    : {type:'[object String]'}
     },
     SERVER: {
-        attempted   : {type:'[object Array]'},
-        answered    : {type:'[object Array]'},
-        attempts    : {type:'[object Array]'},
-        ctime       : {type:'[object String]'},
-        mtime       : {type:'[object String]'},
-        ratings     : {type:'[object Array]'}
+        correctAttempts         : {type:'[object Array]'},
+        wrongAttempts           : {type:'[object Array]'},
+        totalAttempts           : {type:'[object Array]'},
+        correctAttemptsCount    : {type:'[object Number]'},
+        wrongAttemptsCount      : {type:'[object Number]'},
+        totalAttemptsCount      : {type:'[object Number]'},
+        ctime                   : {type:'[object String]'},
+        mtime                   : {type:'[object String]'},
+        ratings                 : {type:'[object Array]'}
     },
     REGULAR:        {
-        answer      : {type:'[object String]'}
+        answer                  : {type:'[object String]'}
     },
     MULTIPLECHOICE: {
         choices     : {type:'[object Array]'},
@@ -73,15 +76,15 @@ const questionAttributes = Object.freeze({
         answer      : {type:'[object String]'}
     },
     MATCHING: {
-        leftSide    : {type:'[object Array]'},
-        rightSide   : {type:'[object Array]'}
+        leftSide                : {type:'[object Array]'},
+        rightSide               : {type:'[object Array]'}
     },
     DATATYPES: {
-        Array       : {type:'[object Array]'},
-        String      : {type:'[object String]'},
-        Number      : {type:'[object Number]'},
-        Boolean     : {type:'[object Boolean]'},
-        Object      : {type:'[object Object]'}
+        Array                   : {type:'[object Array]'},
+        String                  : {type:'[object String]'},
+        Number                  : {type:'[object Number]'},
+        Boolean                 : {type:'[object Boolean]'},
+        Object                  : {type:'[object Object]'}
     }
 });
 exports.questionAttributes = questionAttributes;
@@ -99,3 +102,12 @@ var randomizeList = function(data) {
     return data;
 };
 exports.randomizeList = randomizeList;
+
+/* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
+exports.getIdsListFromJSONList = function (JSONList) {
+    var list = [];
+    for (i in JSONList){
+        list.push(JSONList[i].id);
+    }
+    return list;
+}
