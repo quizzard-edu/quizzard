@@ -88,7 +88,7 @@ var validateQuestionAttributesByType = function(question, type){
 }
 
 var regexAttributeValidator = function(question){
-	if (!validateAllAttributesInGroup(question,'REGULAR')){
+	if (!validateAllAttributesInGroup(question,'MULTIPLECHOICE')){
 		return qTypeFailMsg('Incorrect question answer field!');
 	}
 	return successMsg;

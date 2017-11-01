@@ -32,7 +32,7 @@ var questionUpdateParser = function(question){
 	if ('points' in question){
 		updatedQuestion.points = parseInt(question.points);
 	}
-	
+
 	return updatedQuestion;
 }
 
@@ -116,7 +116,6 @@ exports.sortQuestions = function(qs, type, callback) {
     db.sortQuestions(qs, type, callback);
 }
 
-
 /* Replace a question in the database with the provided question object. */
 exports.updateQuestionById = function(questionId, info, callback) {
 	updateQuestionById(questionId, info, callback);
@@ -129,6 +128,9 @@ var updateQuestionById = function(qId, infoToUpdate, callback){
 			return callback({status:500, msg:err},null);
 		}
 		infoToUpdate = questionUpdateParser(infoToUpdate);
+		if ('correct' in infoToUpdate) {
+			return db.updateQuestionById(qId, infoToUpdate, callback);
+		}
 		// validate each field that will be updated
 		var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
 		if (result.success){
