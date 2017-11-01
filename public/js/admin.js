@@ -514,7 +514,9 @@ var submitQuestionForm = function() {
         if(field.name.startsWith('matchRight')){
             question['rightSide'].push(field.value);
         }
-
+        if(field.name.startsWith('tfbutton')){
+            question['answer'] = field.value;
+        }
         question[field.name] = field.value;
     });
 
@@ -640,7 +642,10 @@ var submitQEditForm = function(qid) {
         if(field.name.startsWith('matchRight')){
             question['rightSide'].push(field.value);
         }
-
+        
+        if(field.name.startsWith('tfbutton')){
+            question['answer'] = field.value;
+        }
         question[field.name] = field.value;
     });
 

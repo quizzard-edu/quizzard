@@ -11,6 +11,11 @@ $('#mc_answerform').submit(function(evt) {
     var ans = $("input[name=answer]:checked").val();
     sendAnswerRequest(ans);
 });
+$('#tf_answerform').submit(function(evt) {
+    evt.preventDefault();
+    var ans = $("input[name=tfbutton]:checked").val();
+    sendAnswerRequest(ans);
+});
 
 $('#match_answerform').submit(function(evt) {
     evt.preventDefault();
