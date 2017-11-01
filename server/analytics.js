@@ -157,7 +157,7 @@ var getRatingVsClass = function(query, callback) {
         var classRatingAverage = 0;
 
         for (i in students) {
-            if (students[i].ratings.length!==0) {
+            if (students[i].ratings.length !== 0) {
                 if (students[i].id === studentId) {
                     studentRating = getAverageRating(students[i].ratings);
                 } else {
@@ -209,7 +209,7 @@ var getClassAnswered = function(query, callback) {
     });
 }
 
-// get questions answered vs class
+// get questions answered of the class
 var getClassAccuracy = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
@@ -234,7 +234,7 @@ var getClassAccuracy = function(query, callback) {
     });
 }
 
-// get points vs class
+// get points of the class
 var getClassPoints = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
@@ -259,7 +259,7 @@ var getClassPoints = function(query, callback) {
     });
 }
 
-// get rating vs class
+// get rating of the class
 var getClassRating = function(query, callback) {
     users.getUsersList(function(err, students) {
         if (err) {
@@ -275,7 +275,7 @@ var getClassRating = function(query, callback) {
         var classRatingAverage = 0;
 
         for (i in students) {
-            if (students[i].ratings.length!==0) {
+            if (students[i].ratings.length !== 0) {
                 classRating += getAverageRating(students[i].ratings);
                 classCount++;
             }
