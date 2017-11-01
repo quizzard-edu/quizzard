@@ -43,15 +43,10 @@ block content
             h4.sidebar-item#topic #{question.topic}
           .card-action
             h5.sidebar-item#points #{question.points} Points
-<<<<<<< Updated upstream
-            p.sidebar-item#attempts This question has been attempted #{question.totalCount} times.
-            if question.answeredCount == 0
-=======
             span.sidebar-item This question has been attempted&nbsp
             span.sidebar-item#attempts #{question.totalAttemptsCount}
             span.sidebar-item &nbsptimes.
             if question.correctAttemptsCount == 0
->>>>>>> Stashed changes
               p.sidebar-item#first-answer You could be the first person to correctly answer this question!
             else
               p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
