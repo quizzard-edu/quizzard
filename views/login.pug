@@ -10,9 +10,13 @@ block title
 
 block content
   .container
-    img.img-circle#logo(src='img/logo.png')
+    img.hide-on-med-and-down#logo(src='img/logo.png')
     form.form-login#login
-      h2.form-login-heading Quizzard
+      div.hide-on-large-only#mobileDiv
+        span.col.s1#logoDiv
+          img#logoMobile(src='img/logo.png')
+        span.col.s2#uizzardDiv
+          h2.form-login-heading uizzard
       p#invalid
       .row
         .input-field.col.s12
