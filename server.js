@@ -31,7 +31,6 @@ var logger = log.logger;
 var pug = require('pug');
 var common = require('./server/common.js');
 var analytics = require('./server/analytics.js');
-var ObjectId = require('mongoose').Types.ObjectId;
 
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
@@ -520,8 +519,7 @@ app.get('/question', function(req, res) {
         return res.redirect('/');
     }
 
-    var _id = new ObjectId(req.query._id);
-    questions.lookupQuestionBy_Id(_id, function(err, questionFound) {
+    questions.lookupQuestionBy_Id(req.query._id, function(err, questionFound) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
@@ -571,7 +569,7 @@ app.post('/submitanswer', function(req, res) {
     }
 
     questions.checkAnswer(
-        parseInt(req.body.questionId),
+        req.body.questionId,
         req.session.user,
         req.body.answer,
         function(err, value) {

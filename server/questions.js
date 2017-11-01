@@ -22,6 +22,7 @@ var db = require('./db.js');
 var logger = require('./log.js').logger;
 var common = require('./common.js');
 var questionValidator = require('./questionValidator.js');
+var ObjectId = require('mongoose').Types.ObjectId;
 
 /*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question){
@@ -156,11 +157,20 @@ exports.deleteQuestion = function(questionId, callback) {
 
 /* Extract a question object from the database using its ID. */
 exports.lookupQuestionById = function(questionId, callback) {
-    lookupQuestion({id: questionId}, callback);
+    lookupQuestionById(questionId, callback);
 }
 
-exports.lookupQuestionBy_Id = function(questionId, callback) {
-    lookupQuestion({_id: questionId}, callback);
+var lookupQuestionById = function(questionId, callback) {
+	lookupQuestion({id: questionId}, callback);
+}
+
+exports.lookupQuestionBy_Id = function(_questionId, callback) {
+    lookupQuestionBy_Id(_questionId, callback);
+}
+
+var lookupQuestionBy_Id = function(_questionId, callback) {
+	var _id = new ObjectId(_questionId);	
+    lookupQuestion({_id: _id}, callback);
 }
 
 var lookupQuestion = function(findQuery, callback) {
@@ -173,11 +183,11 @@ var lookupQuestion = function(findQuery, callback) {
 * with the result of the comparison and the new question object.
 */
 exports.checkAnswer = function(questionId, user, answer, callback) {
-    logger.info('User %s attempted to answer question %d with "%s"', user.id, questionId, answer);
+    logger.info('User %s attempted to answer question %s with "%s"', user.id, questionId, answer);
 	var userType = user.type;
 	var userId = user.id;
 
-	lookupQuestionById(questionId, function(err, question){
+	lookupQuestionBy_Id(questionId, function(err, question){
 		if(err || !question){
 			return callback('error', null);
 		}
@@ -218,7 +228,7 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 			userId,
 			{ questionId:questionId, correct:value, points:question.points, attempt:answer },
 			function(err, res){
-				updateQuestionById(
+				updateQuestionBy_Id(
 					questionId,
 					{ userId:userId, correct:value, attempt:answer },
 					function(err, res) {
