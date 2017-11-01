@@ -122,7 +122,7 @@ app.get('/home', function(req, res) {
     }
 
     var request = { user : req.session.user, questionsStatus : 'unanswered' };
-    users.getQuestionsList(request, function(err, results) {
+    users.getQuestionsListByUser(request, function(err, results) {
         if (err) {
             return res.status(500).send();
         }
@@ -134,7 +134,15 @@ app.get('/home', function(req, res) {
 
             return res.status(200).render('home', {
                 user: userFound,
-                questions: results
+                questions: results,
+                getQuestionIcon: function(type) {
+                    for (var i in common.questionTypes) {
+                        if (type === common.questionTypes[i].value) {
+                            return common.questionTypes[i].icon;
+                        }
+                    }
+                    return 'help';
+                }
             });
         });
     });
@@ -184,6 +192,8 @@ const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
 const matchingForm = pug.compileFile('views/matching-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
+const questionList = pug.compileFile('views/questionlist.pug');
+
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
@@ -352,55 +362,52 @@ app.get('/questionlist', function(req, res) {
         return res.redirect('/');
     }
 
-    var request = {};
-    request.user = req.session.user;
-    request.questionsStatus = req.query.type;
-
-    users.getQuestionsList(request, function(err, questionsList){
-        if (err) {
-            return res.status(500).send('Could not fetch questions list');
+    var userId = req.session.user.id;
+    users.getUserById(userId, function(err, user){
+        if (err || !user) {
+            res.status(400).send('bad request, user does not exist');
         }
 
-        req.session.adminQuestionList = null;
-        var html = null;
-
-        if (req.session.user.type == common.userTypes.ADMIN) {
-            html = questionTable({
-                questions : questionsList,
-                questionType: function(type){
-                    for (var i in common.questionTypes) {
-                        if (type === common.questionTypes[i].value) {
-                            return common.questionTypes[i].name;
-                        }
-                    }
-                    return 'UNKNOWN';
-                }
-             });
-        } else {
-            html = questionList({ questions : questionsList });
-        }
-
-        return res.status(200).send(html);
-    });
-
-    /* If this is the first time accessing it, fetch list from database.
-    questions.findQuestions(
-        0,
-        common.sortTypes.SORT_DEFAULT,
-        null,
-        function(err, questionlist) {
+        var request = {};
+        request.questionsStatus = req.query.type;
+        request.user = user;
+        users.getQuestionsListByUser(request, function(err, questionsList){
             if (err) {
                 return res.status(500).send('Could not fetch questions list');
             }
 
-            req.session.adminQuestionList = questionlist;
-            var html = questionTable({
-                questions: questionlist
-            });
+            var html = null;
+            if (req.session.user.type === common.userTypes.ADMIN) {
+                html = questionTable({
+                    questions : questionsList,
+                    questionType: function(type){
+                        for (var i in common.questionTypes) {
+                            if (type === common.questionTypes[i].value) {
+                                return common.questionTypes[i].name;
+                            }
+                        }
+                        return 'UNKNOWN';
+                    }
+                 });
+            }
+
+            if (req.session.user.type === common.userTypes.STUDENT) {
+                html = questionList({
+                    questions : questionsList,
+                    getQuestionIcon: function(type) {
+                        for (var i in common.questionTypes) {
+                            if (type === common.questionTypes[i].value) {
+                                return common.questionTypes[i].icon;
+                            }
+                        }
+                        return 'help';
+                    }
+                 });
+            }
 
             return res.status(200).send(html);
-        }
-    );*/
+        });
+    });
 });
 
 /* Send the question editing form HTML. */
@@ -452,7 +459,7 @@ app.get('/statistics', function(req, res) {
         res.status(403).send('Permission Denied');
     }
 
-    questions.getQuestionsList(function(err, questionslist) {
+    questions.getAllQuestionsList(function(err, questionslist) {
         if (err) {
             res.status(500).send(err);
         }
@@ -478,51 +485,6 @@ app.get('/sortlist', function(req, res) {
     }
 
     return res.status(200).send(common.sortTypes);
-});
-
-const questionList = pug.compileFile('views/questionlist.pug');
-
-/* Respond with an HTML-formatted list of questions to display. */
-app.post('/fetchqlist', function(req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    var type = common.sortTypes.SORT_RANDOM;
-    var ans = false;
-
-    if (req.body.type == 'answered') {
-        type |= common.sortTypes.QUERY_ANSWERED | common.sortTypes.QUERY_ANSONLY;
-        ans = true;
-    }
-
-    var request = {};
-    request.user = req.session.user;
-    request.questionsStatus = req.body.type;
-
-    users.getQuestionsList(request, function(err, questionsList){
-        if (err) {
-            return res.status(500).send('Could not fetch questions list');
-        }
-
-        req.session.adminQuestionList = null;
-        var html = questionList({
-            questions: questionsList
-        });
-
-        return res.status(200).send(html);
-    });
-
-    /*
-    questions.findQuestions(10, type, req.session.user, function(err, results) {
-        req.session.questions = results;
-        req.session.answeredQuestions = ans;
-        var html = questionList({
-            questions: results
-        });
-
-        return res.status(200).send(html);
-    });*/
 });
 
 /* Sort question list by specified criterion and send new HTML. */
@@ -562,14 +524,18 @@ app.get('/question', function(req, res) {
             return res.status(500).send();
         }
 
-        if (!questionFound.visible) {
+        if (!questionFound.visible && req.session.user.type === common.userTypes.STUDENT) {
             return res.status(400).send('Question is not available');
         }
+
+        var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts);
         return res.status(200).render('question', {
             user: req.session.user,
             question: questionFound,
-            answered: !(questionFound.answered.indexOf(req.session.user.id) === -1),
-            preview: false,
+            answered: (answeredList.indexOf(req.session.user.id) !== -1),
+            isAdmin : function() {
+                return req.session.user.type === common.userTypes.ADMIN;
+            },
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
@@ -712,7 +678,7 @@ app.put('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByType(req.body.type, req.body, function(err, qId) {
+    questions.addQuestion(req.body, function(err, qId) {
         if (err) {
             return res.status(err.status).send(err.msg);
         }
@@ -791,7 +757,7 @@ var submitQuestionRating = function (req, res) {
     var questionId = parseInt(req.body.qId);
     var rating = parseInt(req.body.rating);
 
-    if (rating < 1 || rating > 5) {
+    if (!rating || rating < 1 || rating > 5) {
         return res.status(400).send('bad rating');
     }
 
