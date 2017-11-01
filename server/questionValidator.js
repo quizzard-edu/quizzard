@@ -113,7 +113,7 @@ var multipleChoiceAttributeValidator = function(question){
 
 var trueAndFalseAttributeValidator = function(question){
 	if (!validateAllAttributesInGroup(question,'TRUEFALSE')){
-		return qTypeFailMsg('Incorrect question answer fields!');
+		return qTypeFailMsg('Please select answer True or False!');
 	}
 	if (question.answer !== 'true' && question.answer !== 'false' ){
 		return qTypeFailMsg('Answer can only be True or False!');
@@ -123,7 +123,7 @@ var trueAndFalseAttributeValidator = function(question){
 
 var matchingAttributeValidator = function(question){
 	if (!validateAllAttributesInGroup(question,'MATCHING')){
-		return qTypeFailMsg('Please select answer True or False!');
+		return qTypeFailMsg('Incorrect question answer fields!');
 	}
 	if (!validateArrayObject(question.leftSide,'String') || !validateArrayObject(question.rightSide,'String')){
 		return failMsg;
@@ -135,7 +135,20 @@ var matchingAttributeValidator = function(question){
 }
 
 var chooseAllAttributeValidator = function(question){
-	
+	if (!validateAllAttributesInGroup(question,'CHOOSEALL')){
+		return qTypeFailMsg('Incorrect question answer fields!');
+	}
+	if (!validateArrayObject(question.choices,'String') || !validateArrayObject(question.answer,'String')){
+		return failMsg;
+	}
+	if (question.choices.length < 2){
+		return qTypeFailMsg('Need 2 or more options!');
+	}
+
+	if (question.answer.length < 1){
+		return qTypeFailMsg('Please select an answer for this Question!');
+	}
+	return successMsg;
 }
 
 /*Validate specific value to it's attributeType in DB*/
