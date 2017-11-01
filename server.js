@@ -182,7 +182,8 @@ const statistics = pug.compileFile('views/statistics.pug');
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
-var leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
+const matchingForm = pug.compileFile('views/matching-answer.pug');
+const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
@@ -307,6 +308,11 @@ app.get('/answerForm', function(req, res){
                 common.questionTypes.TRUEFALSE.template,{
                 answerForm:true});
             break;
+        case common.questionTypes.MATCHING.value:
+            res.status(200).render(
+                common.questionTypes.MATCHING.template,{
+                answerForm:true});
+            break;
         default:
             return res.status(400).send('Please select an appropriate question Type.')
     }
@@ -363,7 +369,17 @@ app.get('/questionlist', function(req, res) {
         var html = null;
 
         if (req.session.user.type == common.userTypes.ADMIN) {
-            html = questionTable({ questions : questionsList });
+            html = questionTable({
+                questions : questionsList,
+                questionType: function(type){
+                    for (var i in common.questionTypes) {
+                        if (type === common.questionTypes[i].value) {
+                            return common.questionTypes[i].name;
+                        }
+                    }
+                    return 'UNKNOWN';
+                }
+             });
         } else {
             html = questionList({ questions : questionsList });
         }
@@ -413,6 +429,8 @@ app.post('/questionedit', function(req, res) {
                         return mcForm({adminQuestionEdit:true, question:question})
                     case common.questionTypes.TRUEFALSE.value:
                         return tfForm({adminQuestionEdit:true, question:question})
+                    case common.questionTypes.MATCHING.value:
+                        return matchingForm({adminQuestionEdit:true, question:question})
                     default:
                         return res.redirect('/')
                         break;
@@ -548,7 +566,7 @@ app.get('/question', function(req, res) {
             return res.status(500).send();
         }
 
-        if (!questionFound.visible) {
+        if (!questionFound.visible && req.session.user.type === common.userTypes.STUDENT) {
             return res.status(400).send('Question is not available');
         }
         return res.status(200).render('question', {
@@ -564,6 +582,11 @@ app.get('/question', function(req, res) {
                         return mcForm({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.TRUEFALSE.value:
                         return tfForm({studentQuestionForm:true, question:questionFound})
+                    case common.questionTypes.MATCHING.value:
+                        // randomize the order of the matching
+                        questionFound.leftSide = common.randomizeList(questionFound.leftSide);
+                        questionFound.rightSide = common.randomizeList(questionFound.rightSide);
+                        return matchingForm({studentQuestionForm:true, question:questionFound})
                     default:
                         break;
                 }
