@@ -1,45 +1,46 @@
 .row#overall-board-card
-  table.bordered
-    thead
-      tr
-        th Rank
-        th User ID
-        th Points
-        if fullTable
-          th Attempts
-          th Correct Answers
-          th Success Rate
-    tbody
-      each s in leaderboard
-        if s.rank == 0
-          tr.col-default
-            td ...
-            td ...
-            td ...
-            if fullTable
+  .col.s12
+    table.bordered
+      thead
+        tr
+          th Rank
+          th User ID
+          th Points
+          if fullTable
+            th Attempts
+            th Correct Answers
+            th Success Rate
+      tbody
+        each s in leaderboard
+          if s.rank == 0
+            tr.col-default
               td ...
               td ...
               td ...
-        else
-          if s.points != 0 && s.rank <= 3
-            if s.rank == 1
-              - rowclass = 'col-gold';
-            if s.rank == 2
-              - rowclass = 'col-silver';
-            if s.rank == 3
-              - rowclass = 'col-bronze';
+              if fullTable
+                td ...
+                td ...
+                td ...
           else
-            - rowclass = 'col-default';
-          if s.id == userid
-            - rowclass += ' col-isuser';
-          tr(class=rowclass)
-            td #{s.rank}
-            td #{s.id}
-            td #{s.points}
-            if fullTable
-              td #{s.totalAttemptsCount}
-              td #{s.correctAttemptsCount}
-              if s.totalAttemptsCount === 0
-                td 0%
-              else
-                td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%
+            if s.points != 0 && s.rank <= 3
+              if s.rank == 1
+                - rowclass = 'col-gold';
+              if s.rank == 2
+                - rowclass = 'col-silver';
+              if s.rank == 3
+                - rowclass = 'col-bronze';
+            else
+              - rowclass = 'col-default';
+            if s.id == userid
+              - rowclass += ' col-isuser';
+            tr(class=rowclass)
+              td #{s.rank}
+              td #{s.id}
+              td #{s.points}
+              if fullTable
+                td #{s.totalAttemptsCount}
+                td #{s.correctAttemptsCount}
+                if s.totalAttemptsCount === 0
+                  td 0%
+                else
+                  td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%

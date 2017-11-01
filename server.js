@@ -184,6 +184,8 @@ const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
 const matchingForm = pug.compileFile('views/matching-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
+const pointsTable = pug.compileFile('views/points-leaderboard.pug');
+
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
@@ -195,18 +197,55 @@ app.get('/leaderboard-table', function(req, res) {
 
     ft = true;
     shrt = false;
-    t = req.query.type;
-    if (t == 'points'){
-        leaderboardTable = pug.compileFile('views/points-leaderboard.pug');
+    
+    if (req.query.fullTable == 'false')
+        ft = false;
+    if (req.query.longTable == 'false')
+        shrt = true;
+    
+    if(req.query.type === 'points'){
+        lb.leaderboard(req.session.user.id, shrt, function(leader) {
+            var html = pointsTable({
+                fullTable: ft,
+                shortTable: shrt,
+                leaderboard: leader,
+                userid: req.session.user.id
+            });
+    
+            return res.status(200).send(html);
+        });
+    } else if (req.query.type === 'overall') {
+        lb.leaderboard(req.session.user.id, shrt, function(leader) {
+            var html = leaderboardTable({
+                fullTable: ft,
+                shortTable: shrt,
+                leaderboard: leader,
+                userid: req.session.user.id
+            });
+    
+            return res.status(200).send(html);
+        });
+    }
+});
+
+/* Fetch and render the points table. Send HTML as response. */
+app.get('/points-leaderboard', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
     }
 
+    var ft, shrt;
+
+    ft = true;
+    shrt = false;
+    
     if (req.query.fullTable == 'false')
         ft = false;
     if (req.query.longTable == 'false')
         shrt = true;
 
     lb.leaderboard(req.session.user.id, shrt, function(leader) {
-        var html = leaderboardTable({
+        var html = pointsTable({
             fullTable: ft,
             shortTable: shrt,
             leaderboard: leader,

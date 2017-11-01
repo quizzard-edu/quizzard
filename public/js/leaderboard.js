@@ -3,6 +3,7 @@ $('#nav-leaderboard').addClass('active');
 
 /* Get HTML for the complete leaderboard table from the server and display it. */
 var fetchLeaderboard = function(path, t) {
+    
     $.ajax({
         type: 'GET',
         url: path,
@@ -17,7 +18,7 @@ var fetchLeaderboard = function(path, t) {
     });
 }
 
-fetchLeaderboard('/leaderboard-table');
+fetchLeaderboard('/leaderboard-table', 'overall');
 
 $('#option-overall').click(function(evt) {
     $('#points-board-card').addClass('hidden');
@@ -28,7 +29,7 @@ $('#option-overall').click(function(evt) {
 $('#option-points').click(function(evt) {
     $('#overall-board-card').addClass('hidden');
     $('#points-board-card').removeClass('hidden');
-    fetchLeaderboard('/points-leaderboard', 'points');
+    fetchLeaderboard('/leaderboard-table', 'points');
 });
 
 
