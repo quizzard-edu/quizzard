@@ -601,9 +601,9 @@ exports.updateQuestionById = function(questionId, request, callback){
             rating: request.rating
         }
     }
-
-    if (request.visible) {
-        update.$set.visible = (request.visible === 'true');
+    
+    if ('visible' in request) {
+        update.$set.visible = request.visible;
     }
 
     if (typeof request.correct !== 'undefined') {
