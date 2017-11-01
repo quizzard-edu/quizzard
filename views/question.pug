@@ -36,8 +36,13 @@ block content
             h4.sidebar-item#topic #{question.topic}
           .card-action
             h5.sidebar-item#points #{question.points} Points
-            p.sidebar-item#attempts This question has been attempted #{question.totalAttemptsCount} times.
-            if question.correctAttemptsCount == 0
+            span.sidebar-item This question has been attempted&nbsp
+            if answered || isAdmin()
+              span.sidebar-item #{question.totalAttemptsCount}
+            else
+              span.sidebar-item#attempts #{question.totalAttemptsCount}
+            span.sidebar-item &nbsptimes.
+            if question.correctAttemptsCount === 0
               p.sidebar-item#first-answer You could be the first person to correctly answer this question!
             else
               p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.

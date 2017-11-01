@@ -392,7 +392,7 @@ app.get('/questionlist', function(req, res) {
             }
 
             if (req.session.user.type === common.userTypes.STUDENT) {
-                html = questionList({ 
+                html = questionList({
                     questions : questionsList,
                     getQuestionIcon: function(type) {
                         for (var i in common.questionTypes) {
@@ -533,6 +533,9 @@ app.get('/question', function(req, res) {
             user: req.session.user,
             question: questionFound,
             answered: (answeredList.indexOf(req.session.user.id) !== -1),
+            isAdmin : function() {
+                return req.session.user.type === common.userTypes.ADMIN;
+            },
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
@@ -772,6 +775,32 @@ var submitQuestionRating = function (req, res) {
         });
     });
 }
+
+// questions list of topics
+app.get('/questionsListofTopics', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    questions.getQuestionsList(function(err, docs){
+        if (err) {
+            return res.status(500).send('could not get the list of questions topics');
+        }
+
+        var topicsList = [];
+        for (var i in docs) {
+            if (topicsList.indexOf(docs[i].topic) === -1) {
+                topicsList.push(docs[i].topic);
+            }
+        }
+
+        return res.status(200).send(topicsList);
+    });
+});
 
 /* get the list of students' ids*/
 app.get('/studentsListofIds', function(req, res){
