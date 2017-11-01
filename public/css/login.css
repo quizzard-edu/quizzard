@@ -27,6 +27,32 @@
   max-height: 300px;
   margin: 0 auto;
   display: block;
+  text-align:center;
+  padding-top: 50px;
+}
+
+#logoMobile {
+  width: auto;
+  height:100px;
+  max-width: 300px;
+  max-height: 300px;
+  margin: 0 auto;
+  display: block;
+  text-align:center;
+}
+
+#logoDiv {
+  display:inline-block;
+  vertical-align:middle;
+}
+
+#uizzardDiv {
+  display:inline-block;
+}
+
+#mobileDiv {
+  text-align:center;
+  padding-top:15px;
 }
 
 #invalid {
