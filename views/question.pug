@@ -37,7 +37,10 @@ block content
           .card-action
             h5.sidebar-item#points #{question.points} Points
             span.sidebar-item This question has been attempted&nbsp
-            span.sidebar-item#attempts #{question.totalAttemptsCount}
+            if answered || isAdmin()
+              span.sidebar-item #{question.totalAttemptsCount}
+            else
+              span.sidebar-item#attempts #{question.totalAttemptsCount}
             span.sidebar-item &nbsptimes.
             if question.correctAttemptsCount === 0
               p.sidebar-item#first-answer You could be the first person to correctly answer this question!
