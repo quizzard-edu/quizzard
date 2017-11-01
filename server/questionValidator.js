@@ -78,10 +78,14 @@ var validateQuestionAttributesByType = function(question, type){
 
 		case common.questionTypes.MATCHING.value:
 			result = matchingAttributeValidator(question);
+			break;		
+
+		case common.questionTypes.CHOOSEALL.value:
+			result = chooseAllAttributeValidator(question);
 			break;
 
 		default:
-			result = failMsg;
+			result = qTypeFailMsg('No such question type found.');
 			break;
 	}
 	return result;
@@ -128,6 +132,10 @@ var matchingAttributeValidator = function(question){
 		return qTypeFailMsg('Need 2 or more matching options!');
 	}
 	return successMsg;
+}
+
+var chooseAllAttributeValidator = function(question){
+	
 }
 
 /*Validate specific value to it's attributeType in DB*/

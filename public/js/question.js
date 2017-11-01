@@ -25,6 +25,10 @@ $('#match_answerform').submit(function(evt) {
     sendAnswerRequest([leftAnswers,rightAnswers]);
 });
 
+$('#chooseAll_answerForm').submit(function(evt) {
+    sendAnswerRequest('someRaw answer');
+})
+
 var sendAnswerRequest = function(ans) {
     $.ajax({
         type: 'POST',

@@ -80,6 +80,10 @@ const questionAttributes = Object.freeze({
         leftSide    : {type:'[object Array]'},
         rightSide   : {type:'[object Array]'}
     },
+    CHOOSEALL: {
+        choices     : {type:'[object Array]'},
+        answer      : {type:'[object Array]'}
+    },
     DATATYPES: {
         Array       : {type:'[object Array]'},
         String      : {type:'[object String]'},
