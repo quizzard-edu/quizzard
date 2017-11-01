@@ -185,6 +185,7 @@ const tfForm = pug.compileFile('views/tf-answer.pug');
 const matchingForm = pug.compileFile('views/matching-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 const pointsTable = pug.compileFile('views/points-leaderboard.pug');
+const accuracyTable = pug.compileFile('views/accuracy-leaderboard.pug');
 
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
@@ -217,6 +218,17 @@ app.get('/leaderboard-table', function(req, res) {
     } else if (req.query.type === 'overall') {
         lb.leaderboard(req.session.user.id, shrt, function(leader) {
             var html = leaderboardTable({
+                fullTable: ft,
+                shortTable: shrt,
+                leaderboard: leader,
+                userid: req.session.user.id
+            });
+    
+            return res.status(200).send(html);
+        });
+    } else if (req.query.type === 'accuracy') {
+        lb.leaderboard(req.session.user.id, shrt, function(leader) {
+            var html = accuracyTable({
                 fullTable: ft,
                 shortTable: shrt,
                 leaderboard: leader,

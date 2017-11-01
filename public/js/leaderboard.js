@@ -22,14 +22,23 @@ fetchLeaderboard('overall');
 
 $('#option-overall').click(function(evt) {
     $('#points-board-card').addClass('hidden');
+    $('#accuracy-board-card').addClass('hidden');
     $('#overall-board-card').removeClass('hidden');
     fetchLeaderboard('overall');
 });
 
 $('#option-points').click(function(evt) {
     $('#overall-board-card').addClass('hidden');
+    $('#accuracy-board-card').addClass('hidden');
     $('#points-board-card').removeClass('hidden');
     fetchLeaderboard('points');
+});
+
+$('#option-accuracy').click(function(evt) {
+    $('#overall-board-card').addClass('hidden');
+    $('#points-board-card').addClass('hidden');
+    $('#accuracy-board-card').removeClass('hidden');
+    fetchLeaderboard('accuracy');
 });
 
 
