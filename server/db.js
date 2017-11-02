@@ -340,7 +340,7 @@ var updateUserById = function(userId, info, callback){
 }
 
 // update users collection directly by a query
-exports.updateUsersByQuery = function (query, update){
+exports.updateUserByQuery = function (query, update, callback){
     usersCollection.update(query, update, function(err, obj) {
         return callback(err, obj);
     });
@@ -576,11 +576,9 @@ exports.updateQuestionById = function(questionId, request, callback){
     });
 }
 
-// update the analytics collection by pulling the latest changes to the users collection
-var updateAnalytics = function() {
-    analyticsCollection.insert({name:'hi'}, function(err, info){
-        console.log(err);
-        console.log(info);
-        return;
+// update users collection directly by a query
+exports.updateQuestionByQuery = function (query, update, callback){
+    questionsCollection.update(query, update, function(err, obj) {
+        return callback(err, obj);
     });
 }

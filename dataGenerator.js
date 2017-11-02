@@ -150,16 +150,16 @@ var checkAnswer = function (questionId, userId, answer, callback) {
             return callback('Could not find the question', null);
         } else {
             var value = questions.verifyAnswer(question, answer);
+            var points = question.points;
             users.submitAnswer(
-                userId, questionId, value, question.points, answer,
+                userId, questionId, value, points, answer,
                 function(err, res){
                     if (err) {
                         return callback (err, null);
                     }
 
-                    questions.lookupupdateStudentByIdQuestionById(
-                        questionId,
-                        { userId:userId, correct:value, attempt:answer },
+                    questions.submitAnswer(
+                        questionId, userId, value, points, answer,
                         function(err, res) {
                             if (err) {
                                 return callback (err, null);

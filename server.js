@@ -569,7 +569,7 @@ app.post('/submitanswer', function(req, res) {
     }
 
     var questionId = req.body.questionId;
-    var answer = req.body.answer;    
+    var answer = req.body.answer;
     var userId = req.session.user.id;
 
     logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
@@ -586,11 +586,11 @@ app.post('/submitanswer', function(req, res) {
         }
 
         var value = questions.verifyAnswer(question, answer);
-        users.updateStudentById(
+        users.submitAnswer(
 			userId,
 			{ questionId:questionId, correct:value, points:question.points, attempt:answer },
 			function(err, res){
-				questions.lookupQuestionById(
+				questions.submitAnswer(
 					questionId,
 					{ userId:userId, correct:value, attempt:answer },
 					function(err, res) {

@@ -176,6 +176,52 @@ exports.getAllQuestionsList = function(callback) {
 	db.getQuestionsList({}, {id: 1}, callback);
 }
 
+// submit answer
+exports.submitAnswer = function(questionId, userId, correct, points, answer, callback) {
+	var currentDate = new Date().toString();
+    var query = {id: questionId};
+    var update = {};
+
+    update.$push = {};
+    update.$inc = {};
+
+	query['correctAttempts.id'] = { $ne : userId };
+	if (correct) {
+		update.$inc.correctAttemptsCount = 1;
+		update.$push.correctAttempts = {
+			id : userId,
+			points: points,
+			answer: answer,
+			date : currentDate
+		};
+	} else {
+		update.$inc.wrongAttemptsCount = 1;
+		update.$push.wrongAttempts = {
+			id : userId,
+			attemp: answer,
+			date : currentDate
+		};
+	}
+	update.$inc.totalAttemptsCount = 1;
+	update.$push.totalAttempts = {
+		id : userId,
+		attemp: answer,
+		date : currentDate
+	};
+
+    if (common.isEmptyObject(update.$push)) {
+        delete update.$push;
+    }
+
+    if (common.isEmptyObject(update.$inc)) {
+        delete update.$inc;
+	}
+
+	db.updateQuestionByQuery(query, update, function (err,result) {
+        return callback(err, result);
+    });
+}
+
 // verify answer based on type
 exports.verifyAnswer = function(question, answer) {
 	var value = false;
