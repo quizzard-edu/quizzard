@@ -888,7 +888,9 @@ app.post('/accountsExportFile', function(req, res){
             studentsList.push(studentFound);
             studentsCount++;
             if (studentsCount === totalCount) {
-                var csv = json2csv({ data: studentsList, fields: ['id', 'fname', 'lname', 'email'] });
+                var fields = ['id', 'fname', 'lname', 'email'];
+                var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
+                var csv = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
                 var file = 'exportJob-'+new Date().toString()+'.csv';
                 
                 fs.writeFile('uploads/'+file, csv, function(err) {
@@ -911,21 +913,10 @@ app.get('/download', function(req, res){
         return res.redirect('/');
     }
 
-    var options = {
-        root: __dirname+'/uploads/',
-        dotfiles: 'deny',
-        headers: {
-            'x-timestamp': Date.now(),
-            'x-sent': true
-        }
-    };
-    
-    var fileName = req.query.file;
-    return res.sendFile(fileName, options, function (err) {
+    var file = __dirname+'/uploads/'+req.query.file;
+    return res.download(file, file, function (err) {
         if (err) {
             logger.error(err);
-        } else {
-            console.log('Sent:', fileName);
         }
     });
 });
