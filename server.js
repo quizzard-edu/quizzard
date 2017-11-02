@@ -888,10 +888,10 @@ app.post('/accountsExportFile', function(req, res){
             studentsList.push(studentFound);
             studentsCount++;
             if (studentsCount === totalCount) {
-                var csv = json2csv({ data: studentsList, fields: ['id', 'fname'] });
-                var file = 'uploads/exportJob-'+new Date().toString()+'.csv';
+                var csv = json2csv({ data: studentsList, fields: ['id', 'fname', 'lname', 'email'] });
+                var file = 'exportJob-'+new Date().toString()+'.csv';
                 
-                fs.writeFile(file, csv, function(err) {
+                fs.writeFile('uploads/'+file, csv, function(err) {
                     if (err) {
                         logger.error(err);
                         return res.status(500).send('Export job failed');
@@ -903,6 +903,31 @@ app.post('/accountsExportFile', function(req, res){
             }
         });
     }    
+});
+
+/* download */
+app.get('/download', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var options = {
+        root: __dirname+'/uploads/',
+        dotfiles: 'deny',
+        headers: {
+            'x-timestamp': Date.now(),
+            'x-sent': true
+        }
+    };
+    
+    var fileName = req.query.file;
+    return res.sendFile(fileName, options, function (err) {
+        if (err) {
+            logger.error(err);
+        } else {
+            console.log('Sent:', fileName);
+        }
+    });
 });
 
 /* Display some charts and graphs */
