@@ -803,7 +803,7 @@ app.get('/questionsListofTopics', function(req, res){
 });
 
 /* get the list of students' ids*/
-app.get('/studentsListofIds', function(req, res){
+app.get('/studentsListofIdsNames', function(req, res){
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -819,7 +819,7 @@ app.get('/studentsListofIds', function(req, res){
 
         var idsList = [];
         for (s in studentList) {
-            idsList.push(studentList[s].id);
+            idsList.push(studentList[s].id + ' - ' + studentList[s].fname + ' ' + studentList[s].lname);
         }
         return res.status(200).send(idsList);
     });
