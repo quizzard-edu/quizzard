@@ -20,7 +20,7 @@ $(function() {
     limit: 20,
     onAutocomplete: function(val) {
       $('#student-analytics-card-content').removeClass('hidden');
-      displayStudentStatistics(val);
+      displayStudentStatistics(val.split(' ')[0]);
     },
     minLength: 1,
   });
@@ -32,7 +32,7 @@ $(function() {
     for (var s in studentList) {
       if (s === autocompleteValue) {
         $('#student-analytics-card-content').removeClass('hidden');
-        displayStudentStatistics(autocompleteValue);
+        displayStudentStatistics(autocompleteValue.split(' ')[0]);
         return;
       }
     }
@@ -48,7 +48,7 @@ var getStudentList = function() {
   $.ajax({
     type: 'GET',
     async: false,
-    url: '/studentsListofIds',
+    url: '/studentsListofIdsNames',
     success: function(data) {
       students = data;
     },
