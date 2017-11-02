@@ -56,3 +56,17 @@
   vertical-align: super;
   font-size: 20px;
 }
+
+.comment-box {
+  margin: 10px !important;
+  resize: vertical;
+  min-height: 6em;
+  width: -webkit-fill-available;
+  border-radius: 5px;
+  border-color: lightgray;
+}
+
+.comment-button {
+  float: right;
+  margin-right: 10px;
+}
