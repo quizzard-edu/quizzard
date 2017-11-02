@@ -888,17 +888,17 @@ app.post('/accountsExportFile', function(req, res){
             studentsList.push(studentFound);
             studentsCount++;
             if (studentsCount === totalCount) {
-                var csv = json2csv({ data: studentsList, fields: ['id', 'fname'] });
+                var csvData = json2csv({ data: studentsList, fields: ['id', 'fname', 'lname', 'email'] });
                 var file = 'uploads/exportJob-'+new Date().toString()+'.csv';
-                
-                fs.writeFile(file, csv, function(err) {
+
+                fs.writeFile(file, csvData, function(err) {
                     if (err) {
                         logger.error(err);
                         return res.status(500).send('Export job failed');
                     }
-                    return res.status(200).render('users/accounts-export-complete', {
-                        file: file
-                    });
+
+                    res.set('Content-Type', 'text/csv');
+                    return res.send(new Buffer(csvData));
                 });
             }
         });

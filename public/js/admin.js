@@ -110,13 +110,7 @@ var submitExportForm = function() {
         type: 'POST',
         url: '/accountsExportFile',
         data: {studentsList: selected},
-        success: function(data) {
-            $('#admin-content').html(data);
-
-            $('#account-export-complete-back-button').click(function(){
-                displayAccountsTable();
-            });
-        },
+        success: function(data) { },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
