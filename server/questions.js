@@ -22,7 +22,7 @@ var db = require('./db.js');
 var logger = require('./log.js').logger;
 var common = require('./common.js');
 var questionValidator = require('./questionValidator.js');
-var ObjectId = require('mongoose').Types.ObjectId;
+var uuidv1 = require('uuid/v1');
 
 /*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question){
@@ -43,6 +43,7 @@ var prepareQuestionData = function(question, callback){
 	var currentDate = new Date().toString();
 	var questionToAdd = {};
 
+	questionToAdd._id = uuidv1();
 	questionToAdd.topic = question.topic;
 	questionToAdd.title = question.title;
 	questionToAdd.text = question.text;
