@@ -6,9 +6,9 @@ for a in [1, 2, 3]
         i.small.material-icons.profile-picture account_circle
         span.name Firstname Lastname
         span.likes-section
-          i.small.material-icons.thumb-picture thumb_up
+          i.small.material-icons.thumb-picture(onclick='vote($(this), 1)') thumb_up
           span.likes-number 0  &nbsp
-          i.small.material-icons.thumb-picture thumb_down
+          i.small.material-icons.thumb-picture(onclick='vote($(this), -1)') thumb_down
           span.likes-number 0
       hr.divider
       .row
@@ -19,9 +19,9 @@ for a in [1, 2, 3]
           i.small.material-icons.profile-picture account_circle
           span.name Firstname Lastname
           span.likes-section
-            i.small.material-icons.thumb-picture thumb_up
+            i.small.material-icons.thumb-picture(onclick='vote($(this), 1)') thumb_up
             span.likes-number 0  &nbsp
-            i.small.material-icons.thumb-picture thumb_down
+            i.small.material-icons.thumb-picture(onclick='vote($(this), -1)') thumb_down
             span.likes-number 0
         hr.divider
         .row
@@ -39,5 +39,8 @@ for a in [1, 2, 3]
       i.small.material-icons.profile-picture account_circle
       span.name Firstname Lastname
     .row
-      textarea.comment-box(placeholder='Enter a comment...')
+      textarea.comment-box#commentBox(placeholder='Enter a comment...')
       .button.comment-button(class='btn btn-lg btn-primary') Comment
+
+block scripts
+  script(src='/js/discussion.js')
