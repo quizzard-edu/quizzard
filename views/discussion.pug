@@ -7,9 +7,9 @@ for a in [1, 2, 3]
         span.likes-section
           i.small.material-icons.thumb-picture reply
           span.likes-number 0  &nbsp
-          i.small.material-icons.thumb-picture(onclick='vote($(this), 1)') thumb_up
+          i.small.material-icons.thumb-picture(onclick='voteClick($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)') thumb_up
           span.likes-number 0  &nbsp
-          i.small.material-icons.thumb-picture(onclick='vote($(this), -1)') thumb_down
+          i.small.material-icons.thumb-picture(onclick='voteClick($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)') thumb_down
           span.likes-number 0
       hr.divider
       .row
@@ -35,9 +35,9 @@ for a in [1, 2, 3]
           i.small.material-icons.profile-picture account_circle
           span.name Firstname Lastname
           span.likes-section
-            i.small.material-icons.thumb-picture(onclick='vote($(this), 1)') thumb_up
+            i.small.material-icons.thumb-picture(onclick='voteClick($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)') thumb_up
             span.likes-number 0  &nbsp
-            i.small.material-icons.thumb-picture(onclick='vote($(this), -1)') thumb_down
+            i.small.material-icons.thumb-picture(onclick='voteClick($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)') thumb_down
             span.likes-number 0
         hr.divider
         .row

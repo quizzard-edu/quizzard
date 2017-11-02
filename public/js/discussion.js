@@ -1,10 +1,26 @@
-var vote = function(icon, type) {
+var voteClick = function(icon, type) {
     //do ajax request here
 
     if (type === 1) {
         icon[0].style.color = colours.blueLight;
     } else {
         icon[0].style.color = colours.redBorder;
+    }
+}
+
+var voteHover = function(icon, type) {
+    if (type === 1 && icon[0].style.color !== colours.blueLight) {
+        icon[0].style.color = colours.blueLightExtra;
+    } else if (type === -1 && icon[0].style.color !== colours.redBorder) {
+        icon[0].style.color = colours.redLight;
+    }
+}
+
+var voteLeave = function(icon, type) {
+    if (type === 1 && icon[0].style.color !== colours.blueLight) {
+        icon[0].style.color = colours.blackLight;
+    } else if (type === -1 && icon[0].style.color !== colours.redBorder) {
+        icon[0].style.color = colours.blackLight;
     }
 }
 
@@ -18,5 +34,5 @@ var repliesSection = function(action) {
 
 $('#commentBox').atwho({
     at: "@",
-    data:['Peter', 'Tom', 'Anne']
+    data:['Petera sdf sd', 'Tom asd', 'Anne']
 })
