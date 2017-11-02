@@ -7,3 +7,16 @@ var vote = function(icon, type) {
         icon[0].style.color = colours.redBorder;
     }
 }
+
+var repliesSection = function(action) {
+    if (action === 1) {
+        alert('view');
+    } else {
+        alert('hide');
+    }
+}
+
+$('#commentBox').atwho({
+    at: "@",
+    data:['Peter', 'Tom', 'Anne']
+})
