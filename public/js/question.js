@@ -62,3 +62,10 @@ var sendAnswerRequest = function(ans) {
         }
     });
 }
+
+/* Listener for the `rate` button */
+$(document).on('click', '#rateQuestion', function() {
+    if(getRating() > 0) {
+        submitQuestionRating(getRating(), questionId);
+    }
+});
