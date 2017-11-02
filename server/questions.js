@@ -100,15 +100,15 @@ var prepareQuestionData = function(question, callback){
 exports.addQuestion = function(question, callback) {
 	prepareQuestionData(question, function(err, questionToAdd){
 		if(err){
-			return callback({status:400, msg:err.msg}, null)
+			return callback(err, null)
 		}
 
 		// validate constant question attributes
 		result = questionValidator.questionCreationValidation(questionToAdd);
 		if (result.success){
-			db.addQuestion(questionToAdd, callback);
+			return db.addQuestion(questionToAdd, callback);
 		} else{
-			return callback({status:400, msg:result.msg}, null)
+			return callback(result, null)
 		}
 	})
 }
@@ -170,7 +170,6 @@ exports.lookupQuestionBy_Id = function(_questionId, callback) {
 }
 
 var lookupQuestionBy_Id = function(_questionId, callback) {
-	var _id = new ObjectId(_questionId);	
     lookupQuestion({_id: _id}, callback);
 }
 
@@ -243,7 +242,7 @@ exports.checkAnswer = function(questionId, user, answer, callback) {
 
 // adding rating to question collection
 exports.submitRating = function (questionId, userId, rating, callback) {
-	db.updateQuestionById(questionId, {userId: userId, rating: rating}, callback);
+	db.submitQuesitonRating(questionId, {userId: userId, rating: rating}, callback);
 }
 
 // get all questions list

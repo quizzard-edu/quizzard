@@ -791,7 +791,7 @@ app.get('/questionsListofTopics', function(req, res){
         return res.status(403).send('Permission Denied');
     }
 
-    questions.getQuestionsList(function(err, docs){
+    questions.getAllQuestionsList(function(err, docs){
         if (err) {
             return res.status(500).send('could not get the list of questions topics');
         }
