@@ -519,7 +519,7 @@ app.get('/question', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.lookupQuestionBy_Id(req.query._id, function(err, questionFound) {
+    questions.lookupQuestionById(req.query._id, function(err, questionFound) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
@@ -568,16 +568,40 @@ app.post('/submitanswer', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.checkAnswer(
-        req.body.questionId,
-        req.session.user,
-        req.body.answer,
-        function(err, value) {
-            var result = value.correct ? value : 'incorrect';
-            var status = value.correct ? 200 : 500;
-            return res.status(status).send(result);
+    var questionId = req.body.questionId;
+    var answer = req.body.answer;    
+    var user = req.session.user;
+
+    logger.info('User %s attempted to answer question %s with "%s"', user.id, questionId, answer);
+
+    questions.lookupQuestionById(questionId,function(err, question){
+		if(err){
+            logger.error(err);
+			return res.status(500).send(err);
         }
-    );
+
+        if(!question){
+            logger.error('Could not find the question %s', questionId);
+			return res.status(400).send('Could not find the question');
+        }
+
+        var value = questions.verifyAnswer(question, answer);
+        users.updateStudentById(
+			userId,
+			{ questionId:questionId, correct:value, points:question.points, attempt:answer },
+			function(err, res){
+				questions.lookupQuestionById(
+					questionId,
+					{ userId:userId, correct:value, attempt:answer },
+					function(err, res) {
+						var result = value ? 'correct' : 'incorrect';
+                        var status = value ? 200 : 500;
+                        return res.status(status).send(result);
+					}
+				);
+			}
+		);
+    });
 });
 
 /*

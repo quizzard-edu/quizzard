@@ -158,86 +158,12 @@ exports.deleteQuestion = function(questionId, callback) {
 
 /* Extract a question object from the database using its ID. */
 exports.lookupQuestionById = function(questionId, callback) {
-    lookupQuestionById(questionId, callback);
+    lookupQuestion({_id: questionId}, callback);
 }
 
-var lookupQuestionById = function(questionId, callback) {
-	lookupQuestion({id: questionId}, callback);
-}
-
-exports.lookupQuestionBy_Id = function(_questionId, callback) {
-    lookupQuestionBy_Id(_questionId, callback);
-}
-
-var lookupQuestionBy_Id = function(_questionId, callback) {
-    lookupQuestion({_id: _id}, callback);
-}
-
+// lookup question
 var lookupQuestion = function(findQuery, callback) {
 	db.lookupQuestion(findQuery, callback);
-}
-
-/*
-* Check if the provided answer matches the answer in the question object.
-* Update the question object in the database and call the callback function
-* with the result of the comparison and the new question object.
-*/
-exports.checkAnswer = function(questionId, user, answer, callback) {
-    logger.info('User %s attempted to answer question %s with "%s"', user.id, questionId, answer);
-	var userType = user.type;
-	var userId = user.id;
-
-	lookupQuestionBy_Id(questionId, function(err, question){
-		if(err || !question){
-			return callback('error', null);
-		}
-
-		var value = null;
-
-		if (question.type === common.questionTypes.MATCHING.value && answer) {
-		    const ansLeftSide = answer[0];
-			const ansRightSide = answer[1];
-
-			if (ansLeftSide.length === question.leftSide.length) {
-				var checkIndexLeft;
-				var checkIndexRight;
-
-				for (i = 0; i < ansLeftSide.length; i++) {
-				    checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
-						checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
-						if (checkIndexLeft !== checkIndexRight) {
-						    value = false;
-						}
-				}
-
-				if (value === null) {
-					  value = true;
-				}
-			} else {
-				value = false;
-			}
-		} else {
-		    value = (answer === question.answer);
-		}
-
-		if (userType === common.userTypes.ADMIN) {
-			return callback(null, {correct: value, points: question.points});
-		}
-
-		db.updateStudentById(
-			userId,
-			{ questionId:questionId, correct:value, points:question.points, attempt:answer },
-			function(err, res){
-				updateQuestionBy_Id(
-					questionId,
-					{ userId:userId, correct:value, attempt:answer },
-					function(err, res) {
-						return callback(err, {correct: value, points: question.points});
-					}
-				);
-			}
-		);
-	});
 }
 
 // adding rating to question collection
@@ -248,4 +174,35 @@ exports.submitRating = function (questionId, userId, rating, callback) {
 // get all questions list
 exports.getAllQuestionsList = function(callback) {
 	db.getQuestionsList({}, {id: 1}, callback);
+}
+
+// verify answer based on type
+exports.verifyAnswer = function(question, answer) {
+	var value = false;
+
+	if (question.type === common.questionTypes.MATCHING.value && answer) {
+		var ansLeftSide = answer[0];
+		var ansRightSide = answer[1];
+
+		if (ansLeftSide.length === question.leftSide.length) {
+			var checkIndexLeft;
+			var checkIndexRight;
+
+			for (i = 0; i < ansLeftSide.length; i++) {
+				checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+				checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+				if (checkIndexLeft !== checkIndexRight) {
+					return value = false;
+				}
+			}
+
+			if (!value) {
+				return value = true;
+			}
+		}
+
+		return value = false;
+	}
+
+	return value = (answer === question.answer);
 }
