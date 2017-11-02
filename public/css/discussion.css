@@ -1,0 +1,58 @@
+.identification-section {
+  margin-bottom: 0 !important;
+}
+
+.comment {
+  text-align: left;
+  background-color: white;
+  border: solid;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: lightgray;
+  margin: 2px !important;
+}
+
+.reply {
+  text-align: left;
+  float: right !important;
+  background-color: white;
+  border: solid;
+  border-style: solid;
+  border-radius: 5px 0 0 5px;
+  border-width: 1px 0 1px 1px;
+  border-color: lightgray;
+  margin: 0 !important;
+}
+
+.profile-picture {
+  padding: 10px 10px 10px 20px;
+}
+
+.name {
+  vertical-align: super;
+}
+
+.comment-text {
+  padding: 0 20px 0 50px;
+  margin: 5px;
+  text-align: left;
+}
+
+.divider {
+  margin: 0 !important;
+}
+
+.likes-section {
+  float: right;
+  padding-right: 25px;
+}
+
+.thumb-picture {
+  padding: 10px 5px;
+}
+
+.likes-number {
+  vertical-align: super;
+  font-size: 20px;
+}
