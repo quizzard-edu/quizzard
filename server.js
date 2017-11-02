@@ -890,10 +890,10 @@ app.post('/accountsExportFile', function(req, res){
             if (studentsCount === totalCount) {
                 var fields = ['id', 'fname', 'lname', 'email'];
                 var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
-                var csv = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
+                var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
                 var file = 'exportJob-'+new Date().toString()+'.csv';
                 
-                fs.writeFile('uploads/'+file, csv, function(err) {
+                fs.writeFile('uploads/'+file, csvData, function(err) {
                     if (err) {
                         logger.error(err);
                         return res.status(500).send('Export job failed');
