@@ -913,8 +913,9 @@ app.get('/download', function(req, res){
         return res.redirect('/');
     }
 
-    var file = __dirname+'/uploads/'+req.query.file;
-    return res.download(file, file, function (err) {
+    var fileName = req.query.file;
+    var filePath = __dirname+'/uploads/'+fileName;
+    return res.download(filePath, fileName, function (err) {
         if (err) {
             logger.error(err);
         }
