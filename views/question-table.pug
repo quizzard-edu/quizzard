@@ -1,3 +1,6 @@
+block styles
+  link(rel='stylesheet' href='/css/admin.css')
+  
 .row
   .col.s12
     .card.center
@@ -11,7 +14,13 @@
         table.bordered
           thead
             tr
-              th Visible
+              th Visiblity
+                .switch
+                  label
+                    | Hide
+                    input(id='sw' type="checkbox" checked=true onClick='toggleButtonVisibility()')
+                    span.lever
+                    | Show
               th ID
               th Title
               th Topic
@@ -23,14 +32,11 @@
                 td
                   p
                     input.checked(id='checked-' + q.id type='checkbox' checked=q.visible)
-                    label(for='checked-' + q.id)
+                    label.visbox(for='checked-' + q.id)
                 td #{q.id}
                 td #{q.title}
                 td #{q.topic}
-                if q.type == 0
-                  td Regular
-                else
-                  td Multiple Choice
+                td #{questionType(q.type)}
                 td
                   button.btn.btn-default.view-button(id='view-' + q.id type='button' aria-label='View')
                     span.glyphicon.glyphicon-eye-open(aria-hidden='true')

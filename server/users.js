@@ -48,6 +48,8 @@ exports.addAdmin = function(user, callback) {
 		userToAdd.email = user.email ? user.email : '';
 		userToAdd.type = common.userTypes.ADMIN;
 		userToAdd.password = hash;
+		userToAdd.active = true;
+		userToAdd.ratings = [];
 
 		db.addAdmin(userToAdd, function(err, res){
 			if(err){
@@ -90,6 +92,8 @@ exports.addStudent = function(user, callback) {
 		userToAdd.email = user.email ? user.email : '';
 		userToAdd.type = common.userTypes.STUDENT;
 		userToAdd.password = hash;
+		userToAdd.active = true;
+		userToAdd.ratings = [];
 
 		userToAdd.points = 0.0;
 		userToAdd.correctAttempts = [];
@@ -143,6 +147,14 @@ exports.getStudentsList = function(callback) {
     db.getStudentsList(callback);
 }
 
+exports.getStudentsListWithStatus = function(active, callback) {
+    db.getStudentsListWithStatus(active, callback);
+}
+
+exports.getUsersList = function(callback) {
+    db.getUsersList(callback);
+}
+
 /* Return an array of users in the database, sorted by rank. */
 exports.getStudentsListSorted = function(lim, callback) {
 	db.getStudentsListSorted(lim, callback);
@@ -174,6 +186,54 @@ exports.getAdminById = function(adminId, callback) {
 /*
  * Fetch the question list of userId
  */
-exports.getQuestionsList = function(request, callback) {
-	db.getQuestionsListByUser(request, callback);
+exports.getQuestionsListByUser = function(request, callback) {
+    var questionsQuery = {};
+    var sortQuery = {id: 1};
+    var user = request.user;
+    var questionsStatus = request.questionsStatus;
+
+    if (!user) {
+        return callback('No user object', null);
+    }
+
+    if (user.type === common.userTypes.ADMIN) {
+        db.getQuestionsList(questionsQuery, sortQuery, function(err, docs){
+			return callback(err, docs);
+		});
+	}
+
+	if (user.type === common.userTypes.STUDENT) {
+        questionsQuery.visible = true;
+
+		db.getQuestionsList(questionsQuery, sortQuery, function(err, docs) {
+			if (err) {
+				return callback(err, null);
+			}
+
+			var compareList = common.getIdsListFromJSONList(user.correctAttempts);
+			var answeredList = [];
+			var unansweredList = [];
+
+			for (q in docs) {
+				if (compareList.indexOf(docs[q].id) === -1) {
+					unansweredList.push(docs[q]);
+				} else {
+					answeredList.push(docs[q]);
+				}
+			}
+
+			var returnList = (questionsStatus === 'answered') ? answeredList : unansweredList;
+			return callback(null, returnList);
+		});
+    }
+}
+
+// set the status of the user to active or in-active
+exports.setUserStatus = function(studentId, newStatus, callback){
+	db.updateUserById(studentId,{active: newStatus}, callback);
+}
+
+// adding rating to question collection
+exports.submitRating = function (userId, questionId, rating, callback) {
+	db.updateUserById(userId, {questionId: questionId, rating: rating}, callback);
 }

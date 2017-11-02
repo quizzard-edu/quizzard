@@ -1,18 +1,23 @@
 extends layout
 
 block styles
+  link(rel='stylesheet' href='/css/icons.css')
   link(rel='stylesheet' href='/css/login.css')
   link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
-  link(rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons')
 
 block title
   title Quizzard - Login
 
 block content
   .container
-    img.img-circle#logo(src='img/logo.png')
+    img.hide-on-med-and-down#logo(src='img/logo.png')
     form.form-login#login
-      h2.form-login-heading Quizzard
+      div.hide-on-large-only#mobileDiv
+        span.col.s1#logoDiv
+          img#logoMobile(src='img/logo.png')
+        span.col.s2#uizzardDiv
+          h2.form-login-heading uizzard
+      br
       p#invalid
       .row
         .input-field.col.s12
@@ -29,4 +34,5 @@ block content
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
   script(src='/lib/materialize/js/materialize.min.js')
+  script(src='/js/common.js')
   script(src='/js/login.js')

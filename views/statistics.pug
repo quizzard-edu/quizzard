@@ -47,10 +47,10 @@
                 td #{q.id}
                 td #{q.title}
                 td #{q.points}
-                td #{q.totalCount}
-                td #{q.answeredCount}
-                if q.totalCount === 0
+                td #{q.totalAttemptsCount}
+                td #{q.correctAttemptsCount}
+                if q.totalAttemptsCount === 0
                   td 0%
                 else
-                  td #{((q.answeredCount / q.totalCount) * 100).toFixed(2)}%
+                  td #{((q.correctAttemptsCount / q.totalAttemptsCount) * 100).toFixed(2)}%
                 td #{q.firstAnswer}

@@ -1,3 +1,6 @@
+block styles
+  link(rel='stylesheet' href='/css/admin.css')
+
 .row
   .col.s12
     .card.center
@@ -15,24 +18,28 @@
               each type, i in questionType
                 option(value=type.value) #{type.name}
             label Choose a Question Type:
-            
+
           form.form-user#questionform(style='display:none')
             .col-md-4
               .form-group
-                  label(for='visible') Visible
-                  input.form-control#visible(type='checkbox' name='visible' checked=false value=false)
+                input.form-control#visible(type='checkbox' name='visible' checked=false value=false)
+                label(for='visible') Visible
               .form-group
                 label(for='qtitle') Title
                 input.form-control#qtitle(type='text' name='title' placeholder='Enter title' required autofocus )
               .form-group
                 label(for='qtopic') Topic
-                input.form-control#qtopic(type='text' name='topic' placeholder='Enter topic' required)
+                .input-field
+                  input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' required)
               .form-group
                 label(for='qpoints') Points
                 input.form-control#qpoints(type='number' name='points' placeholder='Enter points'  min="0" required)
               .form-group
                 label(for='qhint') Hint
                 input.form-control#qhint(type='text' name='hint' placeholder='Enter Hint')
+              .form-group
+                label(for='qrating') Question Difficulty
+                include rating
             .col-md-8
               .form-group
                 label(for='qtext') Question Body
@@ -40,9 +47,7 @@
               #qAnswer
               .form-group
                 label(for='successmsg') Follow up message
-                input.form-control#successmsg(type='text' name='successMessage'
-                                              placeholder='Enter message'
-                                              aria-describedby='success-msg-help')
+                input.form-control#successmsg(type='text' name='successMessage' placeholder='Enter message' aria-describedby='success-msg-help')
                 p.form-text.text-muted#success-msg-help
                   | This is a message that will be displayed to the user after they
                   | successfully answer a question. It can be used to provide additional

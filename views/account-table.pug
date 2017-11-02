@@ -7,6 +7,12 @@
       .card-content
         h5.card-title Manage Accounts
         h6 Add, modify or delete students' accounts.
+        .switch
+          label
+            | InActive
+            input(id='usersSwitch', type='checkbox', onClick='toggleUsersSwitch()')
+            span.lever
+            | Active
       .card-action
         table.bordered
           thead
@@ -26,5 +32,9 @@
                 td
                   button.btn.btn-default.edit-button(id='edit-' + s.id type='button' aria-label='Edit')
                     span.glyphicon.glyphicon-pencil(aria-hidden='true')
-                  button.btn.btn-default.delete-button(id='delete-' + s.id type='button' aria-label='Delete')
-                    span.glyphicon.glyphicon-remove(aria-hidden='true')
+                  if (s.active)
+                    button.btn.btn-default.deactivate-button(id='deactivate-' + s.id type='button' aria-label='Delete')
+                      i.material-icons close
+                  else
+                    button.btn.btn-default.activate-button(id='activate-' + s.id type='button' aria-label='Delete')
+                      i.material-icons check

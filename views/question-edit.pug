@@ -18,7 +18,8 @@
           .form-group.row
             label.col-sm-2.col-form-label(for='qtopic') Topic
             .col-sm-10
-              input.form-control#qtopic(type='text' name='topic' placeholder='New topic' value=question.topic)
+              .input-field
+                input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='New topic' value=question.topic autocomplete='off' required)
           .form-group.row
             label.col-sm-2.col-form-label(for='qpoints') Points
             .col-sm-10
@@ -37,4 +38,8 @@
                 | This is a message that will be displayed to the user after they
                 | successfully answer a question. It can be used to provide additional
                 | information on the topic.
+          .form-group.row
+            label.col-sm-2.col-form-label(for='qrating') Question Difficulty
+            .left
+              include rating
           button.btn.btn-lg.btn-primary.btn-block(type='submit') Update
