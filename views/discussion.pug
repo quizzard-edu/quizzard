@@ -1,4 +1,3 @@
-h5 Discussion Board
 for a in [1, 2, 3]
   .row.comment
     .col.s12
@@ -6,6 +5,8 @@ for a in [1, 2, 3]
         i.small.material-icons.profile-picture account_circle
         span.name Firstname Lastname
         span.likes-section
+          i.small.material-icons.thumb-picture reply
+          span.likes-number 0  &nbsp
           i.small.material-icons.thumb-picture(onclick='vote($(this), 1)') thumb_up
           span.likes-number 0  &nbsp
           i.small.material-icons.thumb-picture(onclick='vote($(this), -1)') thumb_down
@@ -13,6 +14,21 @@ for a in [1, 2, 3]
       hr.divider
       .row
         p.comment-text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pulvinar pretium neque, at elementum nisi sodales vel. Donec pretium dignissim maximus. Sed sit amet imperdiet mauris, a ullamcorper ipsum. Proin mauris nibh, vestibulum vitae dapibus sit amet, eleifend quis ligula. Pellentesque auctor ut odio vel commodo. Donec sed velit tempus, auctor sapien ut, aliquam velit. Curabitur sit amet tortor nisi. Sed mollis elit a metus tincidunt, ac bibendum tortor mollis. Vestibulum nec diam at ipsum luctus imperdiet eget vitae turpis. Vestibulum molestie neque turpis, eget suscipit libero sollicitudin vitae. Aenean neque orci, suscipit nec nibh et, volutpat congue tellus.
+
+    if a === 1
+      .col.s12
+        .row
+          .button.comment-button(class='btn btn-lg btn-primary', onclick='repliesSection(1)') view replies
+
+    else if a === 2
+      .col.s12
+        .row
+          .button.comment-button(class='btn btn-lg btn-primary', onclick='repliesSection(1)') Be the first to reply
+    else
+      .col.s12
+        .row
+          .button.comment-button(class='btn btn-sm btn-primary', onclick='repliesSection(0)') Collapse replies
+
     for b in [1, 2]
       .col.s11.reply
         .row.identification-section
@@ -33,6 +49,7 @@ for a in [1, 2, 3]
       .row
         textarea.comment-box(placeholder='Enter a Reply...')
         .button.comment-button(class='btn btn-lg btn-primary') Reply
+
 .row.comment
   .col.s12
     .row.identification-section
