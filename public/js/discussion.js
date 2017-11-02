@@ -14,12 +14,11 @@ var voteHover = function(icon, type) {
     } else if (type === -1 && icon[0].style.color !== colours.redBorder) {
         icon[0].style.color = colours.redLight;
     }
+    $(this).css('cursor','pointer');
 }
 
 var voteLeave = function(icon, type) {
-    if (type === 1 && icon[0].style.color !== colours.blueLight) {
-        icon[0].style.color = colours.blackLight;
-    } else if (type === -1 && icon[0].style.color !== colours.redBorder) {
+    if ((type === 1 && icon[0].style.color !== colours.blueLight) || (type === -1 && icon[0].style.color !== colours.redBorder)) {
         icon[0].style.color = colours.blackLight;
     }
 }

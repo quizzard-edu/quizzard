@@ -21,7 +21,7 @@
 }
 
 .profile-picture {
-  padding: 10px 10px 10px 20px;
+  padding: 10px 10px 0 20px;
 }
 
 .name {
@@ -64,4 +64,8 @@
 .comment-button {
   float: right;
   margin-right: 10px;
+}
+
+.date {
+  padding-left: 20px;
 }

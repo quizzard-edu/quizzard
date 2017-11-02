@@ -7,10 +7,13 @@ for a in [1, 2, 3]
         span.likes-section
           i.small.material-icons.thumb-picture reply
           span.likes-number 0  &nbsp
-          i.small.material-icons.thumb-picture(onclick='voteClick($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)') thumb_up
+          i.small.material-icons.thumb-picture.click-pointer(onclick='voteClick($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)') thumb_up
           span.likes-number 0  &nbsp
-          i.small.material-icons.thumb-picture(onclick='voteClick($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)') thumb_down
+          i.small.material-icons.thumb-picture.click-pointer(onclick='voteClick($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)') thumb_down
           span.likes-number 0
+        br
+        span.date November 2, 2017 at 11:45 PM
+
       hr.divider
       .row
         p.comment-text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pulvinar pretium neque, at elementum nisi sodales vel. Donec pretium dignissim maximus. Sed sit amet imperdiet mauris, a ullamcorper ipsum. Proin mauris nibh, vestibulum vitae dapibus sit amet, eleifend quis ligula. Pellentesque auctor ut odio vel commodo. Donec sed velit tempus, auctor sapien ut, aliquam velit. Curabitur sit amet tortor nisi. Sed mollis elit a metus tincidunt, ac bibendum tortor mollis. Vestibulum nec diam at ipsum luctus imperdiet eget vitae turpis. Vestibulum molestie neque turpis, eget suscipit libero sollicitudin vitae. Aenean neque orci, suscipit nec nibh et, volutpat congue tellus.
@@ -35,10 +38,12 @@ for a in [1, 2, 3]
           i.small.material-icons.profile-picture account_circle
           span.name Firstname Lastname
           span.likes-section
-            i.small.material-icons.thumb-picture(onclick='voteClick($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)') thumb_up
+            i.small.material-icons.thumb-picture.click-pointer(onclick='voteClick($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)') thumb_up
             span.likes-number 0  &nbsp
-            i.small.material-icons.thumb-picture(onclick='voteClick($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)') thumb_down
+            i.small.material-icons.thumb-picture.click-pointer(onclick='voteClick($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)') thumb_down
             span.likes-number 0
+          br
+          span.date November 2, 2017 at 11:45 PM
         hr.divider
         .row
           p.comment-text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pulvinar pretium neque, at elementum nisi sodales vel. Donec pretium dignissim maximus. Sed sit amet imperdiet mauris, a ullamcorper ipsum. Proin mauris nibh, vestibulum vitae dapibus sit amet, eleifend quis ligula. Pellentesque auctor ut odio vel commodo. Donec sed velit tempus, auctor sapien ut, aliquam velit. Curabitur sit amet tortor nisi. Sed mollis elit a metus tincidunt, ac bibendum tortor mollis. Vestibulum nec diam at ipsum luctus imperdiet eget vitae turpis. Vestibulum molestie neq
