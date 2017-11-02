@@ -17,11 +17,6 @@
   text-align: left;
   float: right !important;
   background-color: white;
-  border: solid;
-  border-style: solid;
-  border-radius: 5px 0 0 5px;
-  border-width: 1px 0 1px 1px;
-  border-color: lightgray;
   margin: 0 !important;
 }
 
@@ -69,4 +64,8 @@
 .comment-button {
   float: right;
   margin-right: 10px;
+}
+
+.write-reply {
+
 }
