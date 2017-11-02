@@ -570,9 +570,9 @@ app.post('/submitanswer', function(req, res) {
 
     var questionId = req.body.questionId;
     var answer = req.body.answer;    
-    var user = req.session.user;
+    var userId = req.session.user.id;
 
-    logger.info('User %s attempted to answer question %s with "%s"', user.id, questionId, answer);
+    logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
 
     questions.lookupQuestionById(questionId,function(err, question){
 		if(err){

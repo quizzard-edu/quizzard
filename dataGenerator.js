@@ -125,11 +125,11 @@ var answerQuestion = function(questionId) {
             answer = 'KonniChiwa';
         }
 
-        questions.checkAnswer(questionId, {id: studentId, type: common.userTypes.STUDENT}, answer, function(err, res) {
+        checkAnswer(questionId, studentId, answer, function (err, correct) {
             if (err) {
-                logger.error('Questions %d answered incorrectly by %s', questionId, studentId);
+                logger.error(err);
             } else {
-                logger.info('Questions %d answered correctly by %s', questionId, studentId);
+                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
             }
 
             questionsAnswered++;
@@ -138,6 +138,39 @@ var answerQuestion = function(questionId) {
             }
         });
     }
+}
+
+// check answer
+var checkAnswer = function (questionId, userId, answer, callback) {
+    logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
+    db.lookupQuestion({id: questionId}, function(err, question) {
+        if(err){
+            return callback(err, null);
+        } else if(!question){
+            return callback('Could not find the question', null);
+        } else {
+            var value = questions.verifyAnswer(question, answer);
+            users.submitAnswer(
+                userId, questionId, value, question.points, answer,
+                function(err, res){
+                    if (err) {
+                        return callback (err, null);
+                    }
+
+                    questions.lookupupdateStudentByIdQuestionById(
+                        questionId,
+                        { userId:userId, correct:value, attempt:answer },
+                        function(err, res) {
+                            if (err) {
+                                return callback (err, null);
+                            }
+                            return callback (null, value);
+                        }
+                    );
+                }
+            );
+        }
+    });
 }
 
 

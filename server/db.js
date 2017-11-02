@@ -339,6 +339,13 @@ var updateUserById = function(userId, info, callback){
     }
 }
 
+// update users collection directly by a query
+exports.updateUsersByQuery = function (query, update){
+    usersCollection.update(query, update, function(err, obj) {
+        return callback(err, obj);
+    });
+}
+
 // check if json obejct is empty
 var isEmptyObject = function(obj) {
     for (var key in obj) {

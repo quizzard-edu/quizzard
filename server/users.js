@@ -183,6 +183,9 @@ exports.getAdminById = function(adminId, callback) {
 	db.getStudentById(adminId, callback);
 }
 
+exports.submitAnswer = function(userId, questionId, value, points, answer) {
+	db.updateUsersByQuery();
+}
 /*
  * Fetch the question list of userId
  */
