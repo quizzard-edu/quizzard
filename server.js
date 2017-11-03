@@ -578,14 +578,14 @@ app.post('/submitanswer', function(req, res) {
     var userId = req.session.user.id;
 
     questions.lookupQuestionById(questionId,function(err, question){
-		if(err){
+        if(err){
             logger.error(err);
-			return res.status(500).send(err);
+            return res.status(500).send(err);
         }
 
         if(!question){
             logger.error('Could not find the question %s', questionId);
-			return res.status(400).send('Could not find the question');
+            return res.status(400).send('Could not find the question');
         }
 
         logger.info('User %s attempted to answer question %d with "%s"', userId, question.Id, answer);

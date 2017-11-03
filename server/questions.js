@@ -26,70 +26,70 @@ var uuidv1 = require('uuid/v1');
 
 /*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question){
-	var updatedQuestion = question;
-	if ('visible' in question){
-		updatedQuestion.visible = (question.visible === 'true');
-	}
-	if ('points' in question){
-		updatedQuestion.points = parseInt(question.points);
-	}
+    var updatedQuestion = question;
+    if ('visible' in question){
+        updatedQuestion.visible = (question.visible === 'true');
+    }
+    if ('points' in question){
+        updatedQuestion.points = parseInt(question.points);
+    }
 
-	return updatedQuestion;
+    return updatedQuestion;
 }
 
 /*Prepare question data on first pass to DB*/
 var prepareQuestionData = function(question, callback){
-	// prepare regular data
-	var currentDate = new Date().toString();
-	var questionToAdd = {};
+    // prepare regular data
+    var currentDate = new Date().toString();
+    var questionToAdd = {};
 
-	questionToAdd._id = uuidv1();
-	questionToAdd.topic = question.topic;
-	questionToAdd.title = question.title;
-	questionToAdd.text = question.text;
-	questionToAdd.hint = question.hint;
-	questionToAdd.points = parseInt(question.points);
-	questionToAdd.visible = (question.visible === 'true');
-	questionToAdd.correctAttempts = [];
-	questionToAdd.wrongAttempts = [];
-	questionToAdd.totalAttempts = [];
-	questionToAdd.correctAttemptsCount = 0;
-	questionToAdd.wrongAttemptsCount = 0;
-	questionToAdd.totalAttemptsCount = 0;
-	questionToAdd.ctime = currentDate;
-	questionToAdd.mtime = currentDate;
-	questionToAdd.ratings = [];
+    questionToAdd._id = uuidv1();
+    questionToAdd.topic = question.topic;
+    questionToAdd.title = question.title;
+    questionToAdd.text = question.text;
+    questionToAdd.hint = question.hint;
+    questionToAdd.points = parseInt(question.points);
+    questionToAdd.visible = (question.visible === 'true');
+    questionToAdd.correctAttempts = [];
+    questionToAdd.wrongAttempts = [];
+    questionToAdd.totalAttempts = [];
+    questionToAdd.correctAttemptsCount = 0;
+    questionToAdd.wrongAttemptsCount = 0;
+    questionToAdd.totalAttemptsCount = 0;
+    questionToAdd.ctime = currentDate;
+    questionToAdd.mtime = currentDate;
+    questionToAdd.ratings = [];
 
-	//Add specific attributes by Type
-	switch (question.type) {
-		case common.questionTypes.REGULAR.value:
-			questionToAdd.type = common.questionTypes.REGULAR.value;
-			questionToAdd.answer = question.answer;
-			break;
+    //Add specific attributes by Type
+    switch (question.type) {
+        case common.questionTypes.REGULAR.value:
+            questionToAdd.type = common.questionTypes.REGULAR.value;
+            questionToAdd.answer = question.answer;
+            break;
 
-		case common.questionTypes.MULTIPLECHOICE.value:
-			questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
-			questionToAdd.choices = question.choices;
-			questionToAdd.answer = question.answer;
-			break;
+        case common.questionTypes.MULTIPLECHOICE.value:
+            questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
+            questionToAdd.choices = question.choices;
+            questionToAdd.answer = question.answer;
+            break;
 
-		case common.questionTypes.TRUEFALSE.value:
-			questionToAdd.type = common.questionTypes.TRUEFALSE.value;
-			questionToAdd.choices = question.choices;
-			questionToAdd.answer = question.answer;
-			break;
+        case common.questionTypes.TRUEFALSE.value:
+            questionToAdd.type = common.questionTypes.TRUEFALSE.value;
+            questionToAdd.choices = question.choices;
+            questionToAdd.answer = question.answer;
+            break;
 
-		case common.questionTypes.MATCHING.value:
-			questionToAdd.type = common.questionTypes.MATCHING.value;
-			questionToAdd.leftSide = question.leftSide;
-			questionToAdd.rightSide = question.rightSide;
-			break;
+        case common.questionTypes.MATCHING.value:
+            questionToAdd.type = common.questionTypes.MATCHING.value;
+            questionToAdd.leftSide = question.leftSide;
+            questionToAdd.rightSide = question.rightSide;
+            break;
 
-		default:
-			return callback({status:400, msg:'Type of Question is Undefined'}, null)
-	}
+        default:
+            return callback({status:400, msg:'Type of Question is Undefined'}, null)
+    }
 
-	return callback(null, questionToAdd);
+    return callback(null, questionToAdd);
 }
 
 /*
@@ -98,19 +98,19 @@ var prepareQuestionData = function(question, callback){
 * the text, topic, type, answer, points and hint set.
 */
 exports.addQuestion = function(question, callback) {
-	prepareQuestionData(question, function(err, questionToAdd){
-		if(err){
-			return callback(err, null)
-		}
+    prepareQuestionData(question, function(err, questionToAdd){
+        if(err){
+            return callback(err, null)
+        }
 
-		// validate constant question attributes
-		result = questionValidator.questionCreationValidation(questionToAdd);
-		if (result.success){
-			return db.addQuestion(questionToAdd, callback);
-		} else{
-			return callback(result, null)
-		}
-	})
+        // validate constant question attributes
+        result = questionValidator.questionCreationValidation(questionToAdd);
+        if (result.success){
+            return db.addQuestion(questionToAdd, callback);
+        } else{
+            return callback(result, null)
+        }
+    })
 }
 
 /* Sort questions by the given sort type. */
@@ -120,25 +120,25 @@ exports.sortQuestions = function(qs, type, callback) {
 
 /* Replace a question in the database with the provided question object. */
 exports.updateQuestionById = function(questionId, info, callback) {
-	updateQuestionById(questionId, info, callback);
+    updateQuestionById(questionId, info, callback);
 }
 
 var updateQuestionById = function(qId, infoToUpdate, callback){
-	// Get Type of question and validate it
-	lookupQuestionById(qId, function(err, question){
-		if(err){
-			return callback({status:500, msg:err},null);
-		}
-		infoToUpdate = questionUpdateParser(infoToUpdate);
+    // Get Type of question and validate it
+    lookupQuestionById(qId, function(err, question){
+        if(err){
+            return callback({status:500, msg:err},null);
+        }
+        infoToUpdate = questionUpdateParser(infoToUpdate);
 
-		// validate each field that will be updated
-		var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
-		if (result.success){
-			db.updateQuestionById(qId, infoToUpdate, callback);
-		} else {
-			return callback({status:400, msg:result.msg}, null)
-		}
-	});
+        // validate each field that will be updated
+        var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
+        if (result.success){
+            db.updateQuestionById(qId, infoToUpdate, callback);
+        } else {
+            return callback({status:400, msg:result.msg}, null)
+        }
+    });
 }
 
 /* Remove the question with ID qid from the database. */
@@ -147,7 +147,7 @@ exports.deleteQuestion = function(questionId, callback) {
         if (err) {
             logger.error(err);
             return callback(err, null);
-		}
+        }
 
         logger.info('Question %d deleted from database.', questionId);
         return callback(null, 'success');
@@ -161,97 +161,97 @@ exports.lookupQuestionById = function(questionId, callback) {
 
 // lookup question in database
 var lookupQuestionById = function(questionId, callback) {
-	db.lookupQuestion({_id: questionId}, callback);
+    db.lookupQuestion({_id: questionId}, callback);
 }
 
 // adding rating to question collection
 exports.submitRating = function (questionId, userId, rating, callback) {
-	var currentDate = new Date().toString();
+    var currentDate = new Date().toString();
     var query = {_id: questionId};
-	var update = {};
+    var update = {};
 
-    update.$push = {};	
-	update.$push.ratings = {
-		user: userId,
-		date: currentDate,
-		rating: rating
-	}
+    update.$push = {};
+    update.$push.ratings = {
+        user: userId,
+        date: currentDate,
+        rating: rating
+    }
 
-	db.updateQuestionByQuery(query, update, function (err,result) {
+    db.updateQuestionByQuery(query, update, function (err,result) {
         return callback(err, result);
     });
 }
 
 // get all questions list
 exports.getAllQuestionsList = function(callback) {
-	db.getQuestionsList({}, {id: 1}, callback);
+    db.getQuestionsList({}, {id: 1}, callback);
 }
 
 // submit answer
 exports.submitAnswer = function(questionId, userId, correct, points, answer, callback) {
-	var currentDate = new Date().toString();
+    var currentDate = new Date().toString();
     var query = {_id: questionId};
     var update = {};
 
     update.$push = {};
     update.$inc = {};
 
-	query['correctAttempts.id'] = { $ne : userId };
-	if (correct) {
-		update.$inc.correctAttemptsCount = 1;
-		update.$push.correctAttempts = {
-			id : userId,
-			points: points,
-			answer: answer,
-			date : currentDate
-		};
-	} else {
-		update.$inc.wrongAttemptsCount = 1;
-		update.$push.wrongAttempts = {
-			id : userId,
-			attemp: answer,
-			date : currentDate
-		};
-	}
-	update.$inc.totalAttemptsCount = 1;
-	update.$push.totalAttempts = {
-		id : userId,
-		attemp: answer,
-		date : currentDate
-	};
+    query['correctAttempts.id'] = { $ne : userId };
+    if (correct) {
+        update.$inc.correctAttemptsCount = 1;
+        update.$push.correctAttempts = {
+            id : userId,
+            points: points,
+            answer: answer,
+            date : currentDate
+        };
+    } else {
+        update.$inc.wrongAttemptsCount = 1;
+        update.$push.wrongAttempts = {
+            id : userId,
+            attemp: answer,
+            date : currentDate
+        };
+    }
+    update.$inc.totalAttemptsCount = 1;
+    update.$push.totalAttempts = {
+        id : userId,
+        attemp: answer,
+        date : currentDate
+    };
 
-	db.updateQuestionByQuery(query, update, function (err,result) {
+    db.updateQuestionByQuery(query, update, function (err,result) {
         return callback(err, result);
     });
 }
 
 // verify answer based on type
 exports.verifyAnswer = function(question, answer) {
-	var value = false;
+    var value = false;
 
-	if (question.type === common.questionTypes.MATCHING.value && answer) {
-		var ansLeftSide = answer[0];
-		var ansRightSide = answer[1];
+    if (question.type === common.questionTypes.MATCHING.value && answer) {
+        var ansLeftSide = answer[0];
+        var ansRightSide = answer[1];
 
-		if (ansLeftSide.length === question.leftSide.length) {
-			var checkIndexLeft;
-			var checkIndexRight;
+        if (ansLeftSide.length === question.leftSide.length) {
+            var checkIndexLeft;
+            var checkIndexRight;
 
-			for (i = 0; i < ansLeftSide.length; i++) {
-				checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
-				checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
-				if (checkIndexLeft !== checkIndexRight) {
-					return value = false;
-				}
-			}
+            for (i = 0; i < ansLeftSide.length; i++) {
+                checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+                checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+                if (checkIndexLeft !== checkIndexRight) {
+                    return value = false;
+                }
+            }
 
-			if (!value) {
-				return value = true;
-			}
-		}
+            if (!value) {
+                return value = true;
+            }
+        }
 
-		return value = false;
-	}
+        return value = false;
+    }
 
-	return value = (answer === question.answer);
+    return value = (answer === question.answer);
 }

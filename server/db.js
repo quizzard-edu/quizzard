@@ -359,7 +359,7 @@ var isEmptyObject = function(obj) {
 // Questions functions
 // Add QUESTION to questionsCollection in the database
 exports.addQuestion = function(question, callback){
-	question.id = ++nextId;
+    question.id = ++nextId;
     questionsCollection.insert(question, function(err, res) {
         if(err){
             logger.error(err);
@@ -387,7 +387,7 @@ exports.removeAllQuestions = function(callback){
 
 // getNextQuestionId
 var getNextQuestionId = function(callback){
-  	questionsCollection.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
+      questionsCollection.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
         if (err) {
             logger.error(err);
             process.exit(1);
@@ -514,7 +514,7 @@ exports.updateQuestionById = function(questionId, request, callback){
     if (request.rightSide) {
       update.$set.rightSide = request.rightSide;
     }
-    
+
     if ('visible' in request) {
         update.$set.visible = request.visible;
     }
