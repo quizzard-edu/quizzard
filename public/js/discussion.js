@@ -35,7 +35,7 @@ var voteClickReply = function(icon, vote) {
 
     $.ajax({
         type: 'POST',
-        url: '/voteOnComment',
+        url: '/voteOnReply',
         data: { questionId: questionId,
                 commentId: commentId,
                 vote: vote,
