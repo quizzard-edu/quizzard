@@ -264,8 +264,9 @@ exports.addComment = function (questionId, userId, comment, callback) {
     var update = {};
     update.$push = {};
     update.$push.comments = {
+        id: uuidv1(),
         date: currentDate,
-        id: userId,
+        userId: userId,
         likesCount: 0,
         dislikesCount: 0,
         replis: [],

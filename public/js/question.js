@@ -1,5 +1,23 @@
 var questionId = window.location.href.split('?_id=')[1];
 
+$(function () {
+    $.ajax({
+        type: 'GET',
+        url: '/getDiscussionBoard',
+        data: { questionId: questionId },
+        success: function(data) {
+            $('#discussion').html(data);
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('something went wrong');
+            }
+        }
+    });
+});
+
 $('#re_answerform').submit(function(evt) {
     evt.preventDefault();
     var ans = $('#answer').val();

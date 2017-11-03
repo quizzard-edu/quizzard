@@ -193,7 +193,7 @@ const tfForm = pug.compileFile('views/tf-answer.pug');
 const matchingForm = pug.compileFile('views/matching-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 const questionList = pug.compileFile('views/questionlist.pug');
-
+const discussionBoard = pug.compileFile('views/discussion.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
@@ -826,7 +826,7 @@ app.get('/getDiscussionBoard', function(req, res){
     }
 
     var questionId = req.query.questionId;
-    questoins.lookupQuestionById(questionId, function (err, question) {
+    questions.lookupQuestionById(questionId, function (err, question) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
@@ -838,6 +838,10 @@ app.get('/getDiscussionBoard', function(req, res){
         }
 
         var comments = question.comments;
+        var disBoard = discussionBoard({
+            comments: comments
+        });
+        return res.status(200).send(disBoard);
     });
 });
 

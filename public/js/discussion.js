@@ -1,23 +1,5 @@
 var comments = [1, 2, 3];
 
-$(function() {
-    $.ajax({
-        type: 'GET',
-        url: '/getDiscussionBoard',
-        data: { questionId: questionId },
-        success: function(data) {
-            alert('good');
-        },
-        error: function(data){
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else {
-                failSnackbar('something went wrong');
-            }
-        }
-    });
-});
-
 var voteClick = function(icon, type) {
     //do ajax request here
 
@@ -64,13 +46,31 @@ var comment = function() {
         data: { questionId: questionId,
                 comment: comment},
         success: function(data) {
-            alert('good');
+            getDiscussionBoard();
         },
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('something went wrong');
+                failSnackbar('Something went wrong');
+            }
+        }
+    });
+}
+
+var getDiscussionBoard = function () {
+    $.ajax({
+        type: 'GET',
+        url: '/getDiscussionBoard',
+        data: { questionId: questionId },
+        success: function(data) {
+            $('#discussion').html(data);
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong');
             }
         }
     });
