@@ -849,18 +849,15 @@ app.post('/addCommentToQuestion', function (req, res) {
 
     var questionId = req.body.questionId;
     var comment = req.body.questionId;
-    questoins.addComment(questionId, comment, function (err, question) {
+    var userId = req.session.user.id;
+
+    questions.addComment(questionId, userId, comment, function (err, question) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
         }
 
-        if (!question) {
-            logger.error('Could not find the question %s', questionId);
-            return res.status(400).send('Could not find the question');
-        }
-
-        var comments = question.comments;
+        return res.stats(200).send('Ok');
     });
 });
 

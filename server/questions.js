@@ -256,3 +256,22 @@ exports.verifyAnswer = function(question, answer) {
 
     return value = (answer === question.answer);
 }
+
+// add comment to question by id with user and comment
+exports.addComment = function (questionId, userId, comment, callback) {
+    var currentDate = new Date().toString();
+    var query = {_id: questionId};
+    var update = {};
+    update.$push.comments = {
+        date: currentDate,
+        id: userId,
+        likesCount: 0,
+        dislikesCount: 0,
+        replis: [],
+        comment: comment
+    };
+
+    db.updateQuestionByQuery(query, update, function (err,result) {
+        return callback(err, result);
+    });
+}
