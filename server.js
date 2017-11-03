@@ -857,7 +857,7 @@ app.post('/addCommentToQuestion', function (req, res) {
             return res.status(500).send(err);
         }
 
-        return res.stats(200).send('Ok');
+        return res.status(200).send('Ok');
     });
 });
 
