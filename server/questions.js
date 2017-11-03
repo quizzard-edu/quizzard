@@ -267,9 +267,12 @@ exports.addComment = function (questionId, userId, comment, callback) {
         id: uuidv1(),
         date: currentDate,
         userId: userId,
+        likes: [],
+        dislikes: [],
         likesCount: 0,
         dislikesCount: 0,
-        replis: [],
+        replies: [],
+        repliesCount: 0,
         comment: comment
     };
 
