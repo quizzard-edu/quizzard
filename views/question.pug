@@ -31,7 +31,7 @@ block content
           .success
             h4.text-center#success-header Learn more
             p#success-message #{question.successMessage}
-          include rating
+
       .col.s12.m4
         .card
           .card-content
@@ -49,6 +49,11 @@ block content
             else
               p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
             h4.sidebar-item#hint.hidden Hint: #{question.hint}
+          if answered  
+            .card-action
+              if !hasQrating  
+                h5.sidebar-item.hide-on-med-down#rating Please rate this question's difficulty:
+                include rating
 
   include modal-alert
 
