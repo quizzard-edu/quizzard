@@ -262,6 +262,7 @@ exports.addComment = function (questionId, userId, comment, callback) {
     var currentDate = new Date().toString();
     var query = {_id: questionId};
     var update = {};
+    update.$push = {};
     update.$push.comments = {
         date: currentDate,
         id: userId,
