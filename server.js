@@ -819,6 +819,51 @@ var submitQuestionRating = function (req, res) {
     });
 }
 
+// get discussion board
+app.get('/getDiscussionBoard', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var questionId = req.query.questionId;
+    questoins.lookupQuestionById(questionId, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        if (!question) {
+            logger.error('Could not find the question %s', questionId);
+            return res.status(400).send('Could not find the question');
+        }
+
+        var comments = question.comments;
+    });
+});
+
+// add comments to a question
+app.post('/addCommentToQuestion', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var questionId = req.body.questionId;
+    var comment = req.body.questionId;
+    questoins.addComment(questionId, comment, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        if (!question) {
+            logger.error('Could not find the question %s', questionId);
+            return res.status(400).send('Could not find the question');
+        }
+
+        var comments = question.comments;
+    });
+});
+
 // questions list of topics
 app.get('/questionsListofTopics', function(req, res){
     if (!req.session.user) {

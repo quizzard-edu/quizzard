@@ -59,6 +59,7 @@ var prepareQuestionData = function(question, callback){
     questionToAdd.ctime = currentDate;
     questionToAdd.mtime = currentDate;
     questionToAdd.ratings = [];
+    questionToAdd.comments = [];
 
     //Add specific attributes by Type
     switch (question.type) {
