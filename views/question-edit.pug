@@ -14,14 +14,15 @@ block styles
             .col-sm-10
               input.form-control#qtitle(type='text' name='title' placeholder='New title' value=question.title autofocus)
           .form-group.row
-            label(for='qtext') Question Body
+            label.col-sm-2.col-form-label(for='qtext') Question Body
             .summernote#qtext(value=question.text)
           #qAnswer
             | !{getQuestionForm()}
           .form-group.row
             label.col-sm-2.col-form-label(for='qtopic') Topic
             .col-sm-10
-              input.form-control#qtopic(type='text' name='topic' placeholder='New topic' value=question.topic)
+              .input-field
+                input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='New topic' value=question.topic autocomplete='off' required)
           .form-group.row
             label.col-sm-2.col-form-label(for='qpoints') Points
             .col-sm-10

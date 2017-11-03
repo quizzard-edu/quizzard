@@ -122,7 +122,7 @@ app.get('/home', function(req, res) {
     }
 
     var request = { user : req.session.user, questionsStatus : 'unanswered' };
-    users.getQuestionsList(request, function(err, results) {
+    users.getQuestionsListByUser(request, function(err, results) {
         if (err) {
             return res.status(500).send();
         }
@@ -134,7 +134,15 @@ app.get('/home', function(req, res) {
 
             return res.status(200).render('home', {
                 user: userFound,
-                questions: results
+                questions: results,
+                getQuestionIcon: function(type) {
+                    for (var i in common.questionTypes) {
+                        if (type === common.questionTypes[i].value) {
+                            return common.questionTypes[i].icon;
+                        }
+                    }
+                    return 'help';
+                }
             });
         });
     });
@@ -184,6 +192,8 @@ const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
 const matchingForm = pug.compileFile('views/matching-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
+const questionList = pug.compileFile('views/questionlist.pug');
+
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
@@ -352,67 +362,69 @@ app.get('/questionlist', function(req, res) {
         return res.redirect('/');
     }
 
-    var request = {};
-    request.user = req.session.user;
-    request.questionsStatus = req.query.type;
-
-    users.getQuestionsList(request, function(err, questionsList){
-        if (err) {
-            return res.status(500).send('Could not fetch questions list');
+    var userId = req.session.user.id;
+    users.getUserById(userId, function(err, user){
+        if (err || !user) {
+            res.status(400).send('bad request, user does not exist');
         }
 
-        req.session.adminQuestionList = null;
-        var html = null;
-
-        if (req.session.user.type == common.userTypes.ADMIN) {
-            html = questionTable({
-                questions : questionsList,
-                questionType: function(type){
-                    for (var i in common.questionTypes) {
-                        if (type === common.questionTypes[i].value) {
-                            return common.questionTypes[i].name;
-                        }
-                    }
-                    return 'UNKNOWN';
-                }
-             });
-        } else {
-            html = questionList({ questions : questionsList });
-        }
-
-        return res.status(200).send(html);
-    });
-
-    /* If this is the first time accessing it, fetch list from database.
-    questions.findQuestions(
-        0,
-        common.sortTypes.SORT_DEFAULT,
-        null,
-        function(err, questionlist) {
+        var request = {};
+        request.questionsStatus = req.query.type;
+        request.user = user;
+        users.getQuestionsListByUser(request, function(err, questionsList){
             if (err) {
                 return res.status(500).send('Could not fetch questions list');
             }
 
-            req.session.adminQuestionList = questionlist;
-            var html = questionTable({
-                questions: questionlist
-            });
+            var html = null;
+            if (req.session.user.type === common.userTypes.ADMIN) {
+                html = questionTable({
+                    questions : questionsList,
+                    questionType: function(type){
+                        for (var i in common.questionTypes) {
+                            if (type === common.questionTypes[i].value) {
+                                return common.questionTypes[i].name;
+                            }
+                        }
+                        return 'UNKNOWN';
+                    }
+                 });
+            }
+
+            if (req.session.user.type === common.userTypes.STUDENT) {
+                html = questionList({
+                    questions : questionsList,
+                    getQuestionIcon: function(type) {
+                        for (var i in common.questionTypes) {
+                            if (type === common.questionTypes[i].value) {
+                                return common.questionTypes[i].icon;
+                            }
+                        }
+                        return 'help';
+                    }
+                 });
+            }
 
             return res.status(200).send(html);
-        }
-    );*/
+        });
+    });
 });
 
 /* Send the question editing form HTML. */
-app.post('/questionedit', function(req, res) {
+app.get('/questionedit', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    var qId = parseInt(req.body.questionid);
+    var qId = req.query.questionid;
     questions.lookupQuestionById(qId, function(err, question){
         if(err){
-            res.status(500).send('Question not found');
+            logger.log(err);
+            return res.status(500).send(err);
+        }
+
+        if(!question){
+            return res.status(400).send('Question not found');
         }
 
         var html = questionEdit({
@@ -452,7 +464,7 @@ app.get('/statistics', function(req, res) {
         res.status(403).send('Permission Denied');
     }
 
-    questions.getQuestionsList(function(err, questionslist) {
+    questions.getAllQuestionsList(function(err, questionslist) {
         if (err) {
             res.status(500).send(err);
         }
@@ -478,51 +490,6 @@ app.get('/sortlist', function(req, res) {
     }
 
     return res.status(200).send(common.sortTypes);
-});
-
-const questionList = pug.compileFile('views/questionlist.pug');
-
-/* Respond with an HTML-formatted list of questions to display. */
-app.post('/fetchqlist', function(req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    var type = common.sortTypes.SORT_RANDOM;
-    var ans = false;
-
-    if (req.body.type == 'answered') {
-        type |= common.sortTypes.QUERY_ANSWERED | common.sortTypes.QUERY_ANSONLY;
-        ans = true;
-    }
-
-    var request = {};
-    request.user = req.session.user;
-    request.questionsStatus = req.body.type;
-
-    users.getQuestionsList(request, function(err, questionsList){
-        if (err) {
-            return res.status(500).send('Could not fetch questions list');
-        }
-
-        req.session.adminQuestionList = null;
-        var html = questionList({
-            questions: questionsList
-        });
-
-        return res.status(200).send(html);
-    });
-
-    /*
-    questions.findQuestions(10, type, req.session.user, function(err, results) {
-        req.session.questions = results;
-        req.session.answeredQuestions = ans;
-        var html = questionList({
-            questions: results
-        });
-
-        return res.status(200).send(html);
-    });*/
 });
 
 /* Sort question list by specified criterion and send new HTML. */
@@ -557,20 +524,35 @@ app.get('/question', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.lookupQuestionById(parseInt(req.query.id), function(err, questionFound) {
-        if (err || !questionFound) {
-            return res.status(500).send();
+    questions.lookupQuestionById(req.query._id, function(err, questionFound) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
         }
 
-        if (!questionFound.visible) {
+        if (!questionFound) {
+            return res.status(404).render('page-not-found');
+        }
+
+        if (!questionFound.visible && req.session.user.type === common.userTypes.STUDENT) {
             return res.status(400).send('Question is not available');
+        }
+
+        var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts);
+        var hasQrating = false;
+        for (var i in questionFound.ratings) {
+            if (questionFound.ratings[i].user === req.session.user.id) {
+                hasQrating = true;
+            }
         }
         return res.status(200).render('question', {
             user: req.session.user,
             question: questionFound,
-            answered: !(questionFound.answered.indexOf(req.session.user.id) === -1),
-            preview: false,
-            hasQrating: true/*ADD QUESTION RATING GET FUNCTION HERE*/,
+            answered: (answeredList.indexOf(req.session.user.id) !== -1),
+            isAdmin : function() {
+                return req.session.user.type === common.userTypes.ADMIN;
+            },
+            hasQrating: hasQrating/*ADD QUESTION RATING GET FUNCTION HERE*/,
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
@@ -598,16 +580,49 @@ app.post('/submitanswer', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.checkAnswer(
-        parseInt(req.body.questionId),
-        req.session.user,
-        req.body.answer,
-        function(err, value) {
-            var result = value.correct ? value : 'incorrect';
-            var status = value.correct ? 200 : 500;
-            return res.status(status).send(result);
+    var questionId = req.body.questionId;
+    var answer = req.body.answer;
+    var userId = req.session.user.id;
+
+    questions.lookupQuestionById(questionId,function(err, question){
+        if(err){
+            logger.error(err);
+            return res.status(500).send(err);
         }
-    );
+
+        if(!question){
+            logger.error('Could not find the question %s', questionId);
+            return res.status(400).send('Could not find the question');
+        }
+
+        logger.info('User %s attempted to answer question %d with "%s"', userId, question.Id, answer);
+
+        var value = questions.verifyAnswer(question, answer);
+        var points = question.points;
+        var text = value ? 'correct' : 'incorrect';
+        var status = value ? 200 : 500;
+        var response = {text: text, points: points};
+
+        if (req.session.user.type === common.userTypes.ADMIN) {
+            return res.status(status).send(response);
+        }
+
+        users.submitAnswer(userId, questionId, value, points, answer, function(err, result){
+            if(err){
+                logger.error(err);
+                return res.status(500).send(err);
+            }
+
+            questions.submitAnswer(questionId, userId, value, points, answer, function(err, result) {
+                if(err){
+                    logger.error(err);
+                    return res.status(500).send(err);
+                }
+
+                return res.status(status).send(response);
+            });
+        });
+    });
 });
 
 /*
@@ -713,7 +728,7 @@ app.put('/questionadd', function(req, res) {
         return res.redirect('/');
     }
 
-    questions.addQuestionByType(req.body.type, req.body, function(err, qId) {
+    questions.addQuestion(req.body, function(err, qId) {
         if (err) {
             return res.status(err.status).send(err.msg);
         }
@@ -737,7 +752,7 @@ app.post('/questionmod', function(req, res) {
         return res.redirect('/');
     }
 
-    var qid = parseInt(req.body.id);
+    var qid = req.body.id;
     var q = req.body.question;
 
     questions.updateQuestionById(qid, q, function(err, result) {
@@ -789,10 +804,10 @@ app.post('/submitQuestionRating', function(req, res){
 // question rating from both students and admins
 var submitQuestionRating = function (req, res) {
     var userId = req.session.user.id;
-    var questionId = parseInt(req.body.qId);
+    var questionId = req.body.qId;
     var rating = parseInt(req.body.rating);
 
-    if (rating < 1 || rating > 5) {
+    if (!rating || rating < 1 || rating > 5) {
         return res.status(400).send('bad rating');
     }
 
@@ -811,8 +826,34 @@ var submitQuestionRating = function (req, res) {
     });
 }
 
+// questions list of topics
+app.get('/questionsListofTopics', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    questions.getAllQuestionsList(function(err, docs){
+        if (err) {
+            return res.status(500).send('could not get the list of questions topics');
+        }
+
+        var topicsList = [];
+        for (var i in docs) {
+            if (topicsList.indexOf(docs[i].topic) === -1) {
+                topicsList.push(docs[i].topic);
+            }
+        }
+
+        return res.status(200).send(topicsList);
+    });
+});
+
 /* get the list of students' ids*/
-app.get('/studentsListofIds', function(req, res){
+app.get('/studentsListofIdsNames', function(req, res){
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -828,7 +869,7 @@ app.get('/studentsListofIds', function(req, res){
 
         var idsList = [];
         for (s in studentList) {
-            idsList.push(studentList[s].id);
+            idsList.push(studentList[s].id + ' - ' + studentList[s].fname + ' ' + studentList[s].lname);
         }
         return res.status(200).send(idsList);
     });

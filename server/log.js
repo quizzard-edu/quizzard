@@ -2,7 +2,7 @@
 log.js
 
 Copyright (C) 2016  Alexei Frolov, Larry Zhang
-Developed at University of Toronto 
+Developed at University of Toronto
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

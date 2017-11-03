@@ -1,4 +1,4 @@
-var questionId = window.location.href.split('?id=')[1];
+var questionId = window.location.href.split('?_id=')[1];
 
 $('#re_answerform').submit(function(evt) {
     evt.preventDefault();
@@ -9,6 +9,11 @@ $('#re_answerform').submit(function(evt) {
 $('#mc_answerform').submit(function(evt) {
     evt.preventDefault();
     var ans = $("input[name=answer]:checked").val();
+    sendAnswerRequest(ans);
+});
+$('#tf_answerform').submit(function(evt) {
+    evt.preventDefault();
+    var ans = $("input[name=tfbutton]:checked").val();
     sendAnswerRequest(ans);
 });
 
@@ -38,7 +43,7 @@ var sendAnswerRequest = function(ans) {
                 complete: function() {
                     if(getRating() > 0) {
                         submitQuestionRating(getRating(), questionId);
-                    }                    
+                    }
                     window.location.href = '/';
                 }
             });
@@ -47,9 +52,20 @@ var sendAnswerRequest = function(ans) {
 
             $('#modalAlert').modal('open');
         },
-        error: function(data){
+        error: function(data) {
             $('#hint').removeClass('hidden');
             swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
+        },
+        complete: function(data) {
+            const numberOfAttempts = $('#attempts');
+            numberOfAttempts.html(parseInt(numberOfAttempts.html()) + 1);
         }
     });
 }
+
+/* Listener for the `rate` button */
+$(document).on('click', '#rateQuestion', function() {
+    if(getRating() > 0) {
+        submitQuestionRating(getRating(), questionId);
+    }
+});

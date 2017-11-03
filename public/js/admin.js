@@ -1,4 +1,5 @@
 var usersTableActive = true;
+var autocompleteTopics;
 
 $(function(){
     /* show the account table by default */
@@ -116,7 +117,7 @@ var displayQuestionTable = function() {
 
 var addQuestionsTableEvents = function(){
     $('.view-button').click(function(evt) {
-        window.location.href = '/question?id=' + this.id.substring(5);
+        window.location.href = '/question?_id=' + this.id.substring(5);
     });
     $('.delete-button').click(function(evt) {
         deleteQuestion(this.id.substring(7));
@@ -157,6 +158,9 @@ var displayQuestionForm = function() {
                 submitQuestionForm();
             });
             $('select').material_select();
+
+            // gets the updated topics list
+            getQuestionsTopicsList();
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -449,7 +453,7 @@ var updateVisibility = function(qid) {
         function (isConfirm) {
             // User confirms the visiblity change
             if (isConfirm) {
-                question['visible'] = $('#checked-' + qid).is(':checked');          
+                question['visible'] = $('#checked-' + qid).is(':checked');
                 $.ajax({
                     type: 'POST',
                     url: '/questionmod',
@@ -461,7 +465,7 @@ var updateVisibility = function(qid) {
                         displayQuestionTable();
                         // Toast notifiation
                         const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
-                        
+
                         if(question['visible']){
                             successSnackbar('Question ' + qid + msg);
                         } else {
@@ -510,7 +514,9 @@ var submitQuestionForm = function() {
         if(field.name.startsWith('matchRight')){
             question['rightSide'].push(field.value);
         }
-
+        if(field.name.startsWith('tfbutton')){
+            question['answer'] = field.value;
+        }
         question[field.name] = field.value;
     });
 
@@ -575,7 +581,7 @@ var deleteQuestion = function(qid) {
 
 var editQuestion = function(qid) {
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: '/questionedit',
         data: { questionid: qid },
         success: function(data) {
@@ -594,6 +600,9 @@ var editQuestion = function(qid) {
                 submitQEditForm(qid);
             });
             setRating(data.qrating);
+
+            // gets the updated topics list
+            getQuestionsTopicsList();
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -633,7 +642,10 @@ var submitQEditForm = function(qid) {
         if(field.name.startsWith('matchRight')){
             question['rightSide'].push(field.value);
         }
-
+        
+        if(field.name.startsWith('tfbutton')){
+            question['answer'] = field.value;
+        }
         question[field.name] = field.value;
     });
 
@@ -736,4 +748,35 @@ var toggleButtonVisibility = function(){
     } else {
         $('.visbox').hide();
     }
+}
+
+// get questions topics list
+var getQuestionsTopicsList = function () {
+    $.ajax({
+        async: false,
+        type: 'GET',
+        url: '/questionsListofTopics',
+        success: function(data) {
+            autocompleteTopics = {};
+
+            for (var t in data) {
+                autocompleteTopics[data[t]] = null;
+            }
+
+            // Setting up the autocomplete search for topics
+            $('#qtopic').autocomplete({
+              data: autocompleteTopics,
+              limit: 20,
+              minLength: 0
+            });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Sorry, something went wrong, please try again');
+            }
+        }
+    });
+
 }

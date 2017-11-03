@@ -1,4 +1,5 @@
 block styles
+  link(rel='stylesheet' href='/css/admin.css')
   link(rel='stylesheet' href='/css/rating.css')
 
 .row
@@ -29,7 +30,8 @@ block styles
                 input.form-control#qtitle(type='text' name='title' placeholder='Enter title' required autofocus )
               .form-group
                 label(for='qtopic') Topic
-                input.form-control#qtopic(type='text' name='topic' placeholder='Enter topic' required)
+                .input-field
+                  input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' required)
               .form-group
                 label(for='qpoints') Points
                 input.form-control#qpoints(type='number' name='points' placeholder='Enter points'  min="0" required)
