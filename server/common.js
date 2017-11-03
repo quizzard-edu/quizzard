@@ -108,7 +108,7 @@ exports.randomizeList = randomizeList;
 exports.getIdsListFromJSONList = function (JSONList) {
     var list = [];
     for (i in JSONList){
-        list.push(JSONList[i].id);
+        list.push(JSONList[i]._id);
     }
     return list;
 }

@@ -470,7 +470,7 @@ exports.lookupQuestion = function(findQuery, callback) {
 // update a question record based on its id
 exports.updateQuestionById = function(questionId, request, callback){
     var currentDate = new Date().toString();
-    var query = { id:questionId };
+    var query = {_id: questionId};
     var update = {};
 
     update.$addToSet = {};
@@ -514,36 +514,9 @@ exports.updateQuestionById = function(questionId, request, callback){
     if (request.rightSide) {
       update.$set.rightSide = request.rightSide;
     }
-
-    if (request.rating) {
-        update.$push.ratings = {
-            user: request.userId,
-            date: currentDate,
-            rating: request.rating
-        }
-    }
     
     if ('visible' in request) {
         update.$set.visible = request.visible;
-    }
-
-    if (typeof request.correct !== 'undefined') {
-        query['correctAttempts.id'] = { $ne : request.userId };
-        if (request.correct) {
-            update.$inc.correctAttemptsCount = 1;
-            update.$push.correctAttempts = {
-                id : request.userId,
-                date : currentDate };
-        } else {
-            update.$inc.wrongAttemptsCount = 1;
-            update.$push.wrongAttempts = {
-                id : request.userId,
-                date : currentDate };
-        }
-        update.$inc.totalAttemptsCount = 1;
-        update.$push.totalAttempts = {
-            id : request.userId,
-            date : currentDate };
     }
 
     if (isEmptyObject(update.$addToSet)) {

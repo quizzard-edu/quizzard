@@ -198,7 +198,7 @@ exports.submitAnswer = function(userId, questionId, correct, points, answer, cal
         update.$inc.points = points;
         update.$inc.correctAttemptsCount = 1;
         update.$push.correctAttempts = {
-            id : questionId,
+            _id : questionId,
             points : points,
             answer : answer,
             date : currentDate
@@ -206,14 +206,14 @@ exports.submitAnswer = function(userId, questionId, correct, points, answer, cal
     } else {
         update.$inc.wrongAttemptsCount = 1;
         update.$push.wrongAttempts = {
-            id : questionId,
+            _id : questionId,
             attempt : answer,
             date : currentDate
         };
     }
     update.$inc.totalAttemptsCount = 1;
     update.$push.totalAttempts = {
-        id : questionId,
+        _id : questionId,
         attempt : answer,
         date : currentDate
     };
@@ -266,7 +266,7 @@ exports.getQuestionsListByUser = function(request, callback) {
             var unansweredList = [];
 
             for (q in docs) {
-                if (compareList.indexOf(docs[q].id) === -1) {
+                if (compareList.indexOf(docs[q]._id) === -1) {
                     unansweredList.push(docs[q]);
                 } else {
                     answeredList.push(docs[q]);

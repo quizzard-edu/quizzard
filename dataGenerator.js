@@ -144,6 +144,7 @@ var answerQuestion = function(questionId) {
 var checkAnswer = function (questionId, userId, answer, callback) {
     logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
     db.lookupQuestion({id: questionId}, function(err, question) {
+        questionId = question._id;
         if(err){
             return callback(err, null);
         } else if(!question){

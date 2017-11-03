@@ -581,7 +581,7 @@ var deleteQuestion = function(qid) {
 
 var editQuestion = function(qid) {
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: '/questionedit',
         data: { questionid: qid },
         success: function(data) {

@@ -125,14 +125,12 @@ exports.updateQuestionById = function(questionId, info, callback) {
 
 var updateQuestionById = function(qId, infoToUpdate, callback){
 	// Get Type of question and validate it
-	db.lookupQuestionById(qId, function(err, question){
+	lookupQuestionById(qId, function(err, question){
 		if(err){
 			return callback({status:500, msg:err},null);
 		}
 		infoToUpdate = questionUpdateParser(infoToUpdate);
-		if ('correct' in infoToUpdate) {
-			return db.updateQuestionById(qId, infoToUpdate, callback);
-		}
+
 		// validate each field that will be updated
 		var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
 		if (result.success){
@@ -158,17 +156,30 @@ exports.deleteQuestion = function(questionId, callback) {
 
 /* Extract a question object from the database using its ID. */
 exports.lookupQuestionById = function(questionId, callback) {
-    lookupQuestion({_id: questionId}, callback);
+    lookupQuestionById(questionId, callback);
 }
 
-// lookup question
-var lookupQuestion = function(findQuery, callback) {
-	db.lookupQuestion(findQuery, callback);
+// lookup question in database
+var lookupQuestionById = function(questionId, callback) {
+	db.lookupQuestion({_id: questionId}, callback);
 }
 
 // adding rating to question collection
 exports.submitRating = function (questionId, userId, rating, callback) {
-	db.submitQuesitonRating(questionId, {userId: userId, rating: rating}, callback);
+	var currentDate = new Date().toString();
+    var query = {_id: questionId};
+	var update = {};
+
+    update.$push = {};	
+	update.$push.ratings = {
+		user: userId,
+		date: currentDate,
+		rating: rating
+	}
+
+	db.updateQuestionByQuery(query, update, function (err,result) {
+        return callback(err, result);
+    });
 }
 
 // get all questions list
@@ -179,7 +190,7 @@ exports.getAllQuestionsList = function(callback) {
 // submit answer
 exports.submitAnswer = function(questionId, userId, correct, points, answer, callback) {
 	var currentDate = new Date().toString();
-    var query = {id: questionId};
+    var query = {_id: questionId};
     var update = {};
 
     update.$push = {};
@@ -208,14 +219,6 @@ exports.submitAnswer = function(questionId, userId, correct, points, answer, cal
 		attemp: answer,
 		date : currentDate
 	};
-
-    if (common.isEmptyObject(update.$push)) {
-        delete update.$push;
-    }
-
-    if (common.isEmptyObject(update.$inc)) {
-        delete update.$inc;
-	}
 
 	db.updateQuestionByQuery(query, update, function (err,result) {
         return callback(err, result);

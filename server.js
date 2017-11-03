@@ -411,15 +411,20 @@ app.get('/questionlist', function(req, res) {
 });
 
 /* Send the question editing form HTML. */
-app.post('/questionedit', function(req, res) {
+app.get('/questionedit', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    var qId = parseInt(req.body.questionid);
+    var qId = req.query.questionid;
     questions.lookupQuestionById(qId, function(err, question){
         if(err){
-            res.status(500).send('Question not found');
+            logger.log(err);
+            return res.status(500).send(err);
+        }
+
+        if(!question){
+            return res.status(400).send('Question not found');
         }
 
         var html = questionEdit({
@@ -587,11 +592,12 @@ app.post('/submitanswer', function(req, res) {
 
         var value = questions.verifyAnswer(question, answer);
         var points = question.points;
-        var result = value ? 'correct' : 'incorrect';
+        var text = value ? 'correct' : 'incorrect';
         var status = value ? 200 : 500;
+        var response = {text: text, points: points};
 
         if (req.session.user.type === common.userTypes.ADMIN) {
-            return res.status(status).send(result);
+            return res.status(status).send(response);
         }
 
         users.submitAnswer(userId, questionId, value, points, answer, function(err, result){
@@ -606,7 +612,7 @@ app.post('/submitanswer', function(req, res) {
                     return res.status(500).send(err);
                 }
 
-                return res.status(status).send(result);
+                return res.status(status).send(response);
             });
         });
     });
@@ -739,7 +745,7 @@ app.post('/questionmod', function(req, res) {
         return res.redirect('/');
     }
 
-    var qid = parseInt(req.body.id);
+    var qid = req.body.id;
     var q = req.body.question;
 
     questions.updateQuestionById(qid, q, function(err, result) {
@@ -791,7 +797,7 @@ app.post('/submitQuestionRating', function(req, res){
 // question rating from both students and admins
 var submitQuestionRating = function (req, res) {
     var userId = req.session.user.id;
-    var questionId = parseInt(req.body.qId);
+    var questionId = req.body.qId;
     var rating = parseInt(req.body.rating);
 
     if (!rating || rating < 1 || rating > 5) {
