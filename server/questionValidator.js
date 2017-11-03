@@ -24,91 +24,87 @@ const successMsg = {success:true, msg:'Validation Passed'}
 const failMsg = {success:false, msg:'Fields types are Incorrect'}
 /*Send back specific error message by question type*/
 var qTypeFailMsg = function(message){
-	return {success:false,msg:message};
+    return {success:false,msg:message};
 }
 
 /*Validate all question fields on first entry to db*/
 exports.questionCreationValidation = function(info) {
-	for (var key in common.questionAttributes.DEFAULT){
-		if (!(key in info) || !validateAttributeType(info[key], key, 'DEFAULT')){
-			return failMsg;
-		}
-	}
-	return validateQuestionAttributesByType(info,info.type);
+    for (var key in common.questionAttributes.DEFAULT){
+        if (!(key in info) || !validateAttributeType(info[key], key, 'DEFAULT')){
+            return failMsg;
+        }
+    }
+    return validateQuestionAttributesByType(info,info.type);
 }
 
 /*Validate all fields that will be modified*/
 exports.validateAttributeFields = function(question,type){
-	var extraAttributes = false;
+    var extraAttributes = false;
 
-	for (var key in question){
-		// check const attributes
-		if (key in common.questionAttributes.DEFAULT){
-			if (!validateAttributeType(question[key], key, 'DEFAULT')){
-				return failMsg;
-			}
-		// not common field found
-		} else {
-			extraAttributes = true;
-		}
-	}
+    for (var key in question){
+        // check const attributes
+        if (key in common.questionAttributes.DEFAULT){
+            if (!validateAttributeType(question[key], key, 'DEFAULT')){
+                return failMsg;
+            }
+        // not common field found
+        } else {
+            extraAttributes = true;
+        }
+    }
 
-	// check by question type to validate the extra fields
-	if (extraAttributes){
-		return validateQuestionAttributesByType(question,type);
-	}
-	return successMsg;
+    // check by question type to validate the extra fields
+    if (extraAttributes){
+        return validateQuestionAttributesByType(question,type);
+    }
+    return successMsg;
 }
 
 var validateQuestionAttributesByType = function(question, type){
-	var result;
+    var result;
 
-	switch (type) {
-		case common.questionTypes.REGULAR.value:
-			result = regexAttributeValidator(question);
-			break;
+    switch (type) {
+        case common.questionTypes.REGULAR.value:
+            result = regexAttributeValidator(question);
+            break;
 
-		case common.questionTypes.MULTIPLECHOICE.value:
-			result = multipleChoiceAttributeValidator(question);
-			break;
+        case common.questionTypes.MULTIPLECHOICE.value:
+            result = multipleChoiceAttributeValidator(question);
+            break;
 
-		case common.questionTypes.TRUEFALSE.value:
-			result = trueAndFalseAttributeValidator(question);
-			break;		
+        case common.questionTypes.TRUEFALSE.value:
+            result = trueAndFalseAttributeValidator(question);
+            break;
 
-		case common.questionTypes.MATCHING.value:
-			result = matchingAttributeValidator(question);
-			break;		
+        case common.questionTypes.MATCHING.value:
+            result = matchingAttributeValidator(question);
+            break;
 
-		case common.questionTypes.CHOOSEALL.value:
-			result = chooseAllAttributeValidator(question);
-			break;
-
-		default:
-			result = qTypeFailMsg('No such question type found.');
-			break;
-	}
-	return result;
+        default:
+            result = failMsg;
+            break;
+    }
+    return result;
 }
 
 var regexAttributeValidator = function(question){
-	if (!validateAllAttributesInGroup(question,'REGULAR')){
-		return qTypeFailMsg('Incorrect question answer field!');
-	}
-	return successMsg;
+    if (!validateAllAttributesInGroup(question,'REGULAR')){
+        return qTypeFailMsg('Incorrect question answer field!');
+    }
+    return successMsg;
 }
 
 var multipleChoiceAttributeValidator = function(question){
-	if (!validateAllAttributesInGroup(question,'MULTIPLECHOICE')){
-		return qTypeFailMsg('Incorrect question answer fields!');
-	}
-	if (!validateArrayObject(question.choices,'String')){
-		return failMsg;
-	}
-	if (question.choices.length < 2){
-		return qTypeFailMsg('Need 2 or more options for Multiple Choice Question!');
-	}
-	return successMsg;
+    if (!validateAllAttributesInGroup(question,'MULTIPLECHOICE')){
+        return qTypeFailMsg('Incorrect question answer fields!');
+    }
+    if (!validateArrayObject(question.choices,'String')){
+        return failMsg;
+    }
+    if (question.choices.length < 2){
+        return qTypeFailMsg('Need 2 or more options for Multiple Choice Question!');
+    }
+    return successMsg;
 }
 
 var trueAndFalseAttributeValidator = function(question){
@@ -153,25 +149,25 @@ var chooseAllAttributeValidator = function(question){
 
 /*Validate specific value to it's attributeType in DB*/
 var validateAttributeType = function(valueToCheck, key, attributeType){
-	return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;
+    return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;
 }
 
 /*Validate all attributes in Object being passed and has correct field types*/
 var validateAllAttributesInGroup = function(objectToCheck, attributeType){
-	for (var key in common.questionAttributes[attributeType]){
-		if (!(key in objectToCheck) || !validateAttributeType(objectToCheck[key], key, attributeType)){
-			return false;
-		}
-	}
-	return true;
+    for (var key in common.questionAttributes[attributeType]){
+        if (!(key in objectToCheck) || !validateAttributeType(objectToCheck[key], key, attributeType)){
+            return false;
+        }
+    }
+    return true;
 }
 
 /*Validate an Array object to contain specific value types*/
 var validateArrayObject = function(arrayObject,typeOfvalue){
-	for (var value in arrayObject){
-		if(!validateAttributeType(value,typeOfvalue,'DATATYPES')){
-			return false;
-		}
-	}
-	return true;
+    for (var value in arrayObject){
+        if(!validateAttributeType(value,typeOfvalue,'DATATYPES')){
+            return false;
+        }
+    }
+    return true;
 }

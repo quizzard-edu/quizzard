@@ -25,99 +25,99 @@ var common = require('./common.js');
 
 // Create an admin USER, if the USER object is valid
 exports.addAdmin = function(user, callback) {
-	if(!user.fname || !user.lname || !user.id || !user.password){
-		logger.error('Failed to create a new admin, missing requirements');
-		return callback('failure', null);
-	}
+    if(!user.fname || !user.lname || !user.id || !user.password){
+        logger.error('Failed to create a new admin, missing requirements');
+        return callback('failure', null);
+    }
 
-	bcrypt.hash(user.password, 11, function(err, hash) {
-		if (err) {
-			logger.error(err);
-			return callback(err, null);
-		}
+    bcrypt.hash(user.password, 11, function(err, hash) {
+        if (err) {
+            logger.error(err);
+            return callback(err, null);
+        }
 
-		var currentDate = new Date().toString();
-		var userToAdd = {};
+        var currentDate = new Date().toString();
+        var userToAdd = {};
 
-		userToAdd.id = user.id.toLowerCase();
-		userToAdd.fname = user.fname;
-		userToAdd.lname = user.lname;
-		userToAdd.ctime = currentDate;
-		userToAdd.atime = currentDate;
-		userToAdd.mtime = currentDate;
-		userToAdd.email = user.email ? user.email : '';
-		userToAdd.type = common.userTypes.ADMIN;
-		userToAdd.password = hash;
-		userToAdd.active = true;
-		userToAdd.ratings = [];
+        userToAdd.id = user.id.toLowerCase();
+        userToAdd.fname = user.fname;
+        userToAdd.lname = user.lname;
+        userToAdd.ctime = currentDate;
+        userToAdd.atime = currentDate;
+        userToAdd.mtime = currentDate;
+        userToAdd.email = user.email ? user.email : '';
+        userToAdd.type = common.userTypes.ADMIN;
+        userToAdd.password = hash;
+        userToAdd.active = true;
+        userToAdd.ratings = [];
 
-		db.addAdmin(userToAdd, function(err, res){
-			if(err){
-				if (err === 'failure'){
-					logger.error('Failed to create admin %s, database issue', userToAdd.id);
-				} else if (err === 'exists') {
-					logger.warn('Admin %s already exists', userToAdd.id);
-				}
-				return callback(err, null);
-			}
+        db.addAdmin(userToAdd, function(err, res){
+            if(err){
+                if (err === 'failure'){
+                    logger.error('Failed to create admin %s, database issue', userToAdd.id);
+                } else if (err === 'exists') {
+                    logger.warn('Admin %s already exists', userToAdd.id);
+                }
+                return callback(err, null);
+            }
 
-			logger.info('Admin %s created', userToAdd.id);
-			return callback(null, 'created');
-		});
-	});
+            logger.info('Admin %s created', userToAdd.id);
+            return callback(null, 'created');
+        });
+    });
 }
 
 // Create a student USER, if the USER object is valid
 exports.addStudent = function(user, callback) {
-	if(!user.fname || !user.lname || !user.id || !user.password){
-		logger.error('Failed to create a new student, missing requirements');
-		return callback('failure', null);
-	}
+    if(!user.fname || !user.lname || !user.id || !user.password){
+        logger.error('Failed to create a new student, missing requirements');
+        return callback('failure', null);
+    }
 
-	bcrypt.hash(user.password, 11, function(err, hash) {
-		if (err) {
-			logger.error(err);
-			return callback(err, null);
-		}
+    bcrypt.hash(user.password, 11, function(err, hash) {
+        if (err) {
+            logger.error(err);
+            return callback(err, null);
+        }
 
-		var currentDate = new Date().toString();
-		var userToAdd = {};
+        var currentDate = new Date().toString();
+        var userToAdd = {};
 
-		userToAdd.id = user.id.toLowerCase();
-		userToAdd.fname = user.fname;
-		userToAdd.lname = user.lname;
-		userToAdd.ctime = currentDate;
-		userToAdd.atime = currentDate;
-		userToAdd.mtime = currentDate;
-		userToAdd.email = user.email ? user.email : '';
-		userToAdd.type = common.userTypes.STUDENT;
-		userToAdd.password = hash;
-		userToAdd.active = true;
-		userToAdd.ratings = [];
+        userToAdd.id = user.id.toLowerCase();
+        userToAdd.fname = user.fname;
+        userToAdd.lname = user.lname;
+        userToAdd.ctime = currentDate;
+        userToAdd.atime = currentDate;
+        userToAdd.mtime = currentDate;
+        userToAdd.email = user.email ? user.email : '';
+        userToAdd.type = common.userTypes.STUDENT;
+        userToAdd.password = hash;
+        userToAdd.active = true;
+        userToAdd.ratings = [];
 
-		userToAdd.points = 0.0;
-		userToAdd.correctAttempts = [];
-		userToAdd.wrongAttempts = [];
-		userToAdd.totalAttempts = [];
-		userToAdd.correctAttemptsCount = 0;
-		userToAdd.wrongAttemptsCount = 0;
-		userToAdd.totalAttemptsCount = 0;
+        userToAdd.points = 0.0;
+        userToAdd.correctAttempts = [];
+        userToAdd.wrongAttempts = [];
+        userToAdd.totalAttempts = [];
+        userToAdd.correctAttemptsCount = 0;
+        userToAdd.wrongAttemptsCount = 0;
+        userToAdd.totalAttemptsCount = 0;
 
-		db.addStudent(userToAdd, function(err, res){
-			if(err){
-				if (err === 'failure'){
-					logger.error('Failed to create student %s, database issue', userToAdd.id);
-				} else if (err === 'exists') {
-					logger.warn('Student %s already exists', userToAdd.id);
-				}
+        db.addStudent(userToAdd, function(err, res){
+            if(err){
+                if (err === 'failure'){
+                    logger.error('Failed to create student %s, database issue', userToAdd.id);
+                } else if (err === 'exists') {
+                    logger.warn('Student %s already exists', userToAdd.id);
+                }
 
-				return callback(err, null);
-			}
+                return callback(err, null);
+            }
 
-			logger.info('Student %s created', userToAdd.id);
-			return callback(null, 'Created');
-		});
-	});
+            logger.info('Student %s created', userToAdd.id);
+            return callback(null, 'Created');
+        });
+    });
 }
 
 /*
@@ -127,7 +127,7 @@ exports.addStudent = function(user, callback) {
  * to a user.
 */
 exports.updateUserByIdWithRedirection = function(userId, info, callback){
-	db.updateUserById(userId, info, callback);
+    db.updateUserById(userId, info, callback);
 }
 
 exports.updateStudentById = function(userId, info, callback){
@@ -157,7 +157,7 @@ exports.getUsersList = function(callback) {
 
 /* Return an array of users in the database, sorted by rank. */
 exports.getStudentsListSorted = function(lim, callback) {
-	db.getStudentsListSorted(lim, callback);
+    db.getStudentsListSorted(lim, callback);
 }
 
 /*
@@ -165,24 +165,75 @@ exports.getStudentsListSorted = function(lim, callback) {
  * Return account object if it is or null otherwise.
  */
 exports.checkLogin = function(username, pass, callback) {
-	db.checkLogin(username, pass, callback);
+    db.checkLogin(username, pass, callback);
 }
 
 /*
  * Fetch the user object with ID iserId in the users database.
  */
 exports.getUserById = function(userId, callback){
-	db.getUserById(userId, callback);
+    db.getUserById(userId, callback);
 }
 
 exports.getStudentById = function(studentId, callback) {
-	db.getStudentById(studentId, callback);
+    db.getStudentById(studentId, callback);
 }
 
 exports.getAdminById = function(adminId, callback) {
-	db.getStudentById(adminId, callback);
+    db.getStudentById(adminId, callback);
 }
 
+exports.submitAnswer = function(userId, questionId, correct, points, answer, callback) {
+    var currentDate = new Date().toString();
+    var query = { id : userId };
+    var update = {};
+
+    update.$inc = {};
+    update.$set = { mtime : currentDate };
+    update.$push = {};
+
+
+    query['correctAttempts.id'] = { $ne : questionId };
+    if (correct) {
+        update.$inc.points = points;
+        update.$inc.correctAttemptsCount = 1;
+        update.$push.correctAttempts = {
+            _id : questionId,
+            points : points,
+            answer : answer,
+            date : currentDate
+        };
+    } else {
+        update.$inc.wrongAttemptsCount = 1;
+        update.$push.wrongAttempts = {
+            _id : questionId,
+            attempt : answer,
+            date : currentDate
+        };
+    }
+    update.$inc.totalAttemptsCount = 1;
+    update.$push.totalAttempts = {
+        _id : questionId,
+        attempt : answer,
+        date : currentDate
+    };
+
+    if (common.isEmptyObject(update.$inc)) {
+        delete update.$inc;
+    }
+
+    if (common.isEmptyObject(update.$set)) {
+        delete update.$set;
+    }
+
+    if (common.isEmptyObject(update.$push)) {
+        delete update.$push;
+    }
+
+    db.updateUserByQuery(query, update, function (err,result) {
+        return callback(err, result);
+    });
+}
 /*
  * Fetch the question list of userId
  */
@@ -198,42 +249,42 @@ exports.getQuestionsListByUser = function(request, callback) {
 
     if (user.type === common.userTypes.ADMIN) {
         db.getQuestionsList(questionsQuery, sortQuery, function(err, docs){
-			return callback(err, docs);
-		});
-	}
+            return callback(err, docs);
+        });
+    }
 
-	if (user.type === common.userTypes.STUDENT) {
+    if (user.type === common.userTypes.STUDENT) {
         questionsQuery.visible = true;
 
-		db.getQuestionsList(questionsQuery, sortQuery, function(err, docs) {
-			if (err) {
-				return callback(err, null);
-			}
+        db.getQuestionsList(questionsQuery, sortQuery, function(err, docs) {
+            if (err) {
+                return callback(err, null);
+            }
 
-			var compareList = common.getIdsListFromJSONList(user.correctAttempts);
-			var answeredList = [];
-			var unansweredList = [];
+            var compareList = common.getIdsListFromJSONList(user.correctAttempts);
+            var answeredList = [];
+            var unansweredList = [];
 
-			for (q in docs) {
-				if (compareList.indexOf(docs[q].id) === -1) {
-					unansweredList.push(docs[q]);
-				} else {
-					answeredList.push(docs[q]);
-				}
-			}
+            for (q in docs) {
+                if (compareList.indexOf(docs[q]._id) === -1) {
+                    unansweredList.push(docs[q]);
+                } else {
+                    answeredList.push(docs[q]);
+                }
+            }
 
-			var returnList = (questionsStatus === 'answered') ? answeredList : unansweredList;
-			return callback(null, returnList);
-		});
+            var returnList = (questionsStatus === 'answered') ? answeredList : unansweredList;
+            return callback(null, returnList);
+        });
     }
 }
 
 // set the status of the user to active or in-active
 exports.setUserStatus = function(studentId, newStatus, callback){
-	db.updateUserById(studentId,{active: newStatus}, callback);
+    db.updateUserById(studentId,{active: newStatus}, callback);
 }
 
 // adding rating to question collection
 exports.submitRating = function (userId, questionId, rating, callback) {
-	db.updateUserById(userId, {questionId: questionId, rating: rating}, callback);
+    db.updateUserById(userId, {questionId: questionId, rating: rating}, callback);
 }

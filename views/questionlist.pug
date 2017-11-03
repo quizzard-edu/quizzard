@@ -7,6 +7,6 @@ ul.collection
         | #{q.topic}
         br
         | #{q.points}
-      a.secondary-content.question-block.noLineLink(id=q.id, style='cursor: pointer;')
+      a.secondary-content.question-block.noLineLink(href='/question?_id='+q._id, style='cursor: pointer;')
         i.material-icons send
         p.text-center.title
