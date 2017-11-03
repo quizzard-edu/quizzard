@@ -848,7 +848,7 @@ app.post('/addCommentToQuestion', function (req, res) {
     }
 
     var questionId = req.body.questionId;
-    var comment = req.body.questionId;
+    var comment = req.body.comment;
     var userId = req.session.user.id;
 
     questions.addComment(questionId, userId, comment, function (err, question) {
