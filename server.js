@@ -865,6 +865,63 @@ app.post('/addCommentToQuestion', function (req, res) {
     });
 });
 
+// vote on a comment
+app.post('/voteOnComment', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var questionId = req.body.questionId;
+    var commentId = req.body.commentId;
+    var vote = parseInt(req.body.vote);
+    var userId = req.session.user.id;
+
+    if (!vote || vote > 1 || vote < -1) {
+        return res.status(400).send('Vote is invalid');
+    }
+
+    logger.info(questionId, commentId);
+    return res.status(200).send('ok');
+
+    questions.voteComment(questionId, comment, vote, userId, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send('Ok');
+    });
+});
+
+// vote on a comment
+app.post('/voteOnReply', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var questionId = req.body.questionId;
+    var commentId = req.body.commentId;
+    var replyId = req.body.replyId;
+    var vote = parseInt(req.body.vote);
+    var userId = req.session.user.id;
+
+    if (!vote || vote > 1 || vote < -1) {
+        return res.status(400).send('Vote is invalid');
+    }
+
+    logger.info(questionId, commentId, replyId);
+    return res.status(200).send('ok');
+
+    questions.voteComment(questionId, userId, comment, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send('Ok');
+    });
+});
+
 // questions list of topics
 app.get('/questionsListofTopics', function(req, res){
     if (!req.session.user) {

@@ -280,3 +280,7 @@ exports.addComment = function (questionId, userId, comment, callback) {
         return callback(err, result);
     });
 }
+
+exports.voteComment = function (questionId, comment, vote, userId, callback) {
+
+}
