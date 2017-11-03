@@ -53,7 +53,7 @@ for a in [1, 2, 3]
         span.name Firstname Lastname
       .row
         textarea.comment-box(placeholder='Enter a Reply...')
-        .button.comment-button(class='btn btn-lg btn-primary') Reply
+        .button.comment-button(class='btn btn-lg btn-primary', onclick='reply()') Reply
 
 .row.comment
   .col.s12
@@ -62,7 +62,7 @@ for a in [1, 2, 3]
       span.name Firstname Lastname
     .row
       textarea.comment-box#commentBox(placeholder='Enter a comment...')
-      .button.comment-button(class='btn btn-lg btn-primary') Comment
+      .button.comment-button(class='btn btn-lg btn-primary', onclick='comment()') Comment
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')

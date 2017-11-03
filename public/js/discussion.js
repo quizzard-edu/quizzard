@@ -31,6 +31,14 @@ var repliesSection = function(action) {
     }
 }
 
+var comment = function() {
+   alert('comment');
+}
+
+var reply = function() {
+   alert('reply');
+}
+
 $('#commentBox').atwho({
     at: "@",
     data:['Petera sdf sd', 'Tom asd', 'Anne']
