@@ -50,6 +50,8 @@ block content
               p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
             h4.sidebar-item#hint.hidden Hint: #{question.hint}
 
+  include modal-alert
+
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
   script(src='/lib/bootstrap/js/bootstrap.min.js')
