@@ -572,8 +572,6 @@ app.post('/submitanswer', function(req, res) {
     var answer = req.body.answer;
     var userId = req.session.user.id;
 
-    logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
-
     questions.lookupQuestionById(questionId,function(err, question){
 		if(err){
             logger.error(err);
@@ -585,22 +583,32 @@ app.post('/submitanswer', function(req, res) {
 			return res.status(400).send('Could not find the question');
         }
 
+        logger.info('User %s attempted to answer question %d with "%s"', userId, question.Id, answer);
+
         var value = questions.verifyAnswer(question, answer);
-        users.submitAnswer(
-			userId,
-			{ questionId:questionId, correct:value, points:question.points, attempt:answer },
-			function(err, res){
-				questions.submitAnswer(
-					questionId,
-					{ userId:userId, correct:value, attempt:answer },
-					function(err, res) {
-						var result = value ? 'correct' : 'incorrect';
-                        var status = value ? 200 : 500;
-                        return res.status(status).send(result);
-					}
-				);
-			}
-		);
+        var points = question.points;
+        var result = value ? 'correct' : 'incorrect';
+        var status = value ? 200 : 500;
+
+        if (req.session.user.type === common.userTypes.ADMIN) {
+            return res.status(status).send(result);
+        }
+
+        users.submitAnswer(userId, questionId, value, points, answer, function(err, result){
+            if(err){
+                logger.error(err);
+                return res.status(500).send(err);
+            }
+
+            questions.submitAnswer(questionId, userId, value, points, answer, function(err, result) {
+                if(err){
+                    logger.error(err);
+                    return res.status(500).send(err);
+                }
+
+                return res.status(status).send(result);
+            });
+        });
     });
 });
 
