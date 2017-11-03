@@ -1,5 +1,3 @@
-var comments = [1, 2, 3];
-
 var voteClickComment = function(icon, vote) {
     const commentId = icon.attr('id').split('_')[1];
 
@@ -11,12 +9,14 @@ var voteClickComment = function(icon, vote) {
                 vote: vote},
         success: function(data) {
             if (data === 1) {
-                icon[0].style.color = colours.blueLight;
+                $('#like_' + commentId)[0].style.color = colours.blueLight;
+                $('#dislike_' + commentId)[0].style.color = '';
             } else if (data === -1) {
-                icon[0].style.color = colours.redBorder;
+                $('#like_' + commentId)[0].style.color = '';
+                $('#dislike_' + commentId)[0].style.color = colours.redBorder;
             } else {
-                $('#like_' + commentID)[0].style.color = '';
-                $('#dislike_' + commentID)[0].style.color = '';
+                $('#like_' + commentId)[0].style.color = '';
+                $('#dislike_' + commentId)[0].style.color = '';
             }
         },
         error: function(data){
@@ -42,12 +42,14 @@ var voteClickReply = function(icon, vote) {
                 replyId: replyId},
         success: function(data) {
             if (data === 1) {
-                icon[0].style.color = colours.blueLight;
+                $('#like_' + commentId + '_' + replyId)[0].style.color = colours.blueLight;
+                $('#dislike_' + commentId + '_' + replyId)[0].style.color = '';
             } else if (data === -1) {
-                icon[0].style.color = colours.redBorder;
+                $('#like_' + commentId + '_' + replyId)[0].style.color = '';
+                $('#dislike_' + commentId + '_' + replyId)[0].style.color = colours.redBorder;
             } else {
-                $('#like_' + commentID)[0].style.color = '';
-                $('#dislike_' + commentID)[0].style.color = '';
+                $('#like_' + commentId + '_' + replyId)[0].style.color = '';
+                $('#dislike_' + commentId + '_' + replyId)[0].style.color = '';
             }
         },
         error: function(data){
