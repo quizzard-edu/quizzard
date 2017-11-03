@@ -51,18 +51,6 @@ var sendAnswerRequest = function(ans) {
             $('#modalAlertMsg').html('Congratulations! You gained ' + data.points + ' points!<br><br><br>Please rate the difficulty of this question:');
 
             $('#modalAlert').modal('open');
-
-            /* swal({
-                html:true,
-                title: 'Correct',
-                text: 'Congratulations! You gained ' + data.points + ' points!<br><br>Please rate the difficulty of this question:<br><div class="rating"><i class="medium material-icons" id="0" onmouseover="highlight(0)" onmouseout="highlight(rating)" onclick="setRating(1)">star_border</i><i class="medium material-icons" id="1" onmouseover="highlight(1)" onmouseout="highlight(rating)" onclick="setRating(2)">star_border</i><i class="medium material-icons" id="2" onmouseover="highlight(2)" onmouseout="highlight(rating)" onclick="setRating(3)">star_border</i><i class="medium material-icons" id="3" onmouseover="highlight(3)" onmouseout="highlight(rating)" onclick="setRating(4)">star_border</i><i class="medium material-icons" id="4" onmouseover="highlight(4)" onmouseout="highlight(rating)" onclick="setRating(5)">star_border</i></div>',
-                type: 'success'
-            }, function (isConfirm) {
-                if(isConfirm) {
-                    
-                }
-                window.location.href = '/';
-            }); */
         },
         error: function(data) {
             $('#hint').removeClass('hidden');

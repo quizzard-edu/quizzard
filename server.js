@@ -539,6 +539,12 @@ app.get('/question', function(req, res) {
         }
 
         var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts);
+        var hasQrating = false;
+        for (var i in questionFound.ratings) {
+            if (questionFound.ratings[i].user === req.session.user.id) {
+                hasQrating = true;
+            }
+        }
         return res.status(200).render('question', {
             user: req.session.user,
             question: questionFound,
@@ -546,6 +552,7 @@ app.get('/question', function(req, res) {
             isAdmin : function() {
                 return req.session.user.type === common.userTypes.ADMIN;
             },
+            hasQrating: hasQrating/*ADD QUESTION RATING GET FUNCTION HERE*/,
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
