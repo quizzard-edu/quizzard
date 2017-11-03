@@ -548,17 +548,11 @@ app.get('/question', function(req, res) {
         return res.status(200).render('question', {
             user: req.session.user,
             question: questionFound,
-<<<<<<< 8098aa79e8aca924a196542dec75acb8f507639c
             answered: (answeredList.indexOf(req.session.user.id) !== -1),
             isAdmin : function() {
                 return req.session.user.type === common.userTypes.ADMIN;
             },
             hasQrating: hasQrating/*ADD QUESTION RATING GET FUNCTION HERE*/,
-=======
-            answered: !(questionFound.answered.indexOf(req.session.user.id) === -1),
-            preview: false,
-            hasQrating: false/*ADD QUESTION RATING GET FUNCTION HERE*/,
->>>>>>> Added the server side variable for if question answered. hooked it to show rating.
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
