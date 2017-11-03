@@ -1,13 +1,63 @@
 var comments = [1, 2, 3];
 
-var voteClick = function(icon, type) {
-    //do ajax request here
+var voteClickComment = function(icon, vote) {
+    const commentId = icon.attr('id').split('_')[1];
 
-    if (type === 1) {
-        icon[0].style.color = colours.blueLight;
-    } else {
-        icon[0].style.color = colours.redBorder;
-    }
+    $.ajax({
+        type: 'POST',
+        url: '/voteOnComment',
+        data: { questionId: questionId,
+                commentId: commentId,
+                vote: vote},
+        success: function(data) {
+            if (data === 1) {
+                icon[0].style.color = colours.blueLight;
+            } else if (data === -1) {
+                icon[0].style.color = colours.redBorder;
+            } else {
+                $('#like_' + commentID)[0].style.color = '';
+                $('#dislike_' + commentID)[0].style.color = '';
+            }
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong');
+            }
+        }
+    });
+}
+
+var voteClickReply = function(icon, vote) {
+    const commentId = icon.attr('id').split('_')[1];
+    const replyId = icon.attr('id').split('_')[2];
+
+    $.ajax({
+        type: 'POST',
+        url: '/voteOnComment',
+        data: { questionId: questionId,
+                commentId: commentId,
+                vote: vote,
+                replyId: replyId},
+        success: function(data) {
+            if (data === 1) {
+                icon[0].style.color = colours.blueLight;
+            } else if (data === -1) {
+                icon[0].style.color = colours.redBorder;
+            } else {
+                $('#like_' + commentID)[0].style.color = '';
+                $('#dislike_' + commentID)[0].style.color = '';
+            }
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong');
+            }
+        }
+    });
 }
 
 var voteHover = function(icon, type) {
@@ -58,6 +108,10 @@ var comment = function() {
     });
 }
 
+var reply = function() {
+     alert('reply');
+}
+
 var getDiscussionBoard = function () {
     $.ajax({
         type: 'GET',
@@ -74,10 +128,6 @@ var getDiscussionBoard = function () {
             }
         }
     });
-}
-
-var reply = function() {
-     alert('reply');
 }
 
 $('#commentBox').atwho({
