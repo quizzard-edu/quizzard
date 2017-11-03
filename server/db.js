@@ -339,6 +339,13 @@ var updateUserById = function(userId, info, callback){
     }
 }
 
+// update users collection directly by a query
+exports.updateUserByQuery = function (query, update, callback){
+    usersCollection.update(query, update, function(err, obj) {
+        return callback(err, obj);
+    });
+}
+
 // check if json obejct is empty
 var isEmptyObject = function(obj) {
     for (var key in obj) {
@@ -352,7 +359,7 @@ var isEmptyObject = function(obj) {
 // Questions functions
 // Add QUESTION to questionsCollection in the database
 exports.addQuestion = function(question, callback){
-	question.id = ++nextId;
+    question.id = ++nextId;
     questionsCollection.insert(question, function(err, res) {
         if(err){
             logger.error(err);
@@ -380,7 +387,7 @@ exports.removeAllQuestions = function(callback){
 
 // getNextQuestionId
 var getNextQuestionId = function(callback){
-  	questionsCollection.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
+      questionsCollection.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
         if (err) {
             logger.error(err);
             process.exit(1);
@@ -444,8 +451,8 @@ exports.sortQuestions = function(questions, type, callback) {
 }
 
 /* Extract a question object from the database using its ID. */
-exports.lookupQuestionById = function(questionId, callback) {
-    questionsCollection.findOne({id: questionId}, function(err, question) {
+exports.lookupQuestion = function(findQuery, callback) {
+    questionsCollection.findOne(findQuery, function(err, question) {
         if (err) {
             return callback(err, null);
         }
@@ -463,7 +470,7 @@ exports.lookupQuestionById = function(questionId, callback) {
 // update a question record based on its id
 exports.updateQuestionById = function(questionId, request, callback){
     var currentDate = new Date().toString();
-    var query = { id:questionId };
+    var query = {_id: questionId};
     var update = {};
 
     update.$addToSet = {};
@@ -508,35 +515,8 @@ exports.updateQuestionById = function(questionId, request, callback){
       update.$set.rightSide = request.rightSide;
     }
 
-    if (request.rating) {
-        update.$push.ratings = {
-            user: request.userId,
-            date: currentDate,
-            rating: request.rating
-        }
-    }
-    
     if ('visible' in request) {
         update.$set.visible = request.visible;
-    }
-
-    if (typeof request.correct !== 'undefined') {
-        query['correctAttempts.id'] = { $ne : request.userId };
-        if (request.correct) {
-            update.$inc.correctAttemptsCount = 1;
-            update.$push.correctAttempts = {
-                id : request.userId,
-                date : currentDate };
-        } else {
-            update.$inc.wrongAttemptsCount = 1;
-            update.$push.wrongAttempts = {
-                id : request.userId,
-                date : currentDate };
-        }
-        update.$inc.totalAttemptsCount = 1;
-        update.$push.totalAttempts = {
-            id : request.userId,
-            date : currentDate };
     }
 
     if (isEmptyObject(update.$addToSet)) {
@@ -569,11 +549,9 @@ exports.updateQuestionById = function(questionId, request, callback){
     });
 }
 
-// update the analytics collection by pulling the latest changes to the users collection
-var updateAnalytics = function() {
-    analyticsCollection.insert({name:'hi'}, function(err, info){
-        console.log(err);
-        console.log(info);
-        return;
+// update users collection directly by a query
+exports.updateQuestionByQuery = function (query, update, callback){
+    questionsCollection.update(query, update, function(err, obj) {
+        return callback(err, obj);
     });
 }

@@ -117,7 +117,7 @@ var displayQuestionTable = function() {
 
 var addQuestionsTableEvents = function(){
     $('.view-button').click(function(evt) {
-        window.location.href = '/question?id=' + this.id.substring(5);
+        window.location.href = '/question?_id=' + this.id.substring(5);
     });
     $('.delete-button').click(function(evt) {
         deleteQuestion(this.id.substring(7));
@@ -581,7 +581,7 @@ var deleteQuestion = function(qid) {
 
 var editQuestion = function(qid) {
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: '/questionedit',
         data: { questionid: qid },
         success: function(data) {
