@@ -7,6 +7,7 @@ block styles
   link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
   link(rel='stylesheet' href='/css/navbar.css')
   link(rel='stylesheet' href='/lib/sweetalert/sweetalert.css')
+  link(rel='stylesheet' href='/css/rating.css')
 
 block title
   title Quizzard - Question
@@ -30,6 +31,7 @@ block content
           .success
             h4.text-center#success-header Learn more
             p#success-message #{question.successMessage}
+            include rating
       .col.s12.m4
         .card
           .card-content
@@ -56,3 +58,5 @@ block scripts
   script(src='/js/common.js')
   script(src='/js/question.js')
   script(src='/js/navbar.js')
+  script(src='/js/admin.js')
+  script(src='/js/rating.js')
