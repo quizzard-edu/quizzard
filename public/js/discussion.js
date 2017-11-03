@@ -32,11 +32,32 @@ var repliesSection = function(action) {
 }
 
 var comment = function() {
-   alert('comment');
+    const comment = $('#commentBox').val();
+
+    if (!comment) {
+        warningSnackbar('You can\'t have an empty comment');
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/addCommentToQuestion',
+        data: { questionId: questionId,
+                comment: comment},
+        success: function(data) {
+            alert('good');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('something went wrong');
+            }
+        }
+    });
 }
 
 var reply = function() {
-   alert('reply');
+     alert('reply');
 }
 
 $('#commentBox').atwho({
