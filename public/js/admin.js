@@ -147,6 +147,11 @@ var submitImportForm = function() {
         data: formData,
         success: function(data) {
             successSnackbar('File uploaded successfully');
+            $('#admin-content').html(data);
+            
+            $('#account-import-list-back-button').click(function(){
+                displayAccountsTable();
+            });
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -156,6 +161,17 @@ var submitImportForm = function() {
             }
         }
     });
+}
+
+/* submit export form */
+var submitImportList = function() {
+    var selected = [];
+    $('div#importList input[type=checkbox]').each(function() {
+        if ($(this).is(":checked")) {
+            selected.push($(this).attr('id').substring(3));
+        }
+    });
+
 }
 
 

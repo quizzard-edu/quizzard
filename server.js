@@ -961,15 +961,21 @@ app.post('/accountsImportFile', function (req, res) {
         logger.info('Uploaded: ', newFile);
         
         var importedList = [];
-        csv2json().fromFile(newFile).on('json',(jsonObj)=>{
+        csv2json().fromFile(newFile).on('json', function(jsonObj) {
             var userObj = {};
             userObj['id'] = jsonObj['Username'];
             userObj['fname'] = jsonObj['First Name'];
             userObj['lname'] = jsonObj['Last Name'];
             userObj['email'] = jsonObj['Email'];
             importedList.push(userObj);
-        }).on('done',(error)=>{
-            return res.status(200).send('ok');
+        }).on('done', function(err) {
+            if (err) {
+                return res.status(500).send('Failed to parse the csv file');
+            }
+
+            return res.status(200).render('users/accounts-import-list', {
+                students: importedList
+            });
         });
     });
 });
