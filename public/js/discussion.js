@@ -77,11 +77,14 @@ var voteLeave = function(icon, type) {
     }
 }
 
-var repliesSection = function(action) {
-    if (action === 1) {
-        alert('view');
+var repliesSection = function(replyObject) {
+    const visibilityChange = $('#replies_' + replyObject.attr('id').split('_')[1]);
+    if (visibilityChange.hasClass('hidden')) {
+        visibilityChange.removeClass('hidden');
+        replyObject.html('Collapse replies');
     } else {
-        alert('hide');
+        visibilityChange.addClass('hidden');
+        replyObject.html('View replies');
     }
 }
 
@@ -110,8 +113,8 @@ var comment = function() {
     });
 }
 
-var reply = function() {
-     alert('reply');
+var reply = function(replyObject) {
+    alert('reply');
 }
 
 var getDiscussionBoard = function () {

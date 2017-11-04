@@ -43,7 +43,15 @@
   padding-right: 25px;
 }
 
-.thumb-picture {
+.thumb-up-picture {
+  padding: 10px 5px;
+}
+
+.thumb-down-picture {
+  padding: 10px 5px;
+}
+
+.reply-picture {
   padding: 10px 5px;
 }
 
@@ -61,11 +69,20 @@
   border-color: lightgray;
 }
 
-.comment-button {
+.comment-reply-button {
+  float: right;
+  margin-right: 10px;
+}
+
+.view-replies-button {
   float: right;
   margin-right: 10px;
 }
 
 .date {
   padding-left: 20px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
