@@ -282,6 +282,29 @@ exports.addComment = function (questionId, userId, comment, callback) {
     });
 }
 
+// add reply to comment by id with user and reply
+exports.addReply = function (commentId, userId, reply, callback) {
+    var currentDate = new Date().toString();
+    var query = {'comments._id': commentId};
+    var update = {};
+
+    update.$push = {};
+    update.$push['comments.$.replies'] = {
+        _id: uuidv1(),
+        date: currentDate,
+        userId: userId,
+        likes: [],
+        dislikes: [],
+        likesCount: 0,
+        dislikesCount: 0,
+        reply: reply
+    };
+
+    db.updateQuestionByQuery(query, update, function (err, result) {
+        return callback(err, result);
+    });
+}
+
 // vote on a comment
 exports.voteComment = function (commentId, vote, userId, callback) {
     var query = {'comments._id': commentId};
@@ -299,7 +322,7 @@ exports.voteComment = function (commentId, vote, userId, callback) {
 
         var comments = question.comments;
         for (var i in comments) {
-            if (comments[i]._id) {
+            if (comments[i]._id === commentId) {
                 var userUpVoted = comments[i].likes.indexOf(userId) !== -1;
                 var userDownVoted = comments[i].dislikes.indexOf(userId) !== -1;
 

@@ -851,10 +851,30 @@ app.post('/addCommentToQuestion', function (req, res) {
     }
 
     var questionId = req.body.questionId;
-    var comment = req.body.comment;
+    var comment = req.body.commentText;
     var userId = req.session.user.id;
 
     questions.addComment(questionId, userId, comment, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send('Ok');
+    });
+});
+
+// add reply to a comment
+app.post('/addReplyToComment', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var commentId = req.body.commentId;
+    var reply = req.body.replyText;
+    var userId = req.session.user.id;
+
+    questions.addReply(commentId, userId, reply, function (err, question) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);

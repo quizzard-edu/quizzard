@@ -89,17 +89,20 @@ var repliesSection = function(replyObject) {
 }
 
 var comment = function() {
-    const comment = $('#commentBox').val();
+    const commentText = $('#commentBox').val();
 
-    if (!comment) {
+    if (!commentText) {
         warningSnackbar('You can\'t have an empty comment');
+        return;
     }
 
     $.ajax({
         type: 'POST',
         url: '/addCommentToQuestion',
-        data: { questionId: questionId,
-                comment: comment},
+        data: {
+            questionId: questionId,
+            commentText: commentText
+        },
         success: function(data) {
             getDiscussionBoard();
         },
@@ -113,8 +116,32 @@ var comment = function() {
     });
 }
 
-var reply = function(replyObject) {
-    alert('reply');
+var reply = function(commentId) {
+    const replyText = $('#replyTo_'+commentId).val();
+
+    if (!replyText) {
+        warningSnackbar('You can\'t have an empty reply');
+        return;
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/addReplyToComment',
+        data: {
+            commentId: commentId,
+            replyText: replyText
+        },
+        success: function(data) {
+            getDiscussionBoard();
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong');
+            }
+        }
+    });
 }
 
 var getDiscussionBoard = function () {
