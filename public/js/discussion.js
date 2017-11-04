@@ -19,6 +19,8 @@ var voteClickComment = function(icon, vote) {
                 $('#like_' + commentId)[0].style.color = '';
                 $('#dislike_' + commentId)[0].style.color = '';
             }
+            $('#numLikes_' + commentId).html(data.likesCount);
+            $('#numDislikes_' + commentId).html(data.dislikesCount);
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -52,6 +54,8 @@ var voteClickReply = function(icon, vote) {
                 $('#like_' + commentId + '_' + replyId)[0].style.color = '';
                 $('#dislike_' + commentId + '_' + replyId)[0].style.color = '';
             }
+            $('#numLikes_' + commentId + '_' + replyId).html(data.likesCount);
+            $('#numDislikes_' + commentId + '_' + replyId).html(data.dislikesCount);
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -79,18 +83,22 @@ var voteLeave = function(icon, type) {
 }
 
 var repliesSection = function(replyObject) {
-    const visibilityChange = $('#replies_' + replyObject.attr('id').split('_')[1]);
+    const visibilityChangeId = '#replies_' + replyObject.attr('id').split('_')[1];
+    const visibilityChange = $(visibilityChangeId);
     if (visibilityChange.hasClass('hidden')) {
         visibilityChange.removeClass('hidden');
         replyObject.html('Collapse replies');
+        notHidden.push(visibilityChangeId);
     } else {
         visibilityChange.addClass('hidden');
         replyObject.html('View replies');
+        notHidden.splice(notHidden.indexOf(visibilityChangeId), 1);
     }
 }
 
-var comment = function() {
+var comment = function(buttonObject) {
     const commentText = $('#commentBox').val();
+    buttonObject.attr('disabled','disabled');
 
     if (!commentText) {
         warningSnackbar('You can\'t have an empty comment');
@@ -117,7 +125,7 @@ var comment = function() {
     });
 }
 
-var reply = function(commentId) {
+var reply = function(buttonObject, commentId) {
     const replyText = $('#replyTo_'+commentId).val();
 
     if (!replyText) {
@@ -152,6 +160,7 @@ var getDiscussionBoard = function () {
         data: { questionId: questionId },
         success: function(data) {
             $('#discussion').html(data);
+            unCollapseReplies();
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -160,6 +169,12 @@ var getDiscussionBoard = function () {
                 failSnackbar('Something went wrong');
             }
         }
+    });
+}
+
+var unCollapseReplies = function () {
+    notHidden.forEach(id => {
+        $(id).removeClass('hidden');
     });
 }
 

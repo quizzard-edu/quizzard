@@ -1,4 +1,5 @@
 var questionId = window.location.href.split('?_id=')[1];
+var notHidden = [];
 
 $(function () {
     $.ajax({
