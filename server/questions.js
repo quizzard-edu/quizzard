@@ -262,9 +262,10 @@ exports.addComment = function (questionId, userId, comment, callback) {
     var currentDate = new Date().toString();
     var query = {_id: questionId};
     var update = {};
+
     update.$push = {};
     update.$push.comments = {
-        id: uuidv1(),
+        _id: uuidv1(),
         date: currentDate,
         userId: userId,
         likes: [],
@@ -276,11 +277,80 @@ exports.addComment = function (questionId, userId, comment, callback) {
         comment: comment
     };
 
-    db.updateQuestionByQuery(query, update, function (err,result) {
+    db.updateQuestionByQuery(query, update, function (err, result) {
         return callback(err, result);
     });
 }
 
-exports.voteComment = function (questionId, comment, vote, userId, callback) {
+// vote on a comment
+exports.voteComment = function (commentId, vote, userId, callback) {
+    var query = {'comments._id': commentId};
+    var update = {};
+    var voteValue = -2;
 
+    db.lookupQuestion(query, function(err, question){
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!question) {
+            return callback('Question not found based on commentId', null);
+        }
+
+        var comments = question.comments;
+        for (var i in comments) {
+            if (comments[i]._id) {
+                var userUpVoted = comments[i].likes.indexOf(userId) !== -1;
+                var userDownVoted = comments[i].dislikes.indexOf(userId) !== -1;
+
+                if (userUpVoted && userUpVoted) {
+                    return callback('User liked and disliked a comment at the sametime', null);
+                }
+
+                if (userUpVoted) {
+                    voteValue = 0;
+                    update.$pull = { 'comments.$.likes': userId };
+                    update.$inc = { 'comments.$.likesCount': -1 };
+                    
+                    if (vote === -1) {
+                        voteValue = -1;
+                        update.$push = { 'comments.$.dislikes': userId };
+                        update.$inc = { 'comments.$.dislikesCount': 1 };
+                    }
+                }
+
+                if (userDownVoted) {
+                    voteValue = 0;
+                    update.$pull = { 'comments.$.dislikes': userId };
+                    update.$inc = { 'comments.$.dislikesCount': -1 };
+
+                    if (vote === 1) {
+                        voteValue = 1;
+                        update.$push = { 'comments.$.likes': userId };
+                        update.$inc = { 'comments.$.likesCount': 1 };
+                    }
+                }
+
+                if (!userUpVoted && !userUpVoted) {
+                    if (vote === 1) {
+                        update.$push = { 'comments.$.likes': userId };
+                        update.$inc = { 'comments.$.likesCount': 1 };
+                    }
+
+                    if (vote === -1) {
+                        update.$push = { 'comments.$.dislikes': userId };
+                        update.$inc = { 'comments.$.dislikesCount': 1 };
+                    }
+
+                    voteValue = vote;
+                }
+
+                return db.updateQuestionByQuery(query, update, function (err, result) {
+                    return callback(err, {result: result, voteValue: voteValue});
+                });
+            }
+        }
+
+        return callback('Could not submit the vote on the comment', null);
+    });
 }

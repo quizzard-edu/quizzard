@@ -876,20 +876,19 @@ app.post('/voteOnComment', function (req, res) {
     var vote = parseInt(req.body.vote);
     var userId = req.session.user.id;
 
-    if (!vote || vote > 1 || vote < -1) {
+    if (!vote || (vote !== 1 && vote !== -1)) {
         return res.status(400).send('Vote is invalid');
     }
 
-    logger.info(questionId, commentId);
-    return res.status(200).send('ok');
+    logger.info(questionId, commentId, vote, userId);
 
-    questions.voteComment(questionId, comment, vote, userId, function (err, question) {
+    questions.voteComment(commentId, vote, userId, function (err, value) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
         }
 
-        return res.status(200).send('Ok');
+        return res.status(200).send(value);
     });
 });
 
@@ -905,7 +904,7 @@ app.post('/voteOnReply', function (req, res) {
     var vote = parseInt(req.body.vote);
     var userId = req.session.user.id;
 
-    if (!vote || vote > 1 || vote < -1) {
+    if (!vote || (vote !== 1 && vote !== -1)) {
         return res.status(400).send('Vote is invalid');
     }
 
