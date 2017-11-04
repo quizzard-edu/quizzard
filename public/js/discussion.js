@@ -8,10 +8,10 @@ var voteClickComment = function(icon, vote) {
                 commentId: commentId,
                 vote: vote},
         success: function(data) {
-            if (data === 1) {
+            if (data.voteValue === 1) {
                 $('#like_' + commentId)[0].style.color = colours.blueLight;
                 $('#dislike_' + commentId)[0].style.color = '';
-            } else if (data === -1) {
+            } else if (data.voteValue === -1) {
                 $('#like_' + commentId)[0].style.color = '';
                 $('#dislike_' + commentId)[0].style.color = colours.redBorder;
             } else {
@@ -41,10 +41,10 @@ var voteClickReply = function(icon, vote) {
                 vote: vote,
                 replyId: replyId},
         success: function(data) {
-            if (data === 1) {
+            if (data.voteValue === 1) {
                 $('#like_' + commentId + '_' + replyId)[0].style.color = colours.blueLight;
                 $('#dislike_' + commentId + '_' + replyId)[0].style.color = '';
-            } else if (data === -1) {
+            } else if (data.voteValue === -1) {
                 $('#like_' + commentId + '_' + replyId)[0].style.color = '';
                 $('#dislike_' + commentId + '_' + replyId)[0].style.color = colours.redBorder;
             } else {
