@@ -1,6 +1,13 @@
-div.modal#modalAlert(style="max-height: 36%; max-width: 42%")
-  div.modal-content(style="height: 78%;")
-    p.center#modalAlertMsg
-    include rating
-  div.modal-footer
-    a.modal-action.modal-close.waves-effect.waves-green.btn-flat Ok
+block style
+  link(rel='stylesheet' href='/css/modal-alert.css')
+
+block content
+  #modalAlert.modal
+    .modal-content
+      h2 Correct
+      if !answered
+        p.center#modalAlertMsg
+        include rating
+      else
+        p Congratulations, you got the question right!    
+      button.modal-action.modal-close.btn.btn-info Ok

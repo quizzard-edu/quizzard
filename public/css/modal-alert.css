@@ -1,0 +1,32 @@
+#modalAlert {
+	background-color: white;
+	max-width: 400px !important;
+	max-height: 300px;
+	text-align: center;
+	width: auto !important;
+	right: auto !important;
+	left: 50% !important;
+	transform: translateX(-50%) !important;
+}
+
+.modal-content{
+	background-color: #fff;
+	border: 0px;
+	border-radius: 0px;
+	outline: 0;
+	box-shadow: 0 0px 0px;
+}
+
+.modal-content h2 {
+	font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	color: #575757;
+}
+
+.modal-content p {
+	font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	color: #797979;
+}
+
+.modal-content button {
+	vertical-align: bottom;
+}

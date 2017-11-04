@@ -68,4 +68,5 @@ $(document).on('click', '#rateQuestion', function() {
     if(getRating() > 0) {
         submitQuestionRating(getRating(), questionId);
     }
+    location.reload();
 });

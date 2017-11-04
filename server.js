@@ -595,7 +595,7 @@ app.post('/submitanswer', function(req, res) {
             return res.status(400).send('Could not find the question');
         }
 
-        logger.info('User %s attempted to answer question %d with "%s"', userId, question.Id, answer);
+        logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
 
         var value = questions.verifyAnswer(question, answer);
         var points = question.points;
