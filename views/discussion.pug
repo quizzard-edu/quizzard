@@ -17,10 +17,9 @@ each itemComment, indexReply in comments
       hr.divider
       .row
         p.comment-text=itemComment['comment']
-    if itemComment['replies'].length !== 0
-      .col.s12
-        .row
-          .button.view-replies-button(id='viewReplies_' + itemComment['_id'], class='btn btn-lg btn-primary', onclick='repliesSection($(this))') View replies
+    .col.s12
+      .row
+        .button.view-replies-button(id='viewReplies_' + itemComment['_id'], class='btn btn-lg btn-primary', onclick='repliesSection($(this))') View replies
 
     .hidden(id='replies_' + itemComment['_id'])
       each itemReply, indexReply in itemComment['replies']

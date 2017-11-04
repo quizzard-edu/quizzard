@@ -4,9 +4,10 @@ var voteClickComment = function(icon, vote) {
     $.ajax({
         type: 'POST',
         url: '/voteOnComment',
-        data: { questionId: questionId,
-                commentId: commentId,
-                vote: vote},
+        data: {
+            commentId: commentId,
+            vote: vote
+        },
         success: function(data) {
             if (data.voteValue === 1) {
                 $('#like_' + commentId)[0].style.color = colours.blueLight;
@@ -30,16 +31,16 @@ var voteClickComment = function(icon, vote) {
 }
 
 var voteClickReply = function(icon, vote) {
-    const commentId = icon.attr('id').split('_')[1];
+    const commentId = icon.attr('id').split('_')[1]; // I made it so we only need replyId
     const replyId = icon.attr('id').split('_')[2];
 
     $.ajax({
         type: 'POST',
         url: '/voteOnReply',
-        data: { questionId: questionId,
-                commentId: commentId,
-                vote: vote,
-                replyId: replyId},
+        data: {
+            replyId: replyId,
+            vote: vote
+        },
         success: function(data) {
             if (data.voteValue === 1) {
                 $('#like_' + commentId + '_' + replyId)[0].style.color = colours.blueLight;
