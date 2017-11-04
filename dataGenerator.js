@@ -143,13 +143,13 @@ var answerQuestion = function(questionId) {
 
 var createAdmins = function() {
     for (var id = 0; id < adminsCount; id++) {
-        addAdmin('Admin'+id, 'KonniChiwa');
+        addAdmin('Admin'+id, 'asd');
     }
 }
 
 var createStudents = function() {
   	for (var id = 0; id < studentsCount; id++) {
-      	addStudent('Student'+id, 'KonniChiwa');
+      	addStudent('Student'+id, 'asd');
   	}
 }
 

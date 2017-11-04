@@ -465,22 +465,24 @@ var submitUserForm = function() {
 
 /* Upload a file of users to the server. */
 var submitImportForm = function() {
-    var files = $('#account-import-form').get(0).files;
+    var files = $('#import-form-input').get(0).files;
     var formData = new FormData();
 
-    if (files.length === 1) {
+    if (files.length !== 1) {
         warningSnackbar('You can only import one file!');
         return;
     }
 
     formData.append('usercsv', files[0]);
 
+    alert(JSON.stringify($('#import-form-input').val()));
+
     $.ajax({
         type: 'PUT',
         url: '/accountsImportFile',
-        data: formData,
         processData: false,
         contentType: false,
+        data: formData,
         success: function(data) {
             successSnackbar('File successfully uploaded');
         },

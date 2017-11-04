@@ -8,14 +8,14 @@
         h5.card-title Accounts Import Form
         h6 Import the list of students' accounts from a csv file
       .card-action
-        form#account-import-form
+        form(encType='multipart/form-data')#account-import-form
           .file-field.input-field
             .btn
               span File
-              input(type='file')
+              input(type='file', name='userscsv')#import-form-input
             .file-path-wrapper
               input.file-path.validate(type='text')
-        br
-        a.waves-effect.waves-light.btn(onClick='submitImportForm()')
-          i.material-icons.left cloud_upload
-          | Import
+          br
+          a.waves-effect.waves-light.btn(onClick='submitImportForm()')
+            i.material-icons.left cloud_upload
+            | Import

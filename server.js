@@ -902,9 +902,9 @@ app.put('/accountsImportFile', function (req, res) {
     if (req.session.user.type !== common.userTypes.ADMIN) {
         return res.status(403).send('Permission Denied');
     }
-
+    logger.info(req.files.usercsv);
     var usercsv = req.files.usercsv;
-    var newFile = 'uploads/importJob-students-' + randomName;
+    var newFile = 'uploads/importJob-students-' + usercsv.name;
     if (!usercsv || usercsv.mimetype !== 'text/csv') {
         return res.status(400).send('Invalid file format');
     }
