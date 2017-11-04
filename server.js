@@ -658,20 +658,6 @@ app.post('/usermod', function(req, res) {
 });
 
 /*
- * Upload a csv file containing account information.
- * Users are stored in the database.
- */
-app.post('/userupload', upload.single('usercsv'), function(req, res) {
-    if (!req.file || req.file.mimetype != 'text/csv')
-        res.status(200).send('invalid');
-
-    students.parseFile(req.file.path, function(account) {
-    }, function() {
-        res.status(200).send('uploaded');
-    });
-});
-
-/*
  * Add a question to the database.
  * The request body contains the question to be added.
  */
@@ -842,7 +828,7 @@ app.get('/accountsExportForm', function(req, res){
             return res.status(500).send('Failed to get students list');
         }
 
-        return res.status(200).render('users/accounts-export', {
+        return res.status(200).render('users/accounts-export-form', {
             user: req.session.user,
             students: studentsList
         });
@@ -859,7 +845,7 @@ app.get('/accountsImportForm', function(req, res){
         return res.status(403).send('Permission Denied');
     }
 
-    return res.status(200).render('users/accounts-import', {
+    return res.status(200).render('users/accounts-import-form', {
         user: req.session.user
     });
 });
@@ -891,7 +877,7 @@ app.post('/accountsExportFile', function(req, res){
                 var fields = ['id', 'fname', 'lname', 'email'];
                 var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
                 var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
-                var file = 'exportJob-'+new Date().toString()+'.csv';
+                var file = 'exportJob-students-'+new Date().toString()+'.csv';
                 
                 fs.writeFile('uploads/'+file, csvData, function(err) {
                     if (err) {
@@ -905,6 +891,39 @@ app.post('/accountsExportFile', function(req, res){
             }
         });
     }    
+});
+
+// import the students' list file
+app.put('/accountsImportFile', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    var usercsv = req.files.usercsv;
+    var newFile = 'uploads/importJob-students-' + randomName;
+    if (!usercsv || usercsv.mimetype !== 'text/csv') {
+        return res.status(400).send('Invalid file format');
+    }
+    
+    usercsv.mv( newFile, function(err) {
+          if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+          }
+
+          console.log('Uploaded: '+newFile);
+          return res.status(200).json(
+            {
+              'path':'Uploads/tmp/'+randomName,
+              'name':sampleFile.name
+            }
+          );
+        }
+      );
 });
 
 /* download */

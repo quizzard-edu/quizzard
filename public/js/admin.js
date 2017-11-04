@@ -464,26 +464,25 @@ var submitUserForm = function() {
 }
 
 /* Upload a file of users to the server. */
-var submitUploadForm = function() {
-    var files = $('#upload-file').get(0).files;
+var submitImportForm = function() {
+    var files = $('#account-import-form').get(0).files;
     var formData = new FormData();
 
-    if (files.length > 1) {
-        $('#upload-result').html('Select a single file');
+    if (files.length === 1) {
+        warningSnackbar('You can only import one file!');
         return;
     }
 
     formData.append('usercsv', files[0]);
 
     $.ajax({
-        type: 'POST',
-        url: '/userupload',
+        type: 'PUT',
+        url: '/accountsImportFile',
         data: formData,
         processData: false,
         contentType: false,
         success: function(data) {
             successSnackbar('File successfully uploaded');
-            setTimeout(displayAccountsTable, 3000);
         },
         error: function(data){
             if (data['status'] === 401) {
