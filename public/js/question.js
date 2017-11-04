@@ -1,4 +1,4 @@
-var questionId = window.location.href.split('?id=')[1];
+var questionId = window.location.href.split('?_id=')[1];
 
 $('#re_answerform').submit(function(evt) {
     evt.preventDefault();

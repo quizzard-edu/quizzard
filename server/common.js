@@ -55,6 +55,7 @@ const questionAttributes = Object.freeze({
         type                    : {type:'[object String]'}
     },
     SERVER: {
+        _id                     : {type:'[object String]'},
         correctAttempts         : {type:'[object Array]'},
         wrongAttempts           : {type:'[object Array]'},
         totalAttempts           : {type:'[object Array]'},
@@ -69,11 +70,11 @@ const questionAttributes = Object.freeze({
         answer                  : {type:'[object String]'}
     },
     MULTIPLECHOICE: {
-        choices     : {type:'[object Array]'},
-        answer      : {type:'[object String]'}
+        choices                 : {type:'[object Array]'},
+        answer                  : {type:'[object String]'}
     },
     TRUEFALSE: {
-        answer      : {type:'[object String]'}
+        answer                  : {type:'[object String]'}
     },
     MATCHING: {
         leftSide                : {type:'[object Array]'},
@@ -107,7 +108,19 @@ exports.randomizeList = randomizeList;
 exports.getIdsListFromJSONList = function (JSONList) {
     var list = [];
     for (i in JSONList){
-        list.push(JSONList[i].id);
+        list.push(JSONList[i]._id);
     }
     return list;
 }
+
+// check if json obejct is empty
+var isEmptyObject = function(obj) {
+    for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+exports.isEmptyObject = isEmptyObject;
