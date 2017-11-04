@@ -33,6 +33,7 @@ var common = require('./server/common.js');
 var analytics = require('./server/analytics.js');
 var json2csv = require('json2csv');
 var fs = require('fs');
+var csv2json = require('csvtojson');
 
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
@@ -915,7 +916,12 @@ app.post('/accountsImportFile', function (req, res) {
         }
 
         logger.info('Uploaded: ', newFile);
-        return res.status(200).send('ok');
+        
+        csv2json().fromFile(newFile).on('json',(jsonObj)=>{
+            logger.info(jsonObj);
+        }).on('done',(error)=>{
+            return res.status(200).send('ok');
+        });
     });
 });
 

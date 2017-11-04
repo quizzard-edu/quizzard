@@ -12,9 +12,9 @@
           .file-field.input-field
             .btn
               span File
-              input(type='file')#import-form-input
+              input(type='file', accept='.csv')#import-form-input
             .file-path-wrapper
-              input.file-path.validate(type='text')
+              input.file-path.validate(type='text', placeholder='Select your csv file')
           br
           a.waves-effect.waves-light.btn(onClick='submitImportForm()')
             i.material-icons.left cloud_upload

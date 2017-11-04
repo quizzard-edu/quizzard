@@ -146,7 +146,7 @@ var submitImportForm = function() {
         contentType: false,
         data: formData,
         success: function(data) {
-            successSnackbar('File successfully uploaded');
+            successSnackbar('File uploaded successfully');
         },
         error: function(data){
             if (data['status'] === 401) {
