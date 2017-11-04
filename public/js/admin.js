@@ -127,6 +127,38 @@ var submitExportForm = function() {
     });
 }
 
+/* Upload a file of users to the server. */
+var submitImportForm = function() {
+    var files = $('#import-form-input').get(0).files;
+    var formData = new FormData();
+
+    if (files.length !== 1) {
+        warningSnackbar('You can only import one file!');
+        return;
+    }
+
+    formData.append('usercsv', files[0]);
+
+    $.ajax({
+        type: 'POST',
+        url: '/accountsImportFile',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(data) {
+            successSnackbar('File successfully uploaded');
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Upload failed');
+            }
+        }
+    });
+}
+
+
 /* Add click events to the buttons in the account table. */
 var addAccountsTableEvents = function() {
     $('.deactivate-button').click(function(evt) {
@@ -458,39 +490,6 @@ var submitUserForm = function() {
                 failSnackbar('User ' + user.id + ' already exists');
             } else {
                 failSnackbar('Something went wrong, please try again later!');
-            }
-        }
-    });
-}
-
-/* Upload a file of users to the server. */
-var submitImportForm = function() {
-    var files = $('#import-form-input').get(0).files;
-    var formData = new FormData();
-
-    if (files.length !== 1) {
-        warningSnackbar('You can only import one file!');
-        return;
-    }
-
-    formData.append('usercsv', files[0]);
-
-    alert(JSON.stringify($('#import-form-input').val()));
-
-    $.ajax({
-        type: 'PUT',
-        url: '/accountsImportFile',
-        processData: false,
-        contentType: false,
-        data: formData,
-        success: function(data) {
-            successSnackbar('File successfully uploaded');
-        },
-        error: function(data){
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else {
-                failSnackbar('Upload failed');
             }
         }
     });

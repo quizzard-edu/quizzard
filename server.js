@@ -894,7 +894,7 @@ app.post('/accountsExportFile', function(req, res){
 });
 
 // import the students' list file
-app.put('/accountsImportFile', function (req, res) {
+app.post('/accountsImportFile', upload.single('usercsv'), function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -902,14 +902,14 @@ app.put('/accountsImportFile', function (req, res) {
     if (req.session.user.type !== common.userTypes.ADMIN) {
         return res.status(403).send('Permission Denied');
     }
-    logger.info(req.files.usercsv);
-    var usercsv = req.files.usercsv;
-    var newFile = 'uploads/importJob-students-' + usercsv.name;
-    if (!usercsv || usercsv.mimetype !== 'text/csv') {
+
+    var uploadedFile = req.file;
+    var newFile = 'uploads/importJob-students-' + uploadedFile.name;
+    if (!uploadedFile || uploadedFile.mimetype !== 'text/csv') {
         return res.status(400).send('Invalid file format');
     }
     
-    usercsv.mv( newFile, function(err) {
+    uploadedFile.mv(newFile, function(err) {
           if (err) {
             console.log(err);
             return res.status(500).send(err);
