@@ -311,7 +311,7 @@ exports.addReply = function (commentId, userId, reply, callback) {
 exports.voteComment = function (commentId, vote, userId, callback) {
     var query = {'comments._id': commentId};
     var update = {};
-    var voteValue = -2;
+	var voteValue = -2;
 
     db.lookupQuestion(query, function(err, question){
         if (err) {
@@ -326,18 +326,22 @@ exports.voteComment = function (commentId, vote, userId, callback) {
         for (var i in comments) {
             if (comments[i]._id === commentId) {
                 var userUpVoted = comments[i].likes.indexOf(userId) !== -1;
-                var userDownVoted = comments[i].dislikes.indexOf(userId) !== -1;
+				var userDownVoted = comments[i].dislikes.indexOf(userId) !== -1;
+				var updatedLikesCount = comments[i].likesCount;
+				var updatedDisLikesCount = comments[i].dislikesCount;
 
                 if (userUpVoted && userDownVoted) {
                     return callback('User liked and disliked a comment at the sametime', null);
                 }
 
                 if (userUpVoted) {
+					updatedLikesCount--;
                     voteValue = 0;
                     update.$pull = { 'comments.$.likes': userId };
                     update.$inc = { 'comments.$.likesCount': -1 };
 
                     if (vote === -1) {
+						updatedDisLikesCount++;
                         voteValue = -1;
                         update.$push = { 'comments.$.dislikes': userId };
                         update.$inc['comments.$.dislikesCount'] = 1;
@@ -345,11 +349,13 @@ exports.voteComment = function (commentId, vote, userId, callback) {
                 }
 
                 if (userDownVoted) {
+					updatedDisLikesCount--;
                     voteValue = 0;
                     update.$pull = { 'comments.$.dislikes': userId };
                     update.$inc = { 'comments.$.dislikesCount': -1 };
 
                     if (vote === 1) {
+						updatedLikesCount++;
                         voteValue = 1;
                         update.$push = { 'comments.$.likes': userId };
                         update.$inc['comments.$.likesCount'] = 1;
@@ -358,11 +364,13 @@ exports.voteComment = function (commentId, vote, userId, callback) {
 
                 if (!userUpVoted && !userDownVoted) {
                     if (vote === 1) {
+						updatedLikesCount++;
                         update.$push = { 'comments.$.likes': userId };
                         update.$inc = { 'comments.$.likesCount': 1 };
                     }
 
                     if (vote === -1) {
+						updatedDisLikesCount++;
                         update.$push = { 'comments.$.dislikes': userId };
                         update.$inc = { 'comments.$.dislikesCount': 1 };
                     }
@@ -371,7 +379,12 @@ exports.voteComment = function (commentId, vote, userId, callback) {
                 }
 
                 return db.updateQuestionByQuery(query, update, function (err, result) {
-                    return callback(err, {result: result, voteValue: voteValue});
+                    return callback(err, {
+						result: result,
+						voteValue: voteValue,
+						likesCount: updatedLikesCount,
+						dislikesCount: updatedDisLikesCount
+					});
                 });
             }
         }
@@ -400,18 +413,22 @@ exports.voteReply = function (replyId, vote, userId, callback) {
         for (var i in replies) {
             if (replies[i]._id === replyId) {
                 var userUpVoted = replies[i].likes.indexOf(userId) !== -1;
-                var userDownVoted = replies[i].dislikes.indexOf(userId) !== -1;
+				var userDownVoted = replies[i].dislikes.indexOf(userId) !== -1;
+				var updatedLikesCount = comments[i].likesCount;
+				var updatedDisLikesCount = comments[i].dislikesCount;
 
                 if (userUpVoted && userDownVoted) {
                     return callback('User liked and disliked a comment at the sametime', null);
                 }
 
                 if (userUpVoted) {
+					updatedLikesCount--;
                     voteValue = 0;
                     update.$pull = { 'comments.replies.$.likes': userId };
                     update.$inc = { 'comments.replies.$.likesCount': -1 };
 
                     if (vote === -1) {
+						updatedDisLikesCount++;
                         voteValue = -1;
                         update.$push = { 'comments.replies.$.dislikes': userId };
                         update.$inc['comments.replies.$.dislikesCount'] = 1;
@@ -419,11 +436,13 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                 }
 
                 if (userDownVoted) {
+					updatedDisLikesCount--;
                     voteValue = 0;
                     update.$pull = { 'comments.replies.$.dislikes': userId };
                     update.$inc = { 'comments.replies.$.dislikesCount': -1 };
 
                     if (vote === 1) {
+						updatedLikesCount++;
                         voteValue = 1;
                         update.$push = { 'comments.replies.$.likes': userId };
                         update.$inc['comments.replies.$.likesCount'] = 1;
@@ -432,11 +451,13 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 
                 if (!userUpVoted && !userDownVoted) {
                     if (vote === 1) {
+						updatedLikesCount++;
                         update.$push = { 'comments.replies.$.likes': userId };
                         update.$inc = { 'comments.replies.$.likesCount': 1 };
                     }
 
                     if (vote === -1) {
+						updatedDisLikesCount++;
                         update.$push = { 'comments.replies.$.dislikes': userId };
                         update.$inc = { 'comments.replies.$.dislikesCount': 1 };
                     }
@@ -445,7 +466,12 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                 }
 
                 return db.updateQuestionByQuery(query, update, function (err, result) {
-                    return callback(err, {result: result, voteValue: voteValue});
+                    return callback(err, {
+						result: result,
+						voteValue: voteValue,
+						likesCount: updatedLikesCount,
+						dislikesCount: updatedDisLikesCount
+					});
                 });
             }
         }
