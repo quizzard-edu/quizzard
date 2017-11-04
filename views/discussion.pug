@@ -17,7 +17,7 @@ each itemComment, indexReply in comments
       hr.divider
       .row
         p.comment-text=itemComment['comment']
-    if itemComment['replies'].length === 0
+    if itemComment['replies'].length !== 0
       .col.s12
         .row
           .button.view-replies-button(id='viewReplies_' + itemComment['_id'], class='btn btn-lg btn-primary', onclick='repliesSection($(this))') View replies
@@ -27,11 +27,11 @@ each itemComment, indexReply in comments
         .col.s11.reply
           .row.identification-section
             i.small.material-icons.profile-picture account_circle
-            span.name Firstname Lastname
+            span.name #{itemReply['userId']}
             span.likes-section
-              i.small.material-icons.thumb-up-picture.cursor-pointer(id='like_' + itemComment['_id'] + '_' + itemReply['_id'], onclick='voteClick($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)') thumb_up
+              i.small.material-icons.thumb-up-picture.cursor-pointer(id='like_' + itemComment['_id'] + '_' + itemReply['_id'], onclick='voteClickReply($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)') thumb_up
               span.likes-number=itemReply['likesCount']  &nbsp
-              i.small.material-icons.thumb-down-picture.cursor-pointer(id='dislike_' + itemComment['_id'] + '_' + itemReply['_id'], onclick='voteClick($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)') thumb_down
+              i.small.material-icons.thumb-down-picture.cursor-pointer(id='dislike_' + itemComment['_id'] + '_' + itemReply['_id'], onclick='voteClickReply($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)') thumb_down
               span.likes-number=itemReply['dislikesCount']
             br
             span.date=itemReply['date']

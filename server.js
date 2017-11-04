@@ -927,7 +927,7 @@ app.post('/voteOnReply', function (req, res) {
         return res.status(400).send('Vote is invalid');
     }
 
-    logger.info(questionId, commentId, replyId);
+    logger.info(questionId, commentId, replyId, vote, userId);
     return res.status(200).send('ok');
 
     questions.voteComment(questionId, userId, comment, function (err, question) {
