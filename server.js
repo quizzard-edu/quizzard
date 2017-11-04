@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
-var multer = require('multer');
+var fileUpload = require('express-fileupload');
 var db = require('./server/db.js');
 var users = require('./server/users.js');
 var questions = require('./server/questions.js');
@@ -37,8 +37,6 @@ var fs = require('fs');
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
 
-var upload = multer({ dest: 'uploads/' });
-
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
     logger.info("Request path: %s",req.url);
@@ -46,6 +44,7 @@ app.use(function(req, res, next) {
 });
 
 app.set('view engine', 'pug');
+app.use(fileUpload());
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
@@ -878,7 +877,7 @@ app.post('/accountsExportFile', function(req, res){
                 var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
                 var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
                 var file = 'exportJob-students-'+new Date().toString()+'.csv';
-                
+
                 fs.writeFile('uploads/'+file, csvData, function(err) {
                     if (err) {
                         logger.error(err);
@@ -890,11 +889,11 @@ app.post('/accountsExportFile', function(req, res){
                 });
             }
         });
-    }    
+    }
 });
 
 // import the students' list file
-app.post('/accountsImportFile', upload.single('usercsv'), function (req, res) {
+app.post('/accountsImportFile', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -903,27 +902,21 @@ app.post('/accountsImportFile', upload.single('usercsv'), function (req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    var uploadedFile = req.file;
+    var uploadedFile = req.files.usercsv;
     var newFile = 'uploads/importJob-students-' + uploadedFile.name;
     if (!uploadedFile || uploadedFile.mimetype !== 'text/csv') {
         return res.status(400).send('Invalid file format');
     }
-    
-    uploadedFile.mv(newFile, function(err) {
-          if (err) {
-            console.log(err);
-            return res.status(500).send(err);
-          }
 
-          console.log('Uploaded: '+newFile);
-          return res.status(200).json(
-            {
-              'path':'Uploads/tmp/'+randomName,
-              'name':sampleFile.name
-            }
-          );
+    uploadedFile.mv(newFile, function(err) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
         }
-      );
+
+        logger.info('Uploaded: ', newFile);
+        return res.status(200).send('ok');
+    });
 });
 
 /* download */
