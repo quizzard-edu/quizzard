@@ -837,9 +837,8 @@ app.get('/getDiscussionBoard', function(req, res){
             return res.status(400).send('Could not find the question');
         }
 
-        var comments = question.comments;
         var disBoard = discussionBoard({
-            comments: comments
+            comments: question.comments
         });
         return res.status(200).send(disBoard);
     });

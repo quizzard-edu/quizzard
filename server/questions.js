@@ -303,7 +303,7 @@ exports.voteComment = function (commentId, vote, userId, callback) {
                 var userUpVoted = comments[i].likes.indexOf(userId) !== -1;
                 var userDownVoted = comments[i].dislikes.indexOf(userId) !== -1;
 
-                if (userUpVoted && userUpVoted) {
+                if (userUpVoted && userDownVoted) {
                     return callback('User liked and disliked a comment at the sametime', null);
                 }
 
@@ -315,7 +315,7 @@ exports.voteComment = function (commentId, vote, userId, callback) {
                     if (vote === -1) {
                         voteValue = -1;
                         update.$push = { 'comments.$.dislikes': userId };
-                        update.$inc = { 'comments.$.dislikesCount': 1 };
+                        update.$inc['comments.$.dislikesCount'] = 1;
                     }
                 }
 
@@ -327,11 +327,11 @@ exports.voteComment = function (commentId, vote, userId, callback) {
                     if (vote === 1) {
                         voteValue = 1;
                         update.$push = { 'comments.$.likes': userId };
-                        update.$inc = { 'comments.$.likesCount': 1 };
+                        update.$inc['comments.$.likesCount'] = 1;
                     }
                 }
 
-                if (!userUpVoted && !userUpVoted) {
+                if (!userUpVoted && !userDownVoted) {
                     if (vote === 1) {
                         update.$push = { 'comments.$.likes': userId };
                         update.$inc = { 'comments.$.likesCount': 1 };
