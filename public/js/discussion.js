@@ -82,9 +82,11 @@ var voteLeave = function(icon, type) {
     }
 }
 
-var repliesSection = function(replyObject) {
+var repliesSection = function(replyObjectId) {
+    const replyObject = $(replyObjectId);
     const visibilityChangeId = '#replies_' + replyObject.attr('id').split('_')[1];
     const visibilityChange = $(visibilityChangeId);
+
     if (visibilityChange.hasClass('hidden')) {
         visibilityChange.removeClass('hidden');
         replyObject.html('Collapse replies');
