@@ -10,14 +10,16 @@ var voteClickComment = function(icon, vote) {
         },
         success: function(data) {
             if (data.voteValue === 1) {
-                $('#like_' + commentId)[0].style.color = colours.blueLight;
-                $('#dislike_' + commentId)[0].style.color = '';
+                $('#like_' + commentId).removeClass('liked-hover');
+                $('#like_' + commentId).addClass('liked');
+                $('#dislike_' + commentId).removeClass('disliked');
             } else if (data.voteValue === -1) {
-                $('#like_' + commentId)[0].style.color = '';
-                $('#dislike_' + commentId)[0].style.color = colours.redBorder;
+                $('#dislike_' + commentId).removeClass('disliked-hover');
+                $('#like_' + commentId).removeClass('liked');
+                $('#dislike_' + commentId).addClass('disliked');
             } else {
-                $('#like_' + commentId)[0].style.color = '';
-                $('#dislike_' + commentId)[0].style.color = '';
+                $('#like_' + commentId).removeClass('liked');
+                $('#dislike_' + commentId).removeClass('disliked');
             }
             $('#numLikes_' + commentId).html(data.likesCount);
             $('#numDislikes_' + commentId).html(data.dislikesCount);
@@ -45,14 +47,16 @@ var voteClickReply = function(icon, vote) {
         },
         success: function(data) {
             if (data.voteValue === 1) {
-                $('#like_' + commentId + '_' + replyId)[0].style.color = colours.blueLight;
-                $('#dislike_' + commentId + '_' + replyId)[0].style.color = '';
+                $('#like_' + commentId + '_' + replyId).removeClass('liked-hover');
+                $('#like_' + commentId + '_' + replyId).addClass('liked');
+                $('#dislike_' + commentId + '_' + replyId).removeClass('disliked');
             } else if (data.voteValue === -1) {
-                $('#like_' + commentId + '_' + replyId)[0].style.color = '';
-                $('#dislike_' + commentId + '_' + replyId)[0].style.color = colours.redBorder;
+                $('#dislike_' + commentId + '_' + replyId).removeClass('disliked-hover');
+                $('#like_' + commentId + '_' + replyId).removeClass('liked');
+                $('#dislike_' + commentId + '_' + replyId).addClass('disliked');
             } else {
-                $('#like_' + commentId + '_' + replyId)[0].style.color = '';
-                $('#dislike_' + commentId + '_' + replyId)[0].style.color = '';
+                $('#like_' + commentId + '_' + replyId).removeClass('liked');
+                $('#dislike_' + commentId + '_' + replyId).removeClass('disliked');
             }
             $('#numLikes_' + commentId + '_' + replyId).html(data.likesCount);
             $('#numDislikes_' + commentId + '_' + replyId).html(data.dislikesCount);
@@ -68,17 +72,18 @@ var voteClickReply = function(icon, vote) {
 }
 
 var voteHover = function(icon, type) {
-    if (type === 1 && icon[0].style.color !== colours.blueLight) {
-        icon[0].style.color = colours.blueLightExtra;
-    } else if (type === -1 && icon[0].style.color !== colours.redBorder) {
-        icon[0].style.color = colours.redLight;
+    if (type === 1 && !icon.hasClass('liked')) {
+        icon.addClass('liked-hover');
+    } else if (type === -1 && !icon.hasClass('disliked')) {
+        icon.addClass('disliked-hover');
     }
     $(this).css('cursor','pointer');
 }
 
 var voteLeave = function(icon, type) {
-    if ((type === 1 && icon[0].style.color !== colours.blueLight) || (type === -1 && icon[0].style.color !== colours.redBorder)) {
-        icon[0].style.color = colours.blackLight;
+    if ((type === 1 && !icon.hasClass('liked')) || (type === -1 && !icon.hasClass('disliked'))) {
+        icon.removeClass('liked-hover');
+        icon.removeClass('disliked-hover');
     }
 }
 
@@ -180,7 +185,7 @@ var unCollapseReplies = function () {
     });
 }
 
-$('#commentBox').atwho({
+$('.comment-box').atwho({
     at: "@",
     data:['Petera sdf sd', 'Tom asd', 'Anne']
 })

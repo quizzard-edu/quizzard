@@ -91,6 +91,14 @@
   color: rgb(51, 102, 255);
 }
 
+.liked-hover {
+  color: rgb(51, 102, 155);
+}
+
 .disliked {
   color: rgb(243, 13, 20);
+}
+
+.disliked-hover {
+  color: rgba(243, 13, 20, 0.5);
 }
