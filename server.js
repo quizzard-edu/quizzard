@@ -837,10 +837,25 @@ app.get('/getDiscussionBoard', function(req, res){
             return res.status(400).send('Could not find the question');
         }
 
-        var disBoard = discussionBoard({
-            comments: question.comments
+        var bar = (userId) => {
+            var foo = (x) => {logger.info(x); return x };
+            users.getUserById(userId, (err, userObj) => {
+                foo(userObj.fname+' '+userObj.lname);
+            });
+        };
+
+        return res.status(200).render('discussion', {
+            comments: question.comments,
+            getFirstLastName: (userId) => {
+                logger.info(bar(userId));
+            },
+            isLiked: (likesList) => {
+                return likesList.indexOf(req.session.user.id) !== -1;
+            },
+            isDisliked: (dislikesList) => {
+                return dislikesList.indexOf(req.session.user.id) !== -1;
+            }
         });
-        return res.status(200).send(disBoard);
     });
 });
 

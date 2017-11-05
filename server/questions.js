@@ -40,7 +40,7 @@ var questionUpdateParser = function(question){
 /*Prepare question data on first pass to DB*/
 var prepareQuestionData = function(question, callback){
     // prepare regular data
-    var currentDate = new Date().toString();
+    var currentDate = common.getDate();
     var questionToAdd = {};
 
     questionToAdd._id = uuidv1();
@@ -167,7 +167,7 @@ var lookupQuestionById = function(questionId, callback) {
 
 // adding rating to question collection
 exports.submitRating = function (questionId, userId, rating, callback) {
-    var currentDate = new Date().toString();
+    var currentDate = common.getDate();
     var query = {_id: questionId};
     var update = {};
 
@@ -190,7 +190,7 @@ exports.getAllQuestionsList = function(callback) {
 
 // submit answer
 exports.submitAnswer = function(questionId, userId, correct, points, answer, callback) {
-    var currentDate = new Date().toString();
+    var currentDate = common.getDate();
     var query = {_id: questionId};
     var update = {};
 
@@ -259,7 +259,7 @@ exports.verifyAnswer = function(question, answer) {
 
 // add comment to question by id with user and comment
 exports.addComment = function (questionId, userId, comment, callback) {
-    var currentDate = new Date().toString();
+    var currentDate = common.getDate();
     var query = {_id: questionId};
     var update = {};
 
@@ -284,7 +284,7 @@ exports.addComment = function (questionId, userId, comment, callback) {
 
 // add reply to comment by id with user and reply
 exports.addReply = function (commentId, userId, reply, callback) {
-    var currentDate = new Date().toString();
+    var currentDate = common.getDate();
     var query = {'comments._id': commentId};
     var update = {};
 

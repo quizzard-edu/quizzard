@@ -86,3 +86,11 @@
 .cursor-pointer {
   cursor: pointer;
 }
+
+.liked {
+  color: rgb(51, 102, 255);
+}
+
+.disliked {
+  color: rgb(243, 13, 20);
+}
