@@ -882,6 +882,20 @@ app.get('/analytics', function(req, res){
     });
 });
 
+/* Display some charts and graphs */
+app.get('/profile', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    return res.status(200).render('profile', {
+        user: req.session.user,
+        isAdmin : function() {
+            return req.session.user.type === common.userTypes.ADMIN;
+        }
+    });
+});
+
 /* get analytics for a student*/
 app.get('/studentAnalytics', function(req,res){
     if (!req.session.user) {

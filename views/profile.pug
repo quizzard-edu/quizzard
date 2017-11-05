@@ -1,0 +1,42 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/icons.css')
+  link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/css/navbar.css')
+  link(rel='stylesheet' href='/css/profile.css')
+  link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
+
+block content
+  include navbar
+
+  .container
+    .row
+      .col.s12
+        br
+        .card
+          .row.center
+            .col.s12
+            .fixed-action-btn.horizontal.profile-picture
+              a.btn-floating.btn-large.blue.profile-circle
+                img.picure-size(src='/img/logo.png')
+              ul.profile-list
+                li
+                  a.btn-floating.red
+                    i.material-icons insert_chart
+                li
+                  a.btn-floating.yellow.darken-1
+                    i.material-icons format_quote
+                li
+                  a.btn-floating.green
+                    i.material-icons publish
+                li
+                  a.btn-floating.blue
+                    i.material-icons attach_file
+
+              h5 UTORID
+block scripts
+  script(src='/lib/jquery/jquery-3.1.1.min.js')
+  script(src='/lib/bootstrap/js/bootstrap.min.js')
+  script(src='/lib/materialize/js/materialize.min.js')
+  script(src='/js/navbar.js')
