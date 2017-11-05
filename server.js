@@ -538,7 +538,7 @@ app.get('/question', function(req, res) {
             return res.status(400).send('Question is not available');
         }
 
-        var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts);
+        var answeredList = common.getIdsListFromJSONList2(questionFound.correctAttempts);
         var hasQrating = false;
         for (var i in questionFound.ratings) {
             if (questionFound.ratings[i].user === req.session.user.id) {

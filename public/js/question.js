@@ -48,7 +48,7 @@ var sendAnswerRequest = function(ans) {
                 }
             });
 
-            $('#modalAlertMsg').html('Congratulations! You gained ' + data.points + ' points!<br><br><br>Please rate the difficulty of this question:');
+            $('#modalAlertMsg').html('Congratulations! You gained ' + data.points + ' points!<br>Please rate the difficulty of this question:');
 
             $('#modalAlert').modal('open');
         },
