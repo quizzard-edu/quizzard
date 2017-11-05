@@ -85,6 +85,13 @@ var prepareQuestionData = function(question, callback){
             questionToAdd.rightSide = question.rightSide;
             break;
 
+        case common.questionTypes.CHOOSEALL.value:
+			questionToAdd.type = common.questionTypes.CHOOSEALL.value;
+            questionToAdd.choices = question.choices;
+            questionToAdd.answer = question.answer;
+            
+			break;
+
         default:
             return callback({status:400, msg:'Type of Question is Undefined'}, null)
     }
@@ -108,7 +115,7 @@ exports.addQuestion = function(question, callback) {
         if (result.success){
             return db.addQuestion(questionToAdd, callback);
         } else{
-            return callback(result, null)
+            return callback({status:400,msg:result.msg}, null)
         }
     })
 }

@@ -3,7 +3,7 @@ if answerForm
 		each index in [1,2,3,4]
 			.row
 				.input-field.col.s1
-					input(type='checkbox', name='radbutton', value='mcans'+index, id='mcans'+index, required)
+					input(type='checkbox', name='checkButton', value='mcans'+index, id='mcans'+index, required)
 					label(for='mcans'+index)
 				.input-field.col.s10
 					input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required)
@@ -28,9 +28,9 @@ else if adminQuestionEdit
 			.row
 				.input-field.col.s1
 					if question.answer == option
-						input(type='checkbox', name='radbutton', id=i, value=i, required, checked)
+						input(type='checkbox', name='checkButton', id=i, value='mcans'+i, required, checked)
 					else
-						input(type='checkbox', name='radbutton', id=i, value=i, required)
+						input(type='checkbox', name='checkButton', id=i, value='mcans'+i, required)
 					label(for=i)
 				.input-field.col.s10
 					input.form-control(type='text', name='mcans'+i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)

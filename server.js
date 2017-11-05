@@ -72,8 +72,9 @@ app.get('/', function(req, res) {
 
 /* check username and password and send appropriate response */
 app.post('/login', function(req, res) {
-    if (req.session.user) {
+    if ('user' in req.session) {
         req.session.destroy();
+        return res.status(400).send('Invalid Request');
     }
 
     if(!req.body.user || !req.body.passwd){

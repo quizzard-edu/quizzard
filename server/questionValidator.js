@@ -61,30 +61,34 @@ exports.validateAttributeFields = function(question,type){
 }
 
 var validateQuestionAttributesByType = function(question, type){
-    var result;
+	var result;
 
-    switch (type) {
-        case common.questionTypes.REGULAR.value:
-            result = regexAttributeValidator(question);
-            break;
+	switch (type) {
+		case common.questionTypes.REGULAR.value:
+			result = regexAttributeValidator(question);
+			break;
 
-        case common.questionTypes.MULTIPLECHOICE.value:
-            result = multipleChoiceAttributeValidator(question);
-            break;
+		case common.questionTypes.MULTIPLECHOICE.value:
+			result = multipleChoiceAttributeValidator(question);
+			break;
 
-        case common.questionTypes.TRUEFALSE.value:
-            result = trueAndFalseAttributeValidator(question);
-            break;
+		case common.questionTypes.TRUEFALSE.value:
+			result = trueAndFalseAttributeValidator(question);
+			break;		
 
-        case common.questionTypes.MATCHING.value:
-            result = matchingAttributeValidator(question);
-            break;
+		case common.questionTypes.MATCHING.value:
+			result = matchingAttributeValidator(question);
+			break;		
 
-        default:
-            result = failMsg;
-            break;
-    }
-    return result;
+		case common.questionTypes.CHOOSEALL.value:
+			result = chooseAllAttributeValidator(question);
+			break;
+
+		default:
+			result = failMsg;
+			break;
+	}
+	return result;
 }
 
 var regexAttributeValidator = function(question){
@@ -131,6 +135,7 @@ var matchingAttributeValidator = function(question){
 }
 
 var chooseAllAttributeValidator = function(question){
+    console.log(question)
 	if (!validateAllAttributesInGroup(question,'CHOOSEALL')){
 		return qTypeFailMsg('Incorrect question answer fields!');
 	}

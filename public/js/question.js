@@ -31,6 +31,7 @@ $('#match_answerform').submit(function(evt) {
 });
 
 $('#chooseAll_answerForm').submit(function(evt) {
+    evt.preventDefault();
     sendAnswerRequest('someRaw answer');
 })
 
