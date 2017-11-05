@@ -46,7 +46,7 @@ each itemComment, indexReply in comments
           span.name Firstname Lastname
         .row
           textarea.comment-box(id='replyTo_' + itemComment['_id'], placeholder='Enter a Reply...')
-          .button.comment-reply-button(class='btn btn-lg btn-primary', onclick='reply($this, "'+itemComment['_id']+'")') Reply
+          .button.comment-reply-button(class='btn btn-lg btn-primary', onclick='reply("'+itemComment['_id']+'")') Reply
 
 .row.comment
   .col.s12
@@ -55,7 +55,7 @@ each itemComment, indexReply in comments
       span.name Firstname Lastname
     .row
       textarea.comment-box#commentBox(placeholder='Enter a comment...')
-      .button.comment-reply-button(class='btn btn-lg btn-primary', onclick='comment($this)') Comment
+      .button.comment-reply-button(class='btn btn-lg btn-primary', onclick='comment()') Comment
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')

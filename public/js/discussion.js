@@ -96,9 +96,8 @@ var repliesSection = function(replyObject) {
     }
 }
 
-var comment = function(buttonObject) {
+var comment = function() {
     const commentText = $('#commentBox').val();
-    buttonObject.attr('disabled','disabled');
 
     if (!commentText) {
         warningSnackbar('You can\'t have an empty comment');
@@ -114,6 +113,7 @@ var comment = function(buttonObject) {
         },
         success: function(data) {
             getDiscussionBoard();
+
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -125,7 +125,7 @@ var comment = function(buttonObject) {
     });
 }
 
-var reply = function(buttonObject, commentId) {
+var reply = function(commentId) {
     const replyText = $('#replyTo_'+commentId).val();
 
     if (!replyText) {
