@@ -869,13 +869,27 @@ app.post('/addCommentToQuestion', function (req, res) {
     var comment = req.body.commentText;
     var userId = req.session.user.id;
 
-    questions.addComment(questionId, userId, comment, function (err, question) {
-        if (err) {
-            logger.error(err);
-            return res.status(500).send(err);
+    users.getUserById(userId, function (err, userObj) {
+        var fullName = '@asd';
+        var newComment = '';
+        if (comment.indexOf(fullName) > -1) {
+            var parts = comment.split(fullName);
+            for (var i = 0; i < parts.length-1; i++) {
+                newComment += parts[i] + '<b>' + fullName + '</b>';
+            }
+            newComment += parts[parts.length-1];
+        } else {
+            newComment = comment;
         }
 
-        return res.status(200).send('Ok');
+        questions.addComment(questionId, userId, newComment, function (err, question) {
+            if (err) {
+                logger.error(err);
+                return res.status(500).send(err);
+            }
+
+            return res.status(200).send('Ok');
+        });
     });
 });
 

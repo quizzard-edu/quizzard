@@ -18,7 +18,7 @@ each itemComment, indexReply in comments
 
       hr.divider
       .row
-        p.comment-text=itemComment['comment']
+        p.comment-text !{itemComment['comment']}
     .col.s12
       .row
         .button.view-replies-button(id='viewReplies_' + itemComment['_id'], class='btn btn-lg btn-primary', onclick='repliesSection("#viewReplies_" + "'+itemComment['_id']+'")') View replies
