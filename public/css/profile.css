@@ -4,16 +4,16 @@
 }
 
 .profile-circle {
-    width: 200px !important;
-    height: 200px !important;
+  width: 200px !important;
+  height: 200px !important;
 }
 
 .picure-size {
-    max-width: 200px;
-    max-height: 200px;
+  max-width: 200px;
+  max-height: 200px;
 }
 
 .profile-list {
-  right: 450px !important;
+  right: calc(50% + 75px) !important;
   top: calc(50% + 150px) !important;
 }

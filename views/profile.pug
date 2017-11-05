@@ -30,44 +30,25 @@ block content
               h4 UTORID
             .col.s1
             .col.s10
-              if true
-                .row
-                  .input-field.col.s6
-                    input#fname.validate(type='text' name='newfname' required autofocus)
-                    label(for='fname') First Name
-                  .input-field.col.s6
-                    input#lname.validate(type='text' name='newlname' required)
-                    label(for='lname') Last Name
-                .row
-                  .input-field.col.s12
-                    input#passwd.validate(type='password' name='newpassword' required)
-                    label(for='passwd') Password
-                .row
-                  .input-field.col.s12
-                    input#email.validate(type='email' name='newemail' required)
-                    label(for='email') Email
-                .row
-                  button.waves-effect.waves-light.btn(type='submit') Edit
-                    i.material-icons.right send
-              else
-                .row
-                  .input-field.col.s6
-                    input#fname.validate(type='text' name='newfname' required autofocus)
-                    label(for='fname') First Name
-                  .input-field.col.s6
-                    input#lname.validate(type='text' name='newlname' required)
-                    label(for='lname') Last Name
-                .row
-                  .input-field.col.s12
-                    input#passwd.validate(type='password' name='newpassword' required)
-                    label(for='passwd') Password
-                .row
-                  .input-field.col.s12
-                    input#email.validate(type='email' name='newemail' required)
-                    label(for='email') Email
-                .row
-                  button.waves-effect.waves-light.btn(type='submit') Edit
-                    i.material-icons.right send
+              .row
+                .input-field.col.s6
+                  input#fname.validate(type='text' name='newfname' required autofocus)
+                  label(for='fname') First Name
+                .input-field.col.s6
+                  input#lname.validate(type='text' name='newlname' required)
+                  label(for='lname') Last Name
+              .row
+                .input-field.col.s12
+                  input#passwd.validate(type='password' name='newpassword' required)
+                  label(for='passwd') Password
+              .row
+                .input-field.col.s12
+                  input#email.validate(type='email' name='newemail' required)
+                  label(for='email') Email
+              .row
+                button.waves-effect.waves-light.btn(type='submit') Edit
+                  i.material-icons.right send
+
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
   script(src='/lib/bootstrap/js/bootstrap.min.js')
