@@ -101,7 +101,7 @@ var displayImportAccountsForm = function() {
 var submitExportForm = function() {
     var selected = [];
     $('div#exportForm input[type=checkbox]').each(function() {
-        if ($(this).is(":checked")) {
+        if ($(this).is(':checked')) {
             selected.push($(this).attr('id').substring(3));
         }
     });
@@ -148,7 +148,7 @@ var submitImportForm = function() {
         success: function(data) {
             successSnackbar('File uploaded successfully');
             $('#admin-content').html(data);
-            
+
             $('#account-import-list-back-button').click(function(){
                 displayAccountsTable();
             });
@@ -166,12 +166,25 @@ var submitImportForm = function() {
 /* submit export form */
 var submitImportList = function() {
     var selected = [];
-    $('div#importList input[type=checkbox]').each(function() {
-        if ($(this).is(":checked")) {
-            selected.push($(this).attr('id').substring(3));
+    $('#importList').find('tr').each(function (i, el) {
+        if (i === 0) {
+            return;
+        }
+        var $tds = $(this).find('td'),
+            isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked'),
+            fname = $tds.eq(1).text(),
+            lname = $tds.eq(2).text(),
+            email = $tds.eq(3).text();
+        var userObj = {
+            fname: fname,
+            lname: lname,
+            email: email
+        };
+        if (isSelected) {
+            selected.push(userObj);
         }
     });
-
+    alert(selected);
 }
 
 
@@ -758,7 +771,7 @@ var submitQEditForm = function(qid) {
         if(field.name.startsWith('matchRight')){
             question['rightSide'].push(field.value);
         }
-        
+
         if(field.name.startsWith('tfbutton')){
             question['answer'] = field.value;
         }
