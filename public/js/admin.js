@@ -489,7 +489,7 @@ var updateVisibility = function(qid) {
     );
 }
 
-var collectData = function(form){
+var collectQuestionFormData = function(form){
     var fields = $(form).serializeArray();
     var question = {};
     question['choices'] = [];
@@ -518,12 +518,10 @@ var collectData = function(form){
         }
         if(field.name.startsWith('checkButton') ){
            question['answer'].push(fields[i+1].value);
-           console.log(field)
         }
         question[field.name] = field.value;
     });
     
-    console.log(question)
     question['rating'] = getRating();
     question['text'] = $('#qtext').summernote('code');
     question['visible'] = $('#visible').is(':checked');
@@ -536,7 +534,7 @@ var submitQuestionForm = function() {
         failSnackbar('Please enter a question body in the editor.');
         return;
     }
-    var question = collectData('#questionform');
+    var question = collectQuestionFormData('#questionform');
 
     question['type'] = $('#qType').select().val();
     $.ajax({
@@ -627,7 +625,7 @@ var submitQEditForm = function(qid) {
         return;
     }
 
-    var question = collectData('#question-edit-form');
+    var question = collectQuestionFormData('#question-edit-form');
 
     if (rating > 0 && rating < 6) {
         submitQuestionRating(rating, qid);

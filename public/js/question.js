@@ -32,7 +32,14 @@ $('#match_answerform').submit(function(evt) {
 
 $('#chooseAll_answerForm').submit(function(evt) {
     evt.preventDefault();
-    sendAnswerRequest('someRaw answer');
+    var answer = [];
+    var fields = $('#chooseAll_answerForm').serializeArray();
+    jQuery.each(fields, function(i, field) {
+        if(field.name.startsWith('checkButton') ){
+           answer.push(field.value);
+        }
+    });
+    sendAnswerRequest(answer);
 })
 
 var sendAnswerRequest = function(ans) {

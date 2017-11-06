@@ -234,31 +234,44 @@ exports.submitAnswer = function(questionId, userId, correct, points, answer, cal
 
 // verify answer based on type
 exports.verifyAnswer = function(question, answer) {
-    var value = false;
+    if (answer){
+        switch (question.type){
+            case common.questionTypes.MATCHING.value:
+                return verifyMatchingQuestionAnswer(question,answer);
+            case common.questionTypes.CHOOSEALL.value:
+                return verifyChooseAllQuestionAnswer(question,answer);
+            default:
+                return (answer === question.answer);
+        }
+    }
+    return false;
+}
 
-    if (question.type === common.questionTypes.MATCHING.value && answer) {
-        var ansLeftSide = answer[0];
-        var ansRightSide = answer[1];
+var verifyChooseAllQuestionAnswer = function(question,answer){
+    return question.answer.sort().join(',')=== answer.sort().join(',');
+}
 
-        if (ansLeftSide.length === question.leftSide.length) {
-            var checkIndexLeft;
-            var checkIndexRight;
+var verifyMatchingQuestionAnswer = function(question, answer){
+    var ansLeftSide = answer[0];
+    var ansRightSide = answer[1];
 
-            for (i = 0; i < ansLeftSide.length; i++) {
-                checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
-                checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
-                if (checkIndexLeft !== checkIndexRight) {
-                    return value = false;
-                }
-            }
+    if (ansLeftSide.length === question.leftSide.length) {
+        var checkIndexLeft;
+        var checkIndexRight;
 
-            if (!value) {
-                return value = true;
+        for (i = 0; i < ansLeftSide.length; i++) {
+            checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+            checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+            if (checkIndexLeft !== checkIndexRight) {
+                return false;
             }
         }
 
-        return value = false;
+        if (!value) {
+            return true;
+        }
     }
 
-    return value = (answer === question.answer);
+    return false;
+    
 }
