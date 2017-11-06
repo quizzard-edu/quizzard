@@ -870,7 +870,7 @@ app.post('/addCommentToQuestion', function (req, res) {
     var userId = req.session.user.id;
 
     users.getUserById(userId, function (err, userObj) {
-        var fullName = '@asd';
+        var fullName = '@'+userObj.fname+' '+userObj.lname;
         var newComment = '';
         if (comment.indexOf(fullName) > -1) {
             var parts = comment.split(fullName);
@@ -903,13 +903,27 @@ app.post('/addReplyToComment', function (req, res) {
     var reply = req.body.replyText;
     var userId = req.session.user.id;
 
-    questions.addReply(commentId, userId, reply, function (err, question) {
-        if (err) {
-            logger.error(err);
-            return res.status(500).send(err);
+    users.getUserById(userId, function (err, userObj) {
+        var fullName = '@'+userObj.fname+' '+userObj.lname;
+        var newReply = '';
+        if (reply.indexOf(fullName) > -1) {
+            var parts = reply.split(fullName);
+            for (var i = 0; i < parts.length-1; i++) {
+                newReply += parts[i] + '<b>' + fullName + '</b>';
+            }
+            newReply += parts[parts.length-1];
+        } else {
+            newReply = reply;
         }
 
-        return res.status(200).send('Ok');
+        questions.addReply(commentId, userId, newReply, function (err, question) {
+            if (err) {
+                logger.error(err);
+                return res.status(500).send(err);
+            }
+
+            return res.status(200).send('Ok');
+        });
     });
 });
 
@@ -962,6 +976,42 @@ app.post('/voteOnReply', function (req, res) {
         }
 
         return res.status(200).send(value);
+    });
+});
+
+app.get('/usersToMentionInDiscussion', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var questionId = req.query.questionId;
+    questions.lookupQuestionById(questionId, function (err, question){
+        if (err) {
+            return res.status(500).send('could not find the question');
+        }
+
+        if (!question) {
+            return res.status(400).send('Invalid questionId');
+        }
+        
+        var answeredList = [];
+        for (var i in question.correctAttempts) {
+            answeredList.push(question.correctAttempts[i].id);
+        }
+        users.getUsersList(function (err, usersList) {
+            if (err) {
+                return res.status(500).send('could not find the list of users');
+            }
+            var totalList = [];
+            for (var i in usersList) {
+                var user = usersList[i];
+                if (user.type === common.userTypes.ADMIN || answeredList.indexOf(user.id) !== -1) {
+                    totalList.push(user.fname+' '+user.lname);
+                }
+            }
+
+            return res.status(200).send(totalList);
+        });
     });
 });
 
