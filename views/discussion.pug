@@ -41,6 +41,7 @@ each itemComment, indexReply in comments
           .row
             p.comment-text(id='reply_' + itemReply['_id'])=itemReply['reply']
       .col.s12.reply
+        h5 Add a Reply:
         .row.identification-section
           i.small.material-icons.profile-picture account_circle
           span.name Firstname Lastname
@@ -50,6 +51,7 @@ each itemComment, indexReply in comments
 
 .row.comment
   .col.s12
+    h5 Add a comment:
     .row.identification-section
       i.small.material-icons.profile-picture account_circle
       span.name Firstname Lastname

@@ -17,22 +17,6 @@ $(function () {
             }
         }
     });
-
-    $.ajax({
-        type: 'GET',
-        url: '/usersToMentionInDiscussion',
-        data: { questionId: questionId },
-        success: function(data) {
-            alert(data);
-        },
-        error: function(data){
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else {
-                failSnackbar('something went wrong');
-            }
-        }
-    });
 });
 
 $('#re_answerform').submit(function(evt) {

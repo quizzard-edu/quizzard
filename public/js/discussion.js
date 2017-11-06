@@ -184,7 +184,25 @@ var unCollapseReplies = function () {
     });
 }
 
-$('.comment-box').atwho({
-    at: "@",
-    data:['Petera sdf sd', 'Tom asd', 'Anne']
-})
+
+
+$(function () {
+    $.ajax({
+        type: 'GET',
+        url: '/usersToMentionInDiscussion',
+        data: { questionId: questionId },
+        success: function(data) {
+            $('.comment-box').atwho({
+                at: "@",
+                data: data
+            })
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('something went wrong');
+            }
+        }
+    });
+});
