@@ -1005,7 +1005,9 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
             var totalList = [];
             for (var i in usersList) {
                 var user = usersList[i];
-                if (user.type === common.userTypes.ADMIN || answeredList.indexOf(user.id) !== -1) {
+                if (req.session.user.id !== user.id && 
+                    (user.type === common.userTypes.ADMIN 
+                        || answeredList.indexOf(user.id) !== -1)) {
                     totalList.push(user.fname+' '+user.lname);
                 }
             }

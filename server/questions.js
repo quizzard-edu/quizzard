@@ -488,7 +488,7 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 
                         voteValue = vote;
                     }
-                    logger.info(JSON.stringify(update),i,j);
+
                     return db.updateQuestionByQuery(query, update, function (err, result) {
                         return callback(err, {
                             result: result,
