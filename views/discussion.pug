@@ -18,7 +18,7 @@ each itemComment, indexReply in comments
 
       hr.divider
       .row
-        p.comment-text !{itemComment['comment']}
+        p.comment-text !{highlightMentionedUser(itemComment['comment'])}
     .col.s12
       .row
         .button.view-replies-button(id='viewReplies_' + itemComment['_id'], class='btn btn-lg btn-primary', onclick='repliesSection("#viewReplies_" + "'+itemComment['_id']+'")') View replies
@@ -39,12 +39,12 @@ each itemComment, indexReply in comments
             span.date=itemReply['date']
           hr.divider
           .row
-            p.comment-text(id='reply_' + itemReply['_id'])=itemReply['reply']
+            p.comment-text(id='reply_' + itemReply['_id']) !{highlightMentionedUser(itemReply['reply'])}
       .col.s12.reply
         h5 Add a Reply:
         .row.identification-section
           i.small.material-icons.profile-picture account_circle
-          span.name Firstname Lastname
+          span.name #{getCurrentUser()}
         .row
           textarea.comment-box(id='replyTo_' + itemComment['_id'], placeholder='Enter a Reply...')
           .button.comment-reply-button(class='btn btn-lg btn-primary', onclick='reply("'+itemComment['_id']+'")') Reply
@@ -54,7 +54,7 @@ each itemComment, indexReply in comments
     h5 Add a comment:
     .row.identification-section
       i.small.material-icons.profile-picture account_circle
-      span.name Firstname Lastname
+      span.name #{getCurrentUser()}
     .row
       textarea.comment-box#commentBox(placeholder='Enter a comment...')
       .button.comment-reply-button(class='btn btn-lg btn-primary', onclick='comment()') Comment

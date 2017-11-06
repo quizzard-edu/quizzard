@@ -837,24 +837,60 @@ app.get('/getDiscussionBoard', function(req, res){
             return res.status(400).send('Could not find the question');
         }
 
-        var bar = (userId) => {
-            var foo = (x) => {logger.info(x); return x };
-            users.getUserById(userId, (err, userObj) => {
-                foo(userObj.fname+' '+userObj.lname);
-            });
-        };
-
-        return res.status(200).render('discussion', {
-            comments: question.comments,
-            getFirstLastName: (userId) => {
-                logger.info(bar(userId));
-            },
-            isLiked: (likesList) => {
-                return likesList.indexOf(req.session.user.id) !== -1;
-            },
-            isDisliked: (dislikesList) => {
-                return dislikesList.indexOf(req.session.user.id) !== -1;
+        users.getUsersList((err, userObj) => {
+            if (err) {
+                return res.status(500).send('Could not get the list of students');
             }
+
+            var usersList = {};
+            for (var i in userObj) {
+                var user = userObj[i];
+                usersList[user.id] = user.fname + ' ' + user.lname;
+            }
+
+            var discussionHtml = discussionBoard({
+                comments: question.comments,
+                getCurrentUser: () =>{
+                    var userId = req.session.user.id;
+                    if (!usersList[userId]) {
+                        return 'UNKNOWN';
+                    }
+                    return usersList[userId];
+                },
+                getFirstLastName: (userId) => {
+                    if (!usersList[userId]) {
+                        return 'UNKNOWN';
+                    }
+                    return usersList[userId];
+                },
+                isLiked: (likesList) => {
+                    return likesList.indexOf(req.session.user.id) !== -1;
+                },
+                isDisliked: (dislikesList) => {
+                    return dislikesList.indexOf(req.session.user.id) !== -1;
+                },
+                highlightMentionedUser: (comment) => {
+                    var userId = req.session.user.id;
+                    if (!usersList[userId]) {
+                        return '@UNKNOWN';
+                    }
+
+                    var fullName = '@' + usersList[userId];
+                    var newComment = '';
+                    if (comment.indexOf(fullName) > -1) {
+                        var parts = comment.split(fullName);
+                        for (var i = 0; i < parts.length-1; i++) {
+                            newComment += parts[i] + '<b>' + fullName + '</b>';
+                        }
+                        newComment += parts[parts.length-1];
+                    } else {
+                        newComment = comment;
+                    }
+                    return newComment;
+                }
+            });
+
+            return res.status(200).send(discussionHtml);
         });
     });
 });
@@ -869,27 +905,13 @@ app.post('/addCommentToQuestion', function (req, res) {
     var comment = req.body.commentText;
     var userId = req.session.user.id;
 
-    users.getUserById(userId, function (err, userObj) {
-        var fullName = '@'+userObj.fname+' '+userObj.lname;
-        var newComment = '';
-        if (comment.indexOf(fullName) > -1) {
-            var parts = comment.split(fullName);
-            for (var i = 0; i < parts.length-1; i++) {
-                newComment += parts[i] + '<b>' + fullName + '</b>';
-            }
-            newComment += parts[parts.length-1];
-        } else {
-            newComment = comment;
+    questions.addComment(questionId, userId, comment, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
         }
 
-        questions.addComment(questionId, userId, newComment, function (err, question) {
-            if (err) {
-                logger.error(err);
-                return res.status(500).send(err);
-            }
-
-            return res.status(200).send('Ok');
-        });
+        return res.status(200).send('Ok');
     });
 });
 
@@ -903,27 +925,13 @@ app.post('/addReplyToComment', function (req, res) {
     var reply = req.body.replyText;
     var userId = req.session.user.id;
 
-    users.getUserById(userId, function (err, userObj) {
-        var fullName = '@'+userObj.fname+' '+userObj.lname;
-        var newReply = '';
-        if (reply.indexOf(fullName) > -1) {
-            var parts = reply.split(fullName);
-            for (var i = 0; i < parts.length-1; i++) {
-                newReply += parts[i] + '<b>' + fullName + '</b>';
-            }
-            newReply += parts[parts.length-1];
-        } else {
-            newReply = reply;
+    questions.addReply(commentId, userId, reply, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
         }
 
-        questions.addReply(commentId, userId, newReply, function (err, question) {
-            if (err) {
-                logger.error(err);
-                return res.status(500).send(err);
-            }
-
-            return res.status(200).send('Ok');
-        });
+        return res.status(200).send('Ok');
     });
 });
 
@@ -993,7 +1001,7 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
         if (!question) {
             return res.status(400).send('Invalid questionId');
         }
-        
+
         var answeredList = [];
         for (var i in question.correctAttempts) {
             answeredList.push(question.correctAttempts[i].id);
@@ -1005,8 +1013,8 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
             var totalList = [];
             for (var i in usersList) {
                 var user = usersList[i];
-                if (req.session.user.id !== user.id && 
-                    (user.type === common.userTypes.ADMIN 
+                if (req.session.user.id !== user.id &&
+                    (user.type === common.userTypes.ADMIN
                         || answeredList.indexOf(user.id) !== -1)) {
                     totalList.push(user.fname+' '+user.lname);
                 }
