@@ -552,7 +552,7 @@ app.get('/question', function(req, res) {
             isAdmin : function() {
                 return req.session.user.type === common.userTypes.ADMIN;
             },
-            hasQrating: hasQrating/*ADD QUESTION RATING GET FUNCTION HERE*/,
+            hasQrating: hasQrating,
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
