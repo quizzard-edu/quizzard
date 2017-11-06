@@ -604,7 +604,6 @@ app.post('/submitanswer', function(req, res) {
         var response = {text: text, points: points};
 
         if (req.session.user.type === common.userTypes.ADMIN) {
-            console.log('admin');
             return res.status(status).send(response);
         }
 
