@@ -396,7 +396,6 @@ exports.voteComment = function (commentId, vote, userId, callback) {
 // vote on a reply
 exports.voteReply = function (replyId, vote, userId, callback) {
     var query = {'comments.replies._id': replyId};
-    var filter = {'comments.$.replies': 1};
     var update = {};
     var voteValue = -2;
 
@@ -427,42 +426,42 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                     if (userUpVoted) {
                         updatedLikesCount--;
                         voteValue = 0;
-                        update.$pull = { 'replies.$.likes': userId };
-                        update.$inc = { 'comments.replies.$.likesCount': -1 };
+                        update.$pull = { 'comments.$.replies.$.likes': userId };
+                        update.$inc = { 'comments.$.replies.$.likesCount': -1 };
 
                         if (vote === -1) {
                             updatedDisLikesCount++;
                             voteValue = -1;
-                            update.$push = { 'replies.$.dislikes': userId };
-                            update.$inc['replies.$.dislikesCount'] = 1;
+                            update.$push = { 'comments.$.replies.$.dislikes': userId };
+                            update.$inc['comments.$.replies.$.dislikesCount'] = 1;
                         }
                     }
 
                     if (userDownVoted) {
                         updatedDisLikesCount--;
                         voteValue = 0;
-                        update.$pull = { 'replies.$.dislikes': userId };
-                        update.$inc = { 'replies.$.dislikesCount': -1 };
+                        update.$pull = { 'comments.$.replies.$.dislikes': userId };
+                        update.$inc = { 'comments.$.replies.$.dislikesCount': -1 };
 
                         if (vote === 1) {
                             updatedLikesCount++;
                             voteValue = 1;
-                            update.$push = { 'replies.$.likes': userId };
-                            update.$inc['replies.$.likesCount'] = 1;
+                            update.$push = { 'comments.$.replies.$.likes': userId };
+                            update.$inc['comments.$.replies.$.likesCount'] = 1;
                         }
                     }
 
                     if (!userUpVoted && !userDownVoted) {
                         if (vote === 1) {
                             updatedLikesCount++;
-                            update.$push = { 'replies.$.likes': userId };
-                            update.$inc = { 'replies.$.likesCount': 1 };
+                            update.$push = { 'comments.$.replies.$.likes': userId };
+                            update.$inc = { 'comments.$.replies.$.likesCount': 1 };
                         }
 
                         if (vote === -1) {
                             updatedDisLikesCount++;
-                            update.$push = { 'replies.$.dislikes': userId };
-                            update.$inc = { 'replies.$.dislikesCount': 1 };
+                            update.$push = { 'comments.$.replies.$.dislikes': userId };
+                            update.$inc = { 'comments.$.replies.$.dislikesCount': 1 };
                         }
 
                         voteValue = vote;
