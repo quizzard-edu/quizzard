@@ -428,16 +428,19 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                         voteValue = 0;
                         var commentsreplieslikes = 'comments.'+j+'.replies.'+i+'.likes';
                         var commentsreplieslikesCount = 'comments.'+j+'.replies.'+i+'.likesCount';
-                        update.$pull = { commentsreplieslikes: userId };
-                        update.$inc = { commentsreplieslikesCount: -1 };
+                        update.$pull = {};
+                        update.$inc = {};
+                        update.$pull[commentsreplieslikes] = userId;
+                        update.$inc[commentsreplieslikesCount] = -1;
 
                         if (vote === -1) {
                             updatedDisLikesCount++;
                             voteValue = -1;
                             var commentsrepliesdislikes = 'comments.'+j+'.replies.'+i+'.dislikes';
                             var commentsrepliesdislikesCount = 'comments.'+j+'.replies.'+i+'.dislikesCount';
-                            update.$push = { commentsrepliesdislikes: userId };
-                            update.$inc[commentsrepliesdislikes] = 1;
+                            update.$push = {};
+                            update.$push[commentsrepliesdislikes] = userId;
+                            update.$inc[commentsrepliesdislikesCount] = 1;
                         }
                     }
 
@@ -446,15 +449,18 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                         voteValue = 0;
                         var commentsrepliesdislikes = 'comments.'+j+'.replies.'+i+'.dislikes';
                         var commentsrepliesdislikesCount = 'comments.'+j+'.replies.'+i+'.dislikesCount';
-                        update.$pull = { commentsrepliesdislikes: userId };
-                        update.$inc = { commentsrepliesdislikesCount: -1 };
+                        update.$pull = {};
+                        update.$inc = {};
+                        update.$pull[commentsrepliesdislikes] = userId;
+                        update.$inc[commentsrepliesdislikesCount] = -1;
 
                         if (vote === 1) {
                             updatedLikesCount++;
                             voteValue = 1;
                             var commentsreplieslikes = 'comments.'+j+'.replies.'+i+'.likes';
                             var commentsreplieslikesCount = 'comments.'+j+'.replies.'+i+'.likesCount';
-                            update.$push = { commentsreplieslikes: userId };
+                            update.$push = {};
+                            update.$push[commentsreplieslikes] = userId;
                             update.$inc[commentsreplieslikesCount] = 1;
                         }
                     }
@@ -464,21 +470,25 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                             updatedLikesCount++;
                             var commentsreplieslikes = 'comments.'+j+'.replies.'+i+'.likes';
                             var commentsreplieslikesCount = 'comments.'+j+'.replies.'+i+'.likesCount';
-                            update.$push = { commentsreplieslikes: userId };
-                            update.$inc = { commentsreplieslikesCount: 1 };
+                            update.$push = {};
+                            update.$inc = {};
+                            update.$push[commentsreplieslikes] = userId;
+                            update.$inc[commentsreplieslikesCount] = 1;
                         }
 
                         if (vote === -1) {
                             updatedDisLikesCount++;
                             var commentsrepliesdislikes = 'comments.'+j+'.replies.'+i+'.dislikes';
                             var commentsrepliesdislikesCount = 'comments.'+j+'.replies.'+i+'.dislikesCount';
-                            update.$push = { commentsrepliesdislikes: userId };
-                            update.$inc = { commentsrepliesdislikesCount: 1 };
+                            update.$push = {};
+                            update.$inc = {};
+                            update.$push[commentsrepliesdislikes] = userId;
+                            update.$inc[commentsrepliesdislikesCount] = 1;
                         }
 
                         voteValue = vote;
                     }
-
+                    logger.info(JSON.stringify(update),i,j);
                     return db.updateQuestionByQuery(query, update, function (err, result) {
                         return callback(err, {
                             result: result,
