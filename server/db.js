@@ -467,23 +467,6 @@ exports.lookupQuestion = function(findQuery, callback) {
     });
 }
 
-/* Extract a question object from the database using its ID. */
-exports.lookupQuestionWithFilter = function(findQuery, filter, callback) {
-    questionsCollection.findOne(findQuery, filter, function(err, question) {
-        if (err) {
-            return callback(err, null);
-        }
-
-        if (!question) {
-            return callback('No question found', null);
-        }
-
-        /* necessary for later database update */
-        question.firstAnswer = question.correctAttempts[0] ? question.correctAttempts[0].id : 'No One';
-        return callback(null, question);
-    });
-}
-
 // update a question record based on its id
 exports.updateQuestionById = function(questionId, request, callback){
     var currentDate = new Date().toString();
