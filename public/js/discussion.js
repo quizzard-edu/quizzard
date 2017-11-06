@@ -35,8 +35,7 @@ var voteClickComment = function(icon, vote) {
 }
 
 var voteClickReply = function(icon, vote) {
-    const commentId = icon.attr('id').split('_')[1]; // I made it so we only need replyId
-    const replyId = icon.attr('id').split('_')[2];
+    const replyId = icon.attr('id').split('_')[1];
 
     $.ajax({
         type: 'POST',
@@ -47,19 +46,19 @@ var voteClickReply = function(icon, vote) {
         },
         success: function(data) {
             if (data.voteValue === 1) {
-                $('#like_' + commentId + '_' + replyId).removeClass('liked-hover');
-                $('#like_' + commentId + '_' + replyId).addClass('liked');
-                $('#dislike_' + commentId + '_' + replyId).removeClass('disliked');
+                $('#like_' + replyId).removeClass('liked-hover');
+                $('#like_' + replyId).addClass('liked');
+                $('#dislike_' + replyId).removeClass('disliked');
             } else if (data.voteValue === -1) {
-                $('#dislike_' + commentId + '_' + replyId).removeClass('disliked-hover');
-                $('#like_' + commentId + '_' + replyId).removeClass('liked');
-                $('#dislike_' + commentId + '_' + replyId).addClass('disliked');
+                $('#dislike_' + replyId).removeClass('disliked-hover');
+                $('#like_' + replyId).removeClass('liked');
+                $('#dislike_' + replyId).addClass('disliked');
             } else {
-                $('#like_' + commentId + '_' + replyId).removeClass('liked');
-                $('#dislike_' + commentId + '_' + replyId).removeClass('disliked');
+                $('#like_' + replyId).removeClass('liked');
+                $('#dislike_' + replyId).removeClass('disliked');
             }
-            $('#numLikes_' + commentId + '_' + replyId).html(data.likesCount);
-            $('#numDislikes_' + commentId + '_' + replyId).html(data.dislikesCount);
+            $('#numLikes_' + replyId).html(data.likesCount);
+            $('#numDislikes_' + replyId).html(data.dislikesCount);
         },
         error: function(data){
             if (data['status'] === 401) {
