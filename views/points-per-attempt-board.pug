@@ -28,7 +28,7 @@
               - rowclass += ' col-isuser';
             tr(class=rowclass)
               td #{s.rank}
-              td #{s.id}
+              td #{s.fname + ' ' + s.lname.substring(0, 1)}
               if s.totalAttemptsCount === 0
                 td 0
               else
