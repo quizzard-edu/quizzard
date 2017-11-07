@@ -31,7 +31,7 @@ block content
                 li
                   a.btn-floating.blue
                     i.material-icons backup
-              h4 #{user.id}
+              h4#userId #{user.id}
             .col.s1
             #viewForm
               .col.s10
@@ -50,7 +50,7 @@ block content
                 .row
                   button.waves-effect.waves-light.btn(type='button', onclick='enableEdit()') Edit Information
                     i.material-icons.right send
-            .hidden#editForm
+            form.hidden#editForm
               .col.s10
                 .row
                   .input-field.col.s6
@@ -65,8 +65,8 @@ block content
                     label(for='passwd') New Password
                 .row
                   .input-field.col.s12
-                    input#passwd.validate(type='password', name='confirmpassword')
-                    label(for='passwd') Confirm Password
+                    input#confirmpasswd.validate(type='password', name='confirmpassword')
+                    label(for='confirmpasswd') Confirm Password
                 .row
                   .input-field.col.s12
                     input#email.validate(type='email', name='newemail', value=user.email)
@@ -79,5 +79,6 @@ block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
   script(src='/lib/bootstrap/js/bootstrap.min.js')
   script(src='/lib/materialize/js/materialize.min.js')
+  script(src='/js/common.js')
   script(src='/js/navbar.js')
   script(src='/js/profile.js')
