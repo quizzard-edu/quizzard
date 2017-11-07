@@ -307,6 +307,14 @@ exports.addReply = function (commentId, userId, reply, callback) {
     });
 }
 
+/*
+The way votes work:
+if the user already voted up, then if they vote up again the previous vote
+will get cancelled. Same for vote down.
+if the user already voted up, then vote down the previous vote gets removed
+and the new vote gets added.
+if they never voted before, just add the vote 
+*/
 // vote on a comment
 exports.voteComment = function (commentId, vote, userId, callback) {
     var query = {'comments._id': commentId};
