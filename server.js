@@ -186,7 +186,7 @@ const matchingForm = pug.compileFile('views/matching-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 const pointsTable = pug.compileFile('views/points-leaderboard.pug');
 const accuracyTable = pug.compileFile('views/accuracy-leaderboard.pug');
-
+const attemptTable = pug.compileFile('views/points-per-attempt-board.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
@@ -205,7 +205,7 @@ app.get('/leaderboard-table', function(req, res) {
         shrt = true;
     
     if(req.query.type === 'points'){
-        lb.leaderboard(req.session.user.id, shrt, function(leader) {
+        lb.leaderboard(req.session.user.id, shrt, req.query.type, function(leader) {
             var html = pointsTable({
                 fullTable: ft,
                 shortTable: shrt,
@@ -216,7 +216,7 @@ app.get('/leaderboard-table', function(req, res) {
             return res.status(200).send(html);
         });
     } else if (req.query.type === 'overall') {
-        lb.leaderboard(req.session.user.id, shrt, function(leader) {
+        lb.leaderboard(req.session.user.id, shrt, req.query.type, function(leader) {
             var html = leaderboardTable({
                 fullTable: ft,
                 shortTable: shrt,
@@ -227,8 +227,19 @@ app.get('/leaderboard-table', function(req, res) {
             return res.status(200).send(html);
         });
     } else if (req.query.type === 'accuracy') {
-        lb.leaderboard(req.session.user.id, shrt, function(leader) {
+        lb.leaderboard(req.session.user.id, shrt, req.query.type, function(leader) {
             var html = accuracyTable({
+                fullTable: ft,
+                shortTable: shrt,
+                leaderboard: leader,
+                userid: req.session.user.id
+            });
+    
+            return res.status(200).send(html);
+        });
+    } else if (req.query.type === 'attempt') {
+        lb.leaderboard(req.session.user.id, shrt, req.query.type, function(leader) {
+            var html = attemptTable({
                 fullTable: ft,
                 shortTable: shrt,
                 leaderboard: leader,

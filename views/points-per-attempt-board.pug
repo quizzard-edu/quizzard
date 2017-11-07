@@ -1,11 +1,11 @@
-.row#accuracy-board-card
+.row#attempt-board-card
   .col.s12
     table.bordered
       thead
         tr
           th Rank
           th User ID
-          th Accuracy
+          th Points per Attempt
             
       tbody
         each s in leaderboard
@@ -30,8 +30,8 @@
               td #{s.rank}
               td #{s.id}
               if s.totalAttemptsCount === 0
-                td 0.00%
+                td 0
               else
-                td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%
+                td #{(s.points / s.totalAttemptsCount).toFixed(0)}
                 
 

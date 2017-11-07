@@ -41,4 +41,12 @@ $('#option-accuracy').click(function(evt) {
     fetchLeaderboard('accuracy');
 });
 
+$('#option-attempt').click(function(evt) {
+    $('#overall-board-card').addClass('hidden');
+    $('#points-board-card').addClass('hidden');
+    $('#accuracy-board-card').addClass('hidden');
+    $('#attempt-board-card').removeClass('hidden');    
+    fetchLeaderboard('attempt');
+});
+
 

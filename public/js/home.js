@@ -112,4 +112,4 @@ var fetchLeaderboard = function() {
     });
 }
 
-fetchLeaderboard();
+fetchLeaderboard('overall');

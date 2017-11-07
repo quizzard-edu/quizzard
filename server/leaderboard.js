@@ -27,23 +27,125 @@ var users = require('./users.js');
  *
  * If shrt is true, return leaderboard with max eight entries.
  */
-exports.leaderboard = function(userid, shrt, callback) {
+exports.leaderboard = function(userid, shrt, type, callback) {
     users.getStudentsListSorted(0, function(err, studentlist) {
+
         var rank = 0;
         var last = -1;
         var userind;
 
+        //Sort the list of students depending on the type (defualt sorting is by points)
+        if (type === 'accuracy'){
+            studentlist = studentlist.sort(function(a,b) {
+                x = a.correctAttemptsCount/a.totalAttemptsCount;
+                y = b.correctAttemptsCount/b.totalAttemptsCount;
+
+                if (a.totalAttemptsCount === 0 && b.totalAttemptsCount ===0){
+                    return 0;
+                } else if (b.totalAttemptsCount === 0){
+                    return -1;
+                } else if (a.totalAttemptsCount === 0){
+                    return 1;
+                } else{
+                    return y - x;
+                }
+            })
+        } else if (type === 'attempt'){
+            studentlist = studentlist.sort(function(a,b) {
+                x = a.points/a.totalAttemptsCount;
+                y = b.points/b.totalAttemptsCount;
+                
+                if (a.totalAttemptsCount === 0 && b.totalAttemptsCount ===0){
+                    return 0;
+                } else if (b.totalAttemptsCount === 0){
+                    return -1;
+                } else if (a.totalAttemptsCount === 0){
+                    return 1;
+                } else{
+                    return y - x;
+                }
+            })
+        } else if (type === 'overall'){
+            studentlist = studentlist.sort(function(a,b) {
+                x = a.points * ((a.correctAttemptsCount / a.totalAttemptsCount) + (a.points / a.totalAttemptsCount));                
+                y = b.points * ((b.correctAttemptsCount / b.totalAttemptsCount) + (b.points / b.totalAttemptsCount));                
+                
+                if (a.totalAttemptsCount === 0 && b.totalAttemptsCount ===0){
+                    return 0;
+                } else if (b.totalAttemptsCount === 0){
+                    return -1;
+                } else if (a.totalAttemptsCount === 0){
+                    return 1;
+                } else{
+                    return y - x;
+                }
+            })
+        } 
+        
         /* assign ranks to each student */
         for (var i = 0; i < studentlist.length; ++i) {
             /* subsequent users with same amount of points have same rank */
-            if (studentlist[i].points != last) {
-                rank = i + 1;
-                last = studentlist[i].points;
-            }
-            studentlist[i].rank = rank;
+            
+            //Rank is assigned depending on the type
 
-            if (studentlist[i].id == userid)
-                userind = i;
+            if(type === 'points'){
+                if (studentlist[i].points != last) {
+                    rank = i + 1;
+                    last = studentlist[i].points;
+                }
+                studentlist[i].rank = rank;
+    
+                if (studentlist[i].id == userid)
+                    userind = i;
+
+            } else if(type === 'attempt'){
+                var attempt = 0;
+                if(studentlist[i].totalAttemptsCount != 0){
+                    attempt = studentlist[i].points/studentlist[i].totalAttemptsCount;
+                    attempt = Math.round(attempt);
+                }
+
+                if (attempt != last) {
+                    rank = i + 1;
+                    last = attempt;
+                }
+                studentlist[i].rank = rank;
+    
+                if (studentlist[i].id == userid)
+                    userind = i;
+
+            } else if(type === 'accuracy'){
+                var accuracy = 0;
+                if (studentlist[i].totalAttemptsCount != 0){
+                    accuracy = studentlist[i].correctAttemptsCount/studentlist[i].totalAttemptsCount;
+                    accuracy = Math.round(accuracy*100)/100;
+                }
+
+                if (accuracy != last) {
+                    rank = i + 1;
+                    last = accuracy;
+                }
+                studentlist[i].rank = rank;
+    
+                if (studentlist[i].id == userid)
+                    userind = i;
+
+            } else if(type === 'overall'){
+                var overall = 0;
+                if (studentlist[i].totalAttemptsCount != 0){
+                    overall = studentlist[i].points * ((studentlist[i].correctAttemptsCount / studentlist[i].totalAttemptsCount) + (studentlist[i].points / studentlist[i].totalAttemptsCount));
+                    overall = Math.round(overall);
+                }
+
+                if (overall != last) {
+                    rank = i + 1;
+                    last = overall;
+                }
+                studentlist[i].rank = rank;
+    
+                if (studentlist[i].id == userid)
+                    userind = i;
+            }
         }
 
         if (shrt) {

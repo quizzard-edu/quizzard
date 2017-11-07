@@ -5,11 +5,8 @@
         tr
           th Rank
           th User ID
-          th Points
-          if fullTable
-            th Attempts
-            th Correct Answers
-            th Success Rate
+          th Overall Score
+
       tbody
         each s in leaderboard
           if s.rank == 0
@@ -36,11 +33,7 @@
             tr(class=rowclass)
               td #{s.rank}
               td #{s.id}
-              td #{s.points}
-              if fullTable
-                td #{s.totalAttemptsCount}
-                td #{s.correctAttemptsCount}
-                if s.totalAttemptsCount === 0
-                  td 0%
-                else
-                  td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%
+              if s.totalAttemptsCount === 0
+                td 0
+              else
+               td #{(s.points * ((s.correctAttemptsCount / s.totalAttemptsCount) + (s.points / s.totalAttemptsCount))).toFixed(0)}
