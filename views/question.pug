@@ -7,6 +7,7 @@ block styles
   link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
   link(rel='stylesheet' href='/css/navbar.css')
   link(rel='stylesheet' href='/lib/sweetalert/sweetalert.css')
+  link(rel='stylesheet' href='/css/rating.css')
 
 block title
   title Quizzard - Question
@@ -30,6 +31,7 @@ block content
           .success
             h4.text-center#success-header Learn more
             p#success-message #{question.successMessage}
+
       .col.s12.m4
         .card
           .card-content
@@ -47,6 +49,13 @@ block content
             else
               p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
             h4.sidebar-item#hint.hidden Hint: #{question.hint}
+          if answered && !hasQrating && !isAdmin()
+            .card-action
+              h5.sidebar-item.hide-on-med-down#rating Please rate this question's difficulty:
+              include rating
+              button.btn.btn-lg.btn-primary.btn-block#rateQuestion Rate
+
+  include modal-alert
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
@@ -56,3 +65,5 @@ block scripts
   script(src='/js/common.js')
   script(src='/js/question.js')
   script(src='/js/navbar.js')
+  script(src='/js/admin.js')
+  script(src='/js/rating.js')

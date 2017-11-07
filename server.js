@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
-var multer = require('multer');
+var fileUpload = require('express-fileupload');
 var db = require('./server/db.js');
 var users = require('./server/users.js');
 var questions = require('./server/questions.js');
@@ -31,11 +31,12 @@ var logger = log.logger;
 var pug = require('pug');
 var common = require('./server/common.js');
 var analytics = require('./server/analytics.js');
+var json2csv = require('json2csv');
+var fs = require('fs');
+var csv2json = require('csvtojson');
 
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
-
-var upload = multer({ dest: 'uploads/' });
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -44,6 +45,7 @@ app.use(function(req, res, next) {
 });
 
 app.set('view engine', 'pug');
+app.use(fileUpload());
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
@@ -538,7 +540,13 @@ app.get('/question', function(req, res) {
             return res.status(400).send('Question is not available');
         }
 
-        var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts);
+        var answeredList = common.getIdsListFromJSONList2(questionFound.correctAttempts);
+        var hasQrating = false;
+        for (var i in questionFound.ratings) {
+            if (questionFound.ratings[i].user === req.session.user.id) {
+                hasQrating = true;
+            }
+        }
         return res.status(200).render('question', {
             user: req.session.user,
             question: questionFound,
@@ -546,6 +554,7 @@ app.get('/question', function(req, res) {
             isAdmin : function() {
                 return req.session.user.type === common.userTypes.ADMIN;
             },
+            hasQrating: hasQrating,
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
@@ -588,7 +597,7 @@ app.post('/submitanswer', function(req, res) {
             return res.status(400).send('Could not find the question');
         }
 
-        logger.info('User %s attempted to answer question %d with "%s"', userId, question.Id, answer);
+        logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
 
         var value = questions.verifyAnswer(question, answer);
         var points = question.points;
@@ -699,20 +708,6 @@ app.post('/usermod', function(req, res) {
 });
 
 /*
- * Upload a csv file containing account information.
- * Users are stored in the database.
- */
-app.post('/userupload', upload.single('usercsv'), function(req, res) {
-    if (!req.file || req.file.mimetype != 'text/csv')
-        res.status(200).send('invalid');
-
-    students.parseFile(req.file.path, function(account) {
-    }, function() {
-        res.status(200).send('uploaded');
-    });
-});
-
-/*
  * Add a question to the database.
  * The request body contains the question to be added.
  */
@@ -787,7 +782,7 @@ app.post('/questiondel', function(req, res) {
 });
 
 // submit question rating from both students and admins
-app.post('/submitQuestionRating', function(req, res){
+app.post('/submitQuestionRating', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -809,7 +804,7 @@ var submitQuestionRating = function (req, res) {
             return res.status(500).send('could not submit rating');
         }
 
-        users.submitRating(userId, questionId, rating, function(err, result){
+        users.submitRating(userId, questionId, rating, function(err, result) {
             if (err) {
                 return res.status(500).send('could not submit rating');
             }
@@ -820,7 +815,7 @@ var submitQuestionRating = function (req, res) {
 }
 
 // questions list of topics
-app.get('/questionsListofTopics', function(req, res){
+app.get('/questionsListofTopics', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -829,7 +824,7 @@ app.get('/questionsListofTopics', function(req, res){
         return res.status(403).send('Permission Denied');
     }
 
-    questions.getAllQuestionsList(function(err, docs){
+    questions.getAllQuestionsList(function(err, docs) {
         if (err) {
             return res.status(500).send('could not get the list of questions topics');
         }
@@ -846,7 +841,7 @@ app.get('/questionsListofTopics', function(req, res){
 });
 
 /* get the list of students' ids*/
-app.get('/studentsListofIdsNames', function(req, res){
+app.get('/studentsListofIdsNames', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -865,6 +860,204 @@ app.get('/studentsListofIdsNames', function(req, res){
             idsList.push(studentList[s].id + ' - ' + studentList[s].fname + ' ' + studentList[s].lname);
         }
         return res.status(200).send(idsList);
+    });
+});
+
+/* Display accounts export form */
+app.get('/accountsExportForm', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    users.getStudentsList(function(err, studentsList) {
+        if (err) {
+            return res.status(500).send('Failed to get students list');
+        }
+
+        return res.status(200).render('users/accounts-export-form', {
+            user: req.session.user,
+            students: studentsList
+        });
+    });
+});
+
+/* Display accounts import form */
+app.get('/accountsImportForm', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    return res.status(200).render('users/accounts-import-form', {
+        user: req.session.user
+    });
+});
+
+/* Display accounts export form */
+app.post('/accountsExportFile', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    var requestedList = req.body.studentsList;
+    var totalCount = requestedList.length;
+    var studentsCount = 0;
+    var studentsList = [];
+
+    for (var i in requestedList) {
+        users.getStudentById(requestedList[i], function(err, studentFound) {
+            if (err || !studentFound) {
+                res.status(500).send('Could not find a student from the export list');
+            }
+
+            studentsList.push(studentFound);
+            studentsCount++;
+            if (studentsCount === totalCount) {
+                var fields = ['id', 'fname', 'lname', 'email'];
+                var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
+                var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
+                var file = 'exportJob-students-'+new Date().toString()+'.csv';
+
+                fs.writeFile('uploads/'+file, csvData, function(err) {
+                    if (err) {
+                        logger.error(err);
+                        return res.status(500).send('Export job failed');
+                    }
+                    return res.status(200).render('users/accounts-export-complete', {
+                        file: file
+                    });
+                });
+            }
+        });
+    }
+});
+
+// import the students' list file
+app.post('/accountsImportFile', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    var uploadedFile = req.files.usercsv;
+    var newFile = 'uploads/importJob-students-' + uploadedFile.name;
+    if (!uploadedFile || uploadedFile.mimetype !== 'text/csv') {
+        return res.status(400).send('Invalid file format');
+    }
+
+    uploadedFile.mv(newFile, function(err) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        logger.info('Uploaded: ', newFile);
+
+        var importedList = [];
+        csv2json().fromFile(newFile).on('json', function(jsonObj) {
+            var userObj = {};
+            userObj['id'] = jsonObj['Username'];
+            userObj['fname'] = jsonObj['First Name'];
+            userObj['lname'] = jsonObj['Last Name'];
+            userObj['email'] = jsonObj['Email'];
+            importedList.push(userObj);
+        }).on('done', function(err) {
+            if (err) {
+                return res.status(500).send('Failed to parse the csv file');
+            }
+
+            return res.status(200).render('users/accounts-import-list', {
+                students: importedList
+            });
+        });
+    });
+});
+
+// import the students' list file
+app.post('/accountsImportList', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    if (!req.body.selectedList) {
+        return res.status(400).send('Invalid students\' list');
+    }
+
+    var inputLen = req.body.selectedList.length;
+    var inputList = req.body.selectedList;
+    var added = 0;
+    var failed = 0;
+    var exist = 0;
+    var total = 0;
+
+    if (inputLen === 0) {
+        return res.status(200).send('ok');
+    }
+
+    for (var i in inputList) {
+        var inputUser = inputList[i];
+        var userToAdd = {
+            fname: inputUser.fname,
+            lname: inputUser.lname,
+            id: inputUser.username,
+            email: inputUser.email,
+            password: 'KonniChiwa'
+        };
+        users.addStudent(userToAdd, function (err, userObj) {
+            total++;
+
+            if (err) {
+                if (err === 'exists') {
+                    exist++;
+                } else {
+                    failed++;
+                }
+            } else {
+                added++;
+            }
+
+            if (total === inputLen) {
+                return res.status(200).render('users/accounts-import-complete',{
+                    added: added,
+                    failed: failed,
+                    exist: exist,
+                    total: total
+                });
+            }
+        });
+    }
+});
+
+/* download */
+app.get('/download', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var fileName = req.query.file;
+    var filePath = __dirname+'/uploads/'+fileName;
+    return res.download(filePath, fileName, function (err) {
+        if (err) {
+            logger.error(err);
+        }
     });
 });
 
