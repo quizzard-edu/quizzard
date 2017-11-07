@@ -190,11 +190,11 @@ const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
 const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
-const regexForm = pug.compileFile('views/regex-answer.pug');
-const mcForm = pug.compileFile('views/mc-answer.pug');
-const tfForm = pug.compileFile('views/tf-answer.pug');
-const chooseAllForm = pug.compileFile('views/chooseAll-answer.pug');
-const matchingForm = pug.compileFile('views/matching-answer.pug');
+const regexForm = pug.compileFile('views/question/regex-answer.pug');
+const mcForm = pug.compileFile('views/question/mc-answer.pug');
+const tfForm = pug.compileFile('views/question/tf-answer.pug');
+const chooseAllForm = pug.compileFile('views/question/chooseAll-answer.pug');
+const matchingForm = pug.compileFile('views/question/matching-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 const questionList = pug.compileFile('views/questionlist.pug');
 
