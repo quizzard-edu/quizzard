@@ -1019,7 +1019,7 @@ app.post('/accountsImportList', function (req, res) {
             lname: inputUser.lname,
             id: inputUser.username,
             email: inputUser.email,
-            passwd: 'KonniChiwa'
+            password: 'KonniChiwa'
         };
         users.addStudent(userToAdd, function (err, userObj) {
             total++;
@@ -1035,7 +1035,7 @@ app.post('/accountsImportList', function (req, res) {
             }
 
             if (total === inputLen) {
-                return res.status(200).render('accounts-import-complete',{
+                return res.status(200).render('users/accounts-import-complete',{
                     added: added,
                     failed: failed,
                     exist: exist,
