@@ -30,19 +30,189 @@ var displayAccountsTable = function() {
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
 
-            $('#account-creation-button').click(function(){
+            $('#account-creation-button').click(function() {
                 displayAccountForm();
+            });
+
+            $('#account-export-button').click(function() {
+                displayExportAccountsForm();
+            });
+
+            $('#account-import-button').click(function() {
+                displayImportAccountsForm();
             });
 
             $('#usersSwitch').prop('checked', usersTableActive);
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
+
+/* display Export Accounts Form */
+var displayExportAccountsForm = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/accountsExportForm',
+        success: function(data) {
+            $('#admin-content').html(data);
+
+            $('#account-export-back-button').click(function() {
+                displayAccountsTable();
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
+        }
+    });
+}
+
+/* display Import Accounts Form */
+var displayImportAccountsForm = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/accountsImportForm',
+        success: function(data) {
+            $('#admin-content').html(data);
+
+            $('#account-import-back-button').click(function() {
+                displayAccountsTable();
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
+        }
+    });
+}
+
+/* submit export form */
+var submitExportForm = function() {
+    var selected = [];
+    $('div#exportForm input[type=checkbox]').each(function() {
+        if ($(this).is(':checked')) {
+            selected.push($(this).attr('id').substring(3));
+        }
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: '/accountsExportFile',
+        data: {studentsList: selected},
+        success: function(data) {
+            $('#admin-content').html(data);
+
+            $('#account-export-complete-back-button').click(function() {
+                displayAccountsTable();
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
+        }
+    });
+}
+
+/* Upload a file of users to the server. */
+var submitImportForm = function() {
+    var files = $('#import-form-input').get(0).files;
+    var formData = new FormData();
+
+    if (files.length !== 1) {
+        warningSnackbar('You can only import one file!');
+        return;
+    }
+
+    formData.append('usercsv', files[0]);
+
+    $.ajax({
+        type: 'POST',
+        url: '/accountsImportFile',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(data) {
+            successSnackbar('File uploaded successfully');
+            $('#admin-content').html(data);
+
+            $('#account-import-list-back-button').click(function() {
+                displayAccountsTable();
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Upload failed');
+            }
+        }
+    });
+}
+
+/* submit export form */
+var submitImportList = function() {
+    var selected = [];
+    $('#importList').find('tr').each(function (i, el) {
+        if (i === 0) {
+            return;
+        }
+
+        var $tds = $(this).find('td'),
+            isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked'),
+            fname = $tds.eq(1).text(),
+            lname = $tds.eq(2).text(),
+            username = $tds.eq(3).text(),
+            email = $tds.eq(4).text();
+
+        var userObj = {
+            fname: fname,
+            lname: lname,
+            username: username,
+            email: email
+        };
+
+        if (isSelected) {
+            selected.push(userObj);
+        }
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: '/accountsImportList',
+        data: {selectedList: selected},
+        success: function(data) {
+            successSnackbar('Students\' list uploaded successfully');
+            $('#admin-content').html(data);
+
+            $('#account-import-complete-back-button').click(function() {
+                displayAccountsTable();
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Upload failed');
+            }
+        }
+    });
+}
+
 
 /* Add click events to the buttons in the account table. */
 var addAccountsTableEvents = function() {
@@ -71,7 +241,7 @@ var displayAccountForm = function() {
         success: function(data) {
             $('#admin-content').html(data);
 
-            $('#account-creation-back-button').click(function(){
+            $('#account-creation-back-button').click(function() {
                 displayAccountsTable();
             });
 
@@ -80,9 +250,11 @@ var displayAccountForm = function() {
                 submitUserForm();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -107,15 +279,17 @@ var displayQuestionTable = function() {
                 displayQuestionForm();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
 
-var addQuestionsTableEvents = function(){
+var addQuestionsTableEvents = function() {
     $('.view-button').click(function(evt) {
         window.location.href = '/question?_id=' + this.id.substring(5);
     });
@@ -162,25 +336,27 @@ var displayQuestionForm = function() {
             // gets the updated topics list
             getQuestionsTopicsList();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
 
 // replace the answer field in Question-creation.pug for specific question
-var getQuestionFormAnswer = function(form){
+var getQuestionFormAnswer = function(form) {
     $.ajax({
         type: 'GET',
         url: '/answerForm',
         data: {qType:form},
-        success: function(data){
+        success: function(data) {
             $('#qAnswer').html(data);
         },
 
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -208,9 +384,11 @@ var displayStatistics = function() {
             $('#admin-button').hide();
             $('#admin-back').hide();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -270,7 +448,7 @@ var deactivateUser = function(id) {
                 const msg = ' has been&nbsp;<u><b>deactivated</b></u>&nbsp;';
                 warningSnackbar(id + ' account' + msg);
             },
-            error: function(data){
+            error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
@@ -303,7 +481,7 @@ var activateUser = function(id) {
                 displayAccountsTable();
                 successSnackbar(id + '\'s account has been activated');
             },
-            error: function(data){
+            error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
@@ -330,9 +508,11 @@ var editUser = function(id) {
                 submitEditForm(id);
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -355,45 +535,15 @@ var submitUserForm = function() {
             displayAccountsTable();
             successSnackbar('User ' + user.id + ' added to database');
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['responseText'] === 'failure') {
                 failSnackbar('User could not be added');
             } else if (data['responseText'] === 'exists') {
                 failSnackbar('User ' + user.id + ' already exists');
-            }
-        }
-    });
-}
-
-/* Upload a file of users to the server. */
-var submitUploadForm = function() {
-    var files = $('#upload-file').get(0).files;
-    var formData = new FormData();
-
-    if (files.length > 1) {
-        $('#upload-result').html('Select a single file');
-        return;
-    }
-
-    formData.append('usercsv', files[0]);
-
-    $.ajax({
-        type: 'POST',
-        url: '/userupload',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-            successSnackbar('File successfully uploaded');
-            setTimeout(displayAccountsTable, 3000);
-        },
-        error: function(data){
-            if (data['status'] === 401) {
-                window.location.href = '/';
             } else {
-                failSnackbar('Upload failed');
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -407,8 +557,9 @@ var submitEditForm = function(id) {
     };
 
     jQuery.each(fields, function(i, field) {
-        if (field.value)
+        if (field.value) {
             user[field.name] = field.value;
+        }
     });
 
     $.ajax({
@@ -424,13 +575,15 @@ var submitEditForm = function(id) {
             displayAccountsTable();
             successSnackbar('User ' + id + ' has been updated');
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data.result === 'failure') {
                 failSnackbar('User could not be updated. Please try again');
             } else if (data.result === 'dupid') {
                 failSnackbar('User ID ' + user.id + ' is taken');
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -471,7 +624,7 @@ var updateVisibility = function(qid) {
                             warningSnackbar('Question ' + qid + msg);
                         }
                     },
-                    error: function(data){
+                    error: function(data) {
                         if (data['status'] === 401) {
                             window.location.href = '/';
                         } else {
@@ -498,22 +651,22 @@ var collectQuestionFormData = function(form){
     question['answer'] = [];
 
     jQuery.each(fields, function(i, field) {
-        if(field.name.startsWith('radbutton')){
+        if(field.name.startsWith('radbutton')) {
             question['answer'] = fields[i+1].value;
         }
 
-        if(field.name.startsWith('mcans')){
+        if(field.name.startsWith('mcans')) {
             question['choices'].push(field.value);
         }
 
-        if(field.name.startsWith('matchLeft')){
+        if(field.name.startsWith('matchLeft')) {
             question['leftSide'].push(field.value);
         }
 
-        if(field.name.startsWith('matchRight')){
+        if(field.name.startsWith('matchRight')) {
             question['rightSide'].push(field.value);
         }
-        if(field.name.startsWith('tfbutton')){
+        if(field.name.startsWith('tfbutton')) {
             question['answer'] = field.value;
         }
         if(field.name.startsWith('checkButton') ){
@@ -545,10 +698,10 @@ var submitQuestionForm = function() {
             successSnackbar('Question added to database');
             displayQuestionTable();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['status'] === 400){
+            } else if (data['status'] === 400) {
                 warningSnackbar(data['responseText']);
             } else {
                 failSnackbar('Question could not be added.');
@@ -575,7 +728,7 @@ var deleteQuestion = function(qid) {
                 successSnackbar('Question ' + qid + ' was removed from the database');
                 displayQuestionTable();
             },
-            error: function(data){
+            error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
@@ -611,9 +764,11 @@ var editQuestion = function(qid) {
             // gets the updated topics list
             getQuestionsTopicsList();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -641,7 +796,7 @@ var submitQEditForm = function(qid) {
             successSnackbar('Question ' + qid + ' has been modified.');
             displayQuestionTable();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 400){
@@ -662,10 +817,11 @@ var submitQuestionRating = function (rating, qid) {
             rating: rating,
             qId: qid
         },
+        async: false,
         success: function(data) {
             successSnackbar('Question ' + qid + ' rating has been updated.');
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -706,16 +862,18 @@ var sortAccountsTable = function(type) {
             $('#admin-content').html(data);
             addAccountsTableEvents();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
 
 // Toggles the view of the Visibility Checkboxes in the Question-Table View
-var toggleButtonVisibility = function(){
+var toggleButtonVisibility = function() {
     if (document.getElementById('sw').checked) {
         $('.visbox').show();
     } else {
@@ -743,7 +901,7 @@ var getQuestionsTopicsList = function () {
               minLength: 0
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
