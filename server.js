@@ -1081,11 +1081,18 @@ app.get('/profile', function(req, res){
         return res.redirect('/');
     }
 
-    return res.status(200).render('profile', {
-        user: req.session.user,
-        isAdmin : function() {
-            return req.session.user.type === common.userTypes.ADMIN;
+    users.getUserById(req.session.user.id, function(err, user){
+        if (err) {
+            return res.status(500).send(err);
         }
+
+        if (!user) {
+            return res.status(400).send('bad request, user does not exist');
+        }
+
+        return res.status(200).render('profile', {
+            user: user
+        });
     });
 });
 

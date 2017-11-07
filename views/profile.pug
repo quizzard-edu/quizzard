@@ -17,7 +17,7 @@ block content
         .card
           .hidden#cancelButton
             .card-image
-              a.btn-floating.halfway-fab.waves-effect.waves-light.red.right#question-creation-back-button
+              a.btn-floating.halfway-fab.waves-effect.waves-light.red.right(onclick='disableEdit()')
                 i.material-icons close
           .row.center
             .col.s12
@@ -31,22 +31,22 @@ block content
                 li
                   a.btn-floating.blue
                     i.material-icons backup
-              h4 UTORID
+              h4 #{user.id}
             .col.s1
             #viewForm
               .col.s10
                 .row
                   .input-field.col.s12
                     span Fist Name:&nbsp
-                    span firstnamehere
+                    span #{user.fname}
                 .row
                   .input-field.col.s12
                     span Last Name:&nbsp
-                    span lastnamehere
+                    span #{user.lname}
                 .row
                   .input-field.col.s12
                     span Email:&nbsp
-                    span this.is@the.email
+                    span #{user.email}
                 .row
                   button.waves-effect.waves-light.btn(type='button', onclick='enableEdit()') Edit Information
                     i.material-icons.right send
@@ -54,19 +54,23 @@ block content
               .col.s10
                 .row
                   .input-field.col.s6
-                    input#fname.validate(type='text' name='newfname' required autofocus)
+                    input#fname(type='text', name='newfname', value=user.fname, disabled)
                     label(for='fname') First Name
                   .input-field.col.s6
-                    input#lname.validate(type='text' name='newlname' required)
+                    input#lname(type='text', name='newlname', value=user.lname, disabled)
                     label(for='lname') Last Name
                 .row
                   .input-field.col.s12
-                    input#passwd.validate(type='password' name='newpassword' required)
-                    label(for='passwd') Password
+                    input#passwd.validate(type='password', name='newpassword')
+                    label(for='passwd') New Password
                 .row
                   .input-field.col.s12
-                    input#email.validate(type='email' name='newemail' required)
-                    label(for='email') Email
+                    input#passwd.validate(type='password', name='confirmpassword')
+                    label(for='passwd') Confirm Password
+                .row
+                  .input-field.col.s12
+                    input#email.validate(type='email', name='newemail', value=user.email)
+                    label(for='email') New Email
                 .row
                   button.waves-effect.waves-light.btn(type='submit') Edit
                     i.material-icons.right send
