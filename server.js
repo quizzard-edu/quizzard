@@ -91,7 +91,6 @@ app.post('/login', function(req, res) {
     users.checkLogin(username, password, function(err, user) {
         if(err){
             logger.info('User %s failed logged in.', username);
-            req.session.user = null;
             return res.status(403).send(err);
         }
 
@@ -198,7 +197,7 @@ const matchingForm = pug.compileFile('views/question_types/matching-answer.pug')
 const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 const questionList = pug.compileFile('views/questionlist.pug');
-
+const discussionBoard = pug.compileFile('views/discussion.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
@@ -828,6 +827,213 @@ var submitQuestionRating = function (req, res) {
         });
     });
 }
+
+// get discussion board
+app.get('/getDiscussionBoard', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var questionId = req.query.questionId;
+    questions.lookupQuestionById(questionId, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        if (!question) {
+            logger.error('Could not find the question %s', questionId);
+            return res.status(400).send('Could not find the question');
+        }
+
+        users.getUsersList((err, userObj) => {
+            if (err) {
+                return res.status(500).send('Could not get the list of students');
+            }
+
+            var usersList = {};
+            for (var i in userObj) {
+                var user = userObj[i];
+                usersList[user.id] = user.fname + ' ' + user.lname;
+            }
+
+            var discussionHtml = discussionBoard({
+                comments: question.comments,
+                getCurrentUser: () =>{
+                    var userId = req.session.user.id;
+                    if (!usersList[userId]) {
+                        return 'UNKNOWN';
+                    }
+                    return usersList[userId];
+                },
+                getFirstLastName: (userId) => {
+                    if (!usersList[userId]) {
+                        return 'UNKNOWN';
+                    }
+                    return usersList[userId];
+                },
+                isLiked: (likesList) => {
+                    return likesList.indexOf(req.session.user.id) !== -1;
+                },
+                isDisliked: (dislikesList) => {
+                    return dislikesList.indexOf(req.session.user.id) !== -1;
+                },
+                highlightMentionedUser: (comment) => {
+                    var userId = req.session.user.id;
+                    if (!usersList[userId]) {
+                        return '@UNKNOWN';
+                    }
+
+                    var fullName = '@' + usersList[userId];
+                    var newComment = '';
+                    if (comment.indexOf(fullName) > -1) {
+                        var parts = comment.split(fullName);
+                        for (var i = 0; i < parts.length-1; i++) {
+                            newComment += parts[i] + '<b>' + fullName + '</b>';
+                        }
+                        newComment += parts[parts.length-1];
+                    } else {
+                        newComment = comment;
+                    }
+                    return newComment;
+                }
+            });
+
+            return res.status(200).send(discussionHtml);
+        });
+    });
+});
+
+// add comments to a question
+app.post('/addCommentToQuestion', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var questionId = req.body.questionId;
+    var comment = req.body.commentText;
+    var userId = req.session.user.id;
+
+    questions.addComment(questionId, userId, comment, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send('Ok');
+    });
+});
+
+// add reply to a comment
+app.post('/addReplyToComment', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var commentId = req.body.commentId;
+    var reply = req.body.replyText;
+    var userId = req.session.user.id;
+
+    questions.addReply(commentId, userId, reply, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send('Ok');
+    });
+});
+
+// vote on a comment
+app.post('/voteOnComment', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var commentId = req.body.commentId;
+    var vote = parseInt(req.body.vote);
+    var userId = req.session.user.id;
+
+    if (!vote || (vote !== 1 && vote !== -1)) {
+        return res.status(400).send('Vote is invalid');
+    }
+
+    logger.info(commentId, vote, userId);
+
+    questions.voteComment(commentId, vote, userId, function (err, value) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send(value);
+    });
+});
+
+// vote on a reply
+app.post('/voteOnReply', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var replyId = req.body.replyId;
+    var vote = parseInt(req.body.vote);
+    var userId = req.session.user.id;
+
+    if (!vote || (vote !== 1 && vote !== -1)) {
+        return res.status(400).send('Vote is invalid');
+    }
+
+    logger.info(replyId, vote, userId);
+
+    questions.voteReply(replyId, vote, userId, function (err, value) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send(value);
+    });
+});
+
+// gets the users that have answered the question
+app.get('/usersToMentionInDiscussion', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var questionId = req.query.questionId;
+    questions.lookupQuestionById(questionId, function (err, question){
+        if (err) {
+            return res.status(500).send('could not find the question');
+        }
+
+        if (!question) {
+            return res.status(400).send('Invalid questionId');
+        }
+
+        var answeredList = [];
+        for (var i in question.correctAttempts) {
+            answeredList.push(question.correctAttempts[i].id);
+        }
+        users.getUsersList(function (err, usersList) {
+            if (err) {
+                return res.status(500).send('could not find the list of users');
+            }
+            var totalList = [];
+            for (var i in usersList) {
+                var user = usersList[i];
+                if (req.session.user.id !== user.id &&
+                    (user.type === common.userTypes.ADMIN
+                        || answeredList.indexOf(user.id) !== -1)) {
+                    totalList.push(user.fname+' '+user.lname);
+                }
+            }
+
+            return res.status(200).send(totalList);
+        });
+    });
+});
 
 // questions list of topics
 app.get('/questionsListofTopics', function(req, res) {

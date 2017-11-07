@@ -655,7 +655,7 @@ var collectQuestionFormData = function(form){
             question['answer'] = fields[i+1].value;
         }
 
-        if(field.name.startsWith('mcans')) {
+        if(field.name.startsWith('option')) {
             question['choices'].push(field.value);
         }
 
