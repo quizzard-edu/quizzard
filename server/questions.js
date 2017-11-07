@@ -248,10 +248,11 @@ exports.verifyAnswer = function(question, answer) {
 }
 
 var verifyChooseAllQuestionAnswer = function(question,answer){
-    return question.answer.sort().join(',')=== answer.sort().join(',');
+    return question.answer.sort().join(',') === answer.sort().join(',');
 }
 
 var verifyMatchingQuestionAnswer = function(question, answer){
+    var value = false;
     var ansLeftSide = answer[0];
     var ansRightSide = answer[1];
 
