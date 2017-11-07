@@ -782,7 +782,7 @@ app.post('/questiondel', function(req, res) {
 });
 
 // submit question rating from both students and admins
-app.post('/submitQuestionRating', function(req, res){
+app.post('/submitQuestionRating', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -804,7 +804,7 @@ var submitQuestionRating = function (req, res) {
             return res.status(500).send('could not submit rating');
         }
 
-        users.submitRating(userId, questionId, rating, function(err, result){
+        users.submitRating(userId, questionId, rating, function(err, result) {
             if (err) {
                 return res.status(500).send('could not submit rating');
             }
@@ -815,7 +815,7 @@ var submitQuestionRating = function (req, res) {
 }
 
 // questions list of topics
-app.get('/questionsListofTopics', function(req, res){
+app.get('/questionsListofTopics', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -824,7 +824,7 @@ app.get('/questionsListofTopics', function(req, res){
         return res.status(403).send('Permission Denied');
     }
 
-    questions.getAllQuestionsList(function(err, docs){
+    questions.getAllQuestionsList(function(err, docs) {
         if (err) {
             return res.status(500).send('could not get the list of questions topics');
         }
@@ -841,7 +841,7 @@ app.get('/questionsListofTopics', function(req, res){
 });
 
 /* get the list of students' ids*/
-app.get('/studentsListofIdsNames', function(req, res){
+app.get('/studentsListofIdsNames', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -864,7 +864,7 @@ app.get('/studentsListofIdsNames', function(req, res){
 });
 
 /* Display accounts export form */
-app.get('/accountsExportForm', function(req, res){
+app.get('/accountsExportForm', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -886,7 +886,7 @@ app.get('/accountsExportForm', function(req, res){
 });
 
 /* Display accounts import form */
-app.get('/accountsImportForm', function(req, res){
+app.get('/accountsImportForm', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -901,7 +901,7 @@ app.get('/accountsImportForm', function(req, res){
 });
 
 /* Display accounts export form */
-app.post('/accountsExportFile', function(req, res){
+app.post('/accountsExportFile', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
