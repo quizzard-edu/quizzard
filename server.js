@@ -959,7 +959,7 @@ app.post('/accountsImportFile', function (req, res) {
         }
 
         logger.info('Uploaded: ', newFile);
-        
+
         var importedList = [];
         csv2json().fromFile(newFile).on('json', function(jsonObj) {
             var userObj = {};
@@ -978,6 +978,60 @@ app.post('/accountsImportFile', function (req, res) {
             });
         });
     });
+});
+
+// import the students' list file
+app.post('/accountsImportList', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    if (!req.body.selectedList) {
+        return res.status(400).send('Invalid students\' list');succAddition
+    }
+
+    var inputLen = req.body.selectedList.length;
+    var inputList = req.body.selectedList;
+    var added = 0;
+    var failed = 0;
+    var exist = 0;
+    var total = 0;
+
+    if (inputLen === 0) {
+        return res.status(200).send('ok');
+    }
+
+    for (var i in inputList) {
+        var inputUser = inputList[i];
+        var userToAdd = {
+            fname: inputUser.fname,
+            lname: inputUser.lname,
+            id: inputUser.username,
+            email: inputUser.email,
+            passwd: 'KonniChiwa'
+        };
+        users.addStudent(userToAdd, function (err, userObj) {
+            total++;
+
+            if (err) {
+                if (err === 'exists') {
+                    exist++;
+                } else {
+                    failed++;
+                }
+            } else {
+                added++;
+            }
+
+            if (total === inputLen) {
+                return res.status(200).send('ok');
+            }
+        });
+    }
 });
 
 /* download */

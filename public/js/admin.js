@@ -174,17 +174,39 @@ var submitImportList = function() {
             isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked'),
             fname = $tds.eq(1).text(),
             lname = $tds.eq(2).text(),
-            email = $tds.eq(3).text();
+            username = $tds.eq(3).text(),
+            email = $tds.eq(4).text();
         var userObj = {
             fname: fname,
             lname: lname,
+            username: username,
             email: email
         };
         if (isSelected) {
             selected.push(userObj);
         }
     });
-    alert(selected);
+
+    $.ajax({
+        type: 'POST',
+        url: '/accountsImportList',
+        data: {selectedList: selected},
+        success: function(data) {
+            successSnackbar('Students\' list uploaded successfully');
+            $('#admin-content').html(data);
+
+            $('#account-import-list-back-button').click(function(){
+                displayAccountsTable();
+            });
+        },
+        error: function(data){
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Upload failed');
+            }
+        }
+    });
 }
 
 
