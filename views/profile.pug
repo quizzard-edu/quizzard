@@ -29,28 +29,49 @@ block content
                     i.material-icons backup
               h4 UTORID
             .col.s1
-            .col.s10
-              .row
-                .input-field.col.s6
-                  input#fname.validate(type='text' name='newfname' required autofocus)
-                  label(for='fname') First Name
-                .input-field.col.s6
-                  input#lname.validate(type='text' name='newlname' required)
-                  label(for='lname') Last Name
-              .row
-                .input-field.col.s12
-                  input#passwd.validate(type='password' name='newpassword' required)
-                  label(for='passwd') Password
-              .row
-                .input-field.col.s12
-                  input#email.validate(type='email' name='newemail' required)
-                  label(for='email') Email
-              .row
-                button.waves-effect.waves-light.btn(type='submit') Edit
-                  i.material-icons.right send
+            #viewForm
+              .col.s10
+                .row
+                  .input-field.col.s12
+                    span Fist Name:&nbsp
+                    span firstnamehere
+                .row
+                  .input-field.col.s12
+                    span Last Name:&nbsp
+                    span lastnamehere
+                .row
+                  .input-field.col.s12
+                    span Email:&nbsp
+                    span this.is@the.email
+                .row
+                  button.waves-effect.waves-light.btn(type='button', onclick='enableEdit()') Edit Information
+                    i.material-icons.right send
+              .hidden#editForm
+                .col.s10
+                  .row
+                    .input-field.col.s6
+                      input#fname.validate(type='text' name='newfname' required autofocus)
+                      label(for='fname') First Name
+                    .input-field.col.s6
+                      input#lname.validate(type='text' name='newlname' required)
+                      label(for='lname') Last Name
+                  .row
+                    .input-field.col.s12
+                      input#passwd.validate(type='password' name='newpassword' required)
+                      label(for='passwd') Password
+                  .row
+                    .input-field.col.s12
+                      input#email.validate(type='email' name='newemail' required)
+                      label(for='email') Email
+                  .row
+                    button.waves-effect.waves-light.btn(type='button') cancel
+                      i.material-icons.right cancel
+                    button.waves-effect.waves-light.btn(type='submit') Edit
+                      i.material-icons.right send
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
   script(src='/lib/bootstrap/js/bootstrap.min.js')
   script(src='/lib/materialize/js/materialize.min.js')
   script(src='/js/navbar.js')
+  script(src='/js/profile.js')
