@@ -19,11 +19,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const questionTypes = Object.freeze({
-    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'question/mc-answer', icon: 'format_list_bulleted'},
-    REGULAR         : {name: 'Regular Question', value: 're', template: 'question/regex-answer', icon: 'font_download'},
-    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'question/tf-answer', icon: 'check_circle'},
-    MATCHING        : {name: 'Matching', value: 'matching', template: 'question/matching-answer', icon: 'dashboard'},
-    CHOOSEALL       : {name: 'Choose All That Apply', value: 'ca', template: 'question/chooseAll-answer', icon: 'format_list_bulleted'}
+    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'question_types/mc-answer', icon: 'format_list_bulleted'},
+    REGULAR         : {name: 'Regular Question', value: 're', template: 'question_types/regex-answer', icon: 'font_download'},
+    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'question_types/tf-answer', icon: 'check_circle'},
+    MATCHING        : {name: 'Matching', value: 'matching', template: 'question_types/matching-answer', icon: 'dashboard'},
+    CHOOSEALL       : {name: 'Choose All That Apply', value: 'ca', template: 'question_types/chooseAll-answer', icon: 'format_list_bulleted'},
+    ORDERING        : {name: 'Order the List', value: 'ordering', template: 'question_types/ordering-answer', icon: 'format_list_bulleted'}
 });
 exports.questionTypes = questionTypes;
 

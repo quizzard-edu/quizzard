@@ -1,0 +1,71 @@
+if answerForm
+  .form-group
+    .row
+      h5.left Description:
+    .row
+      .col.s10
+        p.left Place one item of the matching pair on the left side, and the corresponding one beside it the right side
+    each index in [1,2,3]
+      .row
+        hr
+        .col.s5
+          .card.white
+            textarea.form-control(name='matchLeft'+index, placeholder='Enter Left Side', rows='3', required)
+        .col.s5
+          .card.white
+            textarea.form-control(name='matchRight'+index, placeholder='Enter Right Side', rows='3', required)
+        .col.s2
+          a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
+            i.tiny.material-icons close
+
+  #addMoreAnswersButton
+    a.waves-effect.waves-light.btn(onclick="addMatchAnswers('qAnswer')") add answer
+
+else if studentQuestionForm
+  .form-group
+    .row
+      .col.s6
+        each item, index in question.leftSide
+          .card(id='matchLeft'+index, onclick='selectAnswer($(this))', onmouseover='cardHoverOn($(this))' onmouseout='cardHoverAway($(this))')
+            p(id='textLeft'+index)=item
+      .col.s6
+        each item, index in question.rightSide
+          .card(id='matchRight'+index, onclick='selectAnswer($(this))', onmouseover='cardHoverOn($(this))' onmouseout='cardHoverAway($(this))')
+            p(id='textRight'+index)=item
+  hr
+  form.form-question#match_answerform
+    .row
+      h5.left Matches:
+    .row
+      .left.button.hidden#clearBtn(class='btn btn-lg btn-primary', onclick='clearAll()') Clear All
+    .row
+      .col.s11
+        p#noAnswers No matches have been selected, please select 2 answers from the above list of choices
+    #answers
+    button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+
+else if adminQuestionEdit
+  .form-group
+    .row
+      h5.left Description:
+    .row
+      .col.s10
+        p.left Place one item of the matching pair on the left side, and the corresponding one beside it the right side
+    each item, index in question.leftSide
+      .row
+        hr
+        .col.s5
+          .card.white
+            textarea.form-control(name='matchLeft'+index, placeholder='Enter Left Side', rows='3', required)=item
+        .col.s5
+          .card.white
+            textarea.form-control(name='matchRight'+index, placeholder='Enter Right Side', rows='3', required)=question.rightSide[index]
+        .col.s2
+          a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
+            i.tiny.material-icons close
+
+  #addMoreAnswersButton
+    a.waves-effect.waves-light.btn(onclick="addMatchAnswers('qAnswer')") add answer
+
+block scripts
+  script(src='/js/matching-answer.js')
