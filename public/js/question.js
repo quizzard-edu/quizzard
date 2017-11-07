@@ -63,7 +63,7 @@ var sendAnswerRequest = function(ans) {
                     if(getRating() > 0) {
                         submitQuestionRating(getRating(), questionId);
                     }
-                    window.location.href = '/';
+                    location.reload();
                 }
             });
 
