@@ -968,7 +968,7 @@ app.post('/voteOnComment', function (req, res) {
     });
 });
 
-// vote on a comment
+// vote on a reply
 app.post('/voteOnReply', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
@@ -994,6 +994,7 @@ app.post('/voteOnReply', function (req, res) {
     });
 });
 
+// gets the users that have answered the question
 app.get('/usersToMentionInDiscussion', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
