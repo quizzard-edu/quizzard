@@ -135,7 +135,7 @@ var repliesSection = function(replyObjectId) {
 var comment = function() {
     const commentText = $('#commentBox').val();
 
-    if (!commentText) {
+    if (commentText.replace(/\s/g, '').length === 0) {
         warningSnackbar('You can\'t have an empty comment');
         return;
     }

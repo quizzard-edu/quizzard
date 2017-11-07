@@ -47,7 +47,7 @@ each itemComment, indexReply in comments
           i.small.material-icons.profile-picture account_circle
           span.name #{getCurrentUser()}
         .row
-          textarea.comment-box(id='replyTo_' + itemComment['_id'], placeholder='Enter a Reply...')
+          textarea.comment-box(id='replyTo_' + itemComment['_id'], placeholder='Enter a Reply...', spellcheck='true')
           .button.comment-reply-button(class='btn btn-lg btn-primary', onclick='reply("'+itemComment['_id']+'")') Reply
 
 .row.comment
@@ -57,7 +57,7 @@ each itemComment, indexReply in comments
       i.small.material-icons.profile-picture account_circle
       span.name #{getCurrentUser()}
     .row
-      textarea.comment-box#commentBox(placeholder='Enter a comment...')
+      textarea.comment-box#commentBox(placeholder='Enter a comment...', spellcheck='true')
       .button.comment-reply-button(class='btn btn-lg btn-primary', onclick='comment()') Comment
 
 block scripts
