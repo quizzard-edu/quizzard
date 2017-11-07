@@ -93,13 +93,14 @@ var sortRequest = function(type) {
 /*
  * Fetch the mini leaderboard table and display it in the sidebar.
  */
-var fetchLeaderboard = function() {
+var fetchLeaderboard = function(t) {
     $.ajax({
         type: 'GET',
         url: '/leaderboard-table',
         data: {
             fullTable: false,
-            longTable: false
+            longTable: false,
+            type: t
         },
         success: function(data) {
             $('.leaderboard-small').html(data);
