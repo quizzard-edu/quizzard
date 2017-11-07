@@ -1028,7 +1028,12 @@ app.post('/accountsImportList', function (req, res) {
             }
 
             if (total === inputLen) {
-                return res.status(200).send('ok');
+                return res.status(200).render('accounts-import-complete',{
+                    added: added,
+                    failed: failed,
+                    exist: exist,
+                    total: total
+                });
             }
         });
     }
