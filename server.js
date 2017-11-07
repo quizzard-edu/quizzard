@@ -998,7 +998,7 @@ app.post('/accountsImportList', function (req, res) {
     }
 
     if (!req.body.selectedList) {
-        return res.status(400).send('Invalid students\' list');succAddition
+        return res.status(400).send('Invalid students\' list');
     }
 
     var inputLen = req.body.selectedList.length;
@@ -1047,7 +1047,7 @@ app.post('/accountsImportList', function (req, res) {
 });
 
 /* download */
-app.get('/download', function(req, res){
+app.get('/download', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
