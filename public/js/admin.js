@@ -62,7 +62,7 @@ var displayExportAccountsForm = function() {
         success: function(data) {
             $('#admin-content').html(data);
 
-            $('#account-export-back-button').click(function(){
+            $('#account-export-back-button').click(function() {
                 displayAccountsTable();
             });
         },
@@ -84,7 +84,7 @@ var displayImportAccountsForm = function() {
         success: function(data) {
             $('#admin-content').html(data);
 
-            $('#account-import-back-button').click(function(){
+            $('#account-import-back-button').click(function() {
                 displayAccountsTable();
             });
         },
@@ -114,7 +114,7 @@ var submitExportForm = function() {
         success: function(data) {
             $('#admin-content').html(data);
 
-            $('#account-export-complete-back-button').click(function(){
+            $('#account-export-complete-back-button').click(function() {
                 displayAccountsTable();
             });
         },
@@ -150,7 +150,7 @@ var submitImportForm = function() {
             successSnackbar('File uploaded successfully');
             $('#admin-content').html(data);
 
-            $('#account-import-list-back-button').click(function(){
+            $('#account-import-list-back-button').click(function() {
                 displayAccountsTable();
             });
         },
@@ -199,7 +199,7 @@ var submitImportList = function() {
             successSnackbar('Students\' list uploaded successfully');
             $('#admin-content').html(data);
 
-            $('#account-import-complete-back-button').click(function(){
+            $('#account-import-complete-back-button').click(function() {
                 displayAccountsTable();
             });
         },
@@ -241,7 +241,7 @@ var displayAccountForm = function() {
         success: function(data) {
             $('#admin-content').html(data);
 
-            $('#account-creation-back-button').click(function(){
+            $('#account-creation-back-button').click(function() {
                 displayAccountsTable();
             });
 
@@ -250,7 +250,7 @@ var displayAccountForm = function() {
                 submitUserForm();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -279,7 +279,7 @@ var displayQuestionTable = function() {
                 displayQuestionForm();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -289,7 +289,7 @@ var displayQuestionTable = function() {
     });
 }
 
-var addQuestionsTableEvents = function(){
+var addQuestionsTableEvents = function() {
     $('.view-button').click(function(evt) {
         window.location.href = '/question?_id=' + this.id.substring(5);
     });
@@ -336,7 +336,7 @@ var displayQuestionForm = function() {
             // gets the updated topics list
             getQuestionsTopicsList();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -347,16 +347,16 @@ var displayQuestionForm = function() {
 }
 
 // replace the answer field in Question-creation.pug for specific question
-var getQuestionFormAnswer = function(form){
+var getQuestionFormAnswer = function(form) {
     $.ajax({
         type: 'GET',
         url: '/answerForm',
         data: {qType:form},
-        success: function(data){
+        success: function(data) {
             $('#qAnswer').html(data);
         },
 
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -385,7 +385,7 @@ var displayStatistics = function() {
             $('#admin-button').hide();
             $('#admin-back').hide();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -449,7 +449,7 @@ var deactivateUser = function(id) {
                 const msg = ' has been&nbsp;<u><b>deactivated</b></u>&nbsp;';
                 warningSnackbar(id + ' account' + msg);
             },
-            error: function(data){
+            error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
@@ -482,7 +482,7 @@ var activateUser = function(id) {
                 displayAccountsTable();
                 successSnackbar(id + '\'s account has been activated');
             },
-            error: function(data){
+            error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
@@ -509,7 +509,7 @@ var editUser = function(id) {
                 submitEditForm(id);
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -536,7 +536,7 @@ var submitUserForm = function() {
             displayAccountsTable();
             successSnackbar('User ' + user.id + ' added to database');
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['responseText'] === 'failure') {
@@ -576,7 +576,7 @@ var submitEditForm = function(id) {
             displayAccountsTable();
             successSnackbar('User ' + id + ' has been updated');
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data.result === 'failure') {
@@ -625,7 +625,7 @@ var updateVisibility = function(qid) {
                             warningSnackbar('Question ' + qid + msg);
                         }
                     },
-                    error: function(data){
+                    error: function(data) {
                         if (data['status'] === 401) {
                             window.location.href = '/';
                         } else {
@@ -652,22 +652,22 @@ var submitQuestionForm = function() {
     question['rightSide'] = [];
 
     jQuery.each(fields, function(i, field) {
-        if(field.name.startsWith('radbutton')){
+        if(field.name.startsWith('radbutton')) {
             question['answer'] = fields[i+1].value;
         }
 
-        if(field.name.startsWith('mcans')){
+        if(field.name.startsWith('mcans')) {
             question['choices'].push(field.value);
         }
 
-        if(field.name.startsWith('matchLeft')){
+        if(field.name.startsWith('matchLeft')) {
             question['leftSide'].push(field.value);
         }
 
-        if(field.name.startsWith('matchRight')){
+        if(field.name.startsWith('matchRight')) {
             question['rightSide'].push(field.value);
         }
-        if(field.name.startsWith('tfbutton')){
+        if(field.name.startsWith('tfbutton')) {
             question['answer'] = field.value;
         }
         question[field.name] = field.value;
@@ -691,10 +691,10 @@ var submitQuestionForm = function() {
             successSnackbar('Question added to database');
             displayQuestionTable();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['status'] === 400){
+            } else if (data['status'] === 400) {
                 warningSnackbar(data['responseText']);
             } else {
                 failSnackbar('Question could not be added.');
@@ -721,7 +721,7 @@ var deleteQuestion = function(qid) {
                 successSnackbar('Question ' + qid + ' was removed from the database');
                 displayQuestionTable();
             },
-            error: function(data){
+            error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
@@ -757,7 +757,7 @@ var editQuestion = function(qid) {
             // gets the updated topics list
             getQuestionsTopicsList();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -782,23 +782,23 @@ var submitQEditForm = function(qid) {
     }
 
     jQuery.each(fields, function(i, field) {
-        if(field.name.startsWith('radbutton')){
+        if(field.name.startsWith('radbutton')) {
             question['answer'] = fields[i+1].value;
         }
 
-        if(field.name.startsWith('mcans')){
+        if(field.name.startsWith('mcans')) {
             question['choices'].push(field.value);
         }
 
-        if(field.name.startsWith('matchLeft')){
+        if(field.name.startsWith('matchLeft')) {
             question['leftSide'].push(field.value);
         }
 
-        if(field.name.startsWith('matchRight')){
+        if(field.name.startsWith('matchRight')) {
             question['rightSide'].push(field.value);
         }
 
-        if(field.name.startsWith('tfbutton')){
+        if(field.name.startsWith('tfbutton')) {
             question['answer'] = field.value;
         }
         question[field.name] = field.value;
@@ -822,7 +822,7 @@ var submitQEditForm = function(qid) {
             successSnackbar('Question ' + qid + ' has been modified.');
             displayQuestionTable();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 400){
@@ -847,7 +847,7 @@ var submitQuestionRating = function (rating, qid) {
         success: function(data) {
             successSnackbar('Question ' + qid + ' rating has been updated.');
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -888,7 +888,7 @@ var sortAccountsTable = function(type) {
             $('#admin-content').html(data);
             addAccountsTableEvents();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -899,7 +899,7 @@ var sortAccountsTable = function(type) {
 }
 
 // Toggles the view of the Visibility Checkboxes in the Question-Table View
-var toggleButtonVisibility = function(){
+var toggleButtonVisibility = function() {
     if (document.getElementById('sw').checked) {
         $('.visbox').show();
     } else {
@@ -927,7 +927,7 @@ var getQuestionsTopicsList = function () {
               minLength: 0
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
