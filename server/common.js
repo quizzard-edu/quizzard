@@ -137,6 +137,6 @@ exports.isEmptyObject = isEmptyObject;
 
 // return the current date
 function getDate() {
-	return date().format('YYYY-MM-DD hh:mm:ss A');
+    return date().format('YYYY-MM-DD hh:mm:ss A');
 }
 exports.getDate = getDate;
