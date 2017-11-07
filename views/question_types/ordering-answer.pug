@@ -1,26 +1,18 @@
+block styles
+  link(rel='stylesheet' href='/css/orderingQuestion.css')
+
 if answerForm
-  .form-group
-    .row
-      h5.left Description:
-    .row
-      .col.s10
-        p.left Place one item of the matching pair on the left side, and the corresponding one beside it the right side
-    each index in [1,2,3]
-      .row
-        hr
-        .col.s5
-          .card.white
-            textarea.form-control(name='matchLeft'+index, placeholder='Enter Left Side', rows='3', required)
-        .col.s5
-          .card.white
-            textarea.form-control(name='matchRight'+index, placeholder='Enter Right Side', rows='3', required)
-        .col.s2
-          a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
-            i.tiny.material-icons close
-
+  .form-group.col.s12
+    ol#sortable
+      each index in [1,2,3,4]
+        .row
+          li.input-field.col.s10
+            input.form-control(type='text', name='option'+index, placeholder='Enter Answer Here', required)
+          .input-field.col.s2
+            a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
+              i.tiny.material-icons close
   #addMoreAnswersButton
-    a.waves-effect.waves-light.btn(onclick="addMatchAnswers('qAnswer')") add answer
-
+    a.waves-effect.waves-light.btn(onclick="addMCAnswers('radio')") add answer
 else if studentQuestionForm
   .form-group
     .row
@@ -68,4 +60,5 @@ else if adminQuestionEdit
     a.waves-effect.waves-light.btn(onclick="addMatchAnswers('qAnswer')") add answer
 
 block scripts
-  script(src='/js/matching-answer.js')
+  script(src='/js/ordering-answer.js')
+  script(src='/lib/jquery/jquery-sortable.js')
