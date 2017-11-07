@@ -118,11 +118,19 @@ var repliesSection = function(replyObjectId) {
 
     if (visibilityChange.hasClass('hidden')) {
         visibilityChange.removeClass('hidden');
-        replyObject.html('Collapse replies');
+        visibilityChange.addClass('fadeInDown');
+        visibilityChange.removeClass('fadeOutUp');
+        replyObject.html('expand_less');
         notHidden.push(visibilityChangeId);
     } else {
-        visibilityChange.addClass('hidden');
-        replyObject.html('View replies');
+        visibilityChange.removeClass('fadeInDown');
+        visibilityChange.addClass('fadeOutUp');
+
+        setTimeout(function() {
+            visibilityChange.addClass('hidden');
+        }, 400);
+
+        replyObject.html('hexpand_more');
         notHidden.splice(notHidden.indexOf(visibilityChangeId), 1);
     }
 }
@@ -169,7 +177,7 @@ var comment = function() {
 var reply = function(commentId) {
     const replyText = $('#replyTo_'+commentId).val();
 
-    if (!replyText) {
+    if (replyText.replace(/\s/g, '').length === 0) {
         warningSnackbar('You can\'t have an empty reply');
         return;
     }

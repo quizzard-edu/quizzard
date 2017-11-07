@@ -22,9 +22,9 @@ each itemComment, indexReply in comments
         p.comment-text !{highlightMentionedUser(itemComment['comment'])}
     .col.s12
       .row
-        .button.view-replies-button(id='viewReplies_' + itemComment['_id'], class='btn btn-lg btn-primary', onclick='repliesSection("#viewReplies_" + "'+itemComment['_id']+'")') View replies
+        i.medium.material-icons.cursor-pointer.view-replies-button(id='viewReplies_' + itemComment['_id'], onclick='repliesSection("#viewReplies_" + "'+itemComment['_id']+'")') expand_more
 
-    .hidden(id='replies_' + itemComment['_id'])
+    .hidden.animated(id='replies_' + itemComment['_id'])
       each itemReply, indexReply in itemComment['replies']
         .col.s11.reply
           .row.identification-section
