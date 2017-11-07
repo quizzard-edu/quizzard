@@ -3,17 +3,17 @@
     table.bordered.centered
       thead
         tr
-          th.border Rank
-          th.border User ID
-          th.border Overall Score
+          th Rank
+          th User ID
+          th Overall Score
 
       tbody
         each s in leaderboard
           if s.rank == 0
             tr.col-default
-              td.border ...
-              td.border ...
-              td.border ...
+              td ...
+              td ...
+              td ...
 
           else
             if s.points != 0 && s.rank <= 3
@@ -28,9 +28,9 @@
             if s.id == userid
               - rowclass += ' col-isuser';
             tr(class=rowclass)
-              td.border #{s.rank}
-              td.border #{s.fname + ' ' + s.lname.substring(0, 1)}
+              td #{s.rank}
+              td #{s.fname + ' ' + s.lname.substring(0, 1)}
               if s.totalAttemptsCount === 0
-                td.border 0
+                td 0
               else
-               td.border #{(s.points * ((s.correctAttemptsCount / s.totalAttemptsCount) + (s.points / s.totalAttemptsCount))).toFixed(0)}
+               td #{(s.points * ((s.correctAttemptsCount / s.totalAttemptsCount) + (s.points / s.totalAttemptsCount))).toFixed(0)}

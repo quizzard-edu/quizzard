@@ -1,9 +1,9 @@
 .col-default:hover {
-  background-color: #d3d3d3;
+  background-color: rgba(238, 110, 115,0.7);
 }
 
 .col-gold {
-  background-color: #ffd700;
+  background-color: rgba(255,215,0,0.7);
 }
 
 .col-gold:hover {
@@ -11,7 +11,7 @@
 }
 
 .col-silver {
-  background-color: #c0c0c0;
+  background-color: rgba(192,192,192,0.7);
 }
 
 .col-silver:hover {
@@ -19,7 +19,7 @@
 }
 
 .col-bronze {
-  background-color: #8c7853;
+  background-color: rgba(140,120,83,0.7);
 }
 
 .col-bronze:hover {
@@ -28,4 +28,9 @@
 
 .col-isuser {
   font-weight: bold;
+}
+
+ th {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
 }
