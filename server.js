@@ -91,7 +91,6 @@ app.post('/login', function(req, res) {
     users.checkLogin(username, password, function(err, user) {
         if(err){
             logger.info('User %s failed logged in.', username);
-            req.session.user = null;
             return res.status(403).send(err);
         }
 
