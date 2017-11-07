@@ -672,6 +672,31 @@ app.post('/setUserStatus', function(req, res) {
     });
 });
 
+app.post('/profilemod', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var userId = req.session.user.id;
+    users.getUserById(userId, function (err, userObj) {
+        if (err) {
+          return res.status(500).send(err);
+        }
+
+        if (!userObj) {
+            return res.status(400).send('User can not be found');
+        }
+
+        users.updateProfile(userId, req.body, function (err, result) {
+            if (err) {
+                return res.status(500).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
+    });
+});
+
 /*
  * Modify a user object in the database.
  * The request body contains a user object with the fields to be modified.
@@ -679,6 +704,10 @@ app.post('/setUserStatus', function(req, res) {
 app.post('/usermod', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
     }
 
     var userId = req.body.originalID;

@@ -315,28 +315,37 @@ var updateUserById = function(userId, info, callback){
             return callback(null, 'success');
         });
     } else {
-        bcrypt.hash(info.newPassword, 11, function(err, hash) {
+      update.$set.password = info.newPassword;
+      updateUserPassword(query, update, info.newPassword, callback);
+    }
+}
+
+exports.updateUserPassword = function(query, update, password, callback) {
+    updateUserPassword(query, update, password, callback);
+}
+
+var updateUserPassword = function(query, update, password, callback) {
+    bcrypt.hash(password, 11, function(err, hash) {
+        if (err) {
+            logger.error(err);
+            return callback(err, null);
+        }
+
+        if (update.$set && !isEmptyObject(update.$set)) {
+            update.$set.password = hash;
+        } else {
+            update.$set = {password: hash};
+        }
+
+        usersCollection.update(query, update, function(err, obj) {
             if (err) {
                 logger.error(err);
                 return callback(err, null);
             }
 
-            if (update.$set && !isEmptyObject(update.$set)) {
-                update.$set.password = hash;
-            } else {
-                update.$set = {password:hash};
-            }
-
-            usersCollection.update(query, update, function(err, obj) {
-                if (err) {
-                    logger.error(err);
-                    return callback(err, null);
-                }
-
-                return callback(null, 'success');
-            });
+            return callback(null, 'success');
         });
-    }
+    });
 }
 
 // update users collection directly by a query

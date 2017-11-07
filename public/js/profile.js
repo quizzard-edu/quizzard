@@ -48,16 +48,10 @@ var editProfile = function(id) {
 
     $.ajax({
         type: 'POST',
-        url: '/usermod',
+        url: '/profilemod',
         data: user,
         success: function(data) {
-            // $('#admin-content').html(data.html);
-            // $('#editForm').submit(function(evt) {
-            //     evt.preventDefault();
-            //     editProfile(user.id ? user.id : id);
-            // });
-            disableEdit();
-            successSnackbar('User ' + id + ' has been updated');
+            location.reload();
         },
         error: function(data) {
             if (data['status'] === 401) {
