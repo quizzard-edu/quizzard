@@ -1,0 +1,24 @@
+{"level":"info","message":"Hello World!","timestamp":"2017-11-07T11:45:47.939Z"}
+{"level":"info","message":"Hello World!","timestamp":"2017-11-07T11:48:32.461Z"}
+{"level":"info","message":"Hello World!","timestamp":"2017-11-07T11:48:53.701Z"}
+{"level":"info","message":"Hello World!","timestamp":"2017-11-07T11:49:30.304Z"}
+{"level":"info","message":"Hello World!","timestamp":"2017-11-07T11:50:08.697Z"}
+{"level":"info","message":"Hello World!","timestamp":"2017-11-07T11:50:20.981Z"}
+{"level":"info","message":"Hello World!","timestamp":"2017-11-07T11:51:26.271Z"}
+{"level":"info","message":"Hello World!","timestamp":"2017-11-07T11:52:23.287Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-07T11:52:23.854Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-07T11:52:23.861Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-07T11:52:23.865Z"}
+{"level":"info","message":"Request path: /","timestamp":"2017-11-07T11:52:36.209Z"}
+{"level":"info","message":"Request path: /lib/animate/animate.css","timestamp":"2017-11-07T11:52:36.333Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/css/bootstrap.min.css","timestamp":"2017-11-07T11:52:36.341Z"}
+{"level":"info","message":"Request path: /css/quizzard.css","timestamp":"2017-11-07T11:52:36.343Z"}
+{"level":"info","message":"Request path: /css/icons.css","timestamp":"2017-11-07T11:52:36.343Z"}
+{"level":"info","message":"Request path: /css/login.css","timestamp":"2017-11-07T11:52:36.343Z"}
+{"level":"info","message":"Request path: /lib/materialize/css/materialize.min.css","timestamp":"2017-11-07T11:52:36.344Z"}
+{"level":"info","message":"Request path: /lib/jquery/jquery-3.1.1.min.js","timestamp":"2017-11-07T11:52:36.350Z"}
+{"level":"info","message":"Request path: /lib/materialize/js/materialize.min.js","timestamp":"2017-11-07T11:52:36.357Z"}
+{"level":"info","message":"Request path: /js/common.js","timestamp":"2017-11-07T11:52:36.358Z"}
+{"level":"info","message":"Request path: /js/login.js","timestamp":"2017-11-07T11:52:36.358Z"}
+{"level":"info","message":"Request path: /img/logo.png","timestamp":"2017-11-07T11:52:36.358Z"}
+{"level":"info","message":"Request path: /lib/materialize/fonts/MaterialIcons-Regular.woff2","timestamp":"2017-11-07T11:52:36.408Z"}

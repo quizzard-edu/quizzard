@@ -52,8 +52,8 @@ app.use(session({
     saveUninitialized: false
 }));
 
-db.initialize(function() {
-    log.init(function() {
+log.init(function() { 
+    db.initialize(function() {
         app.listen(port, function() {
             logger.info('Server listening on http://localhost:%s.', port);
         });

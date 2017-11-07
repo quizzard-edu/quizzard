@@ -21,14 +21,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var winston = require('winston');
 require('winston-daily-rotate-file');
 
+var transport = new (winston.transports.DailyRotateFile)({
+    filename: __dirname + '/../logs/log',
+    datePattern: 'yyyy-MM-dd.',
+    prepend: true,
+    localTime: true,
+    level: 'info'
+});
+
+var logger = new (winston.Logger)({
+    transports: [
+        transport
+    ]
+});
+
+
 /* Initialize rotating logging. */
 exports.init = function(callback) {
-    winston.add(winston.transports.DailyRotateFile, {
-        filename: 'log/quizzard',
-        datePattern: 'yyyy-MM-dd-',
-        prepend: true
-    });
+    
+    logger.info('Hello World!');
     callback();
 }
 
-exports.logger = winston;
+exports.logger = logger;
