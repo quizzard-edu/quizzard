@@ -29,7 +29,7 @@ each itemComment, indexReply in comments
         .col.s11.reply
           .row.identification-section
             i.small.material-icons.profile-picture account_circle
-            span.name #{itemReply['userId']}
+            span.name=getFirstLastName(itemReply['userId'])
             span.likes-section
               i.small.material-icons.thumb-up-picture.cursor-pointer(id='like_' + itemReply['_id'], onclick='voteClickReply($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)', class=isLiked(itemReply['likes']) ? 'liked' : '') thumb_up
               span.likes-number(id='numLikes_' + itemReply['_id']) #{itemReply['likesCount']}
