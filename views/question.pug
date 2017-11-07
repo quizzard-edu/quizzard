@@ -4,9 +4,11 @@ block styles
   link(rel='stylesheet' href='/css/icons.css')
   link(rel='stylesheet' href='/css/question.css')
   link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/css/discussion.css')
   link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
   link(rel='stylesheet' href='/css/navbar.css')
   link(rel='stylesheet' href='/lib/sweetalert/sweetalert.css')
+  link(rel='stylesheet' href='/lib/atwho/jquery.atwho.min.css')
   link(rel='stylesheet' href='/css/rating.css')
 
 block title
@@ -55,6 +57,10 @@ block content
               include rating
               button.btn.btn-lg.btn-primary.btn-block#rateQuestion Rate
 
+      .row
+        .col.s12
+          if answered || isAdmin()
+            #discussion
   include modal-alert
 
 block scripts
