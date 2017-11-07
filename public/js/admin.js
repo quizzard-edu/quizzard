@@ -30,20 +30,21 @@ var displayAccountsTable = function() {
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
 
-            $('#account-creation-button').click(function(){
+            $('#account-creation-button').click(function() {
                 displayAccountForm();
             });
 
-            $('#account-export-button').click(function(){
+            $('#account-export-button').click(function() {
                 displayExportAccountsForm();
             });
-            $('#account-import-button').click(function(){
+
+            $('#account-import-button').click(function() {
                 displayImportAccountsForm();
             });
 
             $('#usersSwitch').prop('checked', usersTableActive);
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -65,7 +66,7 @@ var displayExportAccountsForm = function() {
                 displayAccountsTable();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -87,7 +88,7 @@ var displayImportAccountsForm = function() {
                 displayAccountsTable();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -117,7 +118,7 @@ var submitExportForm = function() {
                 displayAccountsTable();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -153,7 +154,7 @@ var submitImportForm = function() {
                 displayAccountsTable();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -170,18 +171,21 @@ var submitImportList = function() {
         if (i === 0) {
             return;
         }
+
         var $tds = $(this).find('td'),
             isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked'),
             fname = $tds.eq(1).text(),
             lname = $tds.eq(2).text(),
             username = $tds.eq(3).text(),
             email = $tds.eq(4).text();
+
         var userObj = {
             fname: fname,
             lname: lname,
             username: username,
             email: email
         };
+
         if (isSelected) {
             selected.push(userObj);
         }
@@ -195,11 +199,11 @@ var submitImportList = function() {
             successSnackbar('Students\' list uploaded successfully');
             $('#admin-content').html(data);
 
-            $('#account-import-list-back-button').click(function(){
+            $('#account-import-complete-back-button').click(function(){
                 displayAccountsTable();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
