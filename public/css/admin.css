@@ -39,3 +39,7 @@
 .input-field label {   
     pointer-events: auto;
 }
+
+.alignTextLeft {
+    text-align: left;
+}
