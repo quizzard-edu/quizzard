@@ -17,6 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+var date = require('moment');
 
 const questionTypes = Object.freeze({
     MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer', icon: 'format_list_bulleted'},
@@ -138,3 +139,9 @@ var isEmptyObject = function(obj) {
 }
 
 exports.isEmptyObject = isEmptyObject;
+
+// return the current date
+function getDate() {
+    return date().format('YYYY-MM-DD hh:mm:ss A');
+}
+exports.getDate = getDate;
