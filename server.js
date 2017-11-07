@@ -538,7 +538,13 @@ app.get('/question', function(req, res) {
             return res.status(400).send('Question is not available');
         }
 
-        var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts);
+        var answeredList = common.getIdsListFromJSONList2(questionFound.correctAttempts);
+        var hasQrating = false;
+        for (var i in questionFound.ratings) {
+            if (questionFound.ratings[i].user === req.session.user.id) {
+                hasQrating = true;
+            }
+        }
         return res.status(200).render('question', {
             user: req.session.user,
             question: questionFound,
@@ -546,6 +552,7 @@ app.get('/question', function(req, res) {
             isAdmin : function() {
                 return req.session.user.type === common.userTypes.ADMIN;
             },
+            hasQrating: hasQrating,
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
@@ -588,7 +595,7 @@ app.post('/submitanswer', function(req, res) {
             return res.status(400).send('Could not find the question');
         }
 
-        logger.info('User %s attempted to answer question %d with "%s"', userId, question.Id, answer);
+        logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
 
         var value = questions.verifyAnswer(question, answer);
         var points = question.points;

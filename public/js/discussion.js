@@ -128,7 +128,7 @@ var repliesSection = function(replyObjectId) {
 
         setTimeout(function() {
             visibilityChange.addClass('hidden');
-        }, 400);
+        }, 350);
 
         replyObject.html('hexpand_more');
         notHidden.splice(notHidden.indexOf(visibilityChangeId), 1);

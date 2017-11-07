@@ -114,6 +114,15 @@ exports.getIdsListFromJSONList = function (JSONList) {
     return list;
 }
 
+/* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
+exports.getIdsListFromJSONList2 = function (JSONList) {
+    var list = [];
+    for (i in JSONList){
+        list.push(JSONList[i].id);
+    }
+    return list;
+}
+
 // check if json obejct is empty
 var isEmptyObject = function(obj) {
     for (var key in obj) {

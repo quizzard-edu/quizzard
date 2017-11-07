@@ -55,13 +55,21 @@ var sendAnswerRequest = function(ans) {
         url: '/submitanswer',
         data: { questionId: questionId, answer: ans },
         success: function(data) {
-            swal({
-                title: 'Correct',
-                text: 'Congratulations! You gained ' + data.points + ' points!',
-                type: 'success'
-            }, function () {
-                window.location.href = '/';
+
+            $('#modalAlert').modal({
+                dismissible: false,
+                opacity: 0.5,
+                complete: function() {
+                    if(getRating() > 0) {
+                        submitQuestionRating(getRating(), questionId);
+                    }
+                    window.location.href = '/';
+                }
             });
+
+            $('#modalAlertMsg').html('Congratulations! You gained ' + data.points + ' points!<br>Please rate the difficulty of this question:');
+
+            $('#modalAlert').modal('open');
         },
         error: function(data) {
             $('#hint').removeClass('hidden');
@@ -73,3 +81,11 @@ var sendAnswerRequest = function(ans) {
         }
     });
 }
+
+/* Listener for the `rate` button */
+$(document).on('click', '#rateQuestion', function() {
+    if(getRating() > 0) {
+        submitQuestionRating(getRating(), questionId);
+    }
+    location.reload();
+});

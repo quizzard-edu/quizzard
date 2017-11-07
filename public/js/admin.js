@@ -688,6 +688,7 @@ var submitQuestionRating = function (rating, qid) {
             rating: rating,
             qId: qid
         },
+        async: false,
         success: function(data) {
             successSnackbar('Question ' + qid + ' rating has been updated.');
         },
