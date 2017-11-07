@@ -1,3 +1,8 @@
+/**
+* Sets the vote when the user clicks the thumbs-up/thumb-down icon on a comment
+*
+* @method voteClickComment
+*/
 var voteClickComment = function(icon, vote) {
     const commentId = icon.attr('id').split('_')[1];
 
@@ -34,6 +39,11 @@ var voteClickComment = function(icon, vote) {
     });
 }
 
+/**
+* Sets the vote when the user clicks the thumbs-up/thumb-down icon on a reply
+*
+* @method voteClickReply
+*/
 var voteClickReply = function(icon, vote) {
     const replyId = icon.attr('id').split('_')[1];
 
@@ -70,6 +80,11 @@ var voteClickReply = function(icon, vote) {
     });
 }
 
+/**
+* Changes the color of the voting icon when the user hovers over it
+*
+* @method voteHover
+*/
 var voteHover = function(icon, type) {
     if (type === 1 && !icon.hasClass('liked')) {
         icon.addClass('liked-hover');
@@ -79,6 +94,11 @@ var voteHover = function(icon, type) {
     $(this).css('cursor','pointer');
 }
 
+/**
+* Changes the color of the voting icon when the user hover away from it
+*
+* @method voteLeave
+*/
 var voteLeave = function(icon, type) {
     if ((type === 1 && !icon.hasClass('liked')) || (type === -1 && !icon.hasClass('disliked'))) {
         icon.removeClass('liked-hover');
@@ -86,6 +106,11 @@ var voteLeave = function(icon, type) {
     }
 }
 
+/**
+* Shows/hides the reply section for each comment
+*
+* @method repliesSection
+*/
 var repliesSection = function(replyObjectId) {
     const replyObject = $(replyObjectId);
     const visibilityChangeId = '#replies_' + replyObject.attr('id').split('_')[1];
@@ -102,6 +127,11 @@ var repliesSection = function(replyObjectId) {
     }
 }
 
+/**
+* Registers the comment that the user has written
+*
+* @method voteClickReply
+*/
 var comment = function() {
     const commentText = $('#commentBox').val();
 
@@ -131,6 +161,11 @@ var comment = function() {
     });
 }
 
+/**
+* Registers the reply that the user has written to the specified comment
+*
+* @method reply
+*/
 var reply = function(commentId) {
     const replyText = $('#replyTo_'+commentId).val();
 
@@ -159,6 +194,11 @@ var reply = function(commentId) {
     });
 }
 
+/**
+* Reloads the discussion board to obtain the latest updates
+*
+* @method getDiscussionBoard
+*/
 var getDiscussionBoard = function () {
     $.ajax({
         type: 'GET',
@@ -178,15 +218,20 @@ var getDiscussionBoard = function () {
     });
 }
 
+/**
+* unCollapses the replies sections after the page has been reloaded in order
+* for it to save the user preferences
+*
+* @method unCollapseReplies
+*/
 var unCollapseReplies = function () {
     notHidden.forEach(id => {
         $(id).removeClass('hidden');
     });
 }
 
-
-
 $(function () {
+    // Sets up the functionality of the @username
     $.ajax({
         type: 'GET',
         url: '/usersToMentionInDiscussion',
