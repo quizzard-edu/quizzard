@@ -177,13 +177,13 @@ var checkAnswer = function (questionId, userId, answer, callback) {
 
 var createAdmins = function() {
     for (var id = 0; id < adminsCount; id++) {
-        addAdmin('Admin'+id, 'asd');
+        addAdmin('Admin'+id, 'KonniChiwa');
     }
 }
 
 var createStudents = function() {
   	for (var id = 0; id < studentsCount; id++) {
-      	addStudent('Student'+id, 'asd');
+      	addStudent('Student'+id, 'KonniChiwa');
   	}
 }
 
