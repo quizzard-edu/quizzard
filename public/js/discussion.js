@@ -29,7 +29,7 @@ var voteClickComment = function(icon, vote) {
             $('#numLikes_' + commentId).html(data.likesCount);
             $('#numDislikes_' + commentId).html(data.dislikesCount);
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -70,7 +70,7 @@ var voteClickReply = function(icon, vote) {
             $('#numLikes_' + replyId).html(data.likesCount);
             $('#numDislikes_' + replyId).html(data.dislikesCount);
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
