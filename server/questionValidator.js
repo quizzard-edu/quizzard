@@ -61,34 +61,34 @@ exports.validateAttributeFields = function(question,type){
 }
 
 var validateQuestionAttributesByType = function(question, type){
-	var result;
+    var result;
 
-	switch (type) {
-		case common.questionTypes.REGULAR.value:
-			result = regexAttributeValidator(question);
-			break;
+    switch (type) {
+        case common.questionTypes.REGULAR.value:
+            result = regexAttributeValidator(question);
+            break;
 
-		case common.questionTypes.MULTIPLECHOICE.value:
-			result = multipleChoiceAttributeValidator(question);
-			break;
+        case common.questionTypes.MULTIPLECHOICE.value:
+            result = multipleChoiceAttributeValidator(question);
+            break;
 
-		case common.questionTypes.TRUEFALSE.value:
-			result = trueAndFalseAttributeValidator(question);
-			break;		
+        case common.questionTypes.TRUEFALSE.value:
+            result = trueAndFalseAttributeValidator(question);
+            break;
 
-		case common.questionTypes.MATCHING.value:
-			result = matchingAttributeValidator(question);
-			break;		
+        case common.questionTypes.MATCHING.value:
+            result = matchingAttributeValidator(question);
+            break;
 
-		case common.questionTypes.CHOOSEALL.value:
-			result = chooseAllAttributeValidator(question);
-			break;
+        case common.questionTypes.CHOOSEALL.value:
+            result = chooseAllAttributeValidator(question);
+            break;
 
-		default:
-			result = failMsg;
-			break;
-	}
-	return result;
+        default:
+            result = failMsg;
+            break;
+    }
+    return result;
 }
 
 var regexAttributeValidator = function(question){
@@ -112,43 +112,43 @@ var multipleChoiceAttributeValidator = function(question){
 }
 
 var trueAndFalseAttributeValidator = function(question){
-	if (!validateAllAttributesInGroup(question,'TRUEFALSE')){
-		return qTypeFailMsg('Please select answer True or False!');
-	}
-	if (question.answer !== 'true' && question.answer !== 'false' ){
-		return qTypeFailMsg('Answer can only be True or False!');
-	}
-	return successMsg;
+    if (!validateAllAttributesInGroup(question,'TRUEFALSE')){
+        return qTypeFailMsg('Please select answer True or False!');
+    }
+    if (question.answer !== 'true' && question.answer !== 'false' ){
+        return qTypeFailMsg('Answer can only be True or False!');
+    }
+    return successMsg;
 }
 
 var matchingAttributeValidator = function(question){
-	if (!validateAllAttributesInGroup(question,'MATCHING')){
-		return qTypeFailMsg('Incorrect question answer fields!');
-	}
-	if (!validateArrayObject(question.leftSide,'String') || !validateArrayObject(question.rightSide,'String')){
-		return failMsg;
-	}
-	if (question.leftSide.length < 2 || question.rightSide.length < 2){
-		return qTypeFailMsg('Need 2 or more matching options!');
-	}
-	return successMsg;
+    if (!validateAllAttributesInGroup(question,'MATCHING')){
+        return qTypeFailMsg('Incorrect question answer fields!');
+    }
+    if (!validateArrayObject(question.leftSide,'String') || !validateArrayObject(question.rightSide,'String')){
+        return failMsg;
+    }
+    if (question.leftSide.length < 2 || question.rightSide.length < 2){
+        return qTypeFailMsg('Need 2 or more matching options!');
+    }
+    return successMsg;
 }
 
 var chooseAllAttributeValidator = function(question){
-	if (!validateAllAttributesInGroup(question,'CHOOSEALL')){
-		return qTypeFailMsg('Incorrect question answer fields!');
-	}
-	if (!validateArrayObject(question.choices,'String') || !validateArrayObject(question.answer,'String')){
-		return failMsg;
-	}
-	if (question.choices.length < 2){
-		return qTypeFailMsg('Need 2 or more options!');
-	}
+    if (!validateAllAttributesInGroup(question,'CHOOSEALL')){
+        return qTypeFailMsg('Incorrect question answer fields!');
+    }
+    if (!validateArrayObject(question.choices,'String') || !validateArrayObject(question.answer,'String')){
+        return failMsg;
+    }
+    if (question.choices.length < 2){
+        return qTypeFailMsg('Need 2 or more options!');
+    }
 
-	if (question.answer.length < 1){
-		return qTypeFailMsg('Please select an answer for this Question!');
-	}
-	return successMsg;
+    if (question.answer.length < 1){
+        return qTypeFailMsg('Please select an answer for this Question!');
+    }
+    return successMsg;
 }
 
 /*Validate specific value to it's attributeType in DB*/
