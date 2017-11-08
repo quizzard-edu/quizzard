@@ -672,7 +672,7 @@ app.post('/setUserStatus', function(req, res) {
     });
 });
 
-app.post('/profilemod', function(req, res){
+app.post('/profilemod', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -687,12 +687,21 @@ app.post('/profilemod', function(req, res){
             return res.status(400).send('User can not be found');
         }
 
-        users.updateProfile(userId, req.body, function (err, result) {
-            if (err) {
-                return res.status(500).send(err);
+        users.checkLogin(userId, req.body.currentpasswd, function(err, user) {
+            if (err || !user) {
+                logger.info('User %s failed to authenticate.', userId);
+                return res.status(403).send(err);
             }
 
-            return res.status(200).send('ok');
+            if (user) {
+                users.updateProfile(userId, req.body, function (err, result) {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
+            }
         });
     });
 });

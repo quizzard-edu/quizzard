@@ -22,7 +22,7 @@ block content
           .row.center
             .col.s12
             .fixed-action-btn.horizontal.profile-picture
-              a.btn-floating.btn-large.blue.profile-circle
+              a.btn-floating.btn-large.grey.profile-circle
                 img.picure-size(src='/img/logo.png')
               ul.profile-list
                 li
@@ -71,6 +71,12 @@ block content
                   .input-field.col.s12
                     input#email.validate(type='email', name='newemail', value=user.email)
                     label(for='email') New Email
+                .row
+                  hr
+                .row
+                  .input-field.col.s12
+                    input#currentpasswd.validate(type='password', name='currentpasswd' required)
+                    label(for='currentpasswd') Current Password
                 .row
                   button.waves-effect.waves-light.btn(type='submit') Edit
                     i.material-icons.right send

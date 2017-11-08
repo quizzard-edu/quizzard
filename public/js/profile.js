@@ -29,9 +29,7 @@ var enableEdit = function() {
 * @method disableEdit
 */
 var disableEdit = function() {
-    $('#viewForm').removeClass('hidden');
-    $('#editForm').addClass('hidden');
-    $('#cancelButton').addClass('hidden');
+    location.reload();
 }
 
 var editProfile = function(id) {
@@ -56,6 +54,8 @@ var editProfile = function(id) {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 403) {
+                failSnackbar('Current Password is Incorrect');
             } else if (data.result === 'failure') {
                 failSnackbar('User could not be updated. Please try again');
             } else if (data.result === 'dupid') {

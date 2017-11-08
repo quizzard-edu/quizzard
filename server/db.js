@@ -349,7 +349,7 @@ var updateUserPassword = function(query, update, password, callback) {
 }
 
 // update users collection directly by a query
-exports.updateUserByQuery = function (query, update, callback){
+exports.updateUserByQuery = function (query, update, callback) {
     usersCollection.update(query, update, function(err, obj) {
         return callback(err, obj);
     });
