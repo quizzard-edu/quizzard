@@ -253,7 +253,6 @@ var verifyChooseAllQuestionAnswer = function(question,answer){
 }
 
 var verifyMatchingQuestionAnswer = function(question, answer){
-    var value = false;
     var ansLeftSide = answer[0];
     var ansRightSide = answer[1];
 
@@ -268,12 +267,8 @@ var verifyMatchingQuestionAnswer = function(question, answer){
                 return false;
             }
         }
-
-        if (!value) {
-            return true;
-        }
+        return true;
     }
-
     return false;
 }
 
