@@ -1320,13 +1320,13 @@ app.get('/analytics', function(req, res){
     });
 });
 
-/* Display some charts and graphs */
-app.get('/profile', function(req, res){
+/* Get the profile page */
+app.get('/profile', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    users.getUserById(req.session.user.id, function(err, user){
+    users.getUserById(req.session.user.id, function(err, user) {
         if (err) {
             return res.status(500).send(err);
         }
