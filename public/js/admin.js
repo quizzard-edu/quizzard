@@ -642,6 +642,7 @@ var updateVisibility = function(qid) {
     );
 }
 
+/*Collects form fields for Question-Creation and Question-Edit*/
 var collectQuestionFormData = function(form){
     var fields = $(form).serializeArray();
     var question = {};
