@@ -315,8 +315,8 @@ var updateUserById = function(userId, info, callback){
             return callback(null, 'success');
         });
     } else {
-      update.$set.password = info.newPassword;
-      updateUserPassword(query, update, info.newPassword, callback);
+        update.$set.password = info.newPassword;
+        updateUserPassword(query, update, info.newPassword, callback);
     }
 }
 

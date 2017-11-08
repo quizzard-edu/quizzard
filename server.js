@@ -693,6 +693,11 @@ app.post('/profilemod', function(req, res) {
                 return res.status(403).send(err);
             }
 
+            if (req.body.newpassword !== req.body.confirmpassword) {
+                logger.info('Confirm password doesn\'t match');
+                return res.status(400).send(err);
+            }
+
             if (user) {
                 users.updateProfile(userId, req.body, function (err, result) {
                     if (err) {

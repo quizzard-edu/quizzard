@@ -34,9 +34,7 @@ var disableEdit = function() {
 
 var editProfile = function(id) {
     var fields = $('#editForm').serializeArray();
-    var user = {
-        originalID: id
-    };
+    var user = {};
 
     jQuery.each(fields, function(i, field) {
         if (field.value) {
@@ -56,10 +54,8 @@ var editProfile = function(id) {
                 window.location.href = '/';
             } else if (data['status'] === 403) {
                 failSnackbar('Current Password is Incorrect');
-            } else if (data.result === 'failure') {
-                failSnackbar('User could not be updated. Please try again');
-            } else if (data.result === 'dupid') {
-                failSnackbar('User ID ' + user.id + ' is taken');
+            } else if (data['status'] === 400) {
+                failSnackbar('Passwords do not match');
             } else {
                 failSnackbar('Something went wrong, please try again later!');
             }
