@@ -26,7 +26,8 @@ var transport = new (winston.transports.DailyRotateFile)({
     datePattern: 'yyyy-MM-dd.',
     prepend: true,
     localTime: true,
-    level: 'info'
+    level: 'info',
+    flag: 'a'
 });
 
 var logger = new (winston.Logger)({
@@ -34,13 +35,5 @@ var logger = new (winston.Logger)({
         transport
     ]
 });
-
-
-/* Initialize rotating logging. */
-exports.init = function(callback) {
-    
-    logger.info('Hello World!');
-    callback();
-}
 
 exports.logger = logger;

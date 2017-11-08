@@ -22,3 +22,9 @@
 {"level":"info","message":"Request path: /js/login.js","timestamp":"2017-11-07T11:52:36.358Z"}
 {"level":"info","message":"Request path: /img/logo.png","timestamp":"2017-11-07T11:52:36.358Z"}
 {"level":"info","message":"Request path: /lib/materialize/fonts/MaterialIcons-Regular.woff2","timestamp":"2017-11-07T11:52:36.408Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-07T22:07:02.073Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-07T22:07:02.083Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-07T22:07:02.087Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-07T22:07:17.663Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-07T22:07:17.672Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-07T22:07:17.676Z"}

@@ -52,11 +52,9 @@ app.use(session({
     saveUninitialized: false
 }));
 
-log.init(function() { 
-    db.initialize(function() {
-        app.listen(port, function() {
-            logger.info('Server listening on http://localhost:%s.', port);
-        });
+db.initialize(function() {
+    app.listen(port, function() {
+        logger.info('Server listening on http://localhost:%s.', port);
     });
 });
 
