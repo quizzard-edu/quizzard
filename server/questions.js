@@ -87,11 +87,11 @@ var prepareQuestionData = function(question, callback){
             break;
 
         case common.questionTypes.CHOOSEALL.value:
-			questionToAdd.type = common.questionTypes.CHOOSEALL.value;
+            questionToAdd.type = common.questionTypes.CHOOSEALL.value;
             questionToAdd.choices = question.choices;
             questionToAdd.answer = question.answer;
-            
-			break;
+
+            break;
 
         default:
             return callback({status:400, msg:'Type of Question is Undefined'}, null)
@@ -253,7 +253,6 @@ var verifyChooseAllQuestionAnswer = function(question,answer){
 }
 
 var verifyMatchingQuestionAnswer = function(question, answer){
-    var value = false;
     var ansLeftSide = answer[0];
     var ansRightSide = answer[1];
 
@@ -268,12 +267,8 @@ var verifyMatchingQuestionAnswer = function(question, answer){
                 return false;
             }
         }
-
-        if (!value) {
-            return true;
-        }
+        return true;
     }
-
     return false;
 }
 
@@ -333,7 +328,7 @@ if the user already voted up, then if they vote up again the previous vote
 will get cancelled. Same for vote down.
 if the user already voted up, then vote down the previous vote gets removed
 and the new vote gets added.
-if they never voted before, just add the vote 
+if they never voted before, just add the vote
 */
 // vote on a comment
 exports.voteComment = function (commentId, vote, userId, callback) {

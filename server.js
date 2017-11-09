@@ -686,6 +686,45 @@ app.post('/setUserStatus', function(req, res) {
     });
 });
 
+app.post('/profilemod', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.body.newpassword !== req.body.confirmpassword) {
+        logger.info('Confirm password doesn\'t match');
+        return res.status(400).send('Confirm password doesn\'t match');
+    }
+
+    var userId = req.session.user.id;
+    users.getUserById(userId, function (err, userObj) {
+        if (err) {
+          return res.status(500).send(err);
+        }
+
+        if (!userObj) {
+            return res.status(400).send('User can not be found');
+        }
+
+        users.checkLogin(userId, req.body.currentpasswd, function(err, user) {
+            if (err || !user) {
+                logger.info('User %s failed to authenticate.', userId);
+                return res.status(403).send(err);
+            }
+
+            if (user) {
+                users.updateProfile(userId, req.body, function (err, result) {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
+            }
+        });
+    });
+});
+
 /*
  * Modify a user object in the database.
  * The request body contains a user object with the fields to be modified.
@@ -693,6 +732,10 @@ app.post('/setUserStatus', function(req, res) {
 app.post('/usermod', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
     }
 
     var userId = req.body.originalID;
@@ -1293,6 +1336,27 @@ app.get('/analytics', function(req, res){
         isAdmin : function() {
             return req.session.user.type === common.userTypes.ADMIN;
         }
+    });
+});
+
+/* Get the profile page */
+app.get('/profile', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    users.getUserById(req.session.user.id, function(err, user) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        if (!user) {
+            return res.status(400).send('bad request, user does not exist');
+        }
+
+        return res.status(200).render('profile', {
+            user: user
+        });
     });
 });
 
