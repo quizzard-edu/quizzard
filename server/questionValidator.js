@@ -83,7 +83,9 @@ var validateQuestionAttributesByType = function(question, type){
         case common.questionTypes.CHOOSEALL.value:
             result = chooseAllAttributeValidator(question);
             break;
-
+        case common.questionTypes.ORDERING.value:
+            result = orderingAttributeValidator(question);
+            break;
         default:
             result = failMsg;
             break;
@@ -151,6 +153,18 @@ var chooseAllAttributeValidator = function(question){
     return successMsg;
 }
 
+var orderingAttributeValidator = function(question){
+    if (!validateAllAttributesInGroup(question,'ORDERING')){
+        return qTypeFailMsg('Incorrect question answer fields!');
+    }
+    if (!validateArrayObject(question.orderList,'String')){
+        return failMsg;
+    }
+    if (question.orderList.length < 2){
+        return qTypeFailMsg('Need 2 or more ordering options!');
+    }
+    return successMsg;
+}
 /*Validate specific value to it's attributeType in DB*/
 var validateAttributeType = function(valueToCheck, key, attributeType){
     return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;

@@ -61,6 +61,18 @@ $('#chooseAll_answerForm').submit(function(evt) {
     sendAnswerRequest(answer);
 })
 
+$('#order_answerform').submit(function(evt) {
+    evt.preventDefault();
+    var answer = [];
+    var fields = $('#order_answerform').serializeArray();
+    jQuery.each(fields, function(i, field) {
+        if(field.name.startsWith('option') ){
+           answer.push(field.value);
+        }
+    });
+    sendAnswerRequest('random');
+});
+
 var sendAnswerRequest = function(ans) {
     $.ajax({
         type: 'POST',

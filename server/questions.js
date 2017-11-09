@@ -76,7 +76,6 @@ var prepareQuestionData = function(question, callback){
 
         case common.questionTypes.TRUEFALSE.value:
             questionToAdd.type = common.questionTypes.TRUEFALSE.value;
-            questionToAdd.choices = question.choices;
             questionToAdd.answer = question.answer;
             break;
 
@@ -90,7 +89,11 @@ var prepareQuestionData = function(question, callback){
             questionToAdd.type = common.questionTypes.CHOOSEALL.value;
             questionToAdd.choices = question.choices;
             questionToAdd.answer = question.answer;
+            break;
 
+        case common.questionTypes.ORDERING.value:
+            questionToAdd.type = common.questionTypes.ORDERING.value;
+            questionToAdd.orderList = question.choices;
             break;
 
         default:

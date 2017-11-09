@@ -87,6 +87,9 @@ const questionAttributes = Object.freeze({
         choices                 : {type:'[object Array]'},
         answer                  : {type:'[object Array]'}
     },
+    ORDERING: {
+        orderList                 : {type:'[object Array]'}
+    },
     DATATYPES: {
         Array                   : {type:'[object Array]'},
         String                  : {type:'[object String]'},

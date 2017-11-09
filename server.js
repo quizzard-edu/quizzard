@@ -581,6 +581,8 @@ app.get('/question', function(req, res) {
                         questionFound.rightSide = common.randomizeList(questionFound.rightSide);
                         return matchingForm({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.ORDERING.value:
+                        // randomize the order of ordering question
+                        questionFound.orderList = common.randomizeList(questionFound.orderList);
                         return orderingForm({studentQuestionForm:true, question:questionFound})
                     default:
                         break;
