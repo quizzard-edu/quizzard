@@ -112,13 +112,9 @@ var addQuestionRegular = function(qTopic, id) {
         } else {
             logger.info('Questions %d created', id);
 
-            rateQuestion(id, 'Admin1', Math.floor(Math.random()*6), function() {
-                if (err) {
-                    logger.error('Could not rate question. Please try again.');
-                } else {
-                    logger.info('Questions %d rated as %d', id, 3);
-                }
-            });
+            for (var i = 0; i < adminsCount; i++) {
+                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+            }
         }
 
         if (questionsCreated == numberOfQuestionsExpected) {
@@ -176,13 +172,9 @@ var addQuestionMultipleChoice = function(qTopic, id) {
         } else {
             logger.info('Questions %d created', id);
 
-            rateQuestion(id, 'Admin1', Math.floor(Math.random()*6), function() {
-                if (err) {
-                    logger.error('Could not rate question. Please try again.');
-                } else {
-                    logger.info('Questions %d rated as %d', id, 3);
-                }
-            });
+            for (var i = 0; i < adminsCount; i++) {
+                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+            }
         }
 
         if (questionsCreated == numberOfQuestionsExpected) {
@@ -238,13 +230,9 @@ var addQuestionTrueFalse = function(qTopic, id) {
         } else {
             logger.info('Questions %d created', id);
 
-            rateQuestion(id, 'Admin1', Math.floor(Math.random()*6), function() {
-                if (err) {
-                    logger.error('Could not rate question. Please try again.');
-                } else {
-                    logger.info('Questions %d rated as %d', id, 3);
-                }
-            });
+            for (var i = 0; i < adminsCount; i++) {
+                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+            }
         }
 
         if (questionsCreated == numberOfQuestionsExpected) {
@@ -302,13 +290,9 @@ var addQuestionMatching = function(qTopic, id) {
         } else {
             logger.info('Questions %d created', id);
 
-            rateQuestion(id, 'Admin1', Math.floor(Math.random()*6), function() {
-                if (err) {
-                    logger.error('Could not rate question. Please try again.');
-                } else {
-                    logger.info('Questions %d rated as %d', id, 3);
-                }
-            });
+            for (var i = 0; i < adminsCount; i++) {
+                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+            }
         }
 
         if (questionsCreated == numberOfQuestionsExpected) {
@@ -370,6 +354,11 @@ var checkAnswer = function (questionId, userId, answer, callback) {
                             if (err) {
                                 return callback (err, null);
                             }
+
+                            if (value) {
+                                rateQuestion(question.id, userId, Math.floor(Math.random()*6));
+                            }
+
                             return callback (null, value);
                         }
                     );
@@ -380,6 +369,10 @@ var checkAnswer = function (questionId, userId, answer, callback) {
 }
 
 var rateQuestion = function (questionId, userId, rating, callback) {
+    if (rating < 1 || rating > 5) {
+        return;
+    }
+
     db.lookupQuestion({id: questionId}, function(err, question) {
         questionId = question._id;
         if(err){
