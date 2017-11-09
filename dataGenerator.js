@@ -1,3 +1,4 @@
+// process.exit(0);
 /*
 The dataGenerator script
 
@@ -24,10 +25,14 @@ var users = require('./server/users.js');
 var questions = require('./server/questions.js');
 var common = require('./server/common.js');
 
+var numberOfEachQuestion = [2,2,2,2];
+
 // variables to control the genereated data
 var adminsCount = 2;
 var studentsCount = 10;
-var questionsCount = 10;
+var questionsCount;
+var questionsIds;
+var numberOfQuestionsExpected;
 var questionsMaxValue = 20;
 var questionsAttempts = 10; // be careful when changing this value,
                             // it will increase the run time significantly
@@ -37,8 +42,8 @@ var questionsCorrectPercentage = 40;
 // Do NOT change the variables below
 var adminsCreated = 0;
 var studentsCreated = 0;
-var questionsCreated = 0;
-var questionsAnswered = 0;
+var questionsCreated;
+var questionsAnswered;
 
 // create users account for both students and admins
 var addAdmin = function(accid, pass, isAdmin) {
@@ -83,16 +88,16 @@ var addStudent = function(accid, pass, isAdmin) {
 
         studentsCreated++;
         if(studentsCreated == studentsCount){
-            createQuestions();
+            createQuestionsRegular();
         }
     });
 }
 
 // add question and send random answers
-var addQuestion = function(qTopic, id) {
+var addQuestionRegular = function(qTopic, id) {
 	  var question = {
-		topic: 'CSC492',
-		title: qTopic,
+		    topic: 'CSC492',
+		    title: qTopic,
         text: '<p>'+qTopic+' Text</p>',
         answer: 'KonniChiwa',
         points: Math.floor(Math.random()*questionsMaxValue),
@@ -108,15 +113,16 @@ var addQuestion = function(qTopic, id) {
             logger.info('Questions %d created', id);
         }
 
-        questionsCreated++;
-        if (questionsCreated == questionsCount) {
-            answerQuestions();
+        if (questionsCreated == numberOfQuestionsExpected) {
+            answerQuestionsRegular();
         }
+
+        questionsCreated++;
     });
 }
 
 // add question and send random answers
-var answerQuestion = function(questionId) {
+var answerQuestionRegular = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
         var studentId = 'student'+Math.floor(Math.random()*studentsCount);
         var answer = 'NotKonniChiwa';
@@ -132,10 +138,177 @@ var answerQuestion = function(questionId) {
                 logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
             }
 
+            if (questionsAnswered == numberOfQuestionsExpected*questionsAttempts) {
+                createQuestionsMultipleChoice();
+            }
+
             questionsAnswered++;
-            if (questionsAnswered == questionsCount*questionsAttempts) {
+        });
+    }
+}
+
+
+// add question and send random answers
+var addQuestionMultipleChoice = function(qTopic, id) {
+	  var question = {
+		    topic: 'CSC492',
+		    title: qTopic,
+        text: '<p>'+qTopic+' Text</p>',
+        answer: 'Option1',
+        points: Math.floor(Math.random()*questionsMaxValue),
+        type: common.questionTypes.MULTIPLECHOICE.value,
+        hint: 'Option1',
+        visible: 'true',
+        choices: ['Option1','Option2','Option3','Option4']
+    };
+
+    questions.addQuestion(question, function(err, res) {
+        if (err) {
+            logger.error('Could not add question. Please try again.');
+        } else {
+            logger.info('Questions %d created', id);
+        }
+
+        if (questionsCreated == numberOfQuestionsExpected) {
+            answerQuestionsMultipleChoice();
+        }
+
+        questionsCreated++;
+    });
+}
+
+// add question and send random answers
+var answerQuestionMultipleChoice = function(questionId) {
+    for (var i = 0; i < questionsAttempts; i++) {
+        var studentId = 'student'+Math.floor(Math.random()*studentsCount);
+        var answer = 'Option2';
+
+        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+            answer = 'Option1';
+        }
+
+        checkAnswer(questionId, studentId, answer, function (err, correct) {
+            if (err) {
+                logger.error(err);
+            } else {
+                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+            }
+
+            if (questionsAnswered == numberOfQuestionsExpected*questionsAttempts) {
+                createQuestionsTrueFalse();
+            }
+
+            questionsAnswered++;
+        });
+    }
+}
+
+// add question and send random answers
+var addQuestionTrueFalse = function(qTopic, id) {
+	  var question = {
+		    topic: 'CSC492',
+		    title: qTopic,
+        text: '<p>'+qTopic+' Text</p>',
+        answer: 'true',
+        points: Math.floor(Math.random()*questionsMaxValue),
+        type: common.questionTypes.TRUEFALSE.value,
+        hint: 'Option1',
+        visible: 'true'
+    };
+
+    questions.addQuestion(question, function(err, res) {
+        if (err) {
+            logger.error('Could not add question. Please try again.');
+        } else {
+            logger.info('Questions %d created', id);
+        }
+
+        if (questionsCreated == numberOfQuestionsExpected) {
+            answerQuestionsTrueFalse();
+        }
+
+        questionsCreated++;
+    });
+}
+
+// add question and send random answers
+var answerQuestionTrueFalse = function(questionId) {
+    for (var i = 0; i < questionsAttempts; i++) {
+        var studentId = 'student'+Math.floor(Math.random()*studentsCount);
+        var answer = 'false';
+
+        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+            answer = 'true';
+        }
+
+        checkAnswer(questionId, studentId, answer, function (err, correct) {
+            if (err) {
+                logger.error(err);
+            } else {
+                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+            }
+
+            if (questionsAnswered == numberOfQuestionsExpected*questionsAttempts) {
+                createQuestionsMatching();
+            }
+
+            questionsAnswered++;
+        });
+    }
+}
+
+// add question and send random answers
+var addQuestionMatching = function(qTopic, id) {
+	  var question = {
+		    topic: 'CSC492',
+		    title: qTopic,
+        text: '<p>'+qTopic+' Text</p>',
+        answer: 'true',
+        points: Math.floor(Math.random()*questionsMaxValue),
+        type: common.questionTypes.MATCHING.value,
+        hint: 'Option1',
+        visible: 'true',
+        leftSide: ['l1', 'l2', 'l3'],
+        rightSide: ['r1', 'r2', 'r3'],
+    };
+
+    questions.addQuestion(question, function(err, res) {
+        if (err) {
+            logger.error('Could not add question. Please try again.');
+        } else {
+            logger.info('Questions %d created', id);
+        }
+
+        if (questionsCreated == numberOfQuestionsExpected) {
+            answerQuestionsMatching();
+        }
+
+        questionsCreated++;
+    });
+}
+
+// add question and send random answers
+var answerQuestionMatching = function(questionId) {
+    for (var i = 0; i < questionsAttempts; i++) {
+        var studentId = 'student'+Math.floor(Math.random()*studentsCount);
+        var answer = [['l3', 'l2', 'l1'],['r1', 'r2', 'r3']];
+
+        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+            answer = [['l1', 'l2', 'l3'],['r1', 'r2', 'r3']];
+        }
+
+        checkAnswer(questionId, studentId, answer, function (err, correct) {
+            if (err) {
+                logger.error(err);
+            } else {
+                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+            }
+
+            if (questionsAnswered == numberOfQuestionsExpected*questionsAttempts) {
                 process.exit(0);
             }
+
+            questionsAnswered++;
         });
     }
 }
@@ -187,16 +360,70 @@ var createStudents = function() {
   	}
 }
 
-var createQuestions = function() {
-  	for (var id = 1; id <= questionsCount; id++) {
-      	addQuestion('Is math related to science? '+id, id);
+var createQuestionsRegular = function() {
+    variableReset(0);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionRegular('Is math related to science? '+id, id);
   	}
 }
 
-var answerQuestions = function() {
-  	for (var id = 1; id <= questionsCount; id++) {
-      	answerQuestion(id);
+var createQuestionsMultipleChoice = function() {
+    variableReset(1);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionMultipleChoice('Is math related to science? '+id, id);
   	}
+}
+
+var createQuestionsTrueFalse = function() {
+    variableReset(2);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionTrueFalse('Is math related to science? '+id, id);
+  	}
+}
+
+var createQuestionsMatching = function() {
+    variableReset(3);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionMatching('Is math related to science? '+id, id);
+  	}
+}
+
+var answerQuestionsRegular = function() {
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	answerQuestionRegular(id);
+  	}
+}
+
+var answerQuestionsMultipleChoice = function() {
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	answerQuestionMultipleChoice(id);
+  	}
+}
+
+var answerQuestionsTrueFalse = function() {
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	answerQuestionTrueFalse(id);
+  	}
+}
+
+var answerQuestionsMatching = function() {
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	answerQuestionMatching(id);
+  	}
+}
+
+var variableReset = function(number) {
+    var totalCreated = 1;
+
+    for (var i = 0; i < number; i++) {
+        totalCreated += numberOfEachQuestion[i];
+    }
+
+    numberOfQuestionsExpected = numberOfEachQuestion[number];
+    questionsCount = totalCreated + numberOfQuestionsExpected;
+    questionsIds = totalCreated;
+    questionsCreated = 1;
+    questionsAnswered = 1;
 }
 
 db.initialize(function() {
