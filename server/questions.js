@@ -244,6 +244,8 @@ exports.verifyAnswer = function(question, answer) {
                 return verifyMatchingQuestionAnswer(question,answer);
             case common.questionTypes.CHOOSEALL.value:
                 return verifyChooseAllQuestionAnswer(question,answer);
+            case common.questionTypes.ORDERING.value:
+                return verifyOrderingQuestionAnswer(question,answer);
             default:
                 return (answer === question.answer);
         }
@@ -275,6 +277,9 @@ var verifyMatchingQuestionAnswer = function(question, answer){
     return false;
 }
 
+var verifyOrderingQuestionAnswer = function(question,answer){
+    return question.orderList.sort().join(',') === answer.sort().join(',');
+}
 // add comment to question by id with user and comment
 exports.addComment = function (questionId, userId, comment, callback) {
     var currentDate = common.getDate();
