@@ -677,6 +677,11 @@ app.post('/profilemod', function(req, res) {
         return res.redirect('/');
     }
 
+    if (req.body.newpassword !== req.body.confirmpassword) {
+        logger.info('Confirm password doesn\'t match');
+        return res.status(400).send(err);
+    }
+
     var userId = req.session.user.id;
     users.getUserById(userId, function (err, userObj) {
         if (err) {
@@ -691,11 +696,6 @@ app.post('/profilemod', function(req, res) {
             if (err || !user) {
                 logger.info('User %s failed to authenticate.', userId);
                 return res.status(403).send(err);
-            }
-
-            if (req.body.newpassword !== req.body.confirmpassword) {
-                logger.info('Confirm password doesn\'t match');
-                return res.status(400).send(err);
             }
 
             if (user) {
