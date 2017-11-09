@@ -18,21 +18,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var winston = require('winston');
-require('winston-daily-rotate-file');
+var fs = require('fs');
+var common = require('./common.js');
+var logger = fs.createWriteStream('logs/'+common.getDateByFormat('YYYY-MM-DD')+'.log', {'flags':'a'});
 
-var transport = new (winston.transports.DailyRotateFile)({
-    filename: __dirname + '/../logs/log',
-    datePattern: 'yyyy-MM-dd.',
-    prepend: true,
-    localTime: true,
-    level: 'info'
-});
+process.stdout.write = process.stderr.write = logger.write.bind(logger);
+process.on(
+  'uncaughtException',
+  function(err)
+  {
+    console.error((err && err.stack) ? err.stack : err);
+  }
+);
 
-var logger = new (winston.Logger)({
-    transports: [
-        transport
-    ]
-});
-
-exports.logger = logger;
+console.log('Testing logger');
+logger = fs.createWriteStream('logs/'+common.getDateByFormat('YYYY-MM-DD')+'.log', {'flags':'a'});

@@ -127,8 +127,13 @@ var isEmptyObject = function(obj) {
 exports.isEmptyObject = isEmptyObject;
 
 // return the current date
-function getDate()
-{
-	return date().format('YYYY-MM-DD hh:mm:ss A');
+var getDate = function() {
+	return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
 }
+
+var getDateByFormat = function(format) {
+	return date().format(format);
+}
+
 exports.getDate = getDate;
+exports.getDateByFormat = getDateByFormat;

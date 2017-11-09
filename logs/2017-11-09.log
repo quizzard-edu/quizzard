@@ -1,0 +1,81 @@
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-09T22:22:58.958Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-09T22:22:58.966Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-09T22:22:58.971Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-09T22:33:46.379Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-09T22:33:46.389Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-09T22:33:46.396Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-09T22:37:04.805Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-09T22:37:04.814Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-09T22:37:04.822Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-09T22:37:17.361Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-09T22:37:17.370Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-09T22:37:17.378Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-09T22:38:08.021Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-09T22:38:08.029Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-09T22:38:08.038Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-09T22:40:55.386Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-09T22:40:55.396Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-09T22:40:55.400Z"}
+Testing logger
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-09T22:41:10.372Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-09T22:41:10.380Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-09T22:41:10.384Z"}
+Testing logger
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-09T22:41:20.043Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-09T22:41:20.055Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-09T22:41:20.059Z"}
+Testing logger
+RangeError: Maximum call stack size exceeded
+    at getDate (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/common.js:130:23)
+    at getDate (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/common.js:131:9)
+    at getDate (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/common.js:131:9)
+    at getDate (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/common.js:131:9)
+    at getDate (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/common.js:131:9)
+    at getDate (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/common.js:131:9)
+    at getDate (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/common.js:131:9)
+    at getDate (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/common.js:131:9)
+    at getDate (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/common.js:131:9)
+    at getDate (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/common.js:131:9)
+Testing logger
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-09T22:42:47.230Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-09T22:42:47.240Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-09T22:42:47.244Z"}
+Testing logger
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-09T22:42:53.319Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-09T22:42:53.333Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-09T22:42:53.337Z"}
+Testing logger
+ReferenceError: getDateByFormat is not defined
+    at Object.<anonymous> (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/log.js:35:39)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+    at Module.load (module.js:344:32)
+    at Function.Module._load (module.js:301:12)
+    at Module.require (module.js:354:17)
+    at require (internal/module.js:12:17)
+    at Object.<anonymous> (/home/fezlapatop/Desktop/CSC492/original/quizzard/server/db.js:23:14)
+    at Module._compile (module.js:410:26)
+    at Object.Module._extensions..js (module.js:417:10)
+Testing logger
+TypeError: Cannot read property 'info' of undefined
+    at /home/fezlapatop/Desktop/CSC492/original/quizzard/server/db.js:46:15
+    at /home/fezlapatop/Desktop/CSC492/original/quizzard/node_modules/mongodb/lib/db.js:238:5
+    at connectHandler (/home/fezlapatop/Desktop/CSC492/original/quizzard/node_modules/mongodb/lib/server.js:324:7)
+    at g (events.js:260:16)
+    at emitOne (events.js:77:13)
+    at emit (events.js:169:7)
+    at /home/fezlapatop/Desktop/CSC492/original/quizzard/node_modules/mongodb-core/lib/topologies/server.js:300:14
+    at /home/fezlapatop/Desktop/CSC492/original/quizzard/node_modules/mongodb-core/lib/connection/pool.js:469:18
+    at nextTickCallbackWith0Args (node.js:419:9)
+    at process._tickCallback (node.js:348:13)
+TypeError: Cannot read property 'info' of undefined
+    at /home/fezlapatop/Desktop/CSC492/original/quizzard/server/db.js:46:15
+    at /home/fezlapatop/Desktop/CSC492/original/quizzard/node_modules/mongodb/lib/db.js:238:5
+    at connectHandler (/home/fezlapatop/Desktop/CSC492/original/quizzard/node_modules/mongodb/lib/server.js:324:7)
+    at g (events.js:260:16)
+    at emitOne (events.js:77:13)
+    at emit (events.js:169:7)
+    at /home/fezlapatop/Desktop/CSC492/original/quizzard/node_modules/mongodb-core/lib/topologies/server.js:300:14
+    at /home/fezlapatop/Desktop/CSC492/original/quizzard/node_modules/mongodb-core/lib/connection/pool.js:469:18
+    at nextTickCallbackWith0Args (node.js:419:9)
+    at process._tickCallback (node.js:348:13)
