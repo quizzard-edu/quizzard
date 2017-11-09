@@ -679,7 +679,7 @@ app.post('/profilemod', function(req, res) {
 
     if (req.body.newpassword !== req.body.confirmpassword) {
         logger.info('Confirm password doesn\'t match');
-        return res.status(400).send(err);
+        return res.status(400).send('Confirm password doesn\'t match');
     }
 
     var userId = req.session.user.id;
