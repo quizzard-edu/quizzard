@@ -288,3 +288,25 @@ exports.setUserStatus = function(studentId, newStatus, callback){
 exports.submitRating = function (userId, questionId, rating, callback) {
     db.updateUserById(userId, {questionId: questionId, rating: rating}, callback);
 }
+
+exports.updateProfile = function (userId, request, callback) {
+    var query = {id: userId};
+    var update = {};
+
+    update.$set = {};
+
+    if (request.newemail) {
+        update.$set.email = request.newemail;
+    }
+
+    if (request.newpassword) {
+        update.$set.password = request.newpassword;
+        return db.updateUserPassword(query, update, request.newpassword, function (err, result) {
+            return callback(err, result);
+        });
+    }
+
+    db.updateUserByQuery(query, update, function (err,result) {
+        return callback(err, result);
+    });
+}

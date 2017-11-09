@@ -1,0 +1,34 @@
+.row
+  .col.s12
+    .card.center
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light.red.left#account-import-list-back-button
+          i.material-icons arrow_back
+      .card-content
+        h5.card-title Accounts Import Form
+        h6 Import the list of students' accounts
+      .card-action
+        #importList
+          table.bordered.highlight
+              thead
+                tr
+                  th Included
+                  th First Name
+                  th Last Name
+                  th User ID
+                  th Email
+              tbody
+                each s in students
+                  tr
+                    td
+                      p
+                        input.checked(id='cb-' + s.id type='checkbox' checked=true)
+                        label.visbox(for='cb-' + s.id)
+                    td #{s.fname}
+                    td #{s.lname}
+                    td #{s.id}
+                    td #{s.email}
+          br
+          a.waves-effect.waves-light.btn(onClick='submitImportList()')
+            i.material-icons.left cloud_upload
+            | Import

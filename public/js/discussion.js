@@ -29,7 +29,7 @@ var voteClickComment = function(icon, vote) {
             $('#numLikes_' + commentId).html(data.likesCount);
             $('#numDislikes_' + commentId).html(data.dislikesCount);
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -70,7 +70,7 @@ var voteClickReply = function(icon, vote) {
             $('#numLikes_' + replyId).html(data.likesCount);
             $('#numDislikes_' + replyId).html(data.dislikesCount);
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -128,7 +128,7 @@ var repliesSection = function(replyObjectId) {
 
         setTimeout(function() {
             visibilityChange.addClass('hidden');
-        }, 400);
+        }, 350);
 
         replyObject.html('hexpand_more');
         notHidden.splice(notHidden.indexOf(visibilityChangeId), 1);

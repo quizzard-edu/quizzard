@@ -49,19 +49,39 @@ $('#match_answerform').submit(function(evt) {
     sendAnswerRequest([leftAnswers,rightAnswers]);
 });
 
+$('#chooseAll_answerForm').submit(function(evt) {
+    evt.preventDefault();
+    var answer = [];
+    var fields = $('#chooseAll_answerForm').serializeArray();
+    jQuery.each(fields, function(i, field) {
+        if(field.name.startsWith('checkButton') ){
+           answer.push(field.value);
+        }
+    });
+    sendAnswerRequest(answer);
+})
+
 var sendAnswerRequest = function(ans) {
     $.ajax({
         type: 'POST',
         url: '/submitanswer',
         data: { questionId: questionId, answer: ans },
         success: function(data) {
-            swal({
-                title: 'Correct',
-                text: 'Congratulations! You gained ' + data.points + ' points!',
-                type: 'success'
-            }, function () {
-                window.location.href = '/';
+
+            $('#modalAlert').modal({
+                dismissible: false,
+                opacity: 0.5,
+                complete: function() {
+                    if(getRating() > 0) {
+                        submitQuestionRating(getRating(), questionId);
+                    }
+                    location.reload();
+                }
             });
+
+            $('#modalAlertMsg').html('Congratulations! You gained ' + data.points + ' points!<br>Please rate the difficulty of this question:');
+
+            $('#modalAlert').modal('open');
         },
         error: function(data) {
             $('#hint').removeClass('hidden');
@@ -73,3 +93,11 @@ var sendAnswerRequest = function(ans) {
         }
     });
 }
+
+/* Listener for the `rate` button */
+$(document).on('click', '#rateQuestion', function() {
+    if(getRating() > 0) {
+        submitQuestionRating(getRating(), questionId);
+    }
+    location.reload();
+});

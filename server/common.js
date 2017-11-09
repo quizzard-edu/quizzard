@@ -23,7 +23,8 @@ const questionTypes = Object.freeze({
     MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer', icon: 'format_list_bulleted'},
     REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer', icon: 'font_download'},
     TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'tf-answer', icon: 'check_circle'},
-    MATCHING        : {name: 'Matching', value: 'matching', template: 'matching-answer', icon: 'dashboard'}
+    MATCHING        : {name: 'Matching', value: 'matching', template: 'matching-answer', icon: 'dashboard'},
+    CHOOSEALL       : {name: 'Choose All That Apply', value: 'ca', template: 'chooseAll-answer', icon: 'format_list_bulleted'}
 });
 exports.questionTypes = questionTypes;
 
@@ -81,6 +82,10 @@ const questionAttributes = Object.freeze({
         leftSide                : {type:'[object Array]'},
         rightSide               : {type:'[object Array]'}
     },
+    CHOOSEALL: {
+        choices                 : {type:'[object Array]'},
+        answer                  : {type:'[object Array]'}
+    },
     DATATYPES: {
         Array                   : {type:'[object Array]'},
         String                  : {type:'[object String]'},
@@ -114,6 +119,15 @@ exports.getIdsListFromJSONList = function (JSONList) {
     return list;
 }
 
+/* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
+exports.getIdsListFromJSONList2 = function (JSONList) {
+    var list = [];
+    for (i in JSONList){
+        list.push(JSONList[i].id);
+    }
+    return list;
+}
+
 // check if json obejct is empty
 var isEmptyObject = function(obj) {
     for (var key in obj) {
@@ -131,6 +145,7 @@ var getDate = function() {
 	return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
 }
 
+// return the current date with format
 var getDateByFormat = function(format) {
 	return date().format(format);
 }

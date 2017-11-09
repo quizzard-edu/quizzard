@@ -86,6 +86,13 @@ var prepareQuestionData = function(question, callback){
             questionToAdd.rightSide = question.rightSide;
             break;
 
+        case common.questionTypes.CHOOSEALL.value:
+            questionToAdd.type = common.questionTypes.CHOOSEALL.value;
+            questionToAdd.choices = question.choices;
+            questionToAdd.answer = question.answer;
+
+            break;
+
         default:
             return callback({status:400, msg:'Type of Question is Undefined'}, null)
     }
@@ -109,7 +116,7 @@ exports.addQuestion = function(question, callback) {
         if (result.success){
             return db.addQuestion(questionToAdd, callback);
         } else{
-            return callback(result, null)
+            return callback({status:400,msg:result.msg}, null)
         }
     })
 }
@@ -228,33 +235,41 @@ exports.submitAnswer = function(questionId, userId, correct, points, answer, cal
 
 // verify answer based on type
 exports.verifyAnswer = function(question, answer) {
-    var value = false;
+    if (answer){
+        switch (question.type){
+            case common.questionTypes.MATCHING.value:
+                return verifyMatchingQuestionAnswer(question,answer);
+            case common.questionTypes.CHOOSEALL.value:
+                return verifyChooseAllQuestionAnswer(question,answer);
+            default:
+                return (answer === question.answer);
+        }
+    }
+    return false;
+}
 
-    if (question.type === common.questionTypes.MATCHING.value && answer) {
-        var ansLeftSide = answer[0];
-        var ansRightSide = answer[1];
+var verifyChooseAllQuestionAnswer = function(question,answer){
+    return question.answer.sort().join(',') === answer.sort().join(',');
+}
 
-        if (ansLeftSide.length === question.leftSide.length) {
-            var checkIndexLeft;
-            var checkIndexRight;
+var verifyMatchingQuestionAnswer = function(question, answer){
+    var ansLeftSide = answer[0];
+    var ansRightSide = answer[1];
 
-            for (i = 0; i < ansLeftSide.length; i++) {
-                checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
-                checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
-                if (checkIndexLeft !== checkIndexRight) {
-                    return value = false;
-                }
-            }
+    if (ansLeftSide.length === question.leftSide.length) {
+        var checkIndexLeft;
+        var checkIndexRight;
 
-            if (!value) {
-                return value = true;
+        for (i = 0; i < ansLeftSide.length; i++) {
+            checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+            checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+            if (checkIndexLeft !== checkIndexRight) {
+                return false;
             }
         }
-
-        return value = false;
+        return true;
     }
-
-    return value = (answer === question.answer);
+    return false;
 }
 
 // add comment to question by id with user and comment
@@ -307,11 +322,19 @@ exports.addReply = function (commentId, userId, reply, callback) {
     });
 }
 
+/*
+The way votes work:
+if the user already voted up, then if they vote up again the previous vote
+will get cancelled. Same for vote down.
+if the user already voted up, then vote down the previous vote gets removed
+and the new vote gets added.
+if they never voted before, just add the vote
+*/
 // vote on a comment
 exports.voteComment = function (commentId, vote, userId, callback) {
     var query = {'comments._id': commentId};
     var update = {};
-	var voteValue = -2;
+    var voteValue = -2;
 
     db.lookupQuestion(query, function(err, question){
         if (err) {
@@ -326,22 +349,22 @@ exports.voteComment = function (commentId, vote, userId, callback) {
         for (var i in comments) {
             if (comments[i]._id === commentId) {
                 var userUpVoted = comments[i].likes.indexOf(userId) !== -1;
-				var userDownVoted = comments[i].dislikes.indexOf(userId) !== -1;
-				var updatedLikesCount = comments[i].likesCount;
-				var updatedDisLikesCount = comments[i].dislikesCount;
+                var userDownVoted = comments[i].dislikes.indexOf(userId) !== -1;
+                var updatedLikesCount = comments[i].likesCount;
+                var updatedDisLikesCount = comments[i].dislikesCount;
 
                 if (userUpVoted && userDownVoted) {
                     return callback('User liked and disliked a comment at the sametime', null);
                 }
 
                 if (userUpVoted) {
-					updatedLikesCount--;
+                    updatedLikesCount--;
                     voteValue = 0;
                     update.$pull = { 'comments.$.likes': userId };
                     update.$inc = { 'comments.$.likesCount': -1 };
 
                     if (vote === -1) {
-						updatedDisLikesCount++;
+                        updatedDisLikesCount++;
                         voteValue = -1;
                         update.$push = { 'comments.$.dislikes': userId };
                         update.$inc['comments.$.dislikesCount'] = 1;
@@ -349,13 +372,13 @@ exports.voteComment = function (commentId, vote, userId, callback) {
                 }
 
                 if (userDownVoted) {
-					updatedDisLikesCount--;
+                    updatedDisLikesCount--;
                     voteValue = 0;
                     update.$pull = { 'comments.$.dislikes': userId };
                     update.$inc = { 'comments.$.dislikesCount': -1 };
 
                     if (vote === 1) {
-						updatedLikesCount++;
+                        updatedLikesCount++;
                         voteValue = 1;
                         update.$push = { 'comments.$.likes': userId };
                         update.$inc['comments.$.likesCount'] = 1;
@@ -364,13 +387,13 @@ exports.voteComment = function (commentId, vote, userId, callback) {
 
                 if (!userUpVoted && !userDownVoted) {
                     if (vote === 1) {
-						updatedLikesCount++;
+                        updatedLikesCount++;
                         update.$push = { 'comments.$.likes': userId };
                         update.$inc = { 'comments.$.likesCount': 1 };
                     }
 
                     if (vote === -1) {
-						updatedDisLikesCount++;
+                        updatedDisLikesCount++;
                         update.$push = { 'comments.$.dislikes': userId };
                         update.$inc = { 'comments.$.dislikesCount': 1 };
                     }
@@ -380,11 +403,11 @@ exports.voteComment = function (commentId, vote, userId, callback) {
 
                 return db.updateQuestionByQuery(query, update, function (err, result) {
                     return callback(err, {
-						result: result,
-						voteValue: voteValue,
-						likesCount: updatedLikesCount,
-						dislikesCount: updatedDisLikesCount
-					});
+                        result: result,
+                        voteValue: voteValue,
+                        likesCount: updatedLikesCount,
+                        dislikesCount: updatedDisLikesCount
+                    });
                 });
             }
         }
@@ -410,14 +433,15 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 
         // TODO: optimize this using mongodb projections
         var comments = question.comments;
-        for (var j in comments) {
-            var replies = comments[j].replies;
-            for (var i in replies) {
-                if (replies[i]._id === replyId) {
-                    var userUpVoted = replies[i].likes.indexOf(userId) !== -1;
-                    var userDownVoted = replies[i].dislikes.indexOf(userId) !== -1;
-                    var updatedLikesCount = replies[i].likesCount;
-                    var updatedDisLikesCount = replies[i].dislikesCount;
+        for (var commentIndex in comments) {
+            var replies = comments[commentIndex].replies;
+            for (var replyIndex in replies) {
+                if (replies[replyIndex]._id === replyId) {
+                    var userUpVoted = replies[replyIndex].likes.indexOf(userId) !== -1;
+                    var userDownVoted = replies[replyIndex].dislikes.indexOf(userId) !== -1;
+                    var updatedLikesCount = replies[replyIndex].likesCount;
+                    var updatedDisLikesCount = replies[replyIndex].dislikesCount;
+                    var commonPrefix = 'comments.'+commentIndex+'.replies.'+replyIndex;
 
                     if (userUpVoted && userDownVoted) {
                         return callback('User liked and disliked a comment at the sametime', null);
@@ -426,8 +450,8 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                     if (userUpVoted) {
                         updatedLikesCount--;
                         voteValue = 0;
-                        var commentsreplieslikes = 'comments.'+j+'.replies.'+i+'.likes';
-                        var commentsreplieslikesCount = 'comments.'+j+'.replies.'+i+'.likesCount';
+                        var commentsreplieslikes = commonPrefix+'.likes';
+                        var commentsreplieslikesCount = commonPrefix+'.likesCount';
                         update.$pull = {};
                         update.$inc = {};
                         update.$pull[commentsreplieslikes] = userId;
@@ -436,8 +460,8 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                         if (vote === -1) {
                             updatedDisLikesCount++;
                             voteValue = -1;
-                            var commentsrepliesdislikes = 'comments.'+j+'.replies.'+i+'.dislikes';
-                            var commentsrepliesdislikesCount = 'comments.'+j+'.replies.'+i+'.dislikesCount';
+                            var commentsrepliesdislikes = commonPrefix+'.dislikes';
+                            var commentsrepliesdislikesCount = commonPrefix+'.dislikesCount';
                             update.$push = {};
                             update.$push[commentsrepliesdislikes] = userId;
                             update.$inc[commentsrepliesdislikesCount] = 1;
@@ -447,8 +471,8 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                     if (userDownVoted) {
                         updatedDisLikesCount--;
                         voteValue = 0;
-                        var commentsrepliesdislikes = 'comments.'+j+'.replies.'+i+'.dislikes';
-                        var commentsrepliesdislikesCount = 'comments.'+j+'.replies.'+i+'.dislikesCount';
+                        var commentsrepliesdislikes = commonPrefix+'.dislikes';
+                        var commentsrepliesdislikesCount = commonPrefix+'.dislikesCount';
                         update.$pull = {};
                         update.$inc = {};
                         update.$pull[commentsrepliesdislikes] = userId;
@@ -457,8 +481,8 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                         if (vote === 1) {
                             updatedLikesCount++;
                             voteValue = 1;
-                            var commentsreplieslikes = 'comments.'+j+'.replies.'+i+'.likes';
-                            var commentsreplieslikesCount = 'comments.'+j+'.replies.'+i+'.likesCount';
+                            var commentsreplieslikes = commonPrefix+'.likes';
+                            var commentsreplieslikesCount = commonPrefix+'.likesCount';
                             update.$push = {};
                             update.$push[commentsreplieslikes] = userId;
                             update.$inc[commentsreplieslikesCount] = 1;
@@ -468,8 +492,8 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                     if (!userUpVoted && !userDownVoted) {
                         if (vote === 1) {
                             updatedLikesCount++;
-                            var commentsreplieslikes = 'comments.'+j+'.replies.'+i+'.likes';
-                            var commentsreplieslikesCount = 'comments.'+j+'.replies.'+i+'.likesCount';
+                            var commentsreplieslikes = commonPrefix+'.likes';
+                            var commentsreplieslikesCount = commonPrefix+'.likesCount';
                             update.$push = {};
                             update.$inc = {};
                             update.$push[commentsreplieslikes] = userId;
@@ -478,8 +502,8 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 
                         if (vote === -1) {
                             updatedDisLikesCount++;
-                            var commentsrepliesdislikes = 'comments.'+j+'.replies.'+i+'.dislikes';
-                            var commentsrepliesdislikesCount = 'comments.'+j+'.replies.'+i+'.dislikesCount';
+                            var commentsrepliesdislikes = commonPrefix+'.dislikes';
+                            var commentsrepliesdislikesCount = commonPrefix+'.dislikesCount';
                             update.$push = {};
                             update.$inc = {};
                             update.$push[commentsrepliesdislikes] = userId;
