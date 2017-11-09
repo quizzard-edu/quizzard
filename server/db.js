@@ -528,6 +528,10 @@ exports.updateQuestionById = function(questionId, request, callback){
         update.$set.visible = request.visible;
     }
 
+    if ('orderList' in request) {
+        update.$set.orderList = request.orderList;
+    }
+
     if (isEmptyObject(update.$addToSet)) {
         delete update.$addToSet;
     }

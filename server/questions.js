@@ -93,7 +93,7 @@ var prepareQuestionData = function(question, callback){
 
         case common.questionTypes.ORDERING.value:
             questionToAdd.type = common.questionTypes.ORDERING.value;
-            questionToAdd.orderList = question.choices;
+            questionToAdd.orderList = question.orderList;
             break;
 
         default:

@@ -650,6 +650,7 @@ var collectQuestionFormData = function(form){
     question['leftSide'] = [];
     question['rightSide'] = [];
     question['answer'] = [];
+    question['orderList'] = [];
 
     jQuery.each(fields, function(i, field) {
         if(field.name.startsWith('radbutton')) {
@@ -667,15 +668,20 @@ var collectQuestionFormData = function(form){
         if(field.name.startsWith('matchRight')) {
             question['rightSide'].push(field.value);
         }
+
         if(field.name.startsWith('tfbutton')) {
             question['answer'] = field.value;
         }
+
         if(field.name.startsWith('checkButton') ){
            question['answer'].push(fields[i+1].value);
         }
+
+        if(field.name.startsWith('orderItem')) {
+            question['orderList'].push(field.value);
+        }
         question[field.name] = field.value;
     });
-    
     question['rating'] = getRating();
     question['text'] = $('#qtext').summernote('code');
     question['visible'] = $('#visible').is(':checked');
