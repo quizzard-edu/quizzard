@@ -111,6 +111,14 @@ var addQuestionRegular = function(qTopic, id) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
+
+            rateQuestion(id, 'Admin1', Math.floor(Math.random()*6), function() {
+                if (err) {
+                    logger.error('Could not rate question. Please try again.');
+                } else {
+                    logger.info('Questions %d rated as %d', id, 3);
+                }
+            });
         }
 
         if (questionsCreated == numberOfQuestionsExpected) {
@@ -167,6 +175,14 @@ var addQuestionMultipleChoice = function(qTopic, id) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
+
+            rateQuestion(id, 'Admin1', Math.floor(Math.random()*6), function() {
+                if (err) {
+                    logger.error('Could not rate question. Please try again.');
+                } else {
+                    logger.info('Questions %d rated as %d', id, 3);
+                }
+            });
         }
 
         if (questionsCreated == numberOfQuestionsExpected) {
@@ -221,6 +237,14 @@ var addQuestionTrueFalse = function(qTopic, id) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
+
+            rateQuestion(id, 'Admin1', Math.floor(Math.random()*6), function() {
+                if (err) {
+                    logger.error('Could not rate question. Please try again.');
+                } else {
+                    logger.info('Questions %d rated as %d', id, 3);
+                }
+            });
         }
 
         if (questionsCreated == numberOfQuestionsExpected) {
@@ -277,6 +301,14 @@ var addQuestionMatching = function(qTopic, id) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
+
+            rateQuestion(id, 'Admin1', Math.floor(Math.random()*6), function() {
+                if (err) {
+                    logger.error('Could not rate question. Please try again.');
+                } else {
+                    logger.info('Questions %d rated as %d', id, 3);
+                }
+            });
         }
 
         if (questionsCreated == numberOfQuestionsExpected) {
@@ -343,6 +375,25 @@ var checkAnswer = function (questionId, userId, answer, callback) {
                     );
                 }
             );
+        }
+    });
+}
+
+var rateQuestion = function (questionId, userId, rating, callback) {
+    db.lookupQuestion({id: questionId}, function(err, question) {
+        questionId = question._id;
+        if(err){
+            return callback(err, null);
+        } else if(!question){
+            return callback('Could not find the question', null);
+        } else {
+            questions.submitRating(questionId, userId, rating, function(err, res) {
+                if (err) {
+                    logger.error('Could not rate question. Please try again.');
+                } else {
+                    logger.info('Questions %d rated as %d', question.id, rating);
+                }
+            });
         }
     });
 }
