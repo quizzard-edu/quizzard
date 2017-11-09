@@ -1,0 +1,187 @@
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-08T22:36:13.726Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-08T22:36:13.736Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-08T22:36:13.740Z"}
+{"level":"info","message":"Request path: /admin","timestamp":"2017-11-08T22:36:26.851Z"}
+{"level":"info","message":"Request path: /","timestamp":"2017-11-08T22:36:26.882Z"}
+{"level":"info","message":"Request path: /lib/animate/animate.css","timestamp":"2017-11-08T22:36:26.972Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/css/bootstrap.min.css","timestamp":"2017-11-08T22:36:26.973Z"}
+{"level":"info","message":"Request path: /css/quizzard.css","timestamp":"2017-11-08T22:36:26.974Z"}
+{"level":"info","message":"Request path: /css/icons.css","timestamp":"2017-11-08T22:36:26.976Z"}
+{"level":"info","message":"Request path: /css/login.css","timestamp":"2017-11-08T22:36:26.977Z"}
+{"level":"info","message":"Request path: /lib/materialize/css/materialize.min.css","timestamp":"2017-11-08T22:36:26.980Z"}
+{"level":"info","message":"Request path: /lib/jquery/jquery-3.1.1.min.js","timestamp":"2017-11-08T22:36:27.001Z"}
+{"level":"info","message":"Request path: /lib/materialize/js/materialize.min.js","timestamp":"2017-11-08T22:36:27.036Z"}
+{"level":"info","message":"Request path: /js/common.js","timestamp":"2017-11-08T22:36:27.037Z"}
+{"level":"info","message":"Request path: /js/login.js","timestamp":"2017-11-08T22:36:27.038Z"}
+{"level":"info","message":"Request path: /img/logo.png","timestamp":"2017-11-08T22:36:27.038Z"}
+{"level":"info","message":"Request path: /lib/materialize/fonts/MaterialIcons-Regular.woff2","timestamp":"2017-11-08T22:36:27.050Z"}
+{"level":"info","message":"Request path: /login","timestamp":"2017-11-08T22:36:32.787Z"}
+{"level":"info","message":"Attempted login by user admin0","timestamp":"2017-11-08T22:36:32.828Z"}
+{"level":"info","message":"User admin0 logged in.","timestamp":"2017-11-08T22:36:32.996Z"}
+{"level":"info","message":"Request path: /home","timestamp":"2017-11-08T22:36:33.004Z"}
+{"level":"info","message":"Request path: /admin","timestamp":"2017-11-08T22:36:33.009Z"}
+{"level":"info","message":"Request path: /lib/animate/animate.css","timestamp":"2017-11-08T22:36:33.087Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/css/bootstrap.min.css","timestamp":"2017-11-08T22:36:33.088Z"}
+{"level":"info","message":"Request path: /css/quizzard.css","timestamp":"2017-11-08T22:36:33.090Z"}
+{"level":"info","message":"Request path: /css/icons.css","timestamp":"2017-11-08T22:36:33.090Z"}
+{"level":"info","message":"Request path: /lib/sweetalert/sweetalert.css","timestamp":"2017-11-08T22:36:33.091Z"}
+{"level":"info","message":"Request path: /lib/summernote/summernote.css","timestamp":"2017-11-08T22:36:33.092Z"}
+{"level":"info","message":"Request path: /css/sidebar.css","timestamp":"2017-11-08T22:36:33.097Z"}
+{"level":"info","message":"Request path: /css/navbar.css","timestamp":"2017-11-08T22:36:33.097Z"}
+{"level":"info","message":"Request path: /lib/materialize/css/materialize.min.css","timestamp":"2017-11-08T22:36:33.099Z"}
+{"level":"info","message":"Request path: /css/admin.css","timestamp":"2017-11-08T22:36:33.100Z"}
+{"level":"info","message":"Request path: /lib/jquery/jquery-3.1.1.min.js","timestamp":"2017-11-08T22:36:33.102Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/js/bootstrap.min.js","timestamp":"2017-11-08T22:36:33.105Z"}
+{"level":"info","message":"Request path: /lib/sweetalert/sweetalert.min.js","timestamp":"2017-11-08T22:36:33.106Z"}
+{"level":"info","message":"Request path: /lib/summernote/summernote.min.js","timestamp":"2017-11-08T22:36:33.106Z"}
+{"level":"info","message":"Request path: /lib/materialize/js/materialize.min.js","timestamp":"2017-11-08T22:36:33.145Z"}
+{"level":"info","message":"Request path: /js/common.js","timestamp":"2017-11-08T22:36:33.145Z"}
+{"level":"info","message":"Request path: /js/admin.js","timestamp":"2017-11-08T22:36:33.145Z"}
+{"level":"info","message":"Request path: /js/navbar.js","timestamp":"2017-11-08T22:36:33.147Z"}
+{"level":"info","message":"Request path: /questionlist","timestamp":"2017-11-08T22:36:33.247Z"}
+{"level":"info","message":"Request path: /css/admin.css","timestamp":"2017-11-08T22:36:33.265Z"}
+{"level":"info","message":"Request path: /lib/materialize/fonts/MaterialIcons-Regular.woff2","timestamp":"2017-11-08T22:36:33.273Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-08T22:38:12.039Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-08T22:38:12.049Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-08T22:38:12.053Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-08T22:38:58.377Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-08T22:38:58.387Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-08T22:38:58.391Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-08T22:42:14.462Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-08T22:42:14.472Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-08T22:42:14.476Z"}
+{"level":"info","message":"Request path: /","timestamp":"2017-11-08T22:42:29.378Z"}
+{"level":"info","message":"Request path: /lib/animate/animate.css","timestamp":"2017-11-08T22:42:29.476Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/css/bootstrap.min.css","timestamp":"2017-11-08T22:42:29.482Z"}
+{"level":"info","message":"Request path: /css/quizzard.css","timestamp":"2017-11-08T22:42:29.483Z"}
+{"level":"info","message":"Request path: /css/icons.css","timestamp":"2017-11-08T22:42:29.483Z"}
+{"level":"info","message":"Request path: /css/login.css","timestamp":"2017-11-08T22:42:29.484Z"}
+{"level":"info","message":"Request path: /lib/materialize/css/materialize.min.css","timestamp":"2017-11-08T22:42:29.484Z"}
+{"level":"info","message":"Request path: /lib/jquery/jquery-3.1.1.min.js","timestamp":"2017-11-08T22:42:29.494Z"}
+{"level":"info","message":"Request path: /lib/materialize/js/materialize.min.js","timestamp":"2017-11-08T22:42:29.501Z"}
+{"level":"info","message":"Request path: /js/common.js","timestamp":"2017-11-08T22:42:29.513Z"}
+{"level":"info","message":"Request path: /js/login.js","timestamp":"2017-11-08T22:42:29.518Z"}
+{"level":"info","message":"Request path: /img/logo.png","timestamp":"2017-11-08T22:42:29.520Z"}
+{"level":"info","message":"Request path: /lib/materialize/fonts/MaterialIcons-Regular.woff2","timestamp":"2017-11-08T22:42:29.554Z"}
+{"level":"info","message":"Request path: /login","timestamp":"2017-11-08T22:42:34.875Z"}
+{"level":"info","message":"Attempted login by user admin0","timestamp":"2017-11-08T22:42:34.904Z"}
+{"level":"info","message":"User admin0 logged in.","timestamp":"2017-11-08T22:42:35.081Z"}
+{"level":"info","message":"Request path: /home","timestamp":"2017-11-08T22:42:35.094Z"}
+{"level":"info","message":"Request path: /admin","timestamp":"2017-11-08T22:42:35.103Z"}
+{"level":"info","message":"Request path: /lib/animate/animate.css","timestamp":"2017-11-08T22:42:35.193Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/css/bootstrap.min.css","timestamp":"2017-11-08T22:42:35.193Z"}
+{"level":"info","message":"Request path: /css/quizzard.css","timestamp":"2017-11-08T22:42:35.194Z"}
+{"level":"info","message":"Request path: /css/navbar.css","timestamp":"2017-11-08T22:42:35.195Z"}
+{"level":"info","message":"Request path: /css/icons.css","timestamp":"2017-11-08T22:42:35.196Z"}
+{"level":"info","message":"Request path: /lib/sweetalert/sweetalert.css","timestamp":"2017-11-08T22:42:35.196Z"}
+{"level":"info","message":"Request path: /lib/summernote/summernote.css","timestamp":"2017-11-08T22:42:35.197Z"}
+{"level":"info","message":"Request path: /css/sidebar.css","timestamp":"2017-11-08T22:42:35.198Z"}
+{"level":"info","message":"Request path: /lib/materialize/css/materialize.min.css","timestamp":"2017-11-08T22:42:35.201Z"}
+{"level":"info","message":"Request path: /css/admin.css","timestamp":"2017-11-08T22:42:35.202Z"}
+{"level":"info","message":"Request path: /lib/jquery/jquery-3.1.1.min.js","timestamp":"2017-11-08T22:42:35.205Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/js/bootstrap.min.js","timestamp":"2017-11-08T22:42:35.208Z"}
+{"level":"info","message":"Request path: /lib/sweetalert/sweetalert.min.js","timestamp":"2017-11-08T22:42:35.212Z"}
+{"level":"info","message":"Request path: /lib/summernote/summernote.min.js","timestamp":"2017-11-08T22:42:35.213Z"}
+{"level":"info","message":"Request path: /lib/materialize/js/materialize.min.js","timestamp":"2017-11-08T22:42:35.214Z"}
+{"level":"info","message":"Request path: /js/common.js","timestamp":"2017-11-08T22:42:35.216Z"}
+{"level":"info","message":"Request path: /js/admin.js","timestamp":"2017-11-08T22:42:35.217Z"}
+{"level":"info","message":"Request path: /js/navbar.js","timestamp":"2017-11-08T22:42:35.224Z"}
+{"level":"info","message":"Request path: /questionlist","timestamp":"2017-11-08T22:42:35.341Z"}
+{"level":"info","message":"Request path: /css/admin.css","timestamp":"2017-11-08T22:42:35.363Z"}
+{"level":"info","message":"Request path: /lib/materialize/fonts/MaterialIcons-Regular.woff2","timestamp":"2017-11-08T22:42:35.377Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-08T22:48:30.198Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-08T22:48:30.208Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-08T22:48:30.215Z"}
+{"level":"info","message":"Request path: /admin","timestamp":"2017-11-08T22:48:35.080Z"}
+{"level":"info","message":"Request path: /","timestamp":"2017-11-08T22:48:35.114Z"}
+{"level":"info","message":"Request path: /lib/animate/animate.css","timestamp":"2017-11-08T22:48:35.179Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/css/bootstrap.min.css","timestamp":"2017-11-08T22:48:35.179Z"}
+{"level":"info","message":"Request path: /css/quizzard.css","timestamp":"2017-11-08T22:48:35.180Z"}
+{"level":"info","message":"Request path: /css/icons.css","timestamp":"2017-11-08T22:48:35.180Z"}
+{"level":"info","message":"Request path: /css/login.css","timestamp":"2017-11-08T22:48:35.180Z"}
+{"level":"info","message":"Request path: /lib/materialize/css/materialize.min.css","timestamp":"2017-11-08T22:48:35.181Z"}
+{"level":"info","message":"Request path: /lib/jquery/jquery-3.1.1.min.js","timestamp":"2017-11-08T22:48:35.203Z"}
+{"level":"info","message":"Request path: /lib/materialize/js/materialize.min.js","timestamp":"2017-11-08T22:48:35.214Z"}
+{"level":"info","message":"Request path: /js/common.js","timestamp":"2017-11-08T22:48:35.217Z"}
+{"level":"info","message":"Request path: /js/login.js","timestamp":"2017-11-08T22:48:35.218Z"}
+{"level":"info","message":"Request path: /img/logo.png","timestamp":"2017-11-08T22:48:35.218Z"}
+{"level":"info","message":"Request path: /lib/materialize/fonts/MaterialIcons-Regular.woff2","timestamp":"2017-11-08T22:48:35.297Z"}
+{"level":"info","message":"Request path: /login","timestamp":"2017-11-08T22:48:38.320Z"}
+{"level":"info","message":"Attempted login by user admin0","timestamp":"2017-11-08T22:48:38.343Z"}
+{"level":"info","message":"User admin0 logged in.","timestamp":"2017-11-08T22:48:38.518Z"}
+{"level":"info","message":"Request path: /home","timestamp":"2017-11-08T22:48:38.529Z"}
+{"level":"info","message":"Request path: /admin","timestamp":"2017-11-08T22:48:38.536Z"}
+{"level":"info","message":"Request path: /lib/animate/animate.css","timestamp":"2017-11-08T22:48:38.608Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/css/bootstrap.min.css","timestamp":"2017-11-08T22:48:38.608Z"}
+{"level":"info","message":"Request path: /css/quizzard.css","timestamp":"2017-11-08T22:48:38.609Z"}
+{"level":"info","message":"Request path: /css/icons.css","timestamp":"2017-11-08T22:48:38.609Z"}
+{"level":"info","message":"Request path: /lib/sweetalert/sweetalert.css","timestamp":"2017-11-08T22:48:38.610Z"}
+{"level":"info","message":"Request path: /lib/summernote/summernote.css","timestamp":"2017-11-08T22:48:38.610Z"}
+{"level":"info","message":"Request path: /css/sidebar.css","timestamp":"2017-11-08T22:48:38.613Z"}
+{"level":"info","message":"Request path: /css/navbar.css","timestamp":"2017-11-08T22:48:38.614Z"}
+{"level":"info","message":"Request path: /lib/materialize/css/materialize.min.css","timestamp":"2017-11-08T22:48:38.614Z"}
+{"level":"info","message":"Request path: /css/admin.css","timestamp":"2017-11-08T22:48:38.615Z"}
+{"level":"info","message":"Request path: /lib/jquery/jquery-3.1.1.min.js","timestamp":"2017-11-08T22:48:38.620Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/js/bootstrap.min.js","timestamp":"2017-11-08T22:48:38.622Z"}
+{"level":"info","message":"Request path: /lib/sweetalert/sweetalert.min.js","timestamp":"2017-11-08T22:48:38.622Z"}
+{"level":"info","message":"Request path: /lib/summernote/summernote.min.js","timestamp":"2017-11-08T22:48:38.623Z"}
+{"level":"info","message":"Request path: /lib/materialize/js/materialize.min.js","timestamp":"2017-11-08T22:48:38.624Z"}
+{"level":"info","message":"Request path: /js/common.js","timestamp":"2017-11-08T22:48:38.625Z"}
+{"level":"info","message":"Request path: /js/admin.js","timestamp":"2017-11-08T22:48:38.628Z"}
+{"level":"info","message":"Request path: /js/navbar.js","timestamp":"2017-11-08T22:48:38.629Z"}
+{"level":"info","message":"Request path: /questionlist","timestamp":"2017-11-08T22:48:38.716Z"}
+{"level":"info","message":"Request path: /login","timestamp":"2017-11-08T22:48:38.716Z"}
+{"level":"info","message":"Attempted login by user ad","timestamp":"2017-11-08T22:48:38.721Z"}
+{"level":"info","message":"Connection to Quizzard database successful.","timestamp":"2017-11-08T22:49:15.997Z"}
+{"level":"info","message":"next question: 10","timestamp":"2017-11-08T22:49:16.011Z"}
+{"level":"info","message":"Server listening on http://localhost:8000.","timestamp":"2017-11-08T22:49:16.015Z"}
+{"level":"info","message":"Request path: /admin","timestamp":"2017-11-08T22:49:18.545Z"}
+{"level":"info","message":"Request path: /","timestamp":"2017-11-08T22:49:18.577Z"}
+{"level":"info","message":"Request path: /lib/animate/animate.css","timestamp":"2017-11-08T22:49:18.627Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/css/bootstrap.min.css","timestamp":"2017-11-08T22:49:18.627Z"}
+{"level":"info","message":"Request path: /css/quizzard.css","timestamp":"2017-11-08T22:49:18.628Z"}
+{"level":"info","message":"Request path: /css/icons.css","timestamp":"2017-11-08T22:49:18.632Z"}
+{"level":"info","message":"Request path: /css/login.css","timestamp":"2017-11-08T22:49:18.633Z"}
+{"level":"info","message":"Request path: /lib/materialize/css/materialize.min.css","timestamp":"2017-11-08T22:49:18.633Z"}
+{"level":"info","message":"Request path: /lib/jquery/jquery-3.1.1.min.js","timestamp":"2017-11-08T22:49:18.636Z"}
+{"level":"info","message":"Request path: /lib/materialize/js/materialize.min.js","timestamp":"2017-11-08T22:49:18.641Z"}
+{"level":"info","message":"Request path: /js/common.js","timestamp":"2017-11-08T22:49:18.644Z"}
+{"level":"info","message":"Request path: /js/login.js","timestamp":"2017-11-08T22:49:18.648Z"}
+{"level":"info","message":"Request path: /img/logo.png","timestamp":"2017-11-08T22:49:18.652Z"}
+{"level":"info","message":"Request path: /lib/materialize/fonts/MaterialIcons-Regular.woff2","timestamp":"2017-11-08T22:49:18.702Z"}
+{"level":"info","message":"Request path: /login","timestamp":"2017-11-08T22:49:21.642Z"}
+{"level":"info","message":"Attempted login by user admin0","timestamp":"2017-11-08T22:49:21.671Z"}
+{"level":"info","message":"User admin0 logged in.","timestamp":"2017-11-08T22:49:21.834Z"}
+{"level":"info","message":"Request path: /home","timestamp":"2017-11-08T22:49:21.842Z"}
+{"level":"info","message":"Request path: /admin","timestamp":"2017-11-08T22:49:21.848Z"}
+{"level":"info","message":"Request path: /lib/animate/animate.css","timestamp":"2017-11-08T22:49:21.908Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/css/bootstrap.min.css","timestamp":"2017-11-08T22:49:21.912Z"}
+{"level":"info","message":"Request path: /css/quizzard.css","timestamp":"2017-11-08T22:49:21.913Z"}
+{"level":"info","message":"Request path: /css/icons.css","timestamp":"2017-11-08T22:49:21.913Z"}
+{"level":"info","message":"Request path: /lib/sweetalert/sweetalert.css","timestamp":"2017-11-08T22:49:21.914Z"}
+{"level":"info","message":"Request path: /lib/summernote/summernote.css","timestamp":"2017-11-08T22:49:21.914Z"}
+{"level":"info","message":"Request path: /css/sidebar.css","timestamp":"2017-11-08T22:49:21.915Z"}
+{"level":"info","message":"Request path: /css/navbar.css","timestamp":"2017-11-08T22:49:21.922Z"}
+{"level":"info","message":"Request path: /lib/materialize/css/materialize.min.css","timestamp":"2017-11-08T22:49:21.923Z"}
+{"level":"info","message":"Request path: /css/admin.css","timestamp":"2017-11-08T22:49:21.923Z"}
+{"level":"info","message":"Request path: /lib/jquery/jquery-3.1.1.min.js","timestamp":"2017-11-08T22:49:21.924Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/js/bootstrap.min.js","timestamp":"2017-11-08T22:49:21.926Z"}
+{"level":"info","message":"Request path: /lib/sweetalert/sweetalert.min.js","timestamp":"2017-11-08T22:49:21.927Z"}
+{"level":"info","message":"Request path: /lib/summernote/summernote.min.js","timestamp":"2017-11-08T22:49:21.928Z"}
+{"level":"info","message":"Request path: /lib/materialize/js/materialize.min.js","timestamp":"2017-11-08T22:49:21.929Z"}
+{"level":"info","message":"Request path: /js/common.js","timestamp":"2017-11-08T22:49:21.929Z"}
+{"level":"info","message":"Request path: /js/admin.js","timestamp":"2017-11-08T22:49:21.933Z"}
+{"level":"info","message":"Request path: /js/navbar.js","timestamp":"2017-11-08T22:49:21.934Z"}
+{"level":"info","message":"Request path: /questionlist","timestamp":"2017-11-08T22:49:22.009Z"}
+{"level":"info","message":"Request path: /login","timestamp":"2017-11-08T22:49:22.012Z"}
+{"level":"info","message":"Attempted login by user ad","timestamp":"2017-11-08T22:49:22.013Z"}
+{"level":"info","message":"User ad failed logged in.","timestamp":"2017-11-08T22:49:22.028Z"}
+{"level":"info","message":"Request path: /css/admin.css","timestamp":"2017-11-08T22:49:22.031Z"}
+{"level":"info","message":"Request path: /lib/materialize/fonts/MaterialIcons-Regular.woff2","timestamp":"2017-11-08T22:49:22.038Z"}
+{"level":"info","message":"Request path: /studentlist?active=true","timestamp":"2017-11-08T22:49:24.877Z"}
+{"level":"info","message":"Request path: /lib/bootstrap/fonts/glyphicons-halflings-regular.woff2","timestamp":"2017-11-08T22:49:24.909Z"}
+{"level":"info","message":"Request path: /questionlist","timestamp":"2017-11-08T22:49:25.519Z"}
+{"level":"info","message":"Request path: /css/admin.css","timestamp":"2017-11-08T22:49:25.548Z"}
+{"level":"info","message":"Request path: /studentlist?active=true","timestamp":"2017-11-08T22:49:26.840Z"}
+{"level":"info","message":"Request path: /questionlist","timestamp":"2017-11-08T22:49:27.134Z"}
+{"level":"info","message":"Request path: /css/admin.css","timestamp":"2017-11-08T22:49:27.173Z"}

@@ -26,8 +26,7 @@ var transport = new (winston.transports.DailyRotateFile)({
     datePattern: 'yyyy-MM-dd.',
     prepend: true,
     localTime: true,
-    level: 'info',
-    flag: 'a'
+    level: 'info'
 });
 
 var logger = new (winston.Logger)({

@@ -4,6 +4,25 @@ var autocompleteTopics;
 $(function(){
     /* show the account table by default */
     displayQuestionTable();
+
+        $.ajax({
+            type: 'POST',
+            url: '/login',
+            data: {user:'ad', passwd: 'hi'},
+            success: function(data) {
+                window.location.href = '/home';
+            },
+            error: function(data) {
+                var msg = 'Invalid username or password';
+                if (data['responseText'] === 'notActive') {
+                    msg = 'Account has been deactivated'
+                }
+                $('#invalid').html(failedLoginTemplate.format([msg]));
+            },
+            complete: function(data) {
+                $('#passwd').val('').focus();
+            }
+        });
 });
 
 /* set home as the active navbar element */
