@@ -364,7 +364,6 @@ var getQuestionFormAnswer = function(form) {
             }
         }
     });
-
 }
 
 /* Display the application statistics form. */
@@ -643,20 +642,21 @@ var updateVisibility = function(qid) {
     );
 }
 
-/* Process submitted question edit form. */
-var submitQuestionForm = function() {
-    var fields = $('#questionform').serializeArray();
+/*Collects form fields for Question-Creation and Question-Edit*/
+var collectQuestionFormData = function(form){
+    var fields = $(form).serializeArray();
     var question = {};
     question['choices'] = [];
     question['leftSide'] = [];
     question['rightSide'] = [];
+    question['answer'] = [];
 
     jQuery.each(fields, function(i, field) {
         if(field.name.startsWith('radbutton')) {
             question['answer'] = fields[i+1].value;
         }
 
-        if(field.name.startsWith('mcans')) {
+        if(field.name.startsWith('option')) {
             question['choices'].push(field.value);
         }
 
@@ -670,19 +670,27 @@ var submitQuestionForm = function() {
         if(field.name.startsWith('tfbutton')) {
             question['answer'] = field.value;
         }
+        if(field.name.startsWith('checkButton') ){
+           question['answer'].push(fields[i+1].value);
+        }
         question[field.name] = field.value;
     });
+    
+    question['rating'] = getRating();
+    question['text'] = $('#qtext').summernote('code');
+    question['visible'] = $('#visible').is(':checked');
+    return question;
+}
 
+/* Process submitted question edit form. */
+var submitQuestionForm = function() {
     if ($('#qtext').summernote('isEmpty')) {
         failSnackbar('Please enter a question body in the editor.');
         return;
     }
+    var question = collectQuestionFormData('#questionform');
 
-    question['rating'] = getRating();
-    question['text'] = $('#qtext').summernote('code');
     question['type'] = $('#qType').select().val();
-    question['visible'] = $('#visible').is(':checked');
-
     $.ajax({
         type: 'PUT',
         url: '/questionadd',
@@ -768,49 +776,16 @@ var editQuestion = function(qid) {
 }
 
 var submitQEditForm = function(qid) {
-    var fields = $('#question-edit-form').serializeArray();
-    var question = {};
-    var rating = getRating();
-
-    question['choices'] = [];
-    question['leftSide'] = [];
-    question['rightSide'] = [];
-
     if ($('#qtext').summernote('isEmpty')) {
         failSnackbar('Please enter a question body in the editor.');
         return;
     }
 
-    jQuery.each(fields, function(i, field) {
-        if(field.name.startsWith('radbutton')) {
-            question['answer'] = fields[i+1].value;
-        }
-
-        if(field.name.startsWith('mcans')) {
-            question['choices'].push(field.value);
-        }
-
-        if(field.name.startsWith('matchLeft')) {
-            question['leftSide'].push(field.value);
-        }
-
-        if(field.name.startsWith('matchRight')) {
-            question['rightSide'].push(field.value);
-        }
-
-        if(field.name.startsWith('tfbutton')) {
-            question['answer'] = field.value;
-        }
-        question[field.name] = field.value;
-    });
-
-    question['text'] = $('#qtext').summernote('code');
-    question['visible'] = $('#visible').is(':checked');
+    var question = collectQuestionFormData('#question-edit-form');
 
     if (rating > 0 && rating < 6) {
         submitQuestionRating(rating, qid);
     }
-
     $.ajax({
         type: 'POST',
         url: '/questionmod',

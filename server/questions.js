@@ -86,6 +86,13 @@ var prepareQuestionData = function(question, callback){
             questionToAdd.rightSide = question.rightSide;
             break;
 
+        case common.questionTypes.CHOOSEALL.value:
+            questionToAdd.type = common.questionTypes.CHOOSEALL.value;
+            questionToAdd.choices = question.choices;
+            questionToAdd.answer = question.answer;
+
+            break;
+
         default:
             return callback({status:400, msg:'Type of Question is Undefined'}, null)
     }
@@ -109,7 +116,7 @@ exports.addQuestion = function(question, callback) {
         if (result.success){
             return db.addQuestion(questionToAdd, callback);
         } else{
-            return callback(result, null)
+            return callback({status:400,msg:result.msg}, null)
         }
     })
 }
@@ -228,33 +235,41 @@ exports.submitAnswer = function(questionId, userId, correct, points, answer, cal
 
 // verify answer based on type
 exports.verifyAnswer = function(question, answer) {
-    var value = false;
+    if (answer){
+        switch (question.type){
+            case common.questionTypes.MATCHING.value:
+                return verifyMatchingQuestionAnswer(question,answer);
+            case common.questionTypes.CHOOSEALL.value:
+                return verifyChooseAllQuestionAnswer(question,answer);
+            default:
+                return (answer === question.answer);
+        }
+    }
+    return false;
+}
 
-    if (question.type === common.questionTypes.MATCHING.value && answer) {
-        var ansLeftSide = answer[0];
-        var ansRightSide = answer[1];
+var verifyChooseAllQuestionAnswer = function(question,answer){
+    return question.answer.sort().join(',') === answer.sort().join(',');
+}
 
-        if (ansLeftSide.length === question.leftSide.length) {
-            var checkIndexLeft;
-            var checkIndexRight;
+var verifyMatchingQuestionAnswer = function(question, answer){
+    var ansLeftSide = answer[0];
+    var ansRightSide = answer[1];
 
-            for (i = 0; i < ansLeftSide.length; i++) {
-                checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
-                checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
-                if (checkIndexLeft !== checkIndexRight) {
-                    return value = false;
-                }
-            }
+    if (ansLeftSide.length === question.leftSide.length) {
+        var checkIndexLeft;
+        var checkIndexRight;
 
-            if (!value) {
-                return value = true;
+        for (i = 0; i < ansLeftSide.length; i++) {
+            checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+            checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+            if (checkIndexLeft !== checkIndexRight) {
+                return false;
             }
         }
-
-        return value = false;
+        return true;
     }
-
-    return value = (answer === question.answer);
+    return false;
 }
 
 // add comment to question by id with user and comment
@@ -313,7 +328,7 @@ if the user already voted up, then if they vote up again the previous vote
 will get cancelled. Same for vote down.
 if the user already voted up, then vote down the previous vote gets removed
 and the new vote gets added.
-if they never voted before, just add the vote 
+if they never voted before, just add the vote
 */
 // vote on a comment
 exports.voteComment = function (commentId, vote, userId, callback) {

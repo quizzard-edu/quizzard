@@ -74,8 +74,9 @@ app.get('/', function(req, res) {
 
 /* check username and password and send appropriate response */
 app.post('/login', function(req, res) {
-    if (req.session.user) {
+    if ('user' in req.session) {
         req.session.destroy();
+        return res.status(400).send('Invalid Request');
     }
 
     if(!req.body.user || !req.body.passwd){
@@ -90,7 +91,6 @@ app.post('/login', function(req, res) {
     users.checkLogin(username, password, function(err, user) {
         if(err){
             logger.info('User %s failed logged in.', username);
-            req.session.user = null;
             return res.status(403).send(err);
         }
 
@@ -192,6 +192,7 @@ const statistics = pug.compileFile('views/statistics.pug');
 const regexForm = pug.compileFile('views/regex-answer.pug');
 const mcForm = pug.compileFile('views/mc-answer.pug');
 const tfForm = pug.compileFile('views/tf-answer.pug');
+const chooseAllForm = pug.compileFile('views/chooseAll-answer.pug');
 const matchingForm = pug.compileFile('views/matching-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 const questionList = pug.compileFile('views/questionlist.pug');
@@ -303,18 +304,19 @@ app.get('/answerForm', function(req, res){
     switch (req.query.qType){
         case common.questionTypes.REGULAR.value:
             res.status(200).render(
-                common.questionTypes.REGULAR.template,{
-                answerForm:true});
+                common.questionTypes.REGULAR.template,{answerForm:true});
             break;
         case common.questionTypes.MULTIPLECHOICE.value:
             res.status(200).render(
-                common.questionTypes.MULTIPLECHOICE.template,{
-                answerForm:true});
+                common.questionTypes.MULTIPLECHOICE.template,{answerForm:true});
             break;
         case common.questionTypes.TRUEFALSE.value:
             res.status(200).render(
-                common.questionTypes.TRUEFALSE.template,{
-                answerForm:true});
+                common.questionTypes.TRUEFALSE.template,{answerForm:true});
+            break;
+        case common.questionTypes.CHOOSEALL.value:
+            res.status(200).render(
+                common.questionTypes.CHOOSEALL.template,{answerForm:true});
             break;
         case common.questionTypes.MATCHING.value:
             res.status(200).render(
@@ -439,6 +441,8 @@ app.get('/questionedit', function(req, res) {
                         return mcForm({adminQuestionEdit:true, question:question})
                     case common.questionTypes.TRUEFALSE.value:
                         return tfForm({adminQuestionEdit:true, question:question})
+                    case common.questionTypes.CHOOSEALL.value:
+                        return chooseAllForm({adminQuestionEdit:true, question:question})
                     case common.questionTypes.MATCHING.value:
                         return matchingForm({adminQuestionEdit:true, question:question})
                     default:
@@ -563,6 +567,8 @@ app.get('/question', function(req, res) {
                         return mcForm({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.TRUEFALSE.value:
                         return tfForm({studentQuestionForm:true, question:questionFound})
+                    case common.questionTypes.CHOOSEALL.value:
+                        return chooseAllForm({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.MATCHING.value:
                         // randomize the order of the matching
                         questionFound.leftSide = common.randomizeList(questionFound.leftSide);
@@ -679,7 +685,7 @@ app.post('/profilemod', function(req, res) {
 
     if (req.body.newpassword !== req.body.confirmpassword) {
         logger.info('Confirm password doesn\'t match');
-        return res.status(400).send(err);
+        return res.status(400).send('Confirm password doesn\'t match');
     }
 
     var userId = req.session.user.id;
