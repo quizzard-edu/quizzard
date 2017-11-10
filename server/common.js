@@ -142,12 +142,12 @@ exports.isEmptyObject = isEmptyObject;
 
 // return the current date
 var getDate = function() {
-	return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
+    return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
 }
 
 // return the current date with format
 var getDateByFormat = function(format) {
-	return date().format(format);
+    return date().format(format);
 }
 
 exports.getDate = getDate;
