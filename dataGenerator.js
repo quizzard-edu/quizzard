@@ -28,6 +28,7 @@ var names = require('./names.js');
 
 var allIds = [];
 var numberOfEachQuestion = [2,2,2,2,2];
+var totalNumberOfQuestions;
 
 // variables to control the genereated data
 var adminsCount = 2;
@@ -46,6 +47,10 @@ var adminsCreated = 0;
 var studentsCreated = 0;
 var questionsCreated;
 var questionsAnswered;
+var commentsAdded = 0;
+var commentsPerQuestion = 3;
+
+
 
 // create users account for both students and admins
 var addAdmin = function(accid, pass, isAdmin) {
@@ -383,12 +388,72 @@ var answerQuestionChooseAll = function(questionId) {
             }
 
             if (questionsAnswered == numberOfQuestionsExpected*questionsAttempts) {
-                process.exit(0);
+                createComments();
             }
 
             questionsAnswered++;
         });
     }
+}
+
+// add question and send random answers
+var addComment = function(questionId) {
+    getStudentsAnsweredList(questionId, function(answeredList) {
+
+    });
+    //
+    // var studentId = allIds[Math.floor(Math.random()*studentsCount)];
+    // // var answer = ['c1', 'c2', 'c3'];
+    // //
+    // // if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+    // //     answer = ['c1', 'c2', 'c4'];
+    // // }
+    // comment = 'this is some lorem ipsum';
+    //
+    // addCommentToDb(questionId, studentId, comment, function (err, res) {
+    //     if (err) {
+    //         logger.error(err);
+    //     } else {
+    //         logger.info('Questions %d commented %s by %s', questionId, comment, studentId);
+    //     }
+    //
+    //     if (commentsAdded == totalNumberOfQuestions*commentsPerQuestion) {
+    //         process.exit(0);
+    //     }
+    //
+    //     commentsAdded++;
+    // });
+}
+
+var addComments = function(questionId, callback) {
+    db.lookupQuestion({id: questionId}, function(err, question) {
+        questionId = question._id;
+        if(err){
+            return callback(err, null);
+        } else if(!question){
+            return callback('Could not find the question', null);
+        } else {
+            var answeredList = [];
+            for (var i in question.correctAttempts) {
+                answeredList.push(question.correctAttempts[i].id);
+            }
+            for (var i = 0; i < commentsPerQuestion; i++) {
+              userId = answeredList[Math.floor(Math.random()*answeredList.length)];
+              comment = 'this is some lorem ipsum';
+              questions.addComment(questionId, userId, comment, function(err, res) {
+                  if (err) {
+                      return callback (err, null);
+                  } else {
+                      logger.info('added comment to %s by %s', questionId, userId);
+                  }
+                  commentsAdded++;
+                  if (commentsAdded == totalNumberOfQuestions*commentsPerQuestion) {
+                      process.exit(0);
+                  }
+              });
+            }
+        }
+    });
 }
 
 // check answer
@@ -537,6 +602,22 @@ var answerQuestionsChooseAll = function() {
   	for (var id = questionsIds; id < questionsCount; id++) {
       	answerQuestionChooseAll(id);
   	}
+}
+
+var createComments = function() {
+    var totalCreated = 0;
+
+    for (var i = 0; i < numberOfEachQuestion.length; i++) {
+        totalCreated += numberOfEachQuestion[i];
+    }
+
+    totalNumberOfQuestions = totalCreated;
+
+    for (var id = 1; id <= totalCreated; id++) {
+        addComments(id, function(err, res) {
+
+        });
+    }
 }
 
 var variableReset = function(number) {
