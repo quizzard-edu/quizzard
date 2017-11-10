@@ -24,7 +24,9 @@ var db = require('./server/db.js');
 var users = require('./server/users.js');
 var questions = require('./server/questions.js');
 var common = require('./server/common.js');
+var names = require('./names.js');
 
+var allIds = [];
 var numberOfEachQuestion = [2,2,2,2,2];
 
 // variables to control the genereated data
@@ -70,13 +72,13 @@ var addAdmin = function(accid, pass, isAdmin) {
 }
 
 // create users account for both students and admins
-var addStudent = function(accid, pass, isAdmin) {
+var addStudent = function(name, accid, pass, isAdmin) {
     var acc = {
         id: accid,
         password: pass,
-        fname: accid,
-        lname: accid,
-        email: accid+'@'+'fake.fake'
+        fname: name.split(' ')[0],
+        lname: name.split(' ')[1],
+        email: name.split(' ')[0] + '.' + name.split(' ')[1] +'@mail.utoronto.ca'
     };
 
     users.addStudent(acc, function(err, account) {
@@ -128,7 +130,8 @@ var addQuestionRegular = function(qTopic, id) {
 // add question and send random answers
 var answerQuestionRegular = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = 'student'+Math.floor(Math.random()*studentsCount);
+        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
+
         var answer = 'NotKonniChiwa';
 
         if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
@@ -188,7 +191,7 @@ var addQuestionMultipleChoice = function(qTopic, id) {
 // add question and send random answers
 var answerQuestionMultipleChoice = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = 'student'+Math.floor(Math.random()*studentsCount);
+        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
         var answer = 'Option2';
 
         if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
@@ -246,7 +249,7 @@ var addQuestionTrueFalse = function(qTopic, id) {
 // add question and send random answers
 var answerQuestionTrueFalse = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = 'student'+Math.floor(Math.random()*studentsCount);
+        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
         var answer = 'false';
 
         if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
@@ -306,7 +309,7 @@ var addQuestionMatching = function(qTopic, id) {
 // add question and send random answers
 var answerQuestionMatching = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = 'student'+Math.floor(Math.random()*studentsCount);
+        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
         var answer = [['l3', 'l2', 'l1'],['r1', 'r2', 'r3']];
 
         if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
@@ -365,7 +368,7 @@ var addQuestionChooseAll = function(qTopic, id) {
 // add question and send random answers
 var answerQuestionChooseAll = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = 'student'+Math.floor(Math.random()*studentsCount);
+        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
         var answer = ['c1', 'c2', 'c3'];
 
         if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
@@ -450,6 +453,13 @@ var rateQuestion = function (questionId, userId, rating, callback) {
     });
 }
 
+var studentIdGenerator = function(name) {
+    const combined = name.split(' ')[1] + name.split(' ')[0];
+    var possibleIds = combined.slice(0,7).toLowerCase();
+    allIds.push(possibleIds);
+    return possibleIds;
+}
+
 
 var createAdmins = function() {
     for (var id = 0; id < adminsCount; id++) {
@@ -459,7 +469,8 @@ var createAdmins = function() {
 
 var createStudents = function() {
   	for (var id = 0; id < studentsCount; id++) {
-      	addStudent('Student'+id, 'KonniChiwa');
+      	addStudent(names.namesList[id], studentIdGenerator(names.namesList[id]), 'KonniChiwa');
+
   	}
 }
 
