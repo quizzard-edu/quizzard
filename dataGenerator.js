@@ -25,7 +25,7 @@ var users = require('./server/users.js');
 var questions = require('./server/questions.js');
 var common = require('./server/common.js');
 
-var numberOfEachQuestion = [2,2,2,2];
+var numberOfEachQuestion = [2,2,2,2,2];
 
 // variables to control the genereated data
 var adminsCount = 2;
@@ -321,6 +321,65 @@ var answerQuestionMatching = function(questionId) {
             }
 
             if (questionsAnswered == numberOfQuestionsExpected*questionsAttempts) {
+                createQuestionsChooseAll();
+            }
+
+            questionsAnswered++;
+        });
+    }
+}
+
+// add question and send random answers
+var addQuestionChooseAll = function(qTopic, id) {
+	  var question = {
+		    topic: 'CSC492',
+		    title: qTopic,
+        text: '<p>'+qTopic+' Text</p>',
+        answer: ['c1', 'c2', 'c4'],
+        points: Math.floor(Math.random()*questionsMaxValue),
+        type: common.questionTypes.CHOOSEALL.value,
+        hint: 'Option1',
+        visible: 'true',
+        choices: ['c1', 'c2', 'c3', 'c4']
+    };
+
+    questions.addQuestion(question, function(err, res) {
+        if (err) {
+            logger.error('Could not add question. Please try again.');
+        } else {
+            logger.info('Questions %d created', id);
+
+            for (var i = 0; i < adminsCount; i++) {
+                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+            }
+        }
+
+        if (questionsCreated == numberOfQuestionsExpected) {
+            answerQuestionsChooseAll();
+        }
+
+        questionsCreated++;
+    });
+}
+
+// add question and send random answers
+var answerQuestionChooseAll = function(questionId) {
+    for (var i = 0; i < questionsAttempts; i++) {
+        var studentId = 'student'+Math.floor(Math.random()*studentsCount);
+        var answer = ['c1', 'c2', 'c3'];
+
+        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+            answer = ['c1', 'c2', 'c4'];
+        }
+
+        checkAnswer(questionId, studentId, answer, function (err, correct) {
+            if (err) {
+                logger.error(err);
+            } else {
+                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+            }
+
+            if (questionsAnswered == numberOfQuestionsExpected*questionsAttempts) {
                 process.exit(0);
             }
 
@@ -432,6 +491,13 @@ var createQuestionsMatching = function() {
   	}
 }
 
+var createQuestionsChooseAll = function() {
+    variableReset(4);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionChooseAll('Is math related to science? '+id, id);
+  	}
+}
+
 var answerQuestionsRegular = function() {
   	for (var id = questionsIds; id < questionsCount; id++) {
       	answerQuestionRegular(id);
@@ -453,6 +519,12 @@ var answerQuestionsTrueFalse = function() {
 var answerQuestionsMatching = function() {
   	for (var id = questionsIds; id < questionsCount; id++) {
       	answerQuestionMatching(id);
+  	}
+}
+
+var answerQuestionsChooseAll = function() {
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	answerQuestionChooseAll(id);
   	}
 }
 
