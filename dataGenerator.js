@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var logger = require('./server/log.js').logger;
+var logger = require('./server/log.js');
 var db = require('./server/db.js');
 var users = require('./server/users.js');
 var questions = require('./server/questions.js');
@@ -52,9 +52,9 @@ var addAdmin = function(accid, pass, isAdmin) {
 
     users.addAdmin(acc, function(err, account) {
         if (err) {
-            logger.error('Could not create account %s. Please try again.', accid);
+            logger.error(common.formatString('Could not create account {0}. Please try again.', [accid]));
         } else if (err == 'exists') {
-            logger.info('Account with username %s exists.', accid);
+            logger.log(common.formatString('Account with username {0} exists.', [accid]));
         }
 
         adminsCreated++;
@@ -76,9 +76,9 @@ var addStudent = function(accid, pass, isAdmin) {
 
     users.addStudent(acc, function(err, account) {
         if (err) {
-            logger.error('Could not create account %s. Please try again.', accid);
+            logger.error(common.formatString('Could not create account {0}. Please try again.', [accid]));
         } else if (err == 'exists') {
-            logger.info('Account with username %s exists.', accid);
+            logger.log(common.formatString('Account with username {0} exists.', [accid]));
         }
 
         studentsCreated++;
@@ -105,7 +105,7 @@ var addQuestion = function(qTopic, id) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
-            logger.info('Questions %d created', id);
+            logger.log(common.formatString('Questions {0} created', [id]));
         }
 
         questionsCreated++;
@@ -129,7 +129,7 @@ var answerQuestion = function(questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+                logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct? 'correctly' : 'incorrectly', studentId]));
             }
 
             questionsAnswered++;
@@ -142,7 +142,7 @@ var answerQuestion = function(questionId) {
 
 // check answer
 var checkAnswer = function (questionId, userId, answer, callback) {
-    logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
+    logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
     db.lookupQuestion({id: questionId}, function(err, question) {
         questionId = question._id;
         if(err){

@@ -142,13 +142,32 @@ exports.isEmptyObject = isEmptyObject;
 
 // return the current date
 var getDate = function() {
-	return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
+    return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
 }
 
 // return the current date with format
 var getDateByFormat = function(format) {
-	return date().format(format);
+    return date().format(format);
 }
 
 exports.getDate = getDate;
 exports.getDateByFormat = getDateByFormat;
+
+// This is the function.
+exports.formatString = function (text, args) {
+    var regex = new RegExp('{-?[0-9]+}', 'g');
+    return text.replace(regex, function(item) {
+        var intVal = parseInt(item.substring(1, item.length - 1));
+        var replace;
+        if (intVal >= 0) {
+            replace = args[intVal];
+        } else if (intVal === -1) {
+            replace = '{';
+        } else if (intVal === -2) {
+            replace = '}';
+        } else {
+            replace = '';
+        }
+        return replace;
+    });
+};
