@@ -20,17 +20,44 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var fs = require('fs');
 var common = require('./common.js');
-var currentDate = common.getDateByFormat('YYYY-MM-DD');
-var logger = fs.createWriteStream('logs/'+currentDate+'.log', {'flags':'a'});
+var dateStamp = common.getDateByFormat('YYYY-MM-DD');
+var logger;
 
-process.stdout.write = process.stderr.write = logger.write.bind(logger);
-process.on(
-  'uncaughtException',
-  function(err)
-  {
-    console.error((err && err.stack) ? err.stack : err);
-  }
-);
+// print a normal message
+exports.log = function (text) {
+    var currentDate = common.getDateByFormat('YYYY-MM-DD');
+    if (dateStamp !== currentDate) {
+        dateStamp = currentDate;
+        init();
+    }
 
-console.log('Testing logger');
-logger = fs.createWriteStream('logs/'+common.getDateByFormat('YYYY-MM-DD')+'.log', {'flags':'a'});
+    var txt = common.formatString('[{0}] log: {1}', [common.getDate(), text]);
+    console.log(txt);
+}
+
+// print an error message
+exports.error = function (text) {
+    var currentDate = common.getDateByFormat('YYYY-MM-DD');
+    if (dateStamp !== currentDate) {
+        dateStamp = currentDate;
+        init();
+    }
+
+    var txt = common.formatString('[{0}] error: {1}', [common.getDate(), text]);
+    console.error(txt);
+}
+
+// initiate the logging with file
+var init = function () {
+    logger = fs.createWriteStream(__dirname + '/../logs/'+dateStamp+'.log', {'flags':'a'});
+    process.stdout.write = process.stderr.write = logger.write.bind(logger);
+    process.on(
+        'uncaughtException',
+        function(err)
+        {
+            console.error((err && err.stack) ? err.stack : err);
+        }
+    );
+}
+
+init();

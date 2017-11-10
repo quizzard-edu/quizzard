@@ -26,8 +26,7 @@ var db = require('./server/db.js');
 var users = require('./server/users.js');
 var questions = require('./server/questions.js');
 var lb = require('./server/leaderboard.js');
-var log = require('./server/log.js');
-var logger = log.logger;
+var logger = require('./server/log.js');
 var pug = require('pug');
 var common = require('./server/common.js');
 var analytics = require('./server/analytics.js');
@@ -40,7 +39,7 @@ var port = process.env.QUIZZARD_PORT || 8000;
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
-    logger.info("Request path: %s",req.url);
+    logger.log(common.formatString('Request path: {0}', [req.url]));
     next();
 });
 
@@ -56,7 +55,8 @@ app.use(session({
 
 db.initialize(function() {
     app.listen(port, function() {
-        logger.info('Server listening on http://localhost:%s.', port);
+        logger.log('//------------------------');
+        logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
     });
 });
 
@@ -84,16 +84,16 @@ app.post('/login', function(req, res) {
     var username = req.body.user.toLowerCase();
     var password = req.body.passwd;
 
-    logger.info('Attempted login by user %s', username);
+    logger.log(common.formatString('Attempted login by user {0}', [username]));
 
     users.checkLogin(username, password, function(err, user) {
         if(err){
-            logger.info('User %s failed logged in.', username);
+            logger.error(common.formatString('User {0} failed logged in.', [username]));
             return res.status(403).send(err);
         }
 
         if(user){
-            logger.info('User %s logged in.', username);
+            logger.log(common.formatString('User {0} logged in.', [username]));
             req.session.user = user;
             return res.status(200).send('success');
         }
@@ -103,7 +103,7 @@ app.post('/login', function(req, res) {
 /* End a user's session. */
 app.get('/logout', function(req, res) {
     if (req.session.user) {
-        logger.info('User %s logged out.', req.session.user.id);
+        logger.log(common.formatString('User {0} logged out.', [req.session.user.id]));
         req.session.destroy();
     }
 
@@ -421,7 +421,7 @@ app.get('/questionedit', function(req, res) {
     var qId = req.query.questionid;
     questions.lookupQuestionById(qId, function(err, question){
         if(err){
-            logger.log(err);
+            logger.error(err);
             return res.status(500).send(err);
         }
 
@@ -597,11 +597,11 @@ app.post('/submitanswer', function(req, res) {
         }
 
         if(!question){
-            logger.error('Could not find the question %s', questionId);
+            logger.log(common.formatString('Could not find the question {0}', [questionId]));
             return res.status(400).send('Could not find the question');
         }
 
-        logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
+        logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
 
         var value = questions.verifyAnswer(question, answer);
         var points = question.points;
@@ -646,6 +646,7 @@ app.put('/useradd', function(req, res) {
 
     users.addStudent(req.body, function(err, result) {
         if (err) {
+            logger.error(err);
             return res.status(500).send(err);
         }
 
@@ -669,6 +670,7 @@ app.post('/setUserStatus', function(req, res) {
 
     users.setUserStatus(req.body.userid, req.body.active === 'true' , function(err, result) {
         if (err) {
+            logger.error(err);
             return res.status(500).send('Failed to deactivate student account');
         }
 
@@ -682,14 +684,15 @@ app.post('/profilemod', function(req, res) {
     }
 
     if (req.body.newpassword !== req.body.confirmpassword) {
-        logger.info('Confirm password doesn\'t match');
+        logger.log('Confirm password doesn\'t match');
         return res.status(400).send('Confirm password doesn\'t match');
     }
 
     var userId = req.session.user.id;
     users.getUserById(userId, function (err, userObj) {
         if (err) {
-          return res.status(500).send(err);
+            logger.error(err);
+            return res.status(500).send(err);
         }
 
         if (!userObj) {
@@ -698,7 +701,7 @@ app.post('/profilemod', function(req, res) {
 
         users.checkLogin(userId, req.body.currentpasswd, function(err, user) {
             if (err || !user) {
-                logger.info('User %s failed to authenticate.', userId);
+                logger.error(common.formatString('User {0} failed to authenticate.', [userId]));
                 return res.status(403).send(err);
             }
 
@@ -733,11 +736,13 @@ app.post('/usermod', function(req, res) {
 
     users.updateStudentById(userId, req.body, function(err, result) {
         if (err) {
+            logger.error(err);
             return res.status(500).send();
         }
 
         users.getStudentById(updateId, function(err, userFound) {
             if (err) {
+                logger.error(err);
                 return res.status(500).send();
             }
 
@@ -765,6 +770,7 @@ app.put('/questionadd', function(req, res) {
 
     questions.addQuestion(req.body, function(err, qId) {
         if (err) {
+            logger.error(err);
             return res.status(err.status).send(err.msg);
         }
 
@@ -792,6 +798,7 @@ app.post('/questionmod', function(req, res) {
 
     questions.updateQuestionById(qid, q, function(err, result) {
         if (err){
+            logger.error(err);
             return res.status(err.status).send(err.msg);
         }
         return res.status(200).send(result);
@@ -810,6 +817,7 @@ app.post('/questiondel', function(req, res) {
     var qid = parseInt(req.body.qid);
     questions.deleteQuestion(qid, function(err, result) {
         if (err) {
+            logger.error(err);
             return res.status(500);
         }
 
@@ -848,11 +856,13 @@ var submitQuestionRating = function (req, res) {
 
     questions.submitRating(questionId, userId, rating, function(err, result) {
         if (err) {
+            logger.error(err);
             return res.status(500).send('could not submit rating');
         }
 
         users.submitRating(userId, questionId, rating, function(err, result) {
             if (err) {
+                logger.error(err);
                 return res.status(500).send('could not submit rating');
             }
 
@@ -875,7 +885,7 @@ app.get('/getDiscussionBoard', function(req, res){
         }
 
         if (!question) {
-            logger.error('Could not find the question %s', questionId);
+            logger.error(common.formatString('Could not find the question {0}', [questionId]));
             return res.status(400).send('Could not find the question');
         }
 
@@ -991,7 +1001,7 @@ app.post('/voteOnComment', function (req, res) {
         return res.status(400).send('Vote is invalid');
     }
 
-    logger.info(commentId, vote, userId);
+    logger.log(common.formatString('{0} {1} {2}', [commentId, vote, userId]));
 
     questions.voteComment(commentId, vote, userId, function (err, value) {
         if (err) {
@@ -1017,7 +1027,7 @@ app.post('/voteOnReply', function (req, res) {
         return res.status(400).send('Vote is invalid');
     }
 
-    logger.info(replyId, vote, userId);
+    logger.log(common.formatString('{0} {1} {2}', [replyId, vote, userId]));
 
     questions.voteReply(replyId, vote, userId, function (err, value) {
         if (err) {
@@ -1038,6 +1048,7 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
     var questionId = req.query.questionId;
     questions.lookupQuestionById(questionId, function (err, question){
         if (err) {
+            logger.error(err);
             return res.status(500).send('could not find the question');
         }
 
@@ -1049,8 +1060,10 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
         for (var i in question.correctAttempts) {
             answeredList.push(question.correctAttempts[i].id);
         }
+
         users.getUsersList(function (err, usersList) {
             if (err) {
+                logger.error(err);
                 return res.status(500).send('could not find the list of users');
             }
             var totalList = [];
@@ -1080,6 +1093,7 @@ app.get('/questionsListofTopics', function(req, res) {
 
     questions.getAllQuestionsList(function(err, docs) {
         if (err) {
+            logger.error(err);
             return res.status(500).send('could not get the list of questions topics');
         }
 
@@ -1106,6 +1120,7 @@ app.get('/studentsListofIdsNames', function(req, res) {
 
     users.getStudentsList(function(err, studentList) {
         if (err) {
+            logger.error(err);
             return res.status(500).send('Could not fetch student list');
         }
 
@@ -1129,6 +1144,7 @@ app.get('/accountsExportForm', function(req, res) {
 
     users.getStudentsList(function(err, studentsList) {
         if (err) {
+            logger.error(err);
             return res.status(500).send('Failed to get students list');
         }
 
@@ -1219,7 +1235,7 @@ app.post('/accountsImportFile', function (req, res) {
             return res.status(500).send(err);
         }
 
-        logger.info('Uploaded: ', newFile);
+        logger.log(common.formatString('Uploaded: {0}', [newFile]));
 
         var importedList = [];
         csv2json().fromFile(newFile).on('json', function(jsonObj) {
@@ -1337,6 +1353,7 @@ app.get('/profile', function(req, res) {
 
     users.getUserById(req.session.user.id, function(err, user) {
         if (err) {
+            logger.error(err);
             return res.status(500).send(err);
         }
 
