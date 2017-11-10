@@ -42,7 +42,7 @@ exports.error = function (text) {
 // initiate the logging with file
 var init = function () {
     var currentDate = common.getDateByFormat('YYYY-MM-DD');
-    if (dateStamp !== currentDate) {
+    if (!process.env.DEBUG && dateStamp !== currentDate) {
         dateStamp = currentDate;
         logger = fs.createWriteStream(__dirname + '/../logs/'+dateStamp+'.log', {'flags':'a'});
         process.stdout.write = process.stderr.write = logger.write.bind(logger);

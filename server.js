@@ -53,11 +53,10 @@ app.use(session({
     saveUninitialized: false
 }));
 
-db.initialize(function() {
-    app.listen(port, function() {
-        logger.log('//------------------------');
-        logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
-    });
+app.listen(port, function() {
+    logger.log('//------------------------');
+    logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
+    db.initialize(function() {});
 });
 
 /* main page */
