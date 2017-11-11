@@ -1188,10 +1188,10 @@ app.post('/accountsExportFile', function(req, res) {
                 var fields = ['id', 'fname', 'lname', 'email'];
                 var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
                 var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
-                var file = 'exportJob-students-'+new Date().toString()+'.csv';
+                var file = 'exportJob-students-'+new Date().toString();
 
-                var userDirectory = common.fsTree.USERS + '/' + req.session.user.id;
-                common.saveFile(userDirectory, file, csvData, function(err, result) {
+                var userDirectory = common.joinPath(common.fsTree.USERS, req.session.user.id);
+                common.saveFile(userDirectory, file, 'csv', csvData, function(err, result) {
                     if (err) {
                         logger.error(err);
                         return res.status(500).send('Export job failed');

@@ -17,8 +17,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-var fs = require('fs');
-var date = require('moment');
+const fs = require('fs');
+const date = require('moment');
+const path = require('path');
 
 // <Global Constants> ------------------------------------------
 // common path shared across the backend
@@ -167,25 +168,30 @@ exports.getDate = getDate;
 
 // <File System functions> ------------------------------------------
 // make a directory given the path and the name of the new directory
-var mkdir = function (path, directory, callback) {
-    var fullPath = path + '/' + directory;
+var mkdir = function (parentPath, directoryName, callback) {
+    var fullPath = path.join(parentPath, directoryName);
     fs.mkdir(fullPath, function (err) {
         return callback(err, err ? null : 'ok');
     });
 }
 exports.mkdir = mkdir;
 
-var existsSync = function (path, directory) {
-    var fullPath = path + '/' + directory;
+// check if a directory exists
+var existsSync = function (parentPath, directoryName) {
+    var fullPath = path.join(parentPath, directoryName);
     return fs.existsSync(fullPath);
 }
 exports.dirExists = existsSync;
 
-var writeFile = function (path, file, data, callback) {
-    var fullPath = path + '/' + file;
-    fs.writeFile(fullPath, data, function(err) {
+// write data to a fils
+var writeFile = function (filePath, fileName, fileExtension, fileData, callback) {
+    var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
+    fs.writeFile(fullPath, fileData, function(err) {
         return callback(err, err ? null : 'ok');
     });
 }
 exports.saveFile = writeFile;
+
+// convert string to a path
+exports.joinPath = path.join;
 // </File System functions> -----------------------------------------
