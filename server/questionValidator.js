@@ -154,13 +154,14 @@ var chooseAllAttributeValidator = function(question){
 }
 
 var orderingAttributeValidator = function(question){
+    console.log(question)
     if (!validateAllAttributesInGroup(question,'ORDERING')){
         return qTypeFailMsg('Incorrect question answer fields!');
     }
-    if (!validateArrayObject(question.orderList,'String')){
+    if (!validateArrayObject(question.answer,'String')){
         return failMsg;
     }
-    if (question.orderList.length < 2){
+    if (question.answer.length < 2){
         return qTypeFailMsg('Need 2 or more ordering options!');
     }
     return successMsg;

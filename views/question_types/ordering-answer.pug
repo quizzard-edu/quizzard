@@ -19,7 +19,7 @@ if answerForm
 else if studentQuestionForm
   form.form-question#order_answerform
     ol#sortable
-      each item in question.orderList
+      each item in question.answer
         .row
           li.input-field(name='option')
             i.material-icons.prefix#icon1 swap_vert
@@ -30,7 +30,7 @@ else if studentQuestionForm
 else if adminQuestionEdit
   .form-group.col.s12
     ol#sortable
-      each item, i in question.orderList
+      each item, i in question.answer
         .row
           li.input-field.col.s10
             i.material-icons.prefix#icon1 swap_vert

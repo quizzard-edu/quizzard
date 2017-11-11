@@ -650,7 +650,6 @@ var collectQuestionFormData = function(form){
     question['leftSide'] = [];
     question['rightSide'] = [];
     question['answer'] = [];
-    question['orderList'] = [];
 
     jQuery.each(fields, function(i, field) {
         if(field.name.startsWith('radbutton')) {
@@ -678,7 +677,7 @@ var collectQuestionFormData = function(form){
         }
 
         if(field.name.startsWith('orderItem')) {
-            question['orderList'].push(field.value);
+            question['answer'].push(field.value);
         }
         question[field.name] = field.value;
     });

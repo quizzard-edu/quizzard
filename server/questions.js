@@ -93,7 +93,7 @@ var prepareQuestionData = function(question, callback){
 
         case common.questionTypes.ORDERING.value:
             questionToAdd.type = common.questionTypes.ORDERING.value;
-            questionToAdd.orderList = question.orderList;
+            questionToAdd.answer = question.answer;
             break;
 
         default:
@@ -278,7 +278,7 @@ var verifyMatchingQuestionAnswer = function(question, answer){
 }
 
 var verifyOrderingQuestionAnswer = function(question,answer){
-    return question.orderList.join(',') === answer.join(',');
+    return question.answer.join(',') === answer.join(',');
 }
 // add comment to question by id with user and comment
 exports.addComment = function (questionId, userId, comment, callback) {
