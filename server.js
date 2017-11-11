@@ -1222,11 +1222,11 @@ app.post('/accountsImportFile', function (req, res) {
     }
 
     var uploadedFile = req.files.usercsv;
-    var newFileName = 'importJob-students-' + uploadedFile.name;
     if (!uploadedFile || uploadedFile.mimetype !== 'text/csv') {
         return res.status(400).send('Invalid file format');
     }
 
+    var newFileName = 'importJob-students-' + uploadedFile.name;
     var newFile = common.joinPath(common.fsTree.USERS, req.session.user.id, newFileName);
     uploadedFile.mv(newFile, function(err) {
         if (err) {
@@ -1321,8 +1321,19 @@ app.get('/download', function(req, res) {
         return res.redirect('/');
     }
 
+    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
+        logger.error('User %s does not exists in the file system', req.session.user.id);
+        return res.status(500).send('User does not exists in the file system');
+    }
+
     var fileName = req.query.file;
-    var filePath = __dirname+'/uploads/'+fileName;
+    var userDir = common.joinPath(common.fsTree.USERS, req.session.user.id);
+    if (!common.fileExists(userDir, fileName)) {
+        logger.error('File: ', fileName, 'does not exist');
+        return res.status(500).send('File does not exist');
+    }
+
+    var filePath = common.joinPath(common.fsTree.USERS, req.session.user.id, fileName);
     return res.download(filePath, fileName, function (err) {
         if (err) {
             logger.error(err);
