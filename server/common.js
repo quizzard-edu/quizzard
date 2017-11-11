@@ -177,11 +177,12 @@ var mkdir = function (parentPath, directoryName, callback) {
 exports.mkdir = mkdir;
 
 // check if a directory exists
-var existsSync = function (parentPath, directoryName) {
-    var fullPath = path.join(parentPath, directoryName);
+var existsSync = function (parentPath, name) {
+    var fullPath = path.join(parentPath, name);
     return fs.existsSync(fullPath);
 }
 exports.dirExists = existsSync;
+exports.fileExists = existsSync;
 
 // write data to a fils
 var writeFile = function (filePath, fileName, fileExtension, fileData, callback) {
