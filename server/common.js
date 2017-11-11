@@ -17,7 +17,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+var fs = require('fs');
 var date = require('moment');
+
+const fsTree = Object.freeze({
+    ROOT: __dirname,
+    HOME: __dirname + '/../FileSystem',
+    USERS: __dirname + '/../FileSystem/Users',
+    QUESTIONS: __dirname + '/../FileSystem/Questions'
+});
+exports.fsTree = fsTree;
 
 const questionTypes = Object.freeze({
     MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer', icon: 'format_list_bulleted'},
@@ -111,22 +120,24 @@ var randomizeList = function(data) {
 exports.randomizeList = randomizeList;
 
 /* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
-exports.getIdsListFromJSONList = function (JSONList) {
+var getIdsListFromJSONList = function (JSONList) {
     var list = [];
     for (i in JSONList){
         list.push(JSONList[i]._id);
     }
     return list;
 }
+exports.getIdsListFromJSONList = getIdsListFromJSONList;
 
 /* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
-exports.getIdsListFromJSONList2 = function (JSONList) {
+var getIdsListFromJSONList2 = function (JSONList) {
     var list = [];
     for (i in JSONList){
         list.push(JSONList[i].id);
     }
     return list;
 }
+exports.getIdsListFromJSONList2 = getIdsListFromJSONList2;
 
 // check if json obejct is empty
 var isEmptyObject = function(obj) {
@@ -137,8 +148,20 @@ var isEmptyObject = function(obj) {
     }
     return true;
 }
-
 exports.isEmptyObject = isEmptyObject;
+
+// make a directory given the path and the name of the new directory
+var mkdir = function (path, directory, callback) {
+    var combinedPath = path+'/'+directory;
+    fs.mkdir(combinedPath, function (err) {
+        return callback(err, err ? null : 'ok');
+    });
+}
+exports.mkdir = mkdir;
+
+mkdir(fsTree.USERS,'testUser', function(err, result){
+    console.log(err+' / '+result);
+});
 
 // return the current date
 function getDate() {
