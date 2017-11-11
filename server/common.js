@@ -159,10 +159,6 @@ var mkdir = function (path, directory, callback) {
 }
 exports.mkdir = mkdir;
 
-mkdir(fsTree.USERS,'testUser', function(err, result){
-    console.log(err+' / '+result);
-});
-
 // return the current date
 function getDate() {
     return date().format('YYYY-MM-DD hh:mm:ss A');

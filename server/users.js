@@ -114,6 +114,10 @@ exports.addStudent = function(user, callback) {
                 return callback(err, null);
             }
 
+            common.mkdir(common.fsTree.USERS, userToAdd.id, function (err, result) {
+                logger.info('Creating user directory: ',  err ? err : result);
+            });
+
             logger.info('Student %s created', userToAdd.id);
             return callback(null, 'Created');
         });
