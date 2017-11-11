@@ -276,7 +276,7 @@ var verifyMatchingQuestionAnswer = function(question, answer){
     }
     return false;
 }
-
+// Check if answer submitted is correct for Ordering question Type
 var verifyOrderingQuestionAnswer = function(question,answer){
     return question.answer.join(',') === answer.join(',');
 }
