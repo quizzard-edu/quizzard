@@ -1166,6 +1166,11 @@ app.post('/accountsExportFile', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
+    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
+        logger.error('User %s does not exists in the file system', req.session.user.id);
+        return res.status(500).send('User does not exists in the file system');
+    }
+
     var requestedList = req.body.studentsList;
     var totalCount = requestedList.length;
     var studentsCount = 0;
@@ -1185,7 +1190,8 @@ app.post('/accountsExportFile', function(req, res) {
                 var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
                 var file = 'exportJob-students-'+new Date().toString()+'.csv';
 
-                fs.writeFile('uploads/'+file, csvData, function(err) {
+                var userDirectory = common.fsTree.USERS + '/' + req.session.user.id;
+                common.saveFile(userDirectory, file, csvData, function(err, result) {
                     if (err) {
                         logger.error(err);
                         return res.status(500).send('Export job failed');
