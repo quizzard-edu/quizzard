@@ -26,3 +26,8 @@ ol {
 #icon2 {
   display: none;
 }
+
+.input-field .prefix {
+  position: absolute; 
+
+}

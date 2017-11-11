@@ -22,7 +22,8 @@ else if studentQuestionForm
       each item in question.orderList
         .row
           li.input-field(name='option')
-            i.material-icons.prefix swap_vert
+            i.material-icons.prefix#icon1 swap_vert
+            i.material-icons.prefix#icon2 swap_vertical_circle
             #questionItem
               | #{item}
     button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
@@ -32,7 +33,8 @@ else if adminQuestionEdit
       each item, i in question.orderList
         .row
           li.input-field.col.s10
-            i.material-icons.prefix swap_vert
+            i.material-icons.prefix#icon1 swap_vert
+            i.material-icons.prefix#icon2 swap_vertical_circle
             input#icon_prefix.validate(type='text', name='orderItem'+index, placeholder='Enter Answer Here', required, value=item)
           .input-field.col.s2
             a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')

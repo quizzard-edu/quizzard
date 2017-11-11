@@ -3,13 +3,12 @@ $(function(){
 	$('#sortable').sortable({
 		revert:true,
 		start: function(event,ui) {
-			console.log(event)
-			$('#icon1',this).hide();
-			$("#icon2",this).show();
+			$('#icon1',ui.item).hide();
+			$("#icon2",ui.item).show();
 		},
 		stop: function(event,ui) {
-			$("#icon2",this).hide();
-			$("#icon1",this).show();
+			$("#icon2",ui.item).hide();
+			$("#icon1",ui.item).show();
       	}
 	});
 });
