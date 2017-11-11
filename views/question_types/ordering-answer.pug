@@ -7,7 +7,9 @@ if answerForm
       - for (var index = 1; index <=4; index++)
         .row
           li.input-field.col.s10
-            input.form-control(type='text', name='orderItem'+index, placeholder='Enter Answer Here', required)
+            i.material-icons.prefix#icon1 swap_vert
+            i.material-icons.prefix#icon2 swap_vertical_circle
+            input#icon_prefix.validate(type='text', placeholder='Enter Answer Here', name='orderItem'+index, required)
           .input-field.col.s2
             a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
               i.tiny.material-icons close
@@ -19,7 +21,10 @@ else if studentQuestionForm
     ol#sortable
       each item in question.orderList
         .row
-          li(name='option') #{item}
+          li.input-field(name='option')
+            i.material-icons.prefix swap_vert
+            #questionItem
+              | #{item}
     button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
 else if adminQuestionEdit
   .form-group.col.s12
@@ -27,7 +32,8 @@ else if adminQuestionEdit
       each item, i in question.orderList
         .row
           li.input-field.col.s10
-            input.form-control(type='text', name='orderItem'+index, placeholder='Enter Answer Here', required, value=item)
+            i.material-icons.prefix swap_vert
+            input#icon_prefix.validate(type='text', name='orderItem'+index, placeholder='Enter Answer Here', required, value=item)
           .input-field.col.s2
             a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
               i.tiny.material-icons close

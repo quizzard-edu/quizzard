@@ -63,7 +63,7 @@ $('#chooseAll_answerForm').submit(function(evt) {
 
 $('#order_answerform').submit(function(evt) {
     evt.preventDefault();
-    var answer = $("#sortable > div > li").map(function() { return $(this).text() }).get();
+    var answer = $("#sortable > div > li > #item").map(function() { return $(this).text() }).get();
     sendAnswerRequest(answer);
 });
 

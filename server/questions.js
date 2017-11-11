@@ -278,7 +278,7 @@ var verifyMatchingQuestionAnswer = function(question, answer){
 }
 
 var verifyOrderingQuestionAnswer = function(question,answer){
-    return question.orderList.sort().join(',') === answer.sort().join(',');
+    return question.orderList.join(',') === answer.join(',');
 }
 // add comment to question by id with user and comment
 exports.addComment = function (questionId, userId, comment, callback) {
