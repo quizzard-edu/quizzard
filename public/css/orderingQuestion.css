@@ -1,0 +1,32 @@
+ol { 
+  /* list style is faked with number inputs */
+  list-style: none;
+  padding: 0;
+}
+
+#sortable li { 
+    position: relative; 
+    min-height: 1em;
+    cursor: move;
+    padding: .5em .5em .75em;
+    background: #eee;
+    border: 1px solid #ccc;
+    margin: .25em 0;
+    border-radius: .25em;
+}
+
+#icon_prefix {
+  margin-bottom: auto;
+}
+
+#questionItem {
+  margin-left: 30px; 
+}
+
+#icon2 {
+  display: none;
+}
+
+.input-field .prefix {
+  position: absolute; 
+}
