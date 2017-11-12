@@ -30,9 +30,25 @@ block content
               a.noLineLink#option-attempt(href='#') Points Per Attempt
   .container
     .row
-      .col.s12
+      .col.s6
         .card.white
           .leaderboard-content
+      .col.s6
+        .card.white
+          .podium
+            p
+              | Top Score : 
+              span.score [Highest Score Will Go Here]
+            ol
+              li.gold
+                img(alt='first', src='img/leaderboard_profile.png')
+                span.score 1st
+              li.silver
+                img(alt='second', src='img/leaderboard_profile.png')
+                span.score 2nd
+              li.bronze
+                img(alt='third', src='img/leaderboard_profile.png')
+                span.score 3rd
 
 block scripts
   script(src='/lib/jquery/jquery-3.1.1.min.js')
