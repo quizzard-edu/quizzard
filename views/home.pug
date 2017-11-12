@@ -1,12 +1,9 @@
 extends layout
 
 block styles
-  link(rel='stylesheet' href='/css/icons.css')
   link(rel='stylesheet' href='/css/home.css')
   link(rel='stylesheet' href='/css/leaderboard-table.css')
   link(rel='stylesheet' href='/css/sidebar.css')
-  link(rel='stylesheet' href='/css/navbar.css')
-  link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
 
 block title
   title Quizzard - Home
@@ -30,9 +27,6 @@ block content
         include home-sidebar
 
 block scripts
-  script(src='/lib/jquery/jquery-3.1.1.min.js')
-  script(src='/lib/bootstrap/js/bootstrap.min.js')
-  script(src='/lib/materialize/js/materialize.min.js')
   script(src='/js/common.js')
   script(src='/js/home.js')
   script(src='/js/navbar.js')

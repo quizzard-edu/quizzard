@@ -1,9 +1,7 @@
 extends layout
 
 block styles
-  link(rel='stylesheet' href='/css/icons.css')
   link(rel='stylesheet' href='/css/login.css')
-  link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
 
 block title
   title Quizzard - Login
@@ -17,6 +15,7 @@ block content
           img#logoMobile(src='img/logo.png')
         span.col.s2#uizzardDiv
           h2.form-login-heading uizzard
+      br
       p#invalid
       .row
         .input-field.col.s12
@@ -31,7 +30,5 @@ block content
       button(class='btn btn-lg btn-primary btn-block' type='submit') Sign in
 
 block scripts
-  script(src='/lib/jquery/jquery-3.1.1.min.js')
-  script(src='/lib/materialize/js/materialize.min.js')
   script(src='/js/common.js')
   script(src='/js/login.js')

@@ -1,0 +1,37 @@
+if answerForm
+	.form-group.col.s12
+		.row
+			.input-field.col.s6
+				input(type='radio', name='tfbutton', value='true', id='mcans1' required)
+				label(for='mcans1') True
+			.input-field.col.s6
+				input(type='radio', name='tfbutton', value='false', id='mcans2' required)
+				label(for='mcans2') False
+else if studentQuestionForm
+	form.form-question#tf_answerform
+		.row
+			input(type='radio', name='tfbutton', value='true', id='mcans1' required)
+			label(for='mcans1') True
+		.row
+			input(type='radio', name='tfbutton', value='false', id='mcans2' required)
+			label(for='mcans2') False
+
+		button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+
+else if adminQuestionEdit
+	.form-group.col.s12
+		.row
+			if question.answer === 'true'
+				.input-field.col.s6
+					input(type='radio', name='tfbutton', value='true', id='mcans1', required, checked)
+					label(for='mcans1') True
+				.input-field.col.s6
+					input(type='radio', name='tfbutton', value='false', id='mcans2' required)
+					label(for='mcans2') False
+			else
+				.input-field.col.s6
+					input(type='radio', name='tfbutton', value='true', id='mcans1', required)
+					label(for='mcans1') True
+				.input-field.col.s6
+					input(type='radio', name='tfbutton', value='false', id='mcans2', required, checked)
+					label(for='mcans2') False

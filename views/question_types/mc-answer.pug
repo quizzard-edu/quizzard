@@ -3,19 +3,19 @@ if answerForm
 		each index in [1,2,3,4]
 			.row
 				.input-field.col.s1
-					input(type='radio', name='radbutton', value='mcans'+index, id='mcans'+index, required)
-					label(for='mcans'+index)
+					input(type='radio', name='radbutton', value='option'+index, id='option'+index, required)
+					label(for='option'+index)
 				.input-field.col.s10
-					input.form-control(type='text', name='mcans'+index, placeholder='Enter Answer Here', required)
+					input.form-control(type='text', name='option'+index, placeholder='Enter Answer Here', required)
 				.input-field.col.s1
 					a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
 						i.tiny.material-icons close
 
 	#addMoreAnswersButton
-		a.waves-effect.waves-light.btn(onclick="addMCAnswers('qAnswer')") add answer
+		a.waves-effect.waves-light.btn(onclick="addMCAnswers('radio')") add answer
 
 else if studentQuestionForm
-	form.form-question#mc_answerform(style='text-align: left;')
+	form.form-question#mc_answerform
 		each answer in question.choices
 			.row
 				input(type='radio' name='answer', value=answer, id=answer, required)
@@ -34,13 +34,13 @@ else if adminQuestionEdit
 						input(type='radio', name='radbutton', id=i, value=i, required)
 					label(for=i)
 				.input-field.col.s10
-					input.form-control(type='text', name='mcans'+i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
+					input.form-control(type='text', name='option'+i, placeholder='Enter New Answer Here', required, style='float:left;' value=option)
 				.input-field.col.s1
 				a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
 					i.tiny.material-icons close
 
 	#addMoreAnswersButton
-		a.waves-effect.waves-light.btn(onclick="addMCAnswers('qAnswer')") add answer
+		a.waves-effect.waves-light.btn(onclick="addMCAnswers('radio')") add answer
 
 block scripts
 	script(src='/js/mc-answer.js')
