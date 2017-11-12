@@ -48,7 +48,7 @@ exports.initialize = function(callback) {
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
 
-        getNextQuestionId(function(){
+        getNextQuestionNumber(function() {
             logger.info('next question number: %d', nextQuestionNumber);
             return callback();
         });
@@ -66,7 +66,7 @@ exports.addAdmin = function(admin, callback){
 }
 
 var addUser = function(user, callback) {
-    usersCollection.findOne({'id': user.id}, function(err, obj) {
+    usersCollection.findOne({id: user.id}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
@@ -129,7 +129,7 @@ exports.getStudentsListSorted = function(lim, callback){
     });
 }
 
-exports.getUserById = function(userId, callback){
+exports.getUserById = function(userId, callback) {
     getUserById(userId, callback);
 }
 
@@ -367,10 +367,10 @@ var isEmptyObject = function(obj) {
 
 // Questions functions
 // Add QUESTION to questionsCollection in the database
-exports.addQuestion = function(question, callback){
+exports.addQuestion = function(question, callback) {
     question.number = ++nextQuestionNumber;
     questionsCollection.insert(question, function(err, res) {
-        if(err){
+        if(err) {
             logger.error(err);
             return callback({status:500, msg:err}, null);
         }
@@ -380,9 +380,9 @@ exports.addQuestion = function(question, callback){
 }
 
 // cleanup the users collection
-exports.removeAllQuestions = function(callback){
+exports.removeAllQuestions = function(callback) {
     questionsCollection.remove({}, function(err, res) {
-        if(err){
+        if(err) {
             logger.error(err);
             return callback(err, null);
         }
@@ -395,7 +395,7 @@ exports.removeAllQuestions = function(callback){
 }
 
 // get next question number
-var getNextQuestionNumber = function(callback){
+var getNextQuestionNumber = function(callback) {
       questionsCollection.find().sort({number: -1}).limit(1).toArray(function(err, docs) {
         if (err) {
             logger.error(err);
@@ -407,7 +407,7 @@ var getNextQuestionNumber = function(callback){
     });
 }
 
-exports.getQuestionsList = function(findQuery, sortQuery, callback){
+exports.getQuestionsList = function(findQuery, sortQuery, callback) {
     questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
             return callback(err, null);
@@ -477,7 +477,7 @@ exports.lookupQuestion = function(findQuery, callback) {
 }
 
 // update a question record based on its id
-exports.updateQuestionById = function(questionId, request, callback){
+exports.updateQuestionById = function(questionId, request, callback) {
     var currentDate = new Date().toString();
     var query = {_id: questionId};
     var update = {};
@@ -559,7 +559,7 @@ exports.updateQuestionById = function(questionId, request, callback){
 }
 
 // update users collection directly by a query
-exports.updateQuestionByQuery = function (query, update, callback){
+exports.updateQuestionByQuery = function (query, update, callback) {
     questionsCollection.update(query, update, function(err, obj) {
         return callback(err, obj);
     });

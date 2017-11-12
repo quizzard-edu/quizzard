@@ -275,6 +275,8 @@ var displayQuestionTable = function() {
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
 
+            $('.visbox').hide();
+
             $('#question-creation-button').click(function(evt) {
                 displayQuestionForm();
             });
@@ -880,7 +882,7 @@ var sortAccountsTable = function(type) {
 
 // Toggles the view of the Visibility Checkboxes in the Question-Table View
 var toggleButtonVisibility = function() {
-    if (document.getElementById('sw').checked) {
+    if ($('#sw').is(':checked')) {
         $('.visbox').show();
     } else {
         $('.visbox').hide();

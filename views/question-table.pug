@@ -18,7 +18,7 @@ block styles
                 .switch
                   label
                     | Hide
-                    input(id='sw' type="checkbox" checked=true onClick='toggleButtonVisibility()')
+                    input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility()')
                     span.lever
                     | Show
               th ID
@@ -31,9 +31,9 @@ block styles
               tr
                 td
                   p
-                    input.checked(id='checked-' + q._id type='checkbox' checked=q.visible)
+                    input.checked(id='checked-' + q._id, type='checkbox', checked=q.visible)
                     label.visbox(for='checked-' + q._id)
-                td #{q.id}
+                td #{q.number}
                 td #{q.title}
                 td #{q.topic}
                 td #{questionType(q.type)}
