@@ -48,8 +48,15 @@ var studentsCreated = 0;
 var questionsCreated;
 var questionsAnswered;
 var commentsAdded = 0;
+var commentActionsAdded = 0;
+var commentRepliesVotesAdded = 0;
 var commentsPerQuestion = 3;
-
+var commentActionsPerQuestion = 3;
+var commentRepliesVotesPerQuestion = 3;
+var commentPercentage = 50;
+var commentActionPercentage = 50;
+var actualCommentsAdded = 0;
+var actualRepliesAdded = 0;
 
 
 // create users account for both students and admins
@@ -438,19 +445,137 @@ var addComments = function(questionId, callback) {
                 answeredList.push(question.correctAttempts[i].id);
             }
             for (var i = 0; i < commentsPerQuestion; i++) {
-              userId = answeredList[Math.floor(Math.random()*answeredList.length)];
-              comment = 'this is some lorem ipsum';
-              questions.addComment(questionId, userId, comment, function(err, res) {
-                  if (err) {
-                      return callback (err, null);
-                  } else {
-                      logger.info('added comment to %s by %s', questionId, userId);
-                  }
-                  commentsAdded++;
-                  if (commentsAdded == totalNumberOfQuestions*commentsPerQuestion) {
-                      process.exit(0);
-                  }
-              });
+                if (Math.floor(Math.random()*100) > (100-commentPercentage)) {
+                    userId = answeredList[Math.floor(Math.random()*answeredList.length)];
+                    comment = 'this is some lorem ipsum';
+                    questions.addComment(questionId, userId, comment, function(err, res) {
+                        if (err) {
+                            return callback (err, null);
+                        } else {
+                            logger.info('added comment to %s by %s', questionId, userId);
+                            actualCommentsAdded++;
+                        }
+                        commentsAdded++;
+                        if (commentsAdded == totalNumberOfQuestions*commentsPerQuestion) {
+                            createCommentActions();
+                        }
+                    });
+                } else {
+                    commentsAdded++;
+                    if (commentsAdded == totalNumberOfQuestions*commentsPerQuestion) {
+                        createCommentActions();
+                    }
+                }
+
+            }
+        }
+    });
+}
+
+var addCommentActions = function(questionId, callback) {
+    db.lookupQuestion({id: questionId}, function(err, question) {
+        questionId = question._id;
+        if(err){
+            return callback(err, null);
+        } else if(!question){
+            return callback('Could not find the question', null);
+        } else {
+            var answeredList = [];
+            for (var i in question.correctAttempts) {
+                answeredList.push(question.correctAttempts[i].id);
+            }
+
+            for (var j = 0; j < question.comments.length; j++) {
+                for (var i = 0; i < commentActionsPerQuestion; i++) {
+                    if (Math.floor(Math.random()*100) > (100-commentActionPercentage)) {
+                        userId = answeredList[Math.floor(Math.random()*answeredList.length)];
+                        let vote = (Math.random() < 0.5) ? -1 : 1;
+                        questions.voteComment(question.comments[j]._id, vote, userId, function(err, res) {
+                            if (err) {
+                                return callback (err, null);
+                            } else {
+                                logger.info('added vote');
+                            }
+                            commentActionsAdded++;
+                            if (commentActionsAdded == 2*commentActionsPerQuestion*actualCommentsAdded) {
+                                createReplyActions();
+                            }
+                        });
+
+                        let reply = 'This is some random lorem ipsum reply that I am typing here';
+                        questions.addReply(question.comments[j]._id, userId, reply, function(err, res) {
+                            if (err) {
+                                return callback (err, null);
+                            } else {
+                                logger.info('added reply');
+                                actualRepliesAdded++
+                            }
+
+                            commentActionsAdded++;
+                            if (commentActionsAdded == 2*commentActionsPerQuestion*actualCommentsAdded) {
+                                createReplyActions();
+                            }
+                        });
+                    } else {
+                        commentActionsAdded+=2;
+                        if (commentActionsAdded == 2*commentActionsPerQuestion*actualCommentsAdded) {
+                            createReplyActions();
+                        }
+                    }
+
+                }
+            }
+        }
+    });
+}
+
+var addReplyActions = function(questionId, callback) {
+    db.lookupQuestion({id: questionId}, function(err, question) {
+        questionId = question._id;
+        if(err){
+            return callback(err, null);
+        } else if(!question){
+            return callback('Could not find the question', null);
+        } else {
+            var answeredList = [];
+            for (var i in question.correctAttempts) {
+                answeredList.push(question.correctAttempts[i].id);
+            }
+
+            for (var j = 0; j < question.comments.length; j++) {
+                for (var k = 0; k < question.comments[j].replies.length; k++) {
+                    for (var i = 0; i < commentRepliesVotesPerQuestion; i++) {
+                        if (Math.floor(Math.random()*100) > (100-commentActionPercentage)) {
+                            userId = answeredList[Math.floor(Math.random()*answeredList.length)];
+                            let vote = (Math.random() < 0.5) ? -1 : 1;
+                            logger.info('something');
+                            questions.voteReply(question.comments[j].replies[k]._id, vote, userId, function(err, res) {
+                                if (err) {
+                                    return callback (err, null);
+                                } else {
+                                    logger.info('added vote on reply');
+                                }
+                                commentRepliesVotesAdded++;
+                                logger.info(commentRepliesVotesAdded);
+                                logger.info(commentRepliesVotesPerQuestion);
+                                logger.info(actualRepliesAdded);
+                                logger.info(commentRepliesVotesPerQuestion*actualRepliesAdded);
+                                if (commentRepliesVotesAdded == commentRepliesVotesPerQuestion*actualRepliesAdded) {
+                                    process.exit(0);
+                                }
+                            });
+                        } else {
+                            commentRepliesVotesAdded++;
+                            logger.info(commentRepliesVotesAdded);
+                            logger.info(commentRepliesVotesPerQuestion);
+                            logger.info(actualRepliesAdded);
+                            logger.info(commentRepliesVotesPerQuestion*actualRepliesAdded);
+                            if (commentRepliesVotesAdded == commentRepliesVotesPerQuestion*actualRepliesAdded) {
+                                process.exit(0);
+                            }
+                        }
+                    }
+                }
             }
         }
     });
@@ -615,6 +740,38 @@ var createComments = function() {
 
     for (var id = 1; id <= totalCreated; id++) {
         addComments(id, function(err, res) {
+
+        });
+    }
+}
+
+var createCommentActions = function() {
+    var totalCreated = 0;
+
+    for (var i = 0; i < numberOfEachQuestion.length; i++) {
+        totalCreated += numberOfEachQuestion[i];
+    }
+
+    totalNumberOfQuestions = totalCreated;
+
+    for (var id = 1; id <= totalCreated; id++) {
+        addCommentActions(id, function(err, res) {
+
+        });
+    }
+}
+
+var createReplyActions = function() {
+    var totalCreated = 0;
+
+    for (var i = 0; i < numberOfEachQuestion.length; i++) {
+        totalCreated += numberOfEachQuestion[i];
+    }
+
+    totalNumberOfQuestions = totalCreated;
+
+    for (var id = 1; id <= totalCreated; id++) {
+        addReplyActions(id, function(err, res) {
 
         });
     }
