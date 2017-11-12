@@ -545,34 +545,22 @@ var addReplyActions = function(questionId, callback) {
             for (var j = 0; j < question.comments.length; j++) {
                 for (var k = 0; k < question.comments[j].replies.length; k++) {
                     for (var i = 0; i < commentRepliesVotesPerQuestion; i++) {
+                        commentRepliesVotesAdded++;
+                        if (commentRepliesVotesAdded == commentRepliesVotesPerQuestion*actualRepliesAdded) {
+                            setTimeout(function() {
+                                process.exit(0);
+                            }, 500);
+                        }
                         if (Math.floor(Math.random()*100) > (100-commentActionPercentage)) {
                             userId = answeredList[Math.floor(Math.random()*answeredList.length)];
                             let vote = (Math.random() < 0.5) ? -1 : 1;
-                            logger.info('something');
                             questions.voteReply(question.comments[j].replies[k]._id, vote, userId, function(err, res) {
                                 if (err) {
                                     return callback (err, null);
                                 } else {
                                     logger.info('added vote on reply');
                                 }
-                                commentRepliesVotesAdded++;
-                                logger.info(commentRepliesVotesAdded);
-                                logger.info(commentRepliesVotesPerQuestion);
-                                logger.info(actualRepliesAdded);
-                                logger.info(commentRepliesVotesPerQuestion*actualRepliesAdded);
-                                if (commentRepliesVotesAdded == commentRepliesVotesPerQuestion*actualRepliesAdded) {
-                                    process.exit(0);
-                                }
                             });
-                        } else {
-                            commentRepliesVotesAdded++;
-                            logger.info(commentRepliesVotesAdded);
-                            logger.info(commentRepliesVotesPerQuestion);
-                            logger.info(actualRepliesAdded);
-                            logger.info(commentRepliesVotesPerQuestion*actualRepliesAdded);
-                            if (commentRepliesVotesAdded == commentRepliesVotesPerQuestion*actualRepliesAdded) {
-                                process.exit(0);
-                            }
                         }
                     }
                 }
