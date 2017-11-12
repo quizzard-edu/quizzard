@@ -4,7 +4,7 @@
       thead
         tr
           th Rank
-          th User ID
+          th User
           th Points per Attempt
             
       tbody
@@ -28,7 +28,9 @@
               - rowclass += ' col-isuser';
             tr(class=rowclass)
               td #{s.rank}
-              td #{s.fname + ' ' + s.lname.substring(0, 1)}
+              td
+                img.responsive-img.circle(src='img/leaderboard_profile.png')
+                | #{s.fname + ' ' + s.lname.substring(0, 1) + '.'}
               if s.totalAttemptsCount === 0
                 td 0
               else
