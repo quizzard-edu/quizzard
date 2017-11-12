@@ -30,7 +30,7 @@ var DB_NAME = process.env.DB_NAME || 'quizzard';
 
 var db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 
-var nextId = 0;
+var nextQuestionNumber = 0;
 var usersCollection;
 var questionsCollection;
 var analyticsCollection;
@@ -49,7 +49,7 @@ exports.initialize = function(callback) {
         analyticsCollection = db.collection('analytics');
 
         getNextQuestionId(function(){
-            logger.info('next question: %d', nextId);
+            logger.info('next question number: %d', nextQuestionNumber);
             return callback();
         });
     });
@@ -368,7 +368,7 @@ var isEmptyObject = function(obj) {
 // Questions functions
 // Add QUESTION to questionsCollection in the database
 exports.addQuestion = function(question, callback){
-    question.id = ++nextId;
+    question.id = ++nextQuestionNumber;
     questionsCollection.insert(question, function(err, res) {
         if(err){
             logger.error(err);
@@ -387,9 +387,9 @@ exports.removeAllQuestions = function(callback){
             return callback(err, null);
         }
 
-        nextId = 0;
+        nextQuestionNumber = 0;
         logger.info('All questions have been removed');
-        logger.info('next question: %d', nextId);
+        logger.info('next question number: %d', nextQuestionNumber);
         return callback(null, res);
     });
 }
@@ -402,8 +402,8 @@ var getNextQuestionId = function(callback){
             process.exit(1);
         }
 
-        nextId = docs[0] ? docs[0].id : 0;
-        return callback(nextId);
+        nextQuestionNumber = docs[0] ? docs[0].id : 0;
+        return callback(nextQuestionNumber);
     });
 }
 
