@@ -1,11 +1,8 @@
 extends layout
 
 block styles
-  link(rel='stylesheet' href='/css/icons.css')
   link(rel='stylesheet' href='/css/sidebar.css')
-  link(rel='stylesheet' href='/css/navbar.css')
   link(rel='stylesheet' href='/css/profile.css')
-  link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
 
 block content
   include navbar
@@ -82,9 +79,6 @@ block content
                     i.material-icons.right send
 
 block scripts
-  script(src='/lib/jquery/jquery-3.1.1.min.js')
-  script(src='/lib/bootstrap/js/bootstrap.min.js')
-  script(src='/lib/materialize/js/materialize.min.js')
   script(src='/js/common.js')
   script(src='/js/navbar.js')
   script(src='/js/profile.js')

@@ -1,10 +1,7 @@
 extends layout
 
 block styles
-  link(rel='stylesheet' href='/css/icons.css')
-  link(rel='stylesheet' href='/css/navbar.css')
   link(rel='stylesheet' href='/css/analytics.css')
-  link(rel='stylesheet' href='/lib/materialize/css/materialize.min.css')
 
 block title
   title Quizzard - Analytics
@@ -42,9 +39,6 @@ block content
           include class-analytics
 
 block scripts
-  script(src='/lib/jquery/jquery-3.1.1.min.js')
-  script(src='/lib/bootstrap/js/bootstrap.min.js')
-  script(src='/lib/materialize/js/materialize.min.js')
   script(src='/lib/charts/Chart.min.js')
   script(src='/js/common.js')
   script(src='/js/analytics.js')

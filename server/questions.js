@@ -76,7 +76,6 @@ var prepareQuestionData = function(question, callback){
 
         case common.questionTypes.TRUEFALSE.value:
             questionToAdd.type = common.questionTypes.TRUEFALSE.value;
-            questionToAdd.choices = question.choices;
             questionToAdd.answer = question.answer;
             break;
 
@@ -90,7 +89,11 @@ var prepareQuestionData = function(question, callback){
             questionToAdd.type = common.questionTypes.CHOOSEALL.value;
             questionToAdd.choices = question.choices;
             questionToAdd.answer = question.answer;
+            break;
 
+        case common.questionTypes.ORDERING.value:
+            questionToAdd.type = common.questionTypes.ORDERING.value;
+            questionToAdd.answer = question.answer;
             break;
 
         default:
@@ -241,6 +244,8 @@ exports.verifyAnswer = function(question, answer) {
                 return verifyMatchingQuestionAnswer(question,answer);
             case common.questionTypes.CHOOSEALL.value:
                 return verifyChooseAllQuestionAnswer(question,answer);
+            case common.questionTypes.ORDERING.value:
+                return verifyOrderingQuestionAnswer(question,answer);
             default:
                 return (answer === question.answer);
         }
@@ -271,7 +276,10 @@ var verifyMatchingQuestionAnswer = function(question, answer){
     }
     return false;
 }
-
+// Check if answer submitted is correct for Ordering question Type
+var verifyOrderingQuestionAnswer = function(question,answer){
+    return question.answer.join(',') === answer.join(',');
+}
 // add comment to question by id with user and comment
 exports.addComment = function (questionId, userId, comment, callback) {
     var currentDate = common.getDate();
