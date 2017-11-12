@@ -27,7 +27,7 @@ var common = require('./server/common.js');
 var names = require('./names.js');
 
 var allIds = [];
-var numberOfEachQuestion = [2,2,2,2,2];
+var numberOfEachQuestion = [2,2,2,2,2,2];
 var totalNumberOfQuestions;
 
 // variables to control the genereated data
@@ -395,7 +395,7 @@ var answerQuestionChooseAll = function(questionId) {
             }
 
             if (questionsAnswered == numberOfQuestionsExpected*questionsAttempts) {
-                createComments();
+                createQuestionsOrdering();
             }
 
             questionsAnswered++;
@@ -404,32 +404,61 @@ var answerQuestionChooseAll = function(questionId) {
 }
 
 // add question and send random answers
-var addComment = function(questionId) {
-    getStudentsAnsweredList(questionId, function(answeredList) {
+var addQuestionOrdering = function(qTopic, id) {
+	  var question = {
+		    topic: 'CSC492',
+		    title: qTopic,
+        text: '<p>'+qTopic+' Text</p>',
+        answer: ['i1', 'i2', 'i3', 'c4'],
+        points: Math.floor(Math.random()*questionsMaxValue),
+        type: common.questionTypes.ORDERING.value,
+        hint: 'Option1',
+        visible: 'true'
+    };
 
+    questions.addQuestion(question, function(err, res) {
+        if (err) {
+            logger.error('Could not add question. Please try again.');
+        } else {
+            logger.info('Questions %d created', id);
+
+            for (var i = 0; i < adminsCount; i++) {
+                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+            }
+        }
+
+        if (questionsCreated == numberOfQuestionsExpected) {
+            answerQuestionsOrdering();
+        }
+
+        questionsCreated++;
     });
-    //
-    // var studentId = allIds[Math.floor(Math.random()*studentsCount)];
-    // // var answer = ['c1', 'c2', 'c3'];
-    // //
-    // // if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
-    // //     answer = ['c1', 'c2', 'c4'];
-    // // }
-    // comment = 'this is some lorem ipsum';
-    //
-    // addCommentToDb(questionId, studentId, comment, function (err, res) {
-    //     if (err) {
-    //         logger.error(err);
-    //     } else {
-    //         logger.info('Questions %d commented %s by %s', questionId, comment, studentId);
-    //     }
-    //
-    //     if (commentsAdded == totalNumberOfQuestions*commentsPerQuestion) {
-    //         process.exit(0);
-    //     }
-    //
-    //     commentsAdded++;
-    // });
+}
+
+// add question and send random answers
+var answerQuestionOrdering = function(questionId) {
+    for (var i = 0; i < questionsAttempts; i++) {
+        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
+        var answer = ['i1', 'i2', 'i3', 'c4'];
+
+        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+            answer = ['i1', 'i3', 'i2', 'c4'];
+        }
+
+        checkAnswer(questionId, studentId, answer, function (err, correct) {
+            if (err) {
+                logger.error(err);
+            } else {
+                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+            }
+
+            if (questionsAnswered == numberOfQuestionsExpected*questionsAttempts) {
+                createComments();
+            }
+
+            questionsAnswered++;
+        });
+    }
 }
 
 var addComments = function(questionId, callback) {
@@ -687,6 +716,13 @@ var createQuestionsChooseAll = function() {
   	}
 }
 
+var createQuestionsOrdering = function() {
+    variableReset(5);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionOrdering('Is math related to science? '+id, id);
+  	}
+}
+
 var answerQuestionsRegular = function() {
   	for (var id = questionsIds; id < questionsCount; id++) {
       	answerQuestionRegular(id);
@@ -714,6 +750,12 @@ var answerQuestionsMatching = function() {
 var answerQuestionsChooseAll = function() {
   	for (var id = questionsIds; id < questionsCount; id++) {
       	answerQuestionChooseAll(id);
+  	}
+}
+
+var answerQuestionsOrdering = function() {
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	answerQuestionOrdering(id);
   	}
 }
 
