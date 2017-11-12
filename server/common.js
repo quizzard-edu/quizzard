@@ -153,7 +153,7 @@ var getDateByFormat = function(format) {
 exports.getDate = getDate;
 exports.getDateByFormat = getDateByFormat;
 
-// This is the function.
+// formating a string based on an array of parts of the string
 exports.formatString = function (text, args) {
     var regex = new RegExp('{-?[0-9]+}', 'g');
     return text.replace(regex, function(item) {

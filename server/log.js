@@ -46,10 +46,7 @@ var init = function () {
         dateStamp = currentDate;
         logger = fs.createWriteStream(__dirname + '/../logs/'+dateStamp+'.log', {'flags':'a'});
         process.stdout.write = process.stderr.write = logger.write.bind(logger);
-        process.on(
-            'uncaughtException',
-            function(err)
-            {
+        process.on('uncaughtException', function(err) {
                 console.error((err && err.stack) ? err.stack : err);
             }
         );
