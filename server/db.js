@@ -368,14 +368,14 @@ var isEmptyObject = function(obj) {
 // Questions functions
 // Add QUESTION to questionsCollection in the database
 exports.addQuestion = function(question, callback){
-    question.id = ++nextQuestionNumber;
+    question.number = ++nextQuestionNumber;
     questionsCollection.insert(question, function(err, res) {
         if(err){
             logger.error(err);
             return callback({status:500, msg:err}, null);
         }
 
-        return callback(null, question.id);
+        return callback(null, question.number);
     });
 }
 
@@ -394,15 +394,15 @@ exports.removeAllQuestions = function(callback){
     });
 }
 
-// getNextQuestionId
-var getNextQuestionId = function(callback){
-      questionsCollection.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
+// get next question number
+var getNextQuestionNumber = function(callback){
+      questionsCollection.find().sort({number: -1}).limit(1).toArray(function(err, docs) {
         if (err) {
             logger.error(err);
             process.exit(1);
         }
 
-        nextQuestionNumber = docs[0] ? docs[0].id : 0;
+        nextQuestionNumber = docs[0] ? docs[0].number : 0;
         return callback(nextQuestionNumber);
     });
 }
