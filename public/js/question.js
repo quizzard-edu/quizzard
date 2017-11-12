@@ -61,6 +61,12 @@ $('#chooseAll_answerForm').submit(function(evt) {
     sendAnswerRequest(answer);
 })
 
+$('#order_answerform').submit(function(evt) {
+    evt.preventDefault();
+    var answer = $("#sortable > div > li > #questionItem").map(function() { return $(this).text() }).get();
+    sendAnswerRequest(answer);
+});
+
 var sendAnswerRequest = function(ans) {
     $.ajax({
         type: 'POST',

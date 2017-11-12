@@ -186,11 +186,12 @@ const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
 const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
-const regexForm = pug.compileFile('views/regex-answer.pug');
-const mcForm = pug.compileFile('views/mc-answer.pug');
-const tfForm = pug.compileFile('views/tf-answer.pug');
-const chooseAllForm = pug.compileFile('views/chooseAll-answer.pug');
-const matchingForm = pug.compileFile('views/matching-answer.pug');
+const regexForm = pug.compileFile('views/question_types/regex-answer.pug');
+const mcForm = pug.compileFile('views/question_types/mc-answer.pug');
+const tfForm = pug.compileFile('views/question_types/tf-answer.pug');
+const chooseAllForm = pug.compileFile('views/question_types/chooseAll-answer.pug');
+const matchingForm = pug.compileFile('views/question_types/matching-answer.pug');
+const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 const questionList = pug.compileFile('views/questionlist.pug');
 const discussionBoard = pug.compileFile('views/discussion.pug');
@@ -317,8 +318,11 @@ app.get('/answerForm', function(req, res){
             break;
         case common.questionTypes.MATCHING.value:
             res.status(200).render(
-                common.questionTypes.MATCHING.template,{
-                answerForm:true});
+                common.questionTypes.MATCHING.template,{answerForm:true});
+            break;        
+        case common.questionTypes.ORDERING.value:
+            res.status(200).render(
+                common.questionTypes.ORDERING.template,{answerForm:true});
             break;
         default:
             return res.status(400).send('Please select an appropriate question Type.')
@@ -442,6 +446,8 @@ app.get('/questionedit', function(req, res) {
                         return chooseAllForm({adminQuestionEdit:true, question:question})
                     case common.questionTypes.MATCHING.value:
                         return matchingForm({adminQuestionEdit:true, question:question})
+                    case common.questionTypes.ORDERING.value:
+                        return orderingForm({adminQuestionEdit:true, question:question})
                     default:
                         return res.redirect('/')
                         break;
@@ -548,7 +554,7 @@ app.get('/question', function(req, res) {
                 hasQrating = true;
             }
         }
-        return res.status(200).render('question', {
+        return res.status(200).render('question-view', {
             user: req.session.user,
             question: questionFound,
             answered: (answeredList.indexOf(req.session.user.id) !== -1),
@@ -571,6 +577,10 @@ app.get('/question', function(req, res) {
                         questionFound.leftSide = common.randomizeList(questionFound.leftSide);
                         questionFound.rightSide = common.randomizeList(questionFound.rightSide);
                         return matchingForm({studentQuestionForm:true, question:questionFound})
+                    case common.questionTypes.ORDERING.value:
+                        // randomize the order of ordering question
+                        questionFound.answer = common.randomizeList(questionFound.answer);
+                        return orderingForm({studentQuestionForm:true, question:questionFound})
                     default:
                         break;
                 }

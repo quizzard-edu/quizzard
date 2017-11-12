@@ -488,39 +488,39 @@ exports.updateQuestionById = function(questionId, request, callback){
     update.$set = {};
     update.$inc = {};
 
-    if (request.topic) {
+    if ('topic' in request) {
       update.$set.topic = request.topic;
     }
 
-    if (request.title) {
+    if ('title' in request) {
       update.$set.title = request.title;
     }
 
-    if (request.text) {
+    if ('text' in request) {
       update.$set.text = request.text;
     }
 
-    if (request.answer) {
+    if ('answer' in request) {
       update.$set.answer = request.answer;
     }
 
-    if (request.hint) {
+    if ('hint' in request) {
       update.$set.hint = request.hint;
     }
 
-    if (request.points) {
+    if ('points' in request) {
       update.$set.points = request.points;
     }
 
-    if (request.choices) {
+    if ('choices' in request) {
       update.$set.choices = request.choices;
     }
 
-    if (request.leftSide) {
+    if ('leftSide' in request) {
       update.$set.leftSide = request.leftSide;
     }
 
-    if (request.rightSide) {
+    if ('rightSide' in request) {
       update.$set.rightSide = request.rightSide;
     }
 
