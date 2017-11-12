@@ -1,4 +1,3 @@
-// process.exit(0);
 /*
 The dataGenerator script
 
@@ -26,47 +25,60 @@ var questions = require('./server/questions.js');
 var common = require('./server/common.js');
 var names = require('./names.js');
 
-var allIds = [];
-var numberOfEachQuestion = [2,2,2,2,2,2];
-var totalNumberOfQuestions;
-
 // variables to control the genereated data
+var numberOfEachQuestion = [2,2,2,2,2,2];
 var adminsCount = 2;
 var studentsCount = 10;
-var questionsCount;
-var questionsIds;
-var numberOfQuestionsExpected;
 var questionsMaxValue = 20;
-var questionsAttempts = 10; // be careful when changing this value,
-                            // it will increase the run time significantly
+var questionsAttempts = 10;
+var commentsPerQuestion = 3;
+var commentActionsPerQuestion = 3;
+var commentRepliesVotesPerQuestion = 3;
+
+// Probabilities used in generating data
+var commentPercentage = 50;
+var commentActionPercentage = 50;
 var questionsCorrectPercentage = 40;
 
 // variables used by the script for different functionality
 // Do NOT change the variables below
+var allIds = [];
+var totalNumberOfQuestions = 0;
+var questionsCount = 0;
+var questionsIds = 0;
+var numberOfQuestionsExpected = 0;
 var adminsCreated = 0;
 var studentsCreated = 0;
-var questionsCreated;
-var questionsAnswered;
+var questionsCreated = 0;
+var questionsAnswered = 0;
 var commentsAdded = 0;
 var commentActionsAdded = 0;
 var commentRepliesVotesAdded = 0;
-var commentsPerQuestion = 3;
-var commentActionsPerQuestion = 3;
-var commentRepliesVotesPerQuestion = 3;
-var commentPercentage = 50;
-var commentActionPercentage = 50;
 var actualCommentsAdded = 0;
 var actualRepliesAdded = 0;
 
+/**
+ * This function creates all the admins based on the variables
+ */
+var createAdmins = function() {
+    for (var id = 0; id < adminsCount; id++) {
+        addAdmin('Admin'+id, 'KonniChiwa');
+    }
+}
 
-// create users account for both students and admins
-var addAdmin = function(accid, pass, isAdmin) {
+/**
+ * This functions adds the accounts of admins
+ * 
+ * @param {integer} accid 
+ * @param {string} pass 
+ */
+var addAdmin = function(accid, pass) {
     var acc = {
         id: accid,
         password: pass,
         fname: accid,
         lname: accid,
-        email: accid+'@'+'fake.fake'
+        email: accid+'@mail.utoronto.ca'
     };
 
     users.addAdmin(acc, function(err, account) {
@@ -77,14 +89,30 @@ var addAdmin = function(accid, pass, isAdmin) {
         }
 
         adminsCreated++;
+
         if (adminsCreated == adminsCount) {
             createStudents();
         }
     });
 }
 
-// create users account for both students and admins
-var addStudent = function(name, accid, pass, isAdmin) {
+/**
+ * This function creates all the students based on the variables
+ */
+var createStudents = function() {
+    for (var id = 0; id < studentsCount; id++) {
+        addStudent(names.namesList[id], studentIdGenerator(names.namesList[id]), 'KonniChiwa');
+
+    }
+}
+
+/**
+ * This functions adds the accounts of admins
+ * 
+ * @param {integer} accid 
+ * @param {string} pass 
+ */
+var addStudent = function(name, accid, pass) {
     var acc = {
         id: accid,
         password: pass,
@@ -101,13 +129,29 @@ var addStudent = function(name, accid, pass, isAdmin) {
         }
 
         studentsCreated++;
+
         if(studentsCreated == studentsCount){
             createQuestionsRegular();
         }
     });
 }
 
-// add question and send random answers
+/**
+ * This function creates all the regular type question based on the variables
+ */
+var createQuestionsRegular = function() {
+    variableReset(0);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionRegular('Is math related to science? '+id, id);
+  	}
+}
+
+/**
+ * This function adds the regular type question
+ * 
+ * @param {string} qTopic 
+ * @param {integer} id 
+ */
 var addQuestionRegular = function(qTopic, id) {
 	  var question = {
 		    topic: 'CSC492',
@@ -139,7 +183,20 @@ var addQuestionRegular = function(qTopic, id) {
     });
 }
 
-// add question and send random answers
+/**
+ * This function answers all the regular type question based on the variables
+ */
+var answerQuestionsRegular = function() {
+    for (var id = questionsIds; id < questionsCount; id++) {
+        answerQuestionRegular(id);
+    }
+}
+
+/**
+ * This function answers the regular type question
+ * 
+ * @param {integer} questionId 
+ */
 var answerQuestionRegular = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
         var studentId = allIds[Math.floor(Math.random()*studentsCount)];
@@ -166,8 +223,22 @@ var answerQuestionRegular = function(questionId) {
     }
 }
 
+/**
+ * This function creates all the multiple choice type question based on the variables
+ */
+var createQuestionsMultipleChoice = function() {
+    variableReset(1);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionMultipleChoice('Is math related to science? '+id, id);
+  	}
+}
 
-// add question and send random answers
+/**
+ * This function adds the multiple choice type question
+ * 
+ * @param {string} qTopic 
+ * @param {integer} id 
+ */
 var addQuestionMultipleChoice = function(qTopic, id) {
 	  var question = {
 		    topic: 'CSC492',
@@ -200,7 +271,20 @@ var addQuestionMultipleChoice = function(qTopic, id) {
     });
 }
 
-// add question and send random answers
+/**
+ * This function answers all the multiple choice type question based on the variables
+ */
+var answerQuestionsMultipleChoice = function() {
+    for (var id = questionsIds; id < questionsCount; id++) {
+        answerQuestionMultipleChoice(id);
+    }
+}
+
+/**
+ * This function answers the multiple choice type question
+ * 
+ * @param {integer} questionId 
+ */
 var answerQuestionMultipleChoice = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
         var studentId = allIds[Math.floor(Math.random()*studentsCount)];
@@ -226,7 +310,22 @@ var answerQuestionMultipleChoice = function(questionId) {
     }
 }
 
-// add question and send random answers
+/**
+ * This function creates all the true and false type question based on the variables
+ */
+var createQuestionsTrueFalse = function() {
+    variableReset(2);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionTrueFalse('Is math related to science? '+id, id);
+  	}
+}
+
+/**
+ * This function adds the true and false type question
+ * 
+ * @param {string} qTopic 
+ * @param {integer} id 
+ */
 var addQuestionTrueFalse = function(qTopic, id) {
 	  var question = {
 		    topic: 'CSC492',
@@ -258,7 +357,20 @@ var addQuestionTrueFalse = function(qTopic, id) {
     });
 }
 
-// add question and send random answers
+/**
+ * This function answers all the true and false type question based on the variables
+ */
+var answerQuestionsTrueFalse = function() {
+    for (var id = questionsIds; id < questionsCount; id++) {
+        answerQuestionTrueFalse(id);
+    }
+}
+
+/**
+ * This function answers the true and false type question
+ * 
+ * @param {integer} questionId 
+ */
 var answerQuestionTrueFalse = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
         var studentId = allIds[Math.floor(Math.random()*studentsCount)];
@@ -284,7 +396,22 @@ var answerQuestionTrueFalse = function(questionId) {
     }
 }
 
-// add question and send random answers
+/**
+ * This function creates all the matching type question based on the variables
+ */
+var createQuestionsMatching = function() {
+    variableReset(3);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionMatching('Is math related to science? '+id, id);
+  	}
+}
+
+/**
+ * This function adds the matching type question
+ * 
+ * @param {string} qTopic 
+ * @param {integer} id 
+ */
 var addQuestionMatching = function(qTopic, id) {
 	  var question = {
 		    topic: 'CSC492',
@@ -318,7 +445,20 @@ var addQuestionMatching = function(qTopic, id) {
     });
 }
 
-// add question and send random answers
+/**
+ * This function answers all the matching type question based on the variables
+ */
+var answerQuestionsMatching = function() {
+    for (var id = questionsIds; id < questionsCount; id++) {
+        answerQuestionMatching(id);
+    }
+}
+
+/**
+ * This function answers the matching type question
+ * 
+ * @param {integer} questionId 
+ */
 var answerQuestionMatching = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
         var studentId = allIds[Math.floor(Math.random()*studentsCount)];
@@ -344,7 +484,22 @@ var answerQuestionMatching = function(questionId) {
     }
 }
 
-// add question and send random answers
+/**
+ * This function creates all the choose all type question based on the variables
+ */
+var createQuestionsChooseAll = function() {
+    variableReset(4);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionChooseAll('Is math related to science? '+id, id);
+  	}
+}
+
+/**
+ * This function adds the choose all type question
+ * 
+ * @param {string} qTopic 
+ * @param {integer} id 
+ */
 var addQuestionChooseAll = function(qTopic, id) {
 	  var question = {
 		    topic: 'CSC492',
@@ -377,7 +532,20 @@ var addQuestionChooseAll = function(qTopic, id) {
     });
 }
 
-// add question and send random answers
+/**
+ * This function answers all the choose all type question based on the variables
+ */
+var answerQuestionsChooseAll = function() {
+    for (var id = questionsIds; id < questionsCount; id++) {
+        answerQuestionChooseAll(id);
+    }
+}
+
+/**
+ * This function answers the choose all type question
+ * 
+ * @param {integer} questionId 
+ */
 var answerQuestionChooseAll = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
         var studentId = allIds[Math.floor(Math.random()*studentsCount)];
@@ -403,7 +571,22 @@ var answerQuestionChooseAll = function(questionId) {
     }
 }
 
-// add question and send random answers
+/**
+ * This function creates all the ordering type question based on the variables
+ */
+var createQuestionsOrdering = function() {
+    variableReset(5);
+  	for (var id = questionsIds; id < questionsCount; id++) {
+      	addQuestionOrdering('Is math related to science? '+id, id);
+  	}
+}
+
+/**
+ * This function adds the ordering type question
+ * 
+ * @param {string} qTopic 
+ * @param {integer} id 
+ */
 var addQuestionOrdering = function(qTopic, id) {
 	  var question = {
 		    topic: 'CSC492',
@@ -435,7 +618,20 @@ var addQuestionOrdering = function(qTopic, id) {
     });
 }
 
-// add question and send random answers
+/**
+ * This function answers all the ordering type question based on the variables
+ */
+var answerQuestionsOrdering = function() {
+    for (var id = questionsIds; id < questionsCount; id++) {
+        answerQuestionOrdering(id);
+    }
+}
+
+/**
+ * This function answers the ordering type question
+ * 
+ * @param {integer} questionId 
+ */
 var answerQuestionOrdering = function(questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
         var studentId = allIds[Math.floor(Math.random()*studentsCount)];
@@ -457,6 +653,22 @@ var answerQuestionOrdering = function(questionId) {
             }
 
             questionsAnswered++;
+        });
+    }
+}
+
+var createComments = function() {
+    var totalCreated = 0;
+
+    for (var i = 0; i < numberOfEachQuestion.length; i++) {
+        totalCreated += numberOfEachQuestion[i];
+    }
+
+    totalNumberOfQuestions = totalCreated;
+
+    for (var id = 1; id <= totalCreated; id++) {
+        addComments(id, function(err, res) {
+
         });
     }
 }
@@ -499,6 +711,22 @@ var addComments = function(questionId, callback) {
             }
         }
     });
+}
+
+var createCommentActions = function() {
+    var totalCreated = 0;
+
+    for (var i = 0; i < numberOfEachQuestion.length; i++) {
+        totalCreated += numberOfEachQuestion[i];
+    }
+
+    totalNumberOfQuestions = totalCreated;
+
+    for (var id = 1; id <= totalCreated; id++) {
+        addCommentActions(id, function(err, res) {
+
+        });
+    }
 }
 
 var addCommentActions = function(questionId, callback) {
@@ -556,6 +784,22 @@ var addCommentActions = function(questionId, callback) {
             }
         }
     });
+}
+
+var createReplyActions = function() {
+    var totalCreated = 0;
+
+    for (var i = 0; i < numberOfEachQuestion.length; i++) {
+        totalCreated += numberOfEachQuestion[i];
+    }
+
+    totalNumberOfQuestions = totalCreated;
+
+    for (var id = 1; id <= totalCreated; id++) {
+        addReplyActions(id, function(err, res) {
+
+        });
+    }
 }
 
 var addReplyActions = function(questionId, callback) {
@@ -660,151 +904,13 @@ var rateQuestion = function (questionId, userId, rating, callback) {
     });
 }
 
+// This section includes the helper functions used for the generator
+
 var studentIdGenerator = function(name) {
     const combined = name.split(' ')[1] + name.split(' ')[0];
     var possibleIds = combined.slice(0,7).toLowerCase();
     allIds.push(possibleIds);
     return possibleIds;
-}
-
-
-var createAdmins = function() {
-    for (var id = 0; id < adminsCount; id++) {
-        addAdmin('Admin'+id, 'KonniChiwa');
-    }
-}
-
-var createStudents = function() {
-  	for (var id = 0; id < studentsCount; id++) {
-      	addStudent(names.namesList[id], studentIdGenerator(names.namesList[id]), 'KonniChiwa');
-
-  	}
-}
-
-var createQuestionsRegular = function() {
-    variableReset(0);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionRegular('Is math related to science? '+id, id);
-  	}
-}
-
-var createQuestionsMultipleChoice = function() {
-    variableReset(1);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionMultipleChoice('Is math related to science? '+id, id);
-  	}
-}
-
-var createQuestionsTrueFalse = function() {
-    variableReset(2);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionTrueFalse('Is math related to science? '+id, id);
-  	}
-}
-
-var createQuestionsMatching = function() {
-    variableReset(3);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionMatching('Is math related to science? '+id, id);
-  	}
-}
-
-var createQuestionsChooseAll = function() {
-    variableReset(4);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionChooseAll('Is math related to science? '+id, id);
-  	}
-}
-
-var createQuestionsOrdering = function() {
-    variableReset(5);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionOrdering('Is math related to science? '+id, id);
-  	}
-}
-
-var answerQuestionsRegular = function() {
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	answerQuestionRegular(id);
-  	}
-}
-
-var answerQuestionsMultipleChoice = function() {
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	answerQuestionMultipleChoice(id);
-  	}
-}
-
-var answerQuestionsTrueFalse = function() {
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	answerQuestionTrueFalse(id);
-  	}
-}
-
-var answerQuestionsMatching = function() {
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	answerQuestionMatching(id);
-  	}
-}
-
-var answerQuestionsChooseAll = function() {
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	answerQuestionChooseAll(id);
-  	}
-}
-
-var answerQuestionsOrdering = function() {
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	answerQuestionOrdering(id);
-  	}
-}
-
-var createComments = function() {
-    var totalCreated = 0;
-
-    for (var i = 0; i < numberOfEachQuestion.length; i++) {
-        totalCreated += numberOfEachQuestion[i];
-    }
-
-    totalNumberOfQuestions = totalCreated;
-
-    for (var id = 1; id <= totalCreated; id++) {
-        addComments(id, function(err, res) {
-
-        });
-    }
-}
-
-var createCommentActions = function() {
-    var totalCreated = 0;
-
-    for (var i = 0; i < numberOfEachQuestion.length; i++) {
-        totalCreated += numberOfEachQuestion[i];
-    }
-
-    totalNumberOfQuestions = totalCreated;
-
-    for (var id = 1; id <= totalCreated; id++) {
-        addCommentActions(id, function(err, res) {
-
-        });
-    }
-}
-
-var createReplyActions = function() {
-    var totalCreated = 0;
-
-    for (var i = 0; i < numberOfEachQuestion.length; i++) {
-        totalCreated += numberOfEachQuestion[i];
-    }
-
-    totalNumberOfQuestions = totalCreated;
-
-    for (var id = 1; id <= totalCreated; id++) {
-        addReplyActions(id, function(err, res) {
-
-        });
-    }
 }
 
 var variableReset = function(number) {
