@@ -1014,7 +1014,7 @@ var studentIdGenerator = function (name) {
 /**
  * This function resets the variables that are needed for each question to be pupulated
  * 
- * @param {integer} number 
+ * @param {string} questionType
  */
 var variableReset = function (questionType) {
     numberOfQuestionsExpected = numberOfEachQuestion[questionType];
