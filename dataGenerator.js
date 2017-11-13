@@ -26,7 +26,7 @@ var common = require('./server/common.js');
 var contents = require('./contents.js');
 
 // variables to control the genereated data
-var numberOfEachQuestion = [2,2,2,2,2,2];
+var numberOfEachQuestion = [2, 2, 2, 2, 2, 2];
 var adminsCount = 2;
 var studentsCount = 10;
 var questionsMaxValue = 20;
@@ -62,9 +62,9 @@ var actualRepliesAdded = 0;
 /**
  * This function creates all the admins based on the variables
  */
-var createAdmins = function() {
+var createAdmins = function () {
     for (var id = 0; id < adminsCount; id++) {
-        addAdmin('Admin'+id, 'KonniChiwa');
+        addAdmin('Admin' + id, 'KonniChiwa');
     }
 }
 
@@ -74,16 +74,16 @@ var createAdmins = function() {
  * @param {integer} accid 
  * @param {string} pass 
  */
-var addAdmin = function(accid, pass) {
+var addAdmin = function (accid, pass) {
     var acc = {
         id: accid,
         password: pass,
         fname: accid,
         lname: accid,
-        email: accid+'@mail.utoronto.ca'
+        email: accid + '@mail.utoronto.ca'
     };
 
-    users.addAdmin(acc, function(err, account) {
+    users.addAdmin(acc, function (err, account) {
         if (err) {
             logger.error('Could not create account %s. Please try again.', accid);
         } else if (err === 'exists') {
@@ -101,7 +101,7 @@ var addAdmin = function(accid, pass) {
 /**
  * This function creates all the students based on the variables
  */
-var createStudents = function() {
+var createStudents = function () {
     for (var id = 0; id < studentsCount; id++) {
         addStudent(contents.namesList[id], studentIdGenerator(contents.namesList[id]), 'KonniChiwa');
     }
@@ -113,7 +113,7 @@ var createStudents = function() {
  * @param {integer} accid 
  * @param {string} pass 
  */
-var addStudent = function(name, accid, pass) {
+var addStudent = function (name, accid, pass) {
     const firstName = name.split(' ')[0];
     const lastName = name.split(' ')[1];
 
@@ -121,11 +121,11 @@ var addStudent = function(name, accid, pass) {
         id: accid,
         password: pass,
         fname: firstName,
-        lname:lastName,
-        email: firstName + '.' + lastName +'@mail.utoronto.ca'
+        lname: lastName,
+        email: firstName + '.' + lastName + '@mail.utoronto.ca'
     };
 
-    users.addStudent(acc, function(err, account) {
+    users.addStudent(acc, function (err, account) {
         if (err) {
             logger.error('Could not create account %s. Please try again.', accid);
         } else if (err === 'exists') {
@@ -134,7 +134,7 @@ var addStudent = function(name, accid, pass) {
 
         studentsCreated++;
 
-        if(studentsCreated === studentsCount) {
+        if (studentsCreated === studentsCount) {
             createQuestionsRegular();
         }
     });
@@ -143,11 +143,11 @@ var addStudent = function(name, accid, pass) {
 /**
  * This function creates all the regular type question based on the variables
  */
-var createQuestionsRegular = function() {
+var createQuestionsRegular = function () {
     variableReset(0);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionRegular('Is math related to science? '+id, id);
-  	}
+    for (var id = questionsIds; id < questionsCount; id++) {
+        addQuestionRegular('Is math related to science? ' + id, id);
+    }
 }
 
 /**
@@ -156,26 +156,26 @@ var createQuestionsRegular = function() {
  * @param {string} qTopic 
  * @param {integer} id 
  */
-var addQuestionRegular = function(qTopic, id) {
-	var question = {
-		topic: 'CSC492',
-		title: qTopic,
-        text: '<p>'+qTopic+' Text</p>',
+var addQuestionRegular = function (qTopic, id) {
+    var question = {
+        topic: 'CSC492',
+        title: qTopic,
+        text: '<p>' + qTopic + ' Text</p>',
         answer: 'KonniChiwa',
-        points: Math.floor(Math.random()*questionsMaxValue),
+        points: Math.floor(Math.random() * questionsMaxValue),
         type: common.questionTypes.REGULAR.value,
         hint: 'KonniChiwa',
         visible: 'true'
     };
 
-    questions.addQuestion(question, function(err, res) {
+    questions.addQuestion(question, function (err, res) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
             }
         }
 
@@ -190,7 +190,7 @@ var addQuestionRegular = function(qTopic, id) {
 /**
  * This function answers all the regular type question based on the variables
  */
-var answerQuestionsRegular = function() {
+var answerQuestionsRegular = function () {
     for (var id = questionsIds; id < questionsCount; id++) {
         answerQuestionRegular(id);
     }
@@ -201,12 +201,12 @@ var answerQuestionsRegular = function() {
  * 
  * @param {integer} questionId 
  */
-var answerQuestionRegular = function(questionId) {
+var answerQuestionRegular = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
+        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
         var answer = 'NotKonniChiwa';
 
-        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+        if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
             answer = 'KonniChiwa';
         }
 
@@ -214,10 +214,10 @@ var answerQuestionRegular = function(questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
             }
 
-            if (questionsAnswered === numberOfQuestionsExpected*questionsAttempts) {
+            if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
                 createQuestionsMultipleChoice();
             }
 
@@ -229,11 +229,11 @@ var answerQuestionRegular = function(questionId) {
 /**
  * This function creates all the multiple choice type question based on the variables
  */
-var createQuestionsMultipleChoice = function() {
+var createQuestionsMultipleChoice = function () {
     variableReset(1);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionMultipleChoice('Is math related to science? '+id, id);
-  	}
+    for (var id = questionsIds; id < questionsCount; id++) {
+        addQuestionMultipleChoice('Is math related to science? ' + id, id);
+    }
 }
 
 /**
@@ -242,27 +242,27 @@ var createQuestionsMultipleChoice = function() {
  * @param {string} qTopic 
  * @param {integer} id 
  */
-var addQuestionMultipleChoice = function(qTopic, id) {
-	var question = {
-	    topic: 'CSC492',
-		title: qTopic,
-        text: '<p>'+qTopic+' Text</p>',
+var addQuestionMultipleChoice = function (qTopic, id) {
+    var question = {
+        topic: 'CSC492',
+        title: qTopic,
+        text: '<p>' + qTopic + ' Text</p>',
         answer: 'Option1',
-        points: Math.floor(Math.random()*questionsMaxValue),
+        points: Math.floor(Math.random() * questionsMaxValue),
         type: common.questionTypes.MULTIPLECHOICE.value,
         hint: 'Option1',
         visible: 'true',
-        choices: ['Option1','Option2','Option3','Option4']
+        choices: ['Option1', 'Option2', 'Option3', 'Option4']
     };
 
-    questions.addQuestion(question, function(err, res) {
+    questions.addQuestion(question, function (err, res) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
             }
         }
 
@@ -277,7 +277,7 @@ var addQuestionMultipleChoice = function(qTopic, id) {
 /**
  * This function answers all the multiple choice type question based on the variables
  */
-var answerQuestionsMultipleChoice = function() {
+var answerQuestionsMultipleChoice = function () {
     for (var id = questionsIds; id < questionsCount; id++) {
         answerQuestionMultipleChoice(id);
     }
@@ -288,12 +288,12 @@ var answerQuestionsMultipleChoice = function() {
  * 
  * @param {integer} questionId 
  */
-var answerQuestionMultipleChoice = function(questionId) {
+var answerQuestionMultipleChoice = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
+        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
         var answer = 'Option2';
 
-        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+        if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
             answer = 'Option1';
         }
 
@@ -301,10 +301,10 @@ var answerQuestionMultipleChoice = function(questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
             }
 
-            if (questionsAnswered === numberOfQuestionsExpected*questionsAttempts) {
+            if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
                 createQuestionsTrueFalse();
             }
 
@@ -316,11 +316,11 @@ var answerQuestionMultipleChoice = function(questionId) {
 /**
  * This function creates all the true and false type question based on the variables
  */
-var createQuestionsTrueFalse = function() {
+var createQuestionsTrueFalse = function () {
     variableReset(2);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionTrueFalse('Is math related to science? '+id, id);
-  	}
+    for (var id = questionsIds; id < questionsCount; id++) {
+        addQuestionTrueFalse('Is math related to science? ' + id, id);
+    }
 }
 
 /**
@@ -329,26 +329,26 @@ var createQuestionsTrueFalse = function() {
  * @param {string} qTopic 
  * @param {integer} id 
  */
-var addQuestionTrueFalse = function(qTopic, id) {
-	var question = {
-		topic: 'CSC492',
-		title: qTopic,
-        text: '<p>'+qTopic+' Text</p>',
+var addQuestionTrueFalse = function (qTopic, id) {
+    var question = {
+        topic: 'CSC492',
+        title: qTopic,
+        text: '<p>' + qTopic + ' Text</p>',
         answer: 'true',
-        points: Math.floor(Math.random()*questionsMaxValue),
+        points: Math.floor(Math.random() * questionsMaxValue),
         type: common.questionTypes.TRUEFALSE.value,
         hint: 'Option1',
         visible: 'true'
     };
 
-    questions.addQuestion(question, function(err, res) {
+    questions.addQuestion(question, function (err, res) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
             }
         }
 
@@ -363,7 +363,7 @@ var addQuestionTrueFalse = function(qTopic, id) {
 /**
  * This function answers all the true and false type question based on the variables
  */
-var answerQuestionsTrueFalse = function() {
+var answerQuestionsTrueFalse = function () {
     for (var id = questionsIds; id < questionsCount; id++) {
         answerQuestionTrueFalse(id);
     }
@@ -374,12 +374,12 @@ var answerQuestionsTrueFalse = function() {
  * 
  * @param {integer} questionId 
  */
-var answerQuestionTrueFalse = function(questionId) {
+var answerQuestionTrueFalse = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
+        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
         var answer = 'false';
 
-        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+        if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
             answer = 'true';
         }
 
@@ -387,10 +387,10 @@ var answerQuestionTrueFalse = function(questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
             }
 
-            if (questionsAnswered === numberOfQuestionsExpected*questionsAttempts) {
+            if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
                 createQuestionsMatching();
             }
 
@@ -402,11 +402,11 @@ var answerQuestionTrueFalse = function(questionId) {
 /**
  * This function creates all the matching type question based on the variables
  */
-var createQuestionsMatching = function() {
+var createQuestionsMatching = function () {
     variableReset(3);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionMatching('Is math related to science? '+id, id);
-  	}
+    for (var id = questionsIds; id < questionsCount; id++) {
+        addQuestionMatching('Is math related to science? ' + id, id);
+    }
 }
 
 /**
@@ -415,13 +415,13 @@ var createQuestionsMatching = function() {
  * @param {string} qTopic 
  * @param {integer} id 
  */
-var addQuestionMatching = function(qTopic, id) {
-	var question = {
-		topic: 'CSC492',
-		title: qTopic,
-        text: '<p>'+qTopic+' Text</p>',
+var addQuestionMatching = function (qTopic, id) {
+    var question = {
+        topic: 'CSC492',
+        title: qTopic,
+        text: '<p>' + qTopic + ' Text</p>',
         answer: 'true',
-        points: Math.floor(Math.random()*questionsMaxValue),
+        points: Math.floor(Math.random() * questionsMaxValue),
         type: common.questionTypes.MATCHING.value,
         hint: 'Option1',
         visible: 'true',
@@ -429,14 +429,14 @@ var addQuestionMatching = function(qTopic, id) {
         rightSide: ['r1', 'r2', 'r3']
     };
 
-    questions.addQuestion(question, function(err, res) {
+    questions.addQuestion(question, function (err, res) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
             }
         }
 
@@ -451,7 +451,7 @@ var addQuestionMatching = function(qTopic, id) {
 /**
  * This function answers all the matching type question based on the variables
  */
-var answerQuestionsMatching = function() {
+var answerQuestionsMatching = function () {
     for (var id = questionsIds; id < questionsCount; id++) {
         answerQuestionMatching(id);
     }
@@ -462,12 +462,12 @@ var answerQuestionsMatching = function() {
  * 
  * @param {integer} questionId 
  */
-var answerQuestionMatching = function(questionId) {
+var answerQuestionMatching = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
+        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
         var answer = [['l3', 'l2', 'l1'], ['r1', 'r2', 'r3']];
 
-        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+        if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
             answer = [['l1', 'l2', 'l3'], ['r1', 'r2', 'r3']];
         }
 
@@ -475,10 +475,10 @@ var answerQuestionMatching = function(questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
             }
 
-            if (questionsAnswered === numberOfQuestionsExpected*questionsAttempts) {
+            if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
                 createQuestionsChooseAll();
             }
 
@@ -490,11 +490,11 @@ var answerQuestionMatching = function(questionId) {
 /**
  * This function creates all the choose all type question based on the variables
  */
-var createQuestionsChooseAll = function() {
+var createQuestionsChooseAll = function () {
     variableReset(4);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionChooseAll('Is math related to science? '+id, id);
-  	}
+    for (var id = questionsIds; id < questionsCount; id++) {
+        addQuestionChooseAll('Is math related to science? ' + id, id);
+    }
 }
 
 /**
@@ -503,27 +503,27 @@ var createQuestionsChooseAll = function() {
  * @param {string} qTopic 
  * @param {integer} id 
  */
-var addQuestionChooseAll = function(qTopic, id) {
-	var question = {
-		topic: 'CSC492',
-		title: qTopic,
-        text: '<p>'+qTopic+' Text</p>',
+var addQuestionChooseAll = function (qTopic, id) {
+    var question = {
+        topic: 'CSC492',
+        title: qTopic,
+        text: '<p>' + qTopic + ' Text</p>',
         answer: ['c1', 'c2', 'c4'],
-        points: Math.floor(Math.random()*questionsMaxValue),
+        points: Math.floor(Math.random() * questionsMaxValue),
         type: common.questionTypes.CHOOSEALL.value,
         hint: 'Option1',
         visible: 'true',
         choices: ['c1', 'c2', 'c3', 'c4']
     };
 
-    questions.addQuestion(question, function(err, res) {
+    questions.addQuestion(question, function (err, res) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
             }
         }
 
@@ -538,7 +538,7 @@ var addQuestionChooseAll = function(qTopic, id) {
 /**
  * This function answers all the choose all type question based on the variables
  */
-var answerQuestionsChooseAll = function() {
+var answerQuestionsChooseAll = function () {
     for (var id = questionsIds; id < questionsCount; id++) {
         answerQuestionChooseAll(id);
     }
@@ -549,12 +549,12 @@ var answerQuestionsChooseAll = function() {
  * 
  * @param {integer} questionId 
  */
-var answerQuestionChooseAll = function(questionId) {
+var answerQuestionChooseAll = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
+        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
         var answer = ['c1', 'c2', 'c3'];
 
-        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+        if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
             answer = ['c1', 'c2', 'c4'];
         }
 
@@ -562,10 +562,10 @@ var answerQuestionChooseAll = function(questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
             }
 
-            if (questionsAnswered === numberOfQuestionsExpected*questionsAttempts) {
+            if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
                 createQuestionsOrdering();
             }
 
@@ -577,11 +577,11 @@ var answerQuestionChooseAll = function(questionId) {
 /**
  * This function creates all the ordering type question based on the variables
  */
-var createQuestionsOrdering = function() {
+var createQuestionsOrdering = function () {
     variableReset(5);
-  	for (var id = questionsIds; id < questionsCount; id++) {
-      	addQuestionOrdering('Is math related to science? '+id, id);
-  	}
+    for (var id = questionsIds; id < questionsCount; id++) {
+        addQuestionOrdering('Is math related to science? ' + id, id);
+    }
 }
 
 /**
@@ -590,26 +590,26 @@ var createQuestionsOrdering = function() {
  * @param {string} qTopic 
  * @param {integer} id 
  */
-var addQuestionOrdering = function(qTopic, id) {
+var addQuestionOrdering = function (qTopic, id) {
     var question = {
-		topic: 'CSC492',
-		title: qTopic,
-        text: '<p>'+qTopic+' Text</p>',
+        topic: 'CSC492',
+        title: qTopic,
+        text: '<p>' + qTopic + ' Text</p>',
         answer: ['i1', 'i2', 'i3', 'c4'],
-        points: Math.floor(Math.random()*questionsMaxValue),
+        points: Math.floor(Math.random() * questionsMaxValue),
         type: common.questionTypes.ORDERING.value,
         hint: 'Option1',
         visible: 'true'
     };
 
-    questions.addQuestion(question, function(err, res) {
+    questions.addQuestion(question, function (err, res) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
             logger.info('Questions %d created', id);
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin'+i, Math.floor(Math.random()*6));
+                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
             }
         }
 
@@ -624,7 +624,7 @@ var addQuestionOrdering = function(qTopic, id) {
 /**
  * This function answers all the ordering type question based on the variables
  */
-var answerQuestionsOrdering = function() {
+var answerQuestionsOrdering = function () {
     for (var id = questionsIds; id < questionsCount; id++) {
         answerQuestionOrdering(id);
     }
@@ -635,12 +635,12 @@ var answerQuestionsOrdering = function() {
  * 
  * @param {integer} questionId 
  */
-var answerQuestionOrdering = function(questionId) {
+var answerQuestionOrdering = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random()*studentsCount)];
+        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
         var answer = ['i1', 'i2', 'i3', 'c4'];
 
-        if (Math.floor(Math.random()*100) > (100-questionsCorrectPercentage)) {
+        if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
             answer = ['i1', 'i3', 'i2', 'c4'];
         }
 
@@ -648,10 +648,10 @@ var answerQuestionOrdering = function(questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct? 'correctly' : 'incorrectly', studentId);
+                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
             }
 
-            if (questionsAnswered === numberOfQuestionsExpected*questionsAttempts) {
+            if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
                 createComments();
             }
 
@@ -663,10 +663,10 @@ var answerQuestionOrdering = function(questionId) {
 /**
  * This function creates the comments on all the questions
  */
-var createComments = function() {
+var createComments = function () {
     for (var id = 1; id <= totalNumberOfQuestions; id++) {
         logger.info('Creating comments for question %d', id);
-        addComments(id, function(err, res) {});
+        addComments(id, function (err, res) { });
     }
 }
 
@@ -677,12 +677,12 @@ var createComments = function() {
  * @param {integer} questionId 
  * @param {function} callback 
  */
-var addComments = function(questionId, callback) {
-    db.lookupQuestion({id: questionId}, function(err, question) {
+var addComments = function (questionId, callback) {
+    db.lookupQuestion({ id: questionId }, function (err, question) {
         questionId = question._id;
-        if(err) {
+        if (err) {
             return callback(err, null);
-        } else if(!question) {
+        } else if (!question) {
             return callback('Could not find the question', null);
         } else {
             var answeredList = [];
@@ -691,7 +691,7 @@ var addComments = function(questionId, callback) {
                 answeredList.push(question.correctAttempts[i].id);
             }
 
-            let userId = answeredList[Math.floor(Math.random()*answeredList.length)];
+            let userId = answeredList[Math.floor(Math.random() * answeredList.length)];
 
             users.getUsersList(function (err, usersList) {
                 if (err) {
@@ -706,38 +706,38 @@ var addComments = function(questionId, callback) {
                     if (userId !== user.id &&
                         (user.type === common.userTypes.ADMIN
                             || answeredList.indexOf(user.id) !== -1)) {
-                        totalList.push(user.fname+' '+user.lname);
+                        totalList.push(user.fname + ' ' + user.lname);
                     }
                 }
 
                 for (var i = 0; i < commentsPerQuestion; i++) {
-                    if (Math.floor(Math.random()*100) > (100-commentPercentage)) {
-                        let userToMention = totalList[Math.floor(Math.random()*totalList.length)];
+                    if (Math.floor(Math.random() * 100) > (100 - commentPercentage)) {
+                        let userToMention = totalList[Math.floor(Math.random() * totalList.length)];
                         let comment;
 
-                        if (Math.floor(Math.random()*100) > (100-mentionsPercentage)) {
+                        if (Math.floor(Math.random() * 100) > (100 - mentionsPercentage)) {
                             comment = contents.comment + ' @' + userToMention;
                         } else {
                             comment = contents.comment;
                         }
 
-                        questions.addComment(questionId, userId, comment, function(err, res) {
+                        questions.addComment(questionId, userId, comment, function (err, res) {
                             if (err) {
-                                return callback (err, null);
+                                return callback(err, null);
                             } else {
                                 actualCommentsAdded++;
                             }
 
                             commentsAdded++;
 
-                            if (commentsAdded === totalNumberOfQuestions*commentsPerQuestion) {
+                            if (commentsAdded === totalNumberOfQuestions * commentsPerQuestion) {
                                 createCommentActions();
                             }
                         });
                     } else {
                         commentsAdded++;
 
-                        if (commentsAdded === totalNumberOfQuestions*commentsPerQuestion) {
+                        if (commentsAdded === totalNumberOfQuestions * commentsPerQuestion) {
                             createCommentActions();
                         }
                     }
@@ -752,9 +752,9 @@ var addComments = function(questionId, callback) {
  * This function creates comment actions, such as likes, dislikes, and replies.
  * It uses the globally defined settings to do so
  */
-var createCommentActions = function() {
+var createCommentActions = function () {
     for (var id = 1; id <= totalNumberOfQuestions; id++) {
-        addCommentActions(id, function(err, res) {});
+        addCommentActions(id, function (err, res) { });
     }
 }
 
@@ -764,12 +764,12 @@ var createCommentActions = function() {
  * @param {integer} questionId 
  * @param {function} callback 
  */
-var addCommentActions = function(questionId, callback) {
-    db.lookupQuestion({id: questionId}, function(err, question) {
+var addCommentActions = function (questionId, callback) {
+    db.lookupQuestion({ id: questionId }, function (err, question) {
         questionId = question._id;
-        if(err) {
+        if (err) {
             return callback(err, null);
-        } else if(!question) {
+        } else if (!question) {
             return callback('Could not find the question', null);
         } else {
             var answeredList = [];
@@ -778,7 +778,7 @@ var addCommentActions = function(questionId, callback) {
                 answeredList.push(question.correctAttempts[i].id);
             }
 
-            let userId = answeredList[Math.floor(Math.random()*answeredList.length)];
+            let userId = answeredList[Math.floor(Math.random() * answeredList.length)];
 
             users.getUsersList(function (err, usersList) {
                 if (err) {
@@ -793,52 +793,52 @@ var addCommentActions = function(questionId, callback) {
                     if (userId !== user.id &&
                         (user.type === common.userTypes.ADMIN
                             || answeredList.indexOf(user.id) !== -1)) {
-                        totalList.push(user.fname+' '+user.lname);
+                        totalList.push(user.fname + ' ' + user.lname);
                     }
                 }
 
                 for (var j = 0; j < question.comments.length; j++) {
                     for (var i = 0; i < commentActionsPerQuestion; i++) {
-                        if (Math.floor(Math.random()*100) > (100-commentActionPercentage)) {
-                            let userToMention = totalList[Math.floor(Math.random()*totalList.length)];
+                        if (Math.floor(Math.random() * 100) > (100 - commentActionPercentage)) {
+                            let userToMention = totalList[Math.floor(Math.random() * totalList.length)];
                             let vote = (Math.random() < 0.5) ? -1 : 1;
 
-                            questions.voteComment(question.comments[j]._id, vote, userId, function(err, res) {
+                            questions.voteComment(question.comments[j]._id, vote, userId, function (err, res) {
                                 if (err) {
-                                    return callback (err, null);
+                                    return callback(err, null);
                                 }
 
                                 commentActionsAdded++;
-                                if (commentActionsAdded === 2*commentActionsPerQuestion*actualCommentsAdded) {
+                                if (commentActionsAdded === 2 * commentActionsPerQuestion * actualCommentsAdded) {
                                     createReplyActions();
                                 }
                             });
 
                             let reply;
 
-                            if (Math.floor(Math.random()*100) > (100-mentionsPercentage)) {
+                            if (Math.floor(Math.random() * 100) > (100 - mentionsPercentage)) {
                                 reply = contents.comment + ' @' + userToMention;
                             } else {
                                 reply = contents.comment;
                             }
 
-                            questions.addReply(question.comments[j]._id, userId, reply, function(err, res) {
+                            questions.addReply(question.comments[j]._id, userId, reply, function (err, res) {
                                 if (err) {
-                                    return callback (err, null);
+                                    return callback(err, null);
                                 } else {
                                     actualRepliesAdded++
                                 }
 
                                 commentActionsAdded++;
 
-                                if (commentActionsAdded === 2*commentActionsPerQuestion*actualCommentsAdded) {
+                                if (commentActionsAdded === 2 * commentActionsPerQuestion * actualCommentsAdded) {
                                     createReplyActions();
                                 }
                             });
                         } else {
-                            commentActionsAdded+=2;
+                            commentActionsAdded += 2;
 
-                            if (commentActionsAdded === 2*commentActionsPerQuestion*actualCommentsAdded) {
+                            if (commentActionsAdded === 2 * commentActionsPerQuestion * actualCommentsAdded) {
                                 createReplyActions();
                             }
                         }
@@ -854,9 +854,9 @@ var addCommentActions = function(questionId, callback) {
  * This function creates reply actions, such as likes, and dislikes.
  * It uses the globally defined settings to do so
  */
-var createReplyActions = function() {
+var createReplyActions = function () {
     for (var id = 1; id <= totalNumberOfQuestions; id++) {
-        addReplyActions(id, function(err, res) {});
+        addReplyActions(id, function (err, res) { });
     }
 }
 
@@ -866,12 +866,12 @@ var createReplyActions = function() {
  * @param {integer} questionId 
  * @param {function} callback 
  */
-var addReplyActions = function(questionId, callback) {
-    db.lookupQuestion({id: questionId}, function(err, question) {
+var addReplyActions = function (questionId, callback) {
+    db.lookupQuestion({ id: questionId }, function (err, question) {
         questionId = question._id;
-        if(err) {
+        if (err) {
             return callback(err, null);
-        } else if(!question) {
+        } else if (!question) {
             return callback('Could not find the question', null);
         } else {
             var answeredList = [];
@@ -885,19 +885,19 @@ var addReplyActions = function(questionId, callback) {
                     for (var i = 0; i < commentRepliesVotesPerQuestion; i++) {
                         commentRepliesVotesAdded++;
 
-                        if (commentRepliesVotesAdded === commentRepliesVotesPerQuestion*actualRepliesAdded) {
-                            setTimeout(function() {
+                        if (commentRepliesVotesAdded === commentRepliesVotesPerQuestion * actualRepliesAdded) {
+                            setTimeout(function () {
                                 process.exit(0);
                             }, 500);
                         }
 
-                        if (Math.floor(Math.random()*100) > (100-commentActionPercentage)) {
-                            userId = answeredList[Math.floor(Math.random()*answeredList.length)];
+                        if (Math.floor(Math.random() * 100) > (100 - commentActionPercentage)) {
+                            userId = answeredList[Math.floor(Math.random() * answeredList.length)];
                             let vote = (Math.random() < 0.5) ? -1 : 1;
 
-                            questions.voteReply(question.comments[j].replies[k]._id, vote, userId, function(err, res) {
+                            questions.voteReply(question.comments[j].replies[k]._id, vote, userId, function (err, res) {
                                 if (err) {
-                                    return callback (err, null);
+                                    return callback(err, null);
                                 }
                             });
                         }
@@ -919,11 +919,11 @@ var addReplyActions = function(questionId, callback) {
 var checkAnswer = function (questionId, userId, answer, callback) {
     logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
 
-    db.lookupQuestion({id: questionId}, function(err, question) {
+    db.lookupQuestion({ id: questionId }, function (err, question) {
         questionId = question._id;
-        if(err) {
+        if (err) {
             return callback(err, null);
-        } else if(!question) {
+        } else if (!question) {
             return callback('Could not find the question', null);
         } else {
             var value = questions.verifyAnswer(question, answer);
@@ -931,23 +931,23 @@ var checkAnswer = function (questionId, userId, answer, callback) {
 
             users.submitAnswer(
                 userId, questionId, value, points, answer,
-                function(err, res) {
+                function (err, res) {
                     if (err) {
-                        return callback (err, null);
+                        return callback(err, null);
                     }
 
                     questions.submitAnswer(
                         questionId, userId, value, points, answer,
-                        function(err, res) {
+                        function (err, res) {
                             if (err) {
-                                return callback (err, null);
+                                return callback(err, null);
                             }
 
                             if (value) {
-                                rateQuestion(question.id, userId, Math.floor(Math.random()*6));
+                                rateQuestion(question.id, userId, Math.floor(Math.random() * 6));
                             }
 
-                            return callback (null, value);
+                            return callback(null, value);
                         }
                     );
                 }
@@ -969,15 +969,15 @@ var rateQuestion = function (questionId, userId, rating, callback) {
         return;
     }
 
-    db.lookupQuestion({id: questionId}, function(err, question) {
+    db.lookupQuestion({ id: questionId }, function (err, question) {
         questionId = question._id;
 
-        if(err) {
+        if (err) {
             return callback(err, null);
-        } else if(!question) {
+        } else if (!question) {
             return callback('Could not find the question', null);
         } else {
-            questions.submitRating(questionId, userId, rating, function(err, res) {
+            questions.submitRating(questionId, userId, rating, function (err, res) {
                 if (err) {
                     logger.error('Could not rate question. Please try again.');
                 } else {
@@ -995,9 +995,9 @@ var rateQuestion = function (questionId, userId, rating, callback) {
  * 
  * @param {string} name 
  */
-var studentIdGenerator = function(name) {
+var studentIdGenerator = function (name) {
     const combined = name.split(' ')[1] + name.split(' ')[0];
-    var possibleIds = combined.slice(0,7).toLowerCase();
+    var possibleIds = combined.slice(0, 7).toLowerCase();
     allIds.push(possibleIds);
     return possibleIds;
 }
@@ -1007,7 +1007,7 @@ var studentIdGenerator = function(name) {
  * 
  * @param {integer} number 
  */
-var variableReset = function(number) {
+var variableReset = function (number) {
     var totalCreated = 1;
 
     for (var i = 0; i < number; i++) {
@@ -1024,9 +1024,9 @@ var variableReset = function(number) {
 /**
  * This function calculates the number of questions that need to be added
  */
-var calculateTotalNumberOfQuestions = function() {
+var calculateTotalNumberOfQuestions = function () {
     var totalCreated = 0;
-    
+
     for (var i = 0; i < numberOfEachQuestion.length; i++) {
         totalCreated += numberOfEachQuestion[i];
     }
@@ -1034,13 +1034,13 @@ var calculateTotalNumberOfQuestions = function() {
     totalNumberOfQuestions = totalCreated;
 }
 
-db.initialize(function() {
-    db.removeAllUsers(function(err, res) {
+db.initialize(function () {
+    db.removeAllUsers(function (err, res) {
         if (err) {
             process.exit(1);
         }
 
-        db.removeAllQuestions(function(err, res) {
+        db.removeAllQuestions(function (err, res) {
             if (err) {
                 process.exit(1);
             }
