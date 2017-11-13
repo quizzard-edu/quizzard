@@ -40,7 +40,7 @@ exports.addAdmin = function(user, callback) {
         var userToAdd = {};
 
         userToAdd._id = common.getUUID();
-        userToAdd.id = user.id.toLowerCase();
+        userToAdd.username = user.id.toLowerCase();
         userToAdd.fname = user.fname;
         userToAdd.lname = user.lname;
         userToAdd.ctime = currentDate;
