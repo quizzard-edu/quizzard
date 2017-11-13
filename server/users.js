@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var bcrypt = require('bcryptjs');
 var db = require('./db.js');
-var logger = require('./log.js').logger;
+var logger = require('./log.js');
 var common = require('./common.js');
 
 // Create an admin USER, if the USER object is valid
@@ -54,14 +54,14 @@ exports.addAdmin = function(user, callback) {
         db.addAdmin(userToAdd, function(err, res){
             if(err){
                 if (err === 'failure'){
-                    logger.error('Failed to create admin %s, database issue', userToAdd.id);
+                    logger.error(common.formatString('Failed to create admin {0}, database issue', [userToAdd.id]));
                 } else if (err === 'exists') {
-                    logger.warn('Admin %s already exists', userToAdd.id);
+                    logger.error(common.formatString('Admin {0} already exists', [userToAdd.id]));
                 }
                 return callback(err, null);
             }
 
-            logger.info('Admin %s created', userToAdd.id);
+            logger.log(common.formatString('Admin {0} created', [userToAdd.id]));
             return callback(null, 'created');
         });
     });
@@ -106,15 +106,15 @@ exports.addStudent = function(user, callback) {
         db.addStudent(userToAdd, function(err, res){
             if(err){
                 if (err === 'failure'){
-                    logger.error('Failed to create student %s, database issue', userToAdd.id);
+                    logger.error(common.formatString('Failed to create student {0}, database issue', [userToAdd.id]));
                 } else if (err === 'exists') {
-                    logger.warn('Student %s already exists', userToAdd.id);
+                    logger.error(common.formatString('Student {0} already exists', [userToAdd.id]));
                 }
 
                 return callback(err, null);
             }
 
-            logger.info('Student %s created', userToAdd.id);
+            logger.log(common.formatString('Student {0} created', [userToAdd.id]));
             return callback(null, 'Created');
         });
     });

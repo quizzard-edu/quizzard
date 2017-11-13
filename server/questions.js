@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var db = require('./db.js');
-var logger = require('./log.js').logger;
+var logger = require('./log.js');
 var common = require('./common.js');
 var questionValidator = require('./questionValidator.js');
 var uuidv1 = require('uuid/v1');
@@ -160,7 +160,7 @@ exports.deleteQuestion = function(questionId, callback) {
             return callback(err, null);
         }
 
-        logger.info('Question %d deleted from database.', questionId);
+        logger.log(common.formatString('Question {0} deleted from database.', [questionId]));
         return callback(null, 'success');
     });
 }

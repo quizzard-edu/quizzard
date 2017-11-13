@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var users = require('./users.js');
-var logger = require('./log.js').logger;
+var logger = require('./log.js');
 var common = require('./common.js');
 
 // get charts
