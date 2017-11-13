@@ -23,10 +23,20 @@ var db = require('./server/db.js');
 var users = require('./server/users.js');
 var questions = require('./server/questions.js');
 var common = require('./server/common.js');
-var contents = require('./contents.js');
+var datagenInfo = require('./datagenInfo.js');
 
 // variables to control the genereated data
-var numberOfEachQuestion = [2, 2, 2, 2, 2, 2];
+
+
+var numberOfEachQuestion = {
+    'regular': 2,
+    'multipleChoice': 2,
+    'trueFalse': 2,
+    'matching': 2,
+    'chooseAll': 2,
+    'ordering': 2
+};
+
 var adminsCount = 2;
 var studentsCount = 10;
 var questionsMaxValue = 20;
@@ -41,12 +51,11 @@ var commentActionPercentage = 50;
 var mentionsPercentage = 50;
 var questionsCorrectPercentage = 40;
 
-
 // variables used by the script for different functionality
 // Do NOT change the variables below
 var allIds = [];
 var totalNumberOfQuestions = 0;
-var questionsCount = 0;
+var questionsCount = 1;
 var questionsIds = 0;
 var numberOfQuestionsExpected = 0;
 var adminsCreated = 0;
@@ -103,7 +112,7 @@ var addAdmin = function (accid, pass) {
  */
 var createStudents = function () {
     for (var id = 0; id < studentsCount; id++) {
-        addStudent(contents.namesList[id], studentIdGenerator(contents.namesList[id]), 'KonniChiwa');
+        addStudent(datagenInfo.namesList[id], studentIdGenerator(datagenInfo.namesList[id]), 'KonniChiwa');
     }
 }
 
@@ -144,7 +153,7 @@ var addStudent = function (name, accid, pass) {
  * This function creates all the regular type question based on the variables
  */
 var createQuestionsRegular = function () {
-    variableReset(0);
+    variableReset('regular');
     for (var id = questionsIds; id < questionsCount; id++) {
         addQuestionRegular('Is math related to science? ' + id, id);
     }
@@ -230,7 +239,7 @@ var answerQuestionRegular = function (questionId) {
  * This function creates all the multiple choice type question based on the variables
  */
 var createQuestionsMultipleChoice = function () {
-    variableReset(1);
+    variableReset('multipleChoice');
     for (var id = questionsIds; id < questionsCount; id++) {
         addQuestionMultipleChoice('Is math related to science? ' + id, id);
     }
@@ -317,7 +326,7 @@ var answerQuestionMultipleChoice = function (questionId) {
  * This function creates all the true and false type question based on the variables
  */
 var createQuestionsTrueFalse = function () {
-    variableReset(2);
+    variableReset('trueFalse');
     for (var id = questionsIds; id < questionsCount; id++) {
         addQuestionTrueFalse('Is math related to science? ' + id, id);
     }
@@ -403,7 +412,7 @@ var answerQuestionTrueFalse = function (questionId) {
  * This function creates all the matching type question based on the variables
  */
 var createQuestionsMatching = function () {
-    variableReset(3);
+    variableReset('matching');
     for (var id = questionsIds; id < questionsCount; id++) {
         addQuestionMatching('Is math related to science? ' + id, id);
     }
@@ -491,7 +500,7 @@ var answerQuestionMatching = function (questionId) {
  * This function creates all the choose all type question based on the variables
  */
 var createQuestionsChooseAll = function () {
-    variableReset(4);
+    variableReset('chooseAll');
     for (var id = questionsIds; id < questionsCount; id++) {
         addQuestionChooseAll('Is math related to science? ' + id, id);
     }
@@ -578,7 +587,7 @@ var answerQuestionChooseAll = function (questionId) {
  * This function creates all the ordering type question based on the variables
  */
 var createQuestionsOrdering = function () {
-    variableReset(5);
+    variableReset('ordering');
     for (var id = questionsIds; id < questionsCount; id++) {
         addQuestionOrdering('Is math related to science? ' + id, id);
     }
@@ -716,9 +725,9 @@ var addComments = function (questionId, callback) {
                         let comment;
 
                         if (Math.floor(Math.random() * 100) > (100 - mentionsPercentage)) {
-                            comment = contents.comment + ' @' + userToMention;
+                            comment = datagenInfo.comment + ' @' + userToMention;
                         } else {
-                            comment = contents.comment;
+                            comment = datagenInfo.comment;
                         }
 
                         questions.addComment(questionId, userId, comment, function (err, res) {
@@ -817,9 +826,9 @@ var addCommentActions = function (questionId, callback) {
                             let reply;
 
                             if (Math.floor(Math.random() * 100) > (100 - mentionsPercentage)) {
-                                reply = contents.comment + ' @' + userToMention;
+                                reply = datagenInfo.comment + ' @' + userToMention;
                             } else {
-                                reply = contents.comment;
+                                reply = datagenInfo.comment;
                             }
 
                             questions.addReply(question.comments[j]._id, userId, reply, function (err, res) {
@@ -1007,16 +1016,10 @@ var studentIdGenerator = function (name) {
  * 
  * @param {integer} number 
  */
-var variableReset = function (number) {
-    var totalCreated = 1;
-
-    for (var i = 0; i < number; i++) {
-        totalCreated += numberOfEachQuestion[i];
-    }
-
-    numberOfQuestionsExpected = numberOfEachQuestion[number];
-    questionsCount = totalCreated + numberOfQuestionsExpected;
-    questionsIds = totalCreated;
+var variableReset = function (questionType) {
+    numberOfQuestionsExpected = numberOfEachQuestion[questionType];
+    questionsIds = questionsCount;
+    questionsCount += numberOfQuestionsExpected;
     questionsCreated = 1;
     questionsAnswered = 1;
 }
@@ -1027,8 +1030,8 @@ var variableReset = function (number) {
 var calculateTotalNumberOfQuestions = function () {
     var totalCreated = 0;
 
-    for (var i = 0; i < numberOfEachQuestion.length; i++) {
-        totalCreated += numberOfEachQuestion[i];
+    for (var item in numberOfEachQuestion) {
+        totalCreated += numberOfEachQuestion[item];
     }
 
     totalNumberOfQuestions = totalCreated;
