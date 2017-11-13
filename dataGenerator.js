@@ -267,7 +267,7 @@ var addQuestionMultipleChoice = function (qTopic, id) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
-            logger.info('Questions %d created', id);
+            logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
                 rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
@@ -309,7 +309,7 @@ var answerQuestionMultipleChoice = function (questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
+                logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct ? 'correctly' : 'incorrectly', studentId]));
             }
 
             if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
@@ -353,7 +353,7 @@ var addQuestionTrueFalse = function (qTopic, id) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
-            logger.info('Questions %d created', id);
+            logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
                 rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
@@ -395,7 +395,7 @@ var answerQuestionTrueFalse = function (questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
+                logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct ? 'correctly' : 'incorrectly', studentId]));
             }
 
             if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
@@ -441,7 +441,7 @@ var addQuestionMatching = function (qTopic, id) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
-            logger.info('Questions %d created', id);
+            logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
                 rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
@@ -483,7 +483,7 @@ var answerQuestionMatching = function (questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
+                logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct ? 'correctly' : 'incorrectly', studentId]));
             }
 
             if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
@@ -528,7 +528,7 @@ var addQuestionChooseAll = function (qTopic, id) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
-            logger.info('Questions %d created', id);
+            logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
                 rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
@@ -570,7 +570,7 @@ var answerQuestionChooseAll = function (questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
+                logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct ? 'correctly' : 'incorrectly', studentId]));
             }
 
             if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
@@ -614,7 +614,7 @@ var addQuestionOrdering = function (qTopic, id) {
         if (err) {
             logger.error('Could not add question. Please try again.');
         } else {
-            logger.info('Questions %d created', id);
+            logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
                 rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
@@ -656,7 +656,7 @@ var answerQuestionOrdering = function (questionId) {
             if (err) {
                 logger.error(err);
             } else {
-                logger.info('Questions %d answered %s by %s', questionId, correct ? 'correctly' : 'incorrectly', studentId);
+                logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct ? 'correctly' : 'incorrectly', studentId]));
             }
 
             if (questionsAnswered === numberOfQuestionsExpected * questionsAttempts) {
@@ -673,7 +673,7 @@ var answerQuestionOrdering = function (questionId) {
  */
 var createComments = function () {
     for (var id = 1; id <= totalNumberOfQuestions; id++) {
-        logger.info('Creating comments for question %d', id);
+        logger.log(common.formatString('Creating comments for question {0}', [id]));
         addComments(id, function (err, res) { });
     }
 }
@@ -699,7 +699,7 @@ var addComments = function (questionId, callback) {
                 answeredList.push(question.correctAttempts[i].id);
             }
 
-            let userId = answeredList[Math.floor(Math.random() * answeredList.length)];
+            var userId = answeredList[Math.floor(Math.random() * answeredList.length)];
 
             users.getUsersList(function (err, usersList) {
                 if (err) {
@@ -720,8 +720,8 @@ var addComments = function (questionId, callback) {
 
                 for (var i = 0; i < commentsPerQuestion; i++) {
                     if (Math.floor(Math.random() * 100) > (100 - commentPercentage)) {
-                        let userToMention = totalList[Math.floor(Math.random() * totalList.length)];
-                        let comment;
+                        var userToMention = totalList[Math.floor(Math.random() * totalList.length)];
+                        var comment;
 
                         if (Math.floor(Math.random() * 100) > (100 - mentionsPercentage)) {
                             comment = datagenInfo.comment + ' @' + userToMention;
@@ -786,7 +786,7 @@ var addCommentActions = function (questionId, callback) {
                 answeredList.push(question.correctAttempts[i].id);
             }
 
-            let userId = answeredList[Math.floor(Math.random() * answeredList.length)];
+            var userId = answeredList[Math.floor(Math.random() * answeredList.length)];
 
             users.getUsersList(function (err, usersList) {
                 if (err) {
@@ -808,8 +808,8 @@ var addCommentActions = function (questionId, callback) {
                 for (var j = 0; j < question.comments.length; j++) {
                     for (var i = 0; i < commentActionsPerQuestion; i++) {
                         if (Math.floor(Math.random() * 100) > (100 - commentActionPercentage)) {
-                            let userToMention = totalList[Math.floor(Math.random() * totalList.length)];
-                            let vote = (Math.random() < 0.5) ? -1 : 1;
+                            var userToMention = totalList[Math.floor(Math.random() * totalList.length)];
+                            var vote = (Math.random() < 0.5) ? -1 : 1;
 
                             questions.voteComment(question.comments[j]._id, vote, userId, function (err, res) {
                                 if (err) {
@@ -822,7 +822,7 @@ var addCommentActions = function (questionId, callback) {
                                 }
                             });
 
-                            let reply;
+                            var reply;
 
                             if (Math.floor(Math.random() * 100) > (100 - mentionsPercentage)) {
                                 reply = datagenInfo.comment + ' @' + userToMention;
@@ -901,7 +901,7 @@ var addReplyActions = function (questionId, callback) {
 
                         if (Math.floor(Math.random() * 100) > (100 - commentActionPercentage)) {
                             userId = answeredList[Math.floor(Math.random() * answeredList.length)];
-                            let vote = (Math.random() < 0.5) ? -1 : 1;
+                            var vote = (Math.random() < 0.5) ? -1 : 1;
 
                             questions.voteReply(question.comments[j].replies[k]._id, vote, userId, function (err, res) {
                                 if (err) {
@@ -988,7 +988,7 @@ var rateQuestion = function (questionId, userId, rating, callback) {
                 if (err) {
                     logger.error('Could not rate question. Please try again.');
                 } else {
-                    logger.info('Questions %d rated as %d', question.id, rating);
+                    logger.log(common.formatString('Questions {0} rated as {1}', [question.id, rating]));
                 }
             });
         }
