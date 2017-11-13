@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var Db = require('mongodb').Db;
 var Server = require('mongodb').Server;
-var logger = require('./log.js').logger;
+var logger = require('./log.js');
 var common = require('./common.js');
 var bcrypt = require('bcryptjs');
 
@@ -43,13 +43,13 @@ exports.initialize = function(callback) {
             process.exit(1);
         }
 
-        logger.info('Connection to Quizzard database successful.');
+        logger.log('Connection to Quizzard database successful.');
         usersCollection = db.collection('users');
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
 
         getNextQuestionId(function(){
-            logger.info('next question: %d', nextId);
+            logger.log(common.formatString('next question: {0}', [nextId]));
             return callback();
         });
     });
@@ -182,7 +182,7 @@ exports.removeAllUsers = function(callback){
             logger.error(err);
             return callback(err, null);
         }
-        logger.info('All users have been removed');
+        logger.log('All users have been removed');
         return callback(null, obj);
     });
 }
@@ -388,8 +388,8 @@ exports.removeAllQuestions = function(callback){
         }
 
         nextId = 0;
-        logger.info('All questions have been removed');
-        logger.info('next question: %d', nextId);
+        logger.log('All questions have been removed');
+        logger.log(common.formatString('next question: {0}', [nextId]));
         return callback(null, res);
     });
 }
@@ -488,39 +488,39 @@ exports.updateQuestionById = function(questionId, request, callback){
     update.$set = {};
     update.$inc = {};
 
-    if (request.topic) {
+    if ('topic' in request) {
       update.$set.topic = request.topic;
     }
 
-    if (request.title) {
+    if ('title' in request) {
       update.$set.title = request.title;
     }
 
-    if (request.text) {
+    if ('text' in request) {
       update.$set.text = request.text;
     }
 
-    if (request.answer) {
+    if ('answer' in request) {
       update.$set.answer = request.answer;
     }
 
-    if (request.hint) {
+    if ('hint' in request) {
       update.$set.hint = request.hint;
     }
 
-    if (request.points) {
+    if ('points' in request) {
       update.$set.points = request.points;
     }
 
-    if (request.choices) {
+    if ('choices' in request) {
       update.$set.choices = request.choices;
     }
 
-    if (request.leftSide) {
+    if ('leftSide' in request) {
       update.$set.leftSide = request.leftSide;
     }
 
-    if (request.rightSide) {
+    if ('rightSide' in request) {
       update.$set.rightSide = request.rightSide;
     }
 
@@ -550,7 +550,6 @@ exports.updateQuestionById = function(questionId, request, callback){
 
     questionsCollection.update(query, update, function(err, info) {
         if (err) {
-            logger.error({status:500, msg:err});
             return callback(err, null);
         }
 

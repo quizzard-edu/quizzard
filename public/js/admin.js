@@ -667,15 +667,20 @@ var collectQuestionFormData = function(form){
         if(field.name.startsWith('matchRight')) {
             question['rightSide'].push(field.value);
         }
+
         if(field.name.startsWith('tfbutton')) {
             question['answer'] = field.value;
         }
+
         if(field.name.startsWith('checkButton') ){
            question['answer'].push(fields[i+1].value);
         }
+
+        if(field.name.startsWith('orderItem')) {
+            question['answer'].push(field.value);
+        }
         question[field.name] = field.value;
     });
-    
     question['rating'] = getRating();
     question['text'] = $('#qtext').summernote('code');
     question['visible'] = $('#visible').is(':checked');

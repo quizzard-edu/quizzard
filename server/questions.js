@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var db = require('./db.js');
-var logger = require('./log.js').logger;
+var logger = require('./log.js');
 var common = require('./common.js');
 var questionValidator = require('./questionValidator.js');
 var uuidv1 = require('uuid/v1');
@@ -76,7 +76,6 @@ var prepareQuestionData = function(question, callback){
 
         case common.questionTypes.TRUEFALSE.value:
             questionToAdd.type = common.questionTypes.TRUEFALSE.value;
-            questionToAdd.choices = question.choices;
             questionToAdd.answer = question.answer;
             break;
 
@@ -90,7 +89,11 @@ var prepareQuestionData = function(question, callback){
             questionToAdd.type = common.questionTypes.CHOOSEALL.value;
             questionToAdd.choices = question.choices;
             questionToAdd.answer = question.answer;
+            break;
 
+        case common.questionTypes.ORDERING.value:
+            questionToAdd.type = common.questionTypes.ORDERING.value;
+            questionToAdd.answer = question.answer;
             break;
 
         default:
@@ -167,7 +170,7 @@ exports.deleteQuestion = function(questionId, callback) {
             return callback(err, null);
         }
 
-        logger.info('Question %d deleted from database.', questionId);
+        logger.log(common.formatString('Question {0} deleted from database.', [questionId]));
         return callback(null, 'success');
     });
 }
@@ -251,6 +254,8 @@ exports.verifyAnswer = function(question, answer) {
                 return verifyMatchingQuestionAnswer(question,answer);
             case common.questionTypes.CHOOSEALL.value:
                 return verifyChooseAllQuestionAnswer(question,answer);
+            case common.questionTypes.ORDERING.value:
+                return verifyOrderingQuestionAnswer(question,answer);
             default:
                 return (answer === question.answer);
         }
@@ -281,7 +286,10 @@ var verifyMatchingQuestionAnswer = function(question, answer){
     }
     return false;
 }
-
+// Check if answer submitted is correct for Ordering question Type
+var verifyOrderingQuestionAnswer = function(question,answer){
+    return question.answer.join(',') === answer.join(',');
+}
 // add comment to question by id with user and comment
 exports.addComment = function (questionId, userId, comment, callback) {
     var currentDate = common.getDate();

@@ -15,7 +15,7 @@ if answerForm
 		a.waves-effect.waves-light.btn(onclick="addMCAnswers('radio')") add answer
 
 else if studentQuestionForm
-	form.form-question#mc_answerform(style='text-align: left;')
+	form.form-question#mc_answerform
 		each answer in question.choices
 			.row
 				input(type='radio' name='answer', value=answer, id=answer, required)

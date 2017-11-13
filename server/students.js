@@ -24,20 +24,6 @@ var csv = require('csv');
 var db = require('./db.js');
 var logger = require('./log.js').logger;
 
-
-/* Remove an account from the database. */
-exports.deleteAccount = function(userid, callback) {
-    students.remove({id: userid}, function(err, res) {
-        if (err) {
-            logger.error(err);
-            callback('failure');
-        } else {
-            logger.info('Account %s deleted from database.', userid);
-            callback('success');
-        }
-    });
-};
-
 /* Sort the list of accounts as by the given criteria. */
 exports.sortAccounts = function(as, type, asc, callback) {
     var cmpfn;
@@ -63,18 +49,6 @@ exports.sortAccounts = function(as, type, asc, callback) {
 }
 
 var updatefn;
-
-/*
- * Read account entries from a csv file and add them to the database.
- */
-exports.parseFile = function(path, ufn, callback) {
-    updatefn = ufn;
-    logger.info('Reading accounts from file %s.', path);
-    fs.createReadStream(__dirname + '/../' + path)
-        .pipe(accountParser).on('end', function() {
-            callback();
-        });
-}
 
 /*
  * The provided csv file should have five fields per row:

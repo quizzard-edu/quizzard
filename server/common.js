@@ -41,11 +41,12 @@ exports.userTypes = userTypes;
 
 // all question types
 const questionTypes = Object.freeze({
-    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'mc-answer', icon: 'format_list_bulleted'},
-    REGULAR         : {name: 'Regular Question', value: 're', template: 'regex-answer', icon: 'font_download'},
-    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'tf-answer', icon: 'check_circle'},
-    MATCHING        : {name: 'Matching', value: 'matching', template: 'matching-answer', icon: 'dashboard'},
-    CHOOSEALL       : {name: 'Choose All That Apply', value: 'ca', template: 'chooseAll-answer', icon: 'format_list_bulleted'}
+    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'question_types/mc-answer', icon: 'format_list_bulleted'},
+    REGULAR         : {name: 'Regular Question', value: 're', template: 'question_types/regex-answer', icon: 'font_download'},
+    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'question_types/tf-answer', icon: 'check_circle'},
+    MATCHING        : {name: 'Matching', value: 'matching', template: 'question_types/matching-answer', icon: 'dashboard'},
+    CHOOSEALL       : {name: 'Choose All That Apply', value: 'ca', template: 'question_types/chooseAll-answer', icon: 'format_list_bulleted'},
+    ORDERING        : {name: 'Order the List', value: 'ordering', template: 'question_types/ordering-answer', icon: 'format_list_bulleted'}
 });
 exports.questionTypes = questionTypes;
 
@@ -100,6 +101,9 @@ const questionAttributes = Object.freeze({
     },
     CHOOSEALL: {
         choices                 : {type:'[object Array]'},
+        answer                  : {type:'[object Array]'}
+    },
+    ORDERING: {
         answer                  : {type:'[object Array]'}
     },
     DATATYPES: {
@@ -160,10 +164,37 @@ var isEmptyObject = function(obj) {
 exports.isEmptyObject = isEmptyObject;
 
 // return the current date
-function getDate() {
-    return date().format('YYYY-MM-DD hh:mm:ss A');
+var getDate = function() {
+    return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
 }
+
+// return the current date with format
+var getDateByFormat = function(format) {
+    return date().format(format);
+}
+
 exports.getDate = getDate;
+exports.getDateByFormat = getDateByFormat;
+
+// formating a string based on an array of parts of the string
+var formatString = function (text, args) {
+    var regex = new RegExp('{-?[0-9]+}', 'g');
+    return text.replace(regex, function(item) {
+        var intVal = parseInt(item.substring(1, item.length - 1));
+        var replace;
+        if (intVal >= 0) {
+            replace = args[intVal];
+        } else if (intVal === -1) {
+            replace = '{';
+        } else if (intVal === -2) {
+            replace = '}';
+        } else {
+            replace = '';
+        }
+        return replace;
+    });
+};
+exports.formatString = formatString;
 // </Global Function> -----------------------------------------------
 
 // <File System functions> ------------------------------------------
