@@ -500,3 +500,5 @@ exports.namesList = [
 'Kyan Farmer',
 'Braylon Tyler'
 ]
+
+exports.comment = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis iaculis auctor sollicitudin. Nam volutpat libero ut massa placerat efficitur. Pellentesque lobortis consectetur fermentum. Nullam pharetra ac elit nec accumsan. Praesent eu diam a arcu fermentum efficitur eu nec ipsum. In blandit arcu a ipsum consectetur posuere. Sed vitae elit tempor, dapibus diam et, eleifend tellus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam erat volutpat. Sed id pulvinar dui. Pellentesque nec vehicula ex.'

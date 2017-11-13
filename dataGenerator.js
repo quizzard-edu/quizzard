@@ -23,7 +23,7 @@ var db = require('./server/db.js');
 var users = require('./server/users.js');
 var questions = require('./server/questions.js');
 var common = require('./server/common.js');
-var names = require('./names.js');
+var contents = require('./contents.js');
 
 // variables to control the genereated data
 var numberOfEachQuestion = [2,2,2,2,2,2];
@@ -38,7 +38,9 @@ var commentRepliesVotesPerQuestion = 3;
 // Probabilities used in generating data
 var commentPercentage = 50;
 var commentActionPercentage = 50;
+var mentionsPercentage = 50;
 var questionsCorrectPercentage = 40;
+
 
 // variables used by the script for different functionality
 // Do NOT change the variables below
@@ -101,7 +103,7 @@ var addAdmin = function(accid, pass) {
  */
 var createStudents = function() {
     for (var id = 0; id < studentsCount; id++) {
-        addStudent(names.namesList[id], studentIdGenerator(names.namesList[id]), 'KonniChiwa');
+        addStudent(contents.namesList[id], studentIdGenerator(contents.namesList[id]), 'KonniChiwa');
     }
 }
 
@@ -689,33 +691,59 @@ var addComments = function(questionId, callback) {
                 answeredList.push(question.correctAttempts[i].id);
             }
 
-            for (var i = 0; i < commentsPerQuestion; i++) {
-                if (Math.floor(Math.random()*100) > (100-commentPercentage)) {
-                    userId = answeredList[Math.floor(Math.random()*answeredList.length)];
-                    comment = 'this is some lorem ipsum';
+            let userId = answeredList[Math.floor(Math.random()*answeredList.length)];
 
-                    questions.addComment(questionId, userId, comment, function(err, res) {
-                        if (err) {
-                            return callback (err, null);
+            users.getUsersList(function (err, usersList) {
+                if (err) {
+                    return res.status(500).send('could not find the list of users');
+                }
+
+                var totalList = [];
+
+                for (var i in usersList) {
+                    var user = usersList[i];
+
+                    if (userId !== user.id &&
+                        (user.type === common.userTypes.ADMIN
+                            || answeredList.indexOf(user.id) !== -1)) {
+                        totalList.push(user.fname+' '+user.lname);
+                    }
+                }
+
+                for (var i = 0; i < commentsPerQuestion; i++) {
+                    if (Math.floor(Math.random()*100) > (100-commentPercentage)) {
+                        let userToMention = totalList[Math.floor(Math.random()*totalList.length)];
+                        let comment;
+
+                        if (Math.floor(Math.random()*100) > (100-mentionsPercentage)) {
+                            comment = contents.comment + ' @' + userToMention;
                         } else {
-                            actualCommentsAdded++;
+                            comment = contents.comment;
                         }
 
+                        questions.addComment(questionId, userId, comment, function(err, res) {
+                            if (err) {
+                                return callback (err, null);
+                            } else {
+                                actualCommentsAdded++;
+                            }
+
+                            commentsAdded++;
+
+                            if (commentsAdded === totalNumberOfQuestions*commentsPerQuestion) {
+                                createCommentActions();
+                            }
+                        });
+                    } else {
                         commentsAdded++;
 
                         if (commentsAdded === totalNumberOfQuestions*commentsPerQuestion) {
                             createCommentActions();
                         }
-                    });
-                } else {
-                    commentsAdded++;
-
-                    if (commentsAdded === totalNumberOfQuestions*commentsPerQuestion) {
-                        createCommentActions();
                     }
-                }
 
-            }
+                }
+            });
         }
     });
 }
@@ -750,48 +778,74 @@ var addCommentActions = function(questionId, callback) {
                 answeredList.push(question.correctAttempts[i].id);
             }
 
-            for (var j = 0; j < question.comments.length; j++) {
-                for (var i = 0; i < commentActionsPerQuestion; i++) {
-                    if (Math.floor(Math.random()*100) > (100-commentActionPercentage)) {
-                        userId = answeredList[Math.floor(Math.random()*answeredList.length)];
-                        let vote = (Math.random() < 0.5) ? -1 : 1;
+            let userId = answeredList[Math.floor(Math.random()*answeredList.length)];
 
-                        questions.voteComment(question.comments[j]._id, vote, userId, function(err, res) {
-                            if (err) {
-                                return callback (err, null);
-                            }
-
-                            commentActionsAdded++;
-                            if (commentActionsAdded === 2*commentActionsPerQuestion*actualCommentsAdded) {
-                                createReplyActions();
-                            }
-                        });
-
-                        let reply = 'This is some random lorem ipsum reply that I am typing here';
-
-                        questions.addReply(question.comments[j]._id, userId, reply, function(err, res) {
-                            if (err) {
-                                return callback (err, null);
-                            } else {
-                                actualRepliesAdded++
-                            }
-
-                            commentActionsAdded++;
-
-                            if (commentActionsAdded === 2*commentActionsPerQuestion*actualCommentsAdded) {
-                                createReplyActions();
-                            }
-                        });
-                    } else {
-                        commentActionsAdded+=2;
-
-                        if (commentActionsAdded === 2*commentActionsPerQuestion*actualCommentsAdded) {
-                            createReplyActions();
-                        }
-                    }
-
+            users.getUsersList(function (err, usersList) {
+                if (err) {
+                    return res.status(500).send('could not find the list of users');
                 }
-            }
+
+                var totalList = [];
+
+                for (var i in usersList) {
+                    var user = usersList[i];
+
+                    if (userId !== user.id &&
+                        (user.type === common.userTypes.ADMIN
+                            || answeredList.indexOf(user.id) !== -1)) {
+                        totalList.push(user.fname+' '+user.lname);
+                    }
+                }
+
+                for (var j = 0; j < question.comments.length; j++) {
+                    for (var i = 0; i < commentActionsPerQuestion; i++) {
+                        if (Math.floor(Math.random()*100) > (100-commentActionPercentage)) {
+                            let userToMention = totalList[Math.floor(Math.random()*totalList.length)];
+                            let vote = (Math.random() < 0.5) ? -1 : 1;
+
+                            questions.voteComment(question.comments[j]._id, vote, userId, function(err, res) {
+                                if (err) {
+                                    return callback (err, null);
+                                }
+
+                                commentActionsAdded++;
+                                if (commentActionsAdded === 2*commentActionsPerQuestion*actualCommentsAdded) {
+                                    createReplyActions();
+                                }
+                            });
+
+                            let reply;
+
+                            if (Math.floor(Math.random()*100) > (100-mentionsPercentage)) {
+                                reply = contents.comment + ' @' + userToMention;
+                            } else {
+                                reply = contents.comment;
+                            }
+
+                            questions.addReply(question.comments[j]._id, userId, reply, function(err, res) {
+                                if (err) {
+                                    return callback (err, null);
+                                } else {
+                                    actualRepliesAdded++
+                                }
+
+                                commentActionsAdded++;
+
+                                if (commentActionsAdded === 2*commentActionsPerQuestion*actualCommentsAdded) {
+                                    createReplyActions();
+                                }
+                            });
+                        } else {
+                            commentActionsAdded+=2;
+
+                            if (commentActionsAdded === 2*commentActionsPerQuestion*actualCommentsAdded) {
+                                createReplyActions();
+                            }
+                        }
+
+                    }
+                }
+            });
         }
     });
 }
