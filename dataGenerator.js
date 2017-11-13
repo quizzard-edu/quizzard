@@ -27,7 +27,6 @@ var datagenInfo = require('./datagenInfo.js');
 
 // variables to control the genereated data
 
-
 var numberOfEachQuestion = {
     'regular': 2,
     'multipleChoice': 2,
