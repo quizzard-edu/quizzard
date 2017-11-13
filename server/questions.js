@@ -22,7 +22,6 @@ var db = require('./db.js');
 var logger = require('./log.js').logger;
 var common = require('./common.js');
 var questionValidator = require('./questionValidator.js');
-var uuidv1 = require('uuid/v1');
 
 /*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question){
@@ -43,7 +42,7 @@ var prepareQuestionData = function(question, callback){
     var currentDate = common.getDate();
     var questionToAdd = {};
 
-    questionToAdd._id = uuidv1();
+    questionToAdd._id = common.getUUID();
     questionToAdd.topic = question.topic;
     questionToAdd.title = question.title;
     questionToAdd.text = question.text;
@@ -288,7 +287,7 @@ exports.addComment = function (questionId, userId, comment, callback) {
 
     update.$push = {};
     update.$push.comments = {
-        _id: uuidv1(),
+        _id: common.getUUID(),
         date: currentDate,
         userId: userId,
         likes: [],
@@ -315,7 +314,7 @@ exports.addReply = function (commentId, userId, reply, callback) {
     update.$inc = {};
     update.$inc['comments.$.repliesCount'] = 1;
     update.$push['comments.$.replies'] = {
-        _id: uuidv1(),
+        _id: common.getUUID(),
         date: currentDate,
         userId: userId,
         likes: [],

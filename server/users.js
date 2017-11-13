@@ -39,6 +39,7 @@ exports.addAdmin = function(user, callback) {
         var currentDate = new Date().toString();
         var userToAdd = {};
 
+        userToAdd._id = common.getUUID();
         userToAdd.id = user.id.toLowerCase();
         userToAdd.fname = user.fname;
         userToAdd.lname = user.lname;
@@ -83,6 +84,7 @@ exports.addStudent = function(user, callback) {
         var currentDate = new Date().toString();
         var userToAdd = {};
 
+        userToAdd._id = common.getUUID();
         userToAdd.id = user.id.toLowerCase();
         userToAdd.fname = user.fname;
         userToAdd.lname = user.lname;

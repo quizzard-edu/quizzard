@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 var date = require('moment');
+var uuidv1 = require('uuid/v1');
 
 const questionTypes = Object.freeze({
     MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'question_types/mc-answer', icon: 'format_list_bulleted'},
@@ -149,3 +150,9 @@ function getDate() {
     return date().format('YYYY-MM-DD hh:mm:ss A');
 }
 exports.getDate = getDate;
+
+// get UUID
+var getUUID = function () {
+    return uuidv1();
+}
+exports.getUUID = getUUID;
