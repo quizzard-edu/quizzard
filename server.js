@@ -610,7 +610,7 @@ app.post('/submitanswer', function(req, res) {
             return res.status(400).send('Could not find the question');
         }
 
-        // check if user can answer the question
+        // check if question is locked for the student
         if(req.session.user.type !== common.userTypes.ADMIN && questions.isQuestionLocked(userId,question)){
             return res.status(401).send('Sorry question is Locked, please try again later');
         }

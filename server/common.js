@@ -118,7 +118,8 @@ const questionAttributes = Object.freeze({
 });
 exports.questionAttributes = questionAttributes;
 // </Global Constants> ------------------------------------------
-
+const waiting_time = 0.2*60000;
+exports.waiting_time = waiting_time;
 // <Global Function> --------------------------------------------
 var randomizeList = function(data) {
     var oldIndex, newIndex, tempHolder;
@@ -176,9 +177,6 @@ var getDateByFormat = function(format) {
 }
 
 exports.getDate = getDate;
-
-var waiting_time = 10*60000;
-exports.waiting_time = waiting_time;
 
 exports.getDateByFormat = getDateByFormat;
 
