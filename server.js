@@ -1376,6 +1376,21 @@ app.get('/profile', function(req, res) {
     });
 });
 
+/* Get the settings page */
+app.get('/settings', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    return res.status(200).render('settings', {
+        user: req.session.user
+    });
+});
+
 /* get analytics for a student*/
 app.get('/studentAnalytics', function(req,res){
     if (!req.session.user) {

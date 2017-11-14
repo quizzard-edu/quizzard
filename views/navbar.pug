@@ -5,7 +5,7 @@
       a.navbarLink.button-collapse(href='#', data-activates='mobile')
         i.material-icons menu
       ul.left.hide-on-med-and-down
-        if user.type == 0
+        if user.type === 0
           li#nav-home
             a.navbarLink(href='/admin') Administration
         else
@@ -18,12 +18,15 @@
         li#nav-about
           a.navbarLink(href='/about') About
       ul.right.hide-on-med-and-down
+        if user.type === 0
+          li#nav-settings
+            a.navbarLink(href='/settings') Settings
         li#nav-profile
           a.navbarLink(href='/profile') Profile
         li#nav-logout
           a.navbarLink(href='/logout') Logout
 ul#mobile.side-nav
-  if user.type == 0
+  if user.type === 0
     li#nav-home
       a.navbarLinkHidden(href='/admin') Administration
   else
@@ -35,6 +38,9 @@ ul#mobile.side-nav
     a.navbarLinkHidden(href='/analytics') Analytics
   li#nav-about
     a.navbarLinkHidden(href='/about') About
+  if user.type === 0
+    li#nav-settings
+      a.navbarLink(href='/settings') Settings
   li#nav-profile
     a.navbarLinkHidden(href='/profile') Profile
   li#nav-logout

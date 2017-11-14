@@ -1,0 +1,42 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/sidebar.css')
+
+block content
+  include navbar
+
+  .container
+    .row
+      .col.s12
+        br
+        ul.collapsible.popout(data-collapsible='expandable')
+            li
+                .collapsible-header
+                    i.material-icons settings
+                    | General settings
+                .collapsible-body
+                    span Lorem ipsum dolor sit amet.
+            li
+                .collapsible-header
+                    i.material-icons person
+                    | Student settings
+                .collapsible-body
+                    span Lorem ipsum dolor sit amet.
+            li
+                .collapsible-header
+                    i.material-icons poll
+                    | Question settings
+                .collapsible-body
+                    span Lorem ipsum dolor sit amet.
+            li
+                .collapsible-header
+                    i.material-icons question_answer
+                    | Discussion board settings
+                .collapsible-body
+                    span Lorem ipsum dolor sit amet.
+
+block scripts
+  script(src='/js/common.js')
+  script(src='/js/navbar.js')
+  script(src='/js/settings.js')
