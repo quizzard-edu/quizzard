@@ -367,10 +367,10 @@ app.get('/questionlist', function(req, res) {
         return res.redirect('/');
     }
 
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
     users.getUserById(userId, function(err, user){
         if (err || !user) {
-            res.status(400).send('bad request, user does not exist');
+            return res.status(400).send('bad request, user does not exist');
         }
 
         var request = {};

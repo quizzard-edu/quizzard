@@ -104,10 +104,6 @@ var getUsersList = function(findQuery, sortQuery, callback){
             return callback(err, []);
         }
 
-        for (s in docs) {
-            delete docs[s]._id;
-        }
-
         return callback(null, docs);
     });
 }
@@ -119,10 +115,6 @@ exports.getStudentsListSorted = function(lim, callback){
             .toArray(function(err, docs) {
         if (err) {
             return callback(err, []);
-        }
-
-        for (s in docs) {
-            delete docs[s]._id;
         }
 
         return callback(null, docs);
@@ -138,7 +130,7 @@ exports.getUserById = function(userId, callback) {
  * user type of null
  */
 exports.checkLogin = function(userId, pass, callback) {
-    usersCollection.findOne({id : userId}, function(err, obj) {
+    usersCollection.findOne({username : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
@@ -157,7 +149,6 @@ exports.checkLogin = function(userId, pass, callback) {
                 return callback(err, null);
             }
             if (valid) {
-                delete obj._id;
                 delete obj.password;
                 return callback(null, obj);
             }
@@ -214,7 +205,7 @@ exports.getAdminById = function(adminId, callback) {
 }
 
 var getUserById = function(userId, callback){
-    usersCollection.findOne({id : userId}, function(err, obj) {
+    usersCollection.findOne({_id : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);

@@ -84,7 +84,7 @@ var createAdmins = function () {
  */
 var addAdmin = function (accid, pass) {
     var acc = {
-        id: accid,
+        username: accid,
         password: pass,
         fname: accid,
         lname: accid,
@@ -126,7 +126,7 @@ var addStudent = function (name, accid, pass) {
     const lastName = name.split(' ')[1];
 
     var acc = {
-        id: accid,
+        username: accid,
         password: pass,
         fname: firstName,
         lname: lastName,

@@ -526,7 +526,7 @@ var submitUserForm = function() {
     var user = {};
 
     jQuery.each(fields, function(i, field) {
-        user[field.name.substring(3)] = field.value;
+        user[field.name] = field.value;
     });
 
     $.ajax({
@@ -535,7 +535,7 @@ var submitUserForm = function() {
         data: user,
         success: function(data) {
             displayAccountsTable();
-            successSnackbar('User ' + user.id + ' added to database');
+            successSnackbar('User ' + user.username + ' added to database');
         },
         error: function(data) {
             if (data['status'] === 401) {
@@ -543,7 +543,7 @@ var submitUserForm = function() {
             } else if (data['responseText'] === 'failure') {
                 failSnackbar('User could not be added');
             } else if (data['responseText'] === 'exists') {
-                failSnackbar('User ' + user.id + ' already exists');
+                failSnackbar('User ' + user.username + ' already exists');
             } else {
                 failSnackbar('Something went wrong, please try again later!');
             }
