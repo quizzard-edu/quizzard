@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const fs = require('fs');
 const date = require('moment');
 const path = require('path');
+const rimraf = require('rimraf');
 
 // <Global Constants> ------------------------------------------
 // common path shared across the backend
@@ -215,6 +216,15 @@ var rmdir = function (parentPath, directoryName, callback) {
     });
 }
 exports.rmdir = rmdir;
+
+// BE CAREFUL: perform rm -rf on a directory
+var rmrf = function (parentPath, directoryName, callback) {
+    var fullPath = path.join(parentPath, directoryName);
+    rimraf(fullPath, function (err) {
+        return callback(err, err ? null : 'ok');
+    });
+}
+exports.rmrf = rmrf;
 
 // check if a directory exists
 var existsSync = function (parentPath, name) {
