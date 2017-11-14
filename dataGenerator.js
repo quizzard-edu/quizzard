@@ -88,15 +88,15 @@ var addAdmin = function (accid, pass) {
         password: pass,
         fname: accid,
         lname: accid,
-        email: accid + '@mail.utoronto.ca'
+        email: common.formatString('{0}@mail.utoronto.ca', [accid])
     };
 
     users.addAdmin(acc, function (err, account) {
-        if (err) {
-            logger.error(common.formatString('Could not create account {0}. Please try again.', [accid]));
-        } else if (err === 'exists') {
+        if (err === 'exists') {
             logger.log(common.formatString('Account with username {0} exists.', [accid]));
-        }
+        }else if (err) {
+            logger.error(common.formatString('Could not create account {0}. Please try again.', [accid]));
+        } 
 
         adminsCreated++;
 
@@ -130,15 +130,15 @@ var addStudent = function (name, accid, pass) {
         password: pass,
         fname: firstName,
         lname: lastName,
-        email: firstName + '.' + lastName + '@mail.utoronto.ca'
+        email: common.formatString('{0}.{1}@mail.utoronto.ca', [firstName, lastName])
     };
 
     users.addStudent(acc, function (err, account) {
-        if (err) {
-            logger.error(common.formatString('Could not create account {0}. Please try again.', [accid]));
-        } else if (err === 'exists') {
+        if (err === 'exists') {
             logger.log(common.formatString('Account with username {0} exists.', [accid]));
-        }
+        }else if (err) {
+            logger.error(common.formatString('Could not create account {0}. Please try again.', [accid]));
+        } 
 
         studentsCreated++;
 
@@ -951,7 +951,7 @@ var checkAnswer = function (questionId, userId, answer, callback) {
                             }
 
                             if (value) {
-                                rateQuestion(question.id, userId, Math.floor(Math.random() * 6));
+                                rateQuestion(question.number, userId, Math.floor(Math.random() * 6));
                             }
 
                             return callback(null, value);
@@ -977,18 +977,17 @@ var rateQuestion = function (questionId, userId, rating, callback) {
     }
 
     db.lookupQuestion({ number: questionId }, function (err, question) {
-        questionId = question._id;
-
         if (err) {
-            return callback(err, null);
+            logger.error(err);
         } else if (!question) {
-            return callback('Could not find the question', null);
+            logger.error('Could not find the question');
         } else {
+            questionId = question._id;
             questions.submitRating(questionId, userId, rating, function (err, res) {
                 if (err) {
                     logger.error('Could not rate question. Please try again.');
                 } else {
-                    logger.log(common.formatString('Questions {0} rated as {1}', [question.id, rating]));
+                    logger.log(common.formatString('Questions {0} rated as {1}', [questionId, rating]));
                 }
             });
         }
