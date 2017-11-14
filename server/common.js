@@ -85,7 +85,7 @@ const questionAttributes = Object.freeze({
         ctime                   : {type:'[object String]'},
         mtime                   : {type:'[object String]'},
         ratings                 : {type:'[object Array]'},
-        lastLocked              : {type:'[object Object]'}
+        lastLocked              : {type:'[object Array]'}
     },
     REGULAR:        {
         answer                  : {type:'[object String]'}
@@ -176,11 +176,10 @@ var getDateByFormat = function(format) {
 }
 
 exports.getDate = getDate;
-<<<<<<< HEAD
 
 var waiting_time = 10*60000;
 exports.waiting_time = waiting_time;
-=======
+
 exports.getDateByFormat = getDateByFormat;
 
 // formating a string based on an array of parts of the string
@@ -252,4 +251,3 @@ exports.saveFile = writeFile;
 // convert string to a path
 exports.joinPath = path.join;
 // </File System functions> -----------------------------------------
->>>>>>> develop

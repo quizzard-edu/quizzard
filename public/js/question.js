@@ -90,8 +90,12 @@ var sendAnswerRequest = function(ans) {
             $('#modalAlert').modal('open');
         },
         error: function(data) {
-            $('#hint').removeClass('hidden');
-            swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
+            if (data['status'] === 401) {
+                failSnackbar(data['responseText']);
+            } else {            
+                $('#hint').removeClass('hidden');
+                swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
+            }
         },
         complete: function(data) {
             const numberOfAttempts = $('#attempts');

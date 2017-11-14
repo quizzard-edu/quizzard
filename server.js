@@ -611,8 +611,8 @@ app.post('/submitanswer', function(req, res) {
         }
 
         // check if user can answer the question
-        if(questions.isQuestionLocked(userId,questionId)){
-            return res.status(400).send('Sorry question is Locked, please try again later');
+        if(req.session.user.type !== common.userTypes.ADMIN && questions.isQuestionLocked(userId,question)){
+            return res.status(401).send('Sorry question is Locked, please try again later');
         }
 
         logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));

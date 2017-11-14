@@ -60,7 +60,7 @@ var prepareQuestionData = function(question, callback){
     questionToAdd.mtime = currentDate;
     questionToAdd.ratings = [];
     questionToAdd.comments = [];
-    questionToAdd.lastLocked = {};
+    questionToAdd.lastLocked = [];
     //Add specific attributes by Type
     switch (question.type) {
         case common.questionTypes.REGULAR.value:
@@ -147,6 +147,7 @@ exports.updateQuestionById = function(questionId, info, callback) {
 var updateQuestionById = function(qId, infoToUpdate, callback){
     // Get Type of question and validate it
     lookupQuestionById(qId, function(err, question){
+        console.log(question)
         if(err){
             return callback({status:500, msg:err},null);
         }
@@ -547,16 +548,39 @@ exports.voteReply = function (replyId, vote, userId, callback) {
     });
 }
 
-var isQuestionLocked = function(userId,question){
-    if(userId in question.lastLocked){
-        var diff = Math.abs(new Date() - question.lastLocked[userId]);
+exports.isQuestionLocked = function(userId,question){
+    var query = {_id:question._id};
+    var update = {};
+    var lastLockedTime;
+    var currentDate = new Date();
+    console.log(question)
+    for (var obj = 0; obj < question.lastLocked.length; obj++){
+        if(question.lastLocked[obj]['userId'] === userId){
+            lastLockedTime = question.lastLocked[obj]['lastLockedTime'];
+        }
+    }
+    console.log(lastLockedTime)
+    if(typeof lastLockedTime !== 'undefined'){
+        var diff = Math.abs(currentDate - lastLockedTime);
         if (diff < common.waiting_time){
+            console.log('question is locked');
             return true;
         } else {
-            db.updateQuestionLastLocked(userId,questionId)
+            console.log('updating question lock to new time')
+            query['lastLocked.userId'] = userId;
+            update.$set = {"lastLocked.$.lastLockedTime":currentDate};
+            db.updateQuestionByQuery(query, update, function (err, result){
+                if(err)
+                    console.log(err);
+            });
         }
     } else {
-        // add user to locked list
+        console.log('adding new user to quesition lock')
+        update.$push = {'lastLocked': {'userId':userId, lastLockedTime: currentDate}};
+        db.updateQuestionByQuery(query, update, function (err, result){
+                if(err)
+                    console.log(err);
+        });
     }
     return false;
 }
