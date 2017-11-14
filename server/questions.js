@@ -117,7 +117,17 @@ exports.addQuestion = function(question, callback) {
         // validate constant question attributes
         result = questionValidator.questionCreationValidation(questionToAdd);
         if (result.success){
-            return db.addQuestion(questionToAdd, callback);
+            db.addQuestion(questionToAdd, function (err, questionId) {
+                if (err) {
+                    return callback(err, null);
+                }
+
+                common.mkdir(common.fsTree.QUESTIONS, questionToAdd._id, function (err, result) {
+                    logger.log(common.formatString('Creating question directory: {0}', [err ? err : result]));
+                });
+
+                return callback(null, questionId);
+            });
         } else{
             return callback({status:400,msg:result.msg}, null)
         }

@@ -17,8 +17,30 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-var date = require('moment');
+const fs = require('fs');
+const date = require('moment');
+const path = require('path');
+const rimraf = require('rimraf');
 
+// <Global Constants> ------------------------------------------
+// common path shared across the backend
+const fsTree = Object.freeze({
+    ROOT: __dirname + '/..',
+    HOME: __dirname + '/../FileSystem',
+    USERS: __dirname + '/../FileSystem/Users',
+    QUESTIONS: __dirname + '/../FileSystem/Questions'
+});
+exports.fsTree = fsTree;
+
+// all user types
+const userTypes = Object.freeze({
+    ADMIN     : 0,
+    STUDENT   : 1
+});
+exports.userTypes = userTypes;
+
+
+// all question types
 const questionTypes = Object.freeze({
     MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'question_types/mc-answer', icon: 'format_list_bulleted'},
     REGULAR         : {name: 'Regular Question', value: 're', template: 'question_types/regex-answer', icon: 'font_download'},
@@ -41,12 +63,7 @@ const sortTypes = Object.freeze({
 });
 exports.sortTypes = sortTypes;
 
-const userTypes = Object.freeze({
-    ADMIN     : 0,
-    STUDENT   : 1
-});
-exports.userTypes = userTypes;
-
+// all question attributes of any question object in the database
 const questionAttributes = Object.freeze({
     DEFAULT: {
         topic                   : {type:'[object String]'},
@@ -99,7 +116,9 @@ const questionAttributes = Object.freeze({
     }
 });
 exports.questionAttributes = questionAttributes;
+// </Global Constants> ------------------------------------------
 
+// <Global Function> --------------------------------------------
 var randomizeList = function(data) {
     var oldIndex, newIndex, tempHolder;
 
@@ -115,22 +134,24 @@ var randomizeList = function(data) {
 exports.randomizeList = randomizeList;
 
 /* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
-exports.getIdsListFromJSONList = function (JSONList) {
+var getIdsListFromJSONList = function (JSONList) {
     var list = [];
     for (i in JSONList){
         list.push(JSONList[i]._id);
     }
     return list;
 }
+exports.getIdsListFromJSONList = getIdsListFromJSONList;
 
 /* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
-exports.getIdsListFromJSONList2 = function (JSONList) {
+var getIdsListFromJSONList2 = function (JSONList) {
     var list = [];
     for (i in JSONList){
         list.push(JSONList[i].id);
     }
     return list;
 }
+exports.getIdsListFromJSONList2 = getIdsListFromJSONList2;
 
 // check if json obejct is empty
 var isEmptyObject = function(obj) {
@@ -141,7 +162,6 @@ var isEmptyObject = function(obj) {
     }
     return true;
 }
-
 exports.isEmptyObject = isEmptyObject;
 
 // return the current date
@@ -158,7 +178,7 @@ exports.getDate = getDate;
 exports.getDateByFormat = getDateByFormat;
 
 // formating a string based on an array of parts of the string
-exports.formatString = function (text, args) {
+var formatString = function (text, args) {
     var regex = new RegExp('{-?[0-9]+}', 'g');
     return text.replace(regex, function(item) {
         var intVal = parseInt(item.substring(1, item.length - 1));
@@ -175,3 +195,54 @@ exports.formatString = function (text, args) {
         return replace;
     });
 };
+exports.formatString = formatString;
+// </Global Function> -----------------------------------------------
+
+// <File System functions> ------------------------------------------
+// make a directory given the path and the name of the new directory
+var mkdir = function (parentPath, directoryName, callback) {
+    var fullPath = path.join(parentPath, directoryName);
+    fs.mkdir(fullPath, function (err) {
+        return callback(err, err ? null : 'ok');
+    });
+}
+exports.mkdir = mkdir;
+
+// BE CAREFUL: remove a directory given the path and the name of the new directory
+var rmdir = function (parentPath, directoryName, callback) {
+    var fullPath = path.join(parentPath, directoryName);
+    fs.rmdir(fullPath, function (err) {
+        return callback(err, err ? null : 'ok');
+    });
+}
+exports.rmdir = rmdir;
+
+// BE CAREFUL: perform rm -rf on a directory
+var rmrf = function (parentPath, directoryName, callback) {
+    var fullPath = path.join(parentPath, directoryName);
+    rimraf(fullPath, function (err) {
+        return callback(err, err ? null : 'ok');
+    });
+}
+exports.rmrf = rmrf;
+
+// check if a directory exists
+var existsSync = function (parentPath, name) {
+    var fullPath = path.join(parentPath, name);
+    return fs.existsSync(fullPath);
+}
+exports.dirExists = existsSync;
+exports.fileExists = existsSync;
+
+// write data to a fils
+var writeFile = function (filePath, fileName, fileExtension, fileData, callback) {
+    var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
+    fs.writeFile(fullPath, fileData, function(err) {
+        return callback(err, err ? null : 'ok');
+    });
+}
+exports.saveFile = writeFile;
+
+// convert string to a path
+exports.joinPath = path.join;
+// </File System functions> -----------------------------------------

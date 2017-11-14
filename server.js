@@ -1189,6 +1189,11 @@ app.post('/accountsExportFile', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
+    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
+        return res.status(500).send('User does not exists in the file system');
+    }
+
     var requestedList = req.body.studentsList;
     var totalCount = requestedList.length;
     var studentsCount = 0;
@@ -1206,15 +1211,17 @@ app.post('/accountsExportFile', function(req, res) {
                 var fields = ['id', 'fname', 'lname', 'email'];
                 var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
                 var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
-                var file = 'exportJob-students-'+new Date().toString()+'.csv';
+                var file = 'exportJob-students-'+new Date().toString();
+                var fileName = file + '.csv';
 
-                fs.writeFile('uploads/'+file, csvData, function(err) {
+                var userDirectory = common.joinPath(common.fsTree.USERS, req.session.user.id);
+                common.saveFile(userDirectory, file, 'csv', csvData, function(err, result) {
                     if (err) {
                         logger.error(err);
                         return res.status(500).send('Export job failed');
                     }
                     return res.status(200).render('users/accounts-export-complete', {
-                        file: file
+                        file: fileName
                     });
                 });
             }
@@ -1232,12 +1239,18 @@ app.post('/accountsImportFile', function (req, res) {
         return res.status(403).send('Permission Denied');
     }
 
+    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
+        return res.status(500).send('User does not exists in the file system');
+    }
+
     var uploadedFile = req.files.usercsv;
-    var newFile = 'uploads/importJob-students-' + uploadedFile.name;
     if (!uploadedFile || uploadedFile.mimetype !== 'text/csv') {
         return res.status(400).send('Invalid file format');
     }
 
+    var newFileName = 'importJob-students-' + uploadedFile.name;
+    var newFile = common.joinPath(common.fsTree.USERS, req.session.user.id, newFileName);
     uploadedFile.mv(newFile, function(err) {
         if (err) {
             logger.error(err);
@@ -1331,8 +1344,19 @@ app.get('/download', function(req, res) {
         return res.redirect('/');
     }
 
+    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
+        return res.status(500).send('User does not exists in the file system');
+    }
+
     var fileName = req.query.file;
-    var filePath = __dirname+'/uploads/'+fileName;
+    var userDir = common.joinPath(common.fsTree.USERS, req.session.user.id);
+    if (!common.fileExists(userDir, fileName)) {
+        logger.error(common.formatString('File: {0} does not exist', [fileName]));
+        return res.status(500).send('File does not exist');
+    }
+
+    var filePath = common.joinPath(common.fsTree.USERS, req.session.user.id, fileName);
     return res.download(filePath, fileName, function (err) {
         if (err) {
             logger.error(err);
