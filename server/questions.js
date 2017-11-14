@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var db = require('./db.js');
-var logger = require('./log.js').logger;
+var logger = require('./log.js');
 var common = require('./common.js');
 var questionValidator = require('./questionValidator.js');
 var uuidv1 = require('uuid/v1');
@@ -117,7 +117,17 @@ exports.addQuestion = function(question, callback) {
         // validate constant question attributes
         result = questionValidator.questionCreationValidation(questionToAdd);
         if (result.success){
-            return db.addQuestion(questionToAdd, callback);
+            db.addQuestion(questionToAdd, function (err, questionId) {
+                if (err) {
+                    return callback(err, null);
+                }
+
+                common.mkdir(common.fsTree.QUESTIONS, questionToAdd._id, function (err, result) {
+                    logger.log(common.formatString('Creating question directory: {0}', [err ? err : result]));
+                });
+
+                return callback(null, questionId);
+            });
         } else{
             return callback({status:400,msg:result.msg}, null)
         }
@@ -160,7 +170,7 @@ exports.deleteQuestion = function(questionId, callback) {
             return callback(err, null);
         }
 
-        logger.info('Question %d deleted from database.', questionId);
+        logger.log(common.formatString('Question {0} deleted from database.', [questionId]));
         return callback(null, 'success');
     });
 }
