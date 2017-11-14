@@ -60,7 +60,7 @@ var prepareQuestionData = function(question, callback){
     questionToAdd.mtime = currentDate;
     questionToAdd.ratings = [];
     questionToAdd.comments = [];
-
+    questionToAdd.lastLocked = {};
     //Add specific attributes by Type
     switch (question.type) {
         case common.questionTypes.REGULAR.value:
@@ -220,14 +220,14 @@ exports.submitAnswer = function(questionId, userId, correct, points, answer, cal
         update.$inc.wrongAttemptsCount = 1;
         update.$push.wrongAttempts = {
             id : userId,
-            attemp: answer,
+            attempt: answer,
             date : currentDate
         };
     }
     update.$inc.totalAttemptsCount = 1;
     update.$push.totalAttempts = {
         id : userId,
-        attemp: answer,
+        attempt: answer,
         date : currentDate
     };
 
@@ -535,4 +535,18 @@ exports.voteReply = function (replyId, vote, userId, callback) {
             return callback('Could not submit the vote on the reply', null);
         }
     });
+}
+
+var isQuestionLocked = function(userId,question){
+    if(userId in question.lastLocked){
+        var diff = Math.abs(new Date() - question.lastLocked[userId]);
+        if (diff < common.waiting_time){
+            return true;
+        } else {
+            db.updateQuestionLastLocked(userId,questionId)
+        }
+    } else {
+        // add user to locked list
+    }
+    return false;
 }

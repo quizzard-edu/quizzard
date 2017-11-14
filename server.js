@@ -613,6 +613,11 @@ app.post('/submitanswer', function(req, res) {
             return res.status(400).send('Could not find the question');
         }
 
+        // check if user can answer the question
+        if(questions.isQuestionLocked(userId,questionId)){
+            return res.status(400).send('Sorry question is Locked, please try again later');
+        }
+
         logger.info('User %s attempted to answer question %s with "%s"', userId, questionId, answer);
 
         var value = questions.verifyAnswer(question, answer);

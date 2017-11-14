@@ -67,7 +67,8 @@ const questionAttributes = Object.freeze({
         totalAttemptsCount      : {type:'[object Number]'},
         ctime                   : {type:'[object String]'},
         mtime                   : {type:'[object String]'},
-        ratings                 : {type:'[object Array]'}
+        ratings                 : {type:'[object Array]'},
+        lastLocked              : {type:'[object Object]'}
     },
     REGULAR:        {
         answer                  : {type:'[object String]'}
@@ -149,3 +150,6 @@ function getDate() {
     return date().format('YYYY-MM-DD hh:mm:ss A');
 }
 exports.getDate = getDate;
+
+var waiting_time = 10*60000;
+exports.waiting_time = waiting_time;
