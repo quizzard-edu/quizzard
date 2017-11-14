@@ -207,6 +207,15 @@ var mkdir = function (parentPath, directoryName, callback) {
 }
 exports.mkdir = mkdir;
 
+// BE CAREFUL: remove a directory given the path and the name of the new directory
+var rmdir = function (parentPath, directoryName, callback) {
+    var fullPath = path.join(parentPath, directoryName);
+    fs.rmdir(fullPath, function (err) {
+        return callback(err, err ? null : 'ok');
+    });
+}
+exports.rmdir = rmdir;
+
 // check if a directory exists
 var existsSync = function (parentPath, name) {
     var fullPath = path.join(parentPath, name);
