@@ -1190,7 +1190,7 @@ app.post('/accountsExportFile', function(req, res) {
     }
 
     if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
-        logger.error('User %s does not exists in the file system', req.session.user.id);
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
         return res.status(500).send('User does not exists in the file system');
     }
 
@@ -1240,7 +1240,7 @@ app.post('/accountsImportFile', function (req, res) {
     }
 
     if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
-        logger.error('User %s does not exists in the file system', req.session.user.id);
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
         return res.status(500).send('User does not exists in the file system');
     }
 
@@ -1345,14 +1345,14 @@ app.get('/download', function(req, res) {
     }
 
     if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
-        logger.error('User %s does not exists in the file system', req.session.user.id);
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
         return res.status(500).send('User does not exists in the file system');
     }
 
     var fileName = req.query.file;
     var userDir = common.joinPath(common.fsTree.USERS, req.session.user.id);
     if (!common.fileExists(userDir, fileName)) {
-        logger.error('File: ', fileName, 'does not exist');
+        logger.error(common.formatString('File: {0} does not exist', [fileName]));
         return res.status(500).send('File does not exist');
     }
 
