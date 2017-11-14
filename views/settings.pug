@@ -17,15 +17,15 @@ block content
           li
             .collapsible-header
               i.material-icons settings
-              | General settings
+              | General Settings
             .collapsible-body
               span Lorem ipsum dolor sit amet.
           li
             .collapsible-header
               i.material-icons person
-              | Student settings
+              | Student Settings
             .collapsible-body
-              h5 Allow students to change:
+              h5 Allow Students to Change:
               span First and last name:
               .switch
                 label
@@ -53,30 +53,30 @@ block content
 
           li
             .collapsible-header
-              i.material-icons poll
-              | Question settings
+              i.material-icons library_books
+              | Question Settings
             .collapsible-body
-              label(for='qtopic') Topic
+              label(for='qtopic') Default Topic (optional)
               .input-field
                 input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off')
           li
             .collapsible-header
               i.material-icons question_answer
-              | Discussion board settings
+              | Discussion Board Settings
             .collapsible-body
-              h5 Use discussion board:
+              h5 Discussion Board Status:
               form
-              input(type='radio' name='discussionView', value='none')
-              label(for='none') Don't use discussion board
+                input(type='radio' name='discussionView', value='none', id='none')
+                label(for='none') Don't use discussion board
+                br
+                input(type='radio' name='discussionView', value='answered', id='answered')
+                label(for='answered') Available only for students who have answered the question
+                br
+                input(type='radio' name='discussionView', value='all', id='all')
+                label(for='all') Available for all students
               br
-              input(type='radio' name='discussionView', value='answered')
-              label(for='answered') Available only for students who have answered the question
               br
-              input(type='radio' name='discussionView', value='all')
-              label(for='all') Available for all students
-              br
-              br
-              span Can students dislike comments and replies:
+              span Dislikes on comments and replies
               .switch
                 label
                   | Don't allow
