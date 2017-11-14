@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var Db = require('mongodb').Db;
 var Server = require('mongodb').Server;
-var logger = require('./log.js').logger;
+var logger = require('./log.js');
 var common = require('./common.js');
 var bcrypt = require('bcryptjs');
 
@@ -43,13 +43,13 @@ exports.initialize = function(callback) {
             process.exit(1);
         }
 
-        logger.info('Connection to Quizzard database successful.');
+        logger.log('Connection to Quizzard database successful.');
         usersCollection = db.collection('users');
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
 
         getNextQuestionNumber(function() {
-            logger.info('next question number: %d', nextQuestionNumber);
+            logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
             return callback();
         });
     });
@@ -177,13 +177,28 @@ var validatePassword = function(userobj, pass, callback) {
 
 // cleanup the users collection
 exports.removeAllUsers = function(callback){
-    usersCollection.remove({}, function(err, obj) {
-        if (err) {
+    common.rmrf(common.fsTree.HOME, 'Users', function (err, result) {
+        if(err){
             logger.error(err);
             return callback(err, null);
         }
-        logger.info('All users have been removed');
-        return callback(null, obj);
+
+        common.mkdir(common.fsTree.HOME, 'Users', function (err, result) {
+            if(err){
+                logger.error(err);
+                return callback(err, null);
+            }
+
+            usersCollection.remove({}, function(err, obj) {
+                if (err) {
+                    logger.error(err);
+                    return callback(err, null);
+                }
+
+                logger.log('All users have been removed');
+                return callback(null, obj);
+            });
+        });
     });
 }
 
@@ -381,16 +396,30 @@ exports.addQuestion = function(question, callback) {
 
 // cleanup the users collection
 exports.removeAllQuestions = function(callback) {
-    questionsCollection.remove({}, function(err, res) {
-        if(err) {
+    common.rmrf(common.fsTree.HOME, 'Questions', function (err, result) {
+        if(err){
             logger.error(err);
             return callback(err, null);
         }
 
-        nextQuestionNumber = 0;
-        logger.info('All questions have been removed');
-        logger.info('next question number: %d', nextQuestionNumber);
-        return callback(null, res);
+        common.mkdir(common.fsTree.HOME, 'Questions', function (err, result) {
+            if(err){
+                logger.error(err);
+                return callback(err, null);
+            }
+
+            questionsCollection.remove({}, function(err, res) {
+                if(err){
+                    logger.error(err);
+                    return callback(err, null);
+                }
+
+                nextQuestionNumber = 0;
+                logger.log('All questions have been removed');
+                logger.log(common.formatString('next question: {0}', [nextQuestionNumber]));
+                return callback(null, res);
+            });
+        });
     });
 }
 
@@ -550,7 +579,6 @@ exports.updateQuestionById = function(questionId, request, callback) {
 
     questionsCollection.update(query, update, function(err, info) {
         if (err) {
-            logger.error({status:500, msg:err});
             return callback(err, null);
         }
 
