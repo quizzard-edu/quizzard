@@ -122,7 +122,7 @@ exports.addQuestion = function(question, callback) {
                 }
 
                 common.mkdir(common.fsTree.QUESTIONS, questionToAdd._id, function (err, result) {
-                    logger.log(common.formatString('Creating question directory: {0}', [err ? err : result]));
+                    logger.log(common.formatString('Creating question directory: {0} {1}', [questionToAdd._id, err ? err : result]));
                 });
 
                 return callback(null, questionId);

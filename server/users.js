@@ -55,18 +55,18 @@ exports.addAdmin = function(user, callback) {
         db.addAdmin(userToAdd, function(err, res){
             if(err){
                 if (err === 'failure'){
-                    logger.error(common.formatString('Failed to create admin {0}, database issue', [userToAdd._id]));
+                    logger.error(common.formatString('Failed to create admin {0}, database issue', [userToAdd.username]));
                 } else if (err === 'exists') {
-                    logger.error(common.formatString('Admin {0} already exists', [userToAdd._id]));
+                    logger.error(common.formatString('Admin {0} already exists', [userToAdd.username]));
                 }
                 return callback(err, null);
             }
 
             common.mkdir(common.fsTree.USERS, userToAdd._id, function (err, result) {
-                logger.log(common.formatString('Creating user {0} directory: ', [userToAdd._id,  err ? err : result]));
+                logger.log(common.formatString('Creating user {0} directory: {1} {2}', [userToAdd.username, userToAdd._id, err ? err : result]));
             });
 
-            logger.log(common.formatString('Admin {0} created', [userToAdd._id]));
+            logger.log(common.formatString('Admin {0} created', [userToAdd.username]));
             return callback(null, 'created');
         });
     });
@@ -112,19 +112,19 @@ exports.addStudent = function(user, callback) {
         db.addStudent(userToAdd, function(err, res){
             if(err){
                 if (err === 'failure'){
-                    logger.error(common.formatString('Failed to create student {0}, database issue', [userToAdd._id]));
+                    logger.error(common.formatString('Failed to create student {0}, database issue', [userToAdd.username]));
                 } else if (err === 'exists') {
-                    logger.error(common.formatString('Student {0} already exists', [userToAdd._id]));
+                    logger.error(common.formatString('Student {0} already exists', [userToAdd.username]));
                 }
 
                 return callback(err, null);
             }
 
             common.mkdir(common.fsTree.USERS, userToAdd._id, function (err, result) {
-                logger.log(common.formatString('Creating user {0} directory: ', [userToAdd._id, err ? err : result]));
+                logger.log(common.formatString('Creating user {0} directory: {1} {2}', [userToAdd.username, userToAdd._id, err ? err : result]));
             });
 
-            logger.log(common.formatString('Student {0} created', [userToAdd._id]));
+            logger.log(common.formatString('Student {0} created', [userToAdd.username]));
             return callback(null, 'Created');
         });
     });
