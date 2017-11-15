@@ -102,7 +102,7 @@ app.post('/login', function(req, res) {
 /* End a user's session. */
 app.get('/logout', function(req, res) {
     if (req.session.user) {
-        logger.log(common.formatString('User {0} logged out.', [req.session.user.id]));
+        logger.log(common.formatString('User {0} logged out.', [req.session.user._id]));
         req.session.destroy();
     }
 
@@ -126,7 +126,7 @@ app.get('/home', function(req, res) {
             return res.status(500).send();
         }
 
-        users.getStudentById(req.session.user.id, function(err, userFound) {
+        users.getStudentById(req.session.user._id, function(err, userFound) {
             if (err) {
                 return res.status(500).send();
             }
@@ -212,12 +212,12 @@ app.get('/leaderboard-table', function(req, res) {
     if (req.query.longTable == 'false')
         shrt = true;
 
-    lb.leaderboard(req.session.user.id, shrt, function(leader) {
+    lb.leaderboard(req.session.user._id, shrt, function(leader) {
         var html = leaderboardTable({
             fullTable: ft,
             shortTable: shrt,
             leaderboard: leader,
-            userid: req.session.user.id
+            userid: req.session.user._id
         });
 
         return res.status(200).send(html);
@@ -550,14 +550,14 @@ app.get('/question', function(req, res) {
         var answeredList = common.getIdsListFromJSONList2(questionFound.correctAttempts);
         var hasQrating = false;
         for (var i in questionFound.ratings) {
-            if (questionFound.ratings[i].user === req.session.user.id) {
+            if (questionFound.ratings[i].user === req.session.user._id) {
                 hasQrating = true;
             }
         }
         return res.status(200).render('question-view', {
             user: req.session.user,
             question: questionFound,
-            answered: (answeredList.indexOf(req.session.user.id) !== -1),
+            answered: (answeredList.indexOf(req.session.user._id) !== -1),
             isAdmin : function() {
                 return req.session.user.type === common.userTypes.ADMIN;
             },
@@ -597,7 +597,7 @@ app.post('/submitanswer', function(req, res) {
 
     var questionId = req.body.questionId;
     var answer = req.body.answer;
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
 
     questions.lookupQuestionById(questionId,function(err, question){
         if(err){
@@ -697,7 +697,7 @@ app.post('/profilemod', function(req, res) {
         return res.status(400).send('Confirm password doesn\'t match');
     }
 
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
     users.getUserById(userId, function (err, userObj) {
         if (err) {
             logger.error(err);
@@ -853,7 +853,7 @@ app.post('/submitQuestionRating', function(req, res) {
 
 // question rating from both students and admins
 var submitQuestionRating = function (req, res) {
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
     var questionId = req.body.qId;
     var rating = parseInt(req.body.rating);
 
@@ -904,13 +904,13 @@ app.get('/getDiscussionBoard', function(req, res){
             var usersList = {};
             for (var i in userObj) {
                 var user = userObj[i];
-                usersList[user.id] = user.fname + ' ' + user.lname;
+                usersList[user._id] = user.fname + ' ' + user.lname;
             }
 
             var discussionHtml = discussionBoard({
                 comments: question.comments,
                 getCurrentUser: () =>{
-                    var userId = req.session.user.id;
+                    var userId = req.session.user._id;
                     if (!usersList[userId]) {
                         return 'UNKNOWN';
                     }
@@ -923,13 +923,13 @@ app.get('/getDiscussionBoard', function(req, res){
                     return usersList[userId];
                 },
                 isLiked: (likesList) => {
-                    return likesList.indexOf(req.session.user.id) !== -1;
+                    return likesList.indexOf(req.session.user._id) !== -1;
                 },
                 isDisliked: (dislikesList) => {
-                    return dislikesList.indexOf(req.session.user.id) !== -1;
+                    return dislikesList.indexOf(req.session.user._id) !== -1;
                 },
                 highlightMentionedUser: (comment) => {
-                    var userId = req.session.user.id;
+                    var userId = req.session.user._id;
                     if (!usersList[userId]) {
                         return '@UNKNOWN';
                     }
@@ -962,7 +962,7 @@ app.post('/addCommentToQuestion', function (req, res) {
 
     var questionId = req.body.questionId;
     var comment = req.body.commentText;
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
 
     questions.addComment(questionId, userId, comment, function (err, question) {
         if (err) {
@@ -982,7 +982,7 @@ app.post('/addReplyToComment', function (req, res) {
 
     var commentId = req.body.commentId;
     var reply = req.body.replyText;
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
 
     questions.addReply(commentId, userId, reply, function (err, question) {
         if (err) {
@@ -1002,7 +1002,7 @@ app.post('/voteOnComment', function (req, res) {
 
     var commentId = req.body.commentId;
     var vote = parseInt(req.body.vote);
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
 
     if (!vote || (vote !== 1 && vote !== -1)) {
         return res.status(400).send('Vote is invalid');
@@ -1028,7 +1028,7 @@ app.post('/voteOnReply', function (req, res) {
 
     var replyId = req.body.replyId;
     var vote = parseInt(req.body.vote);
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
 
     if (!vote || (vote !== 1 && vote !== -1)) {
         return res.status(400).send('Vote is invalid');
@@ -1076,9 +1076,9 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
             var totalList = [];
             for (var i in usersList) {
                 var user = usersList[i];
-                if (req.session.user.id !== user.id &&
+                if (req.session.user._id !== user._id &&
                     (user.type === common.userTypes.ADMIN
-                        || answeredList.indexOf(user.id) !== -1)) {
+                        || answeredList.indexOf(user._id) !== -1)) {
                     totalList.push(user.fname+' '+user.lname);
                 }
             }
@@ -1187,8 +1187,8 @@ app.post('/accountsExportFile', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
-        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
+    if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
         return res.status(500).send('User does not exists in the file system');
     }
 
@@ -1212,7 +1212,7 @@ app.post('/accountsExportFile', function(req, res) {
                 var file = 'exportJob-students-'+new Date().toString();
                 var fileName = file + '.csv';
 
-                var userDirectory = common.joinPath(common.fsTree.USERS, req.session.user.id);
+                var userDirectory = common.joinPath(common.fsTree.USERS, req.session.user._id);
                 common.saveFile(userDirectory, file, 'csv', csvData, function(err, result) {
                     if (err) {
                         logger.error(err);
@@ -1237,8 +1237,8 @@ app.post('/accountsImportFile', function (req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
-        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
+    if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
         return res.status(500).send('User does not exists in the file system');
     }
 
@@ -1248,7 +1248,7 @@ app.post('/accountsImportFile', function (req, res) {
     }
 
     var newFileName = 'importJob-students-' + uploadedFile.name;
-    var newFile = common.joinPath(common.fsTree.USERS, req.session.user.id, newFileName);
+    var newFile = common.joinPath(common.fsTree.USERS, req.session.user._id, newFileName);
     uploadedFile.mv(newFile, function(err) {
         if (err) {
             logger.error(err);
@@ -1342,19 +1342,19 @@ app.get('/download', function(req, res) {
         return res.redirect('/');
     }
 
-    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
-        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
+    if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
         return res.status(500).send('User does not exists in the file system');
     }
 
     var fileName = req.query.file;
-    var userDir = common.joinPath(common.fsTree.USERS, req.session.user.id);
+    var userDir = common.joinPath(common.fsTree.USERS, req.session.user._id);
     if (!common.fileExists(userDir, fileName)) {
         logger.error(common.formatString('File: {0} does not exist', [fileName]));
         return res.status(500).send('File does not exist');
     }
 
-    var filePath = common.joinPath(common.fsTree.USERS, req.session.user.id, fileName);
+    var filePath = common.joinPath(common.fsTree.USERS, req.session.user._id, fileName);
     return res.download(filePath, fileName, function (err) {
         if (err) {
             logger.error(err);
@@ -1382,7 +1382,7 @@ app.get('/profile', function(req, res) {
         return res.redirect('/');
     }
 
-    users.getUserById(req.session.user.id, function(err, user) {
+    users.getUserById(req.session.user._id, function(err, user) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
@@ -1404,7 +1404,7 @@ app.get('/studentAnalytics', function(req,res){
         return res.redirect('/');
     }
 
-    var query = {userId: req.session.user.id, type: req.query.type};
+    var query = {userId: req.session.user._id, type: req.query.type};
 
     if (req.session.user.type === common.userTypes.ADMIN) {
         if (!req.query.studentId) {
