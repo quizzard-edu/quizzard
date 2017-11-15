@@ -611,7 +611,7 @@ app.post('/submitanswer', function(req, res) {
         }
 
         // check if question is locked for the student
-        if(req.session.user.type !== common.userTypes.ADMIN && questions.isQuestionLocked(userId,question)){
+        if(req.session.user.type !== common.userTypes.ADMIN && questions.isUserLocked(userId, question)){
             return res.status(403).send('Sorry question is Locked, please try again later');
         }
 
@@ -639,7 +639,14 @@ app.post('/submitanswer', function(req, res) {
                     return res.status(500).send(err);
                 }
 
-                return res.status(status).send(response);
+                questions.updateUserSubmissionTime(userId, question, function(err, result){
+                    if(err){
+                        logger.error(err);
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(status).send(response);
+                });
             });
         });
     });

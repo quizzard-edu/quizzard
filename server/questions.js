@@ -551,39 +551,58 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 /*Checks if the user can submit an answer to a question
 * and logs the new lock time if the question is not locked
 */
-exports.isQuestionLocked = function(userId,question){
-    var query = {_id:question._id};
-    var update = {};
-    var lastLockedTime;
+exports.isUserLocked = function(userId,question){
+    var lastSubmissionTime;
     var currentDate = new Date();
-    console.log(question)
+    console.log("isuser lockd: " + question.userSubmissionTime)
+    // find the lastSubmissionTime for this user
     for (var obj = 0; obj < question.userSubmissionTime.length; obj++){
         if(question.userSubmissionTime[obj]['userId'] === userId){
-            lastLockedTime = question.userSubmissionTime[obj]['submissionTime'];
+            lastSubmissionTime = question.userSubmissionTime[obj]['submissionTime'];
         }
     }
-    console.log(lastLockedTime)
-    if(typeof lastLockedTime !== 'undefined'){
-        var diff = Math.abs(currentDate - lastLockedTime);
+
+    if(typeof lastSubmissionTime !== 'undefined'){
+        var diff = Math.abs(currentDate - lastSubmissionTime);
         if (diff < common.waiting_time){
             console.log('question is locked');
             return true;
-        } else {
-            console.log('updating question lock to new time')
-            query['userSubmissionTime.userId'] = userId;
-            update.$set = {"userSubmissionTime.$.submissionTime":currentDate};
-            db.updateQuestionByQuery(query, update, function (err, result){
-                if(err)
-                    console.log(err);
-            });
         }
+    }
+    return false;
+}
+
+/*Updates the Users Submission time for a Question*/
+exports.updateUserSubmissionTime = function(userId, question, callback){
+    var query = {_id:question._id};
+    var update = {};
+    var currentDate = new Date();
+    var userInList = false;
+    console.log(question.userSubmissionTime)
+    // find the user in the submission list
+    for (var obj = 0; obj < question.userSubmissionTime.length; obj++){
+        if(question.userSubmissionTime[obj]['userId'] === userId){
+            userInList = true;
+        }
+    }
+
+    if(userInList){
+        console.log('updating question lock to new time')
+        query['userSubmissionTime.userId'] = userId;
+        update.$set = {"userSubmissionTime.$.submissionTime":currentDate};
+        db.updateQuestionByQuery(query, update, function (err, result){
+            if(err)
+                return callback(err,null);
+            return callback(null,'success');
+        });
+        
     } else {
         console.log('adding new user to quesition lock')
         update.$push = {'userSubmissionTime': {'userId':userId, submissionTime: currentDate}};
         db.updateQuestionByQuery(query, update, function (err, result){
-                if(err)
-                    console.log(err);
+            if(err)
+                return callback(err,null);
+            return callback(null,'success');
         });
     }
-    return false;
 }
