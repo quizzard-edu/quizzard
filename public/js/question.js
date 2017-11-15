@@ -91,7 +91,11 @@ var sendAnswerRequest = function(ans) {
         },
         error: function(data) {
             if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 403 || data['status'] === 400){
                 failSnackbar(data['responseText']);
+            } else if (data['status'] === 500) {
+                failSnackbar('Something went wrong!');
             } else {            
                 $('#hint').removeClass('hidden');
                 swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');

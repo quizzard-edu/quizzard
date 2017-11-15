@@ -612,7 +612,7 @@ app.post('/submitanswer', function(req, res) {
 
         // check if question is locked for the student
         if(req.session.user.type !== common.userTypes.ADMIN && questions.isQuestionLocked(userId,question)){
-            return res.status(401).send('Sorry question is Locked, please try again later');
+            return res.status(403).send('Sorry question is Locked, please try again later');
         }
 
         logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
@@ -620,7 +620,7 @@ app.post('/submitanswer', function(req, res) {
         var value = questions.verifyAnswer(question, answer);
         var points = question.points;
         var text = value ? 'correct' : 'incorrect';
-        var status = value ? 200 : 500;
+        var status = value ? 200 : 405;
         var response = {text: text, points: points};
 
         if (req.session.user.type === common.userTypes.ADMIN) {

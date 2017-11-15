@@ -548,6 +548,9 @@ exports.voteReply = function (replyId, vote, userId, callback) {
     });
 }
 
+/*Checks if the user can submit an answer to a question
+* and logs the new lock time if the question is not locked
+*/
 exports.isQuestionLocked = function(userId,question){
     var query = {_id:question._id};
     var update = {};
