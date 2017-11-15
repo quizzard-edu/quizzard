@@ -230,7 +230,7 @@ exports.updateAdminById = function(userId, info, callback){
 
 var updateUserById = function(userId, info, callback){
     var currentDate = new Date().toString();
-    var query = { id : userId };
+    var query = { _id : userId };
     var update = {};
 
     update.$addToSet = {};
@@ -239,8 +239,8 @@ var updateUserById = function(userId, info, callback){
     update.$set = { mtime : currentDate };
     update.$push = {};
 
-    if (info.id) {
-        update.$set.id = info.id;
+    if (info.username) {
+        update.$set.username = info.username;
     }
 
     if (info.fname) {
@@ -265,30 +265,6 @@ var updateUserById = function(userId, info, callback){
 
     if (typeof info.active !== 'undefined') {
         update.$set.active = info.active;
-    }
-
-    if (typeof info.correct !== 'undefined') {
-        query['correctAttempts.id'] = { $ne : info.questionId };
-        if (info.correct) {
-            update.$inc.points = info.points;
-            update.$inc.correctAttemptsCount = 1;
-            update.$push.correctAttempts = {
-                id : info.questionId,
-                points : info.points,
-                answer : info.attempt,
-                date : currentDate };
-        } else {
-            update.$inc.wrongAttemptsCount = 1;
-            update.$push.wrongAttempts = {
-                id : info.questionId,
-                attempt : info.attempt,
-                date : currentDate };
-        }
-        update.$inc.totalAttemptsCount = 1;
-        update.$push.totalAttempts = {
-            id : info.questionId,
-            attempt : info.attempt,
-            date : currentDate };
     }
 
     if (isEmptyObject(update.$addToSet)) {

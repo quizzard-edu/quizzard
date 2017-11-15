@@ -555,7 +555,7 @@ var submitUserForm = function() {
 var submitEditForm = function(id) {
     var fields = $('#account-edit-form').serializeArray();
     var user = {
-        originalID: id
+        _id: id
     };
 
     jQuery.each(fields, function(i, field) {
@@ -572,10 +572,10 @@ var submitEditForm = function(id) {
             $('#admin-content').html(data.html);
             $('#account-edit-form').submit(function(evt) {
                 evt.preventDefault();
-                submitEditForm(user.id ? user.id : id);
+                submitEditForm(user._id);
             });
             displayAccountsTable();
-            successSnackbar('User ' + id + ' has been updated');
+            successSnackbar('User ' + user.username + ' has been updated');
         },
         error: function(data) {
             if (data['status'] === 401) {
@@ -583,7 +583,7 @@ var submitEditForm = function(id) {
             } else if (data.result === 'failure') {
                 failSnackbar('User could not be updated. Please try again');
             } else if (data.result === 'dupid') {
-                failSnackbar('User ID ' + user.id + ' is taken');
+                failSnackbar('Username ' + user.username + ' is taken');
             } else {
                 failSnackbar('Something went wrong, please try again later!');
             }

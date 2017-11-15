@@ -136,7 +136,7 @@ exports.addStudent = function(user, callback) {
  * Fail if the ID has changed and the new ID already belongs
  * to a user.
 */
-exports.updateUserByIdWithRedirection = function(userId, info, callback){
+exports.updateUserById = function(userId, info, callback){
     db.updateUserById(userId, info, callback);
 }
 
@@ -195,7 +195,7 @@ exports.getAdminById = function(adminId, callback) {
 
 exports.submitAnswer = function(userId, questionId, correct, points, answer, callback) {
     var currentDate = new Date().toString();
-    var query = { id : userId };
+    var query = { _id : userId };
     var update = {};
 
     update.$inc = {};
@@ -203,12 +203,12 @@ exports.submitAnswer = function(userId, questionId, correct, points, answer, cal
     update.$push = {};
 
 
-    query['correctAttempts.id'] = { $ne : questionId };
+    query['correctAttempts._id'] = { $ne : questionId };
     if (correct) {
         update.$inc.points = points;
         update.$inc.correctAttemptsCount = 1;
         update.$push.correctAttempts = {
-            _id : questionId,
+            questionId : questionId,
             points : points,
             answer : answer,
             date : currentDate
@@ -216,14 +216,14 @@ exports.submitAnswer = function(userId, questionId, correct, points, answer, cal
     } else {
         update.$inc.wrongAttemptsCount = 1;
         update.$push.wrongAttempts = {
-            _id : questionId,
+            questionId : questionId,
             attempt : answer,
             date : currentDate
         };
     }
     update.$inc.totalAttemptsCount = 1;
     update.$push.totalAttempts = {
-        _id : questionId,
+        questionId : questionId,
         attempt : answer,
         date : currentDate
     };
@@ -249,7 +249,7 @@ exports.submitAnswer = function(userId, questionId, correct, points, answer, cal
  */
 exports.getQuestionsListByUser = function(request, callback) {
     var questionsQuery = {};
-    var sortQuery = {id: 1};
+    var sortQuery = {_id: 1};
     var user = request.user;
     var questionsStatus = request.questionsStatus;
 
@@ -300,7 +300,7 @@ exports.submitRating = function (userId, questionId, rating, callback) {
 }
 
 exports.updateProfile = function (userId, request, callback) {
-    var query = {id: userId};
+    var query = {_id: userId};
     var update = {};
 
     update.$set = {};

@@ -740,17 +740,15 @@ app.post('/usermod', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    var userId = req.body.originalID;
-    var updateId = req.body.id ? req.body.id : userId;
-
+    var userId = req.body._id;
     users.updateStudentById(userId, req.body, function(err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send();
         }
 
-        users.getStudentById(updateId, function(err, userFound) {
-            if (err) {
+        users.getStudentById(userId, function(err, userFound) {
+            if (err || !userFound) {
                 logger.error(err);
                 return res.status(500).send();
             }
