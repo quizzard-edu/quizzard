@@ -85,7 +85,7 @@ const questionAttributes = Object.freeze({
         ctime                   : {type:'[object String]'},
         mtime                   : {type:'[object String]'},
         ratings                 : {type:'[object Array]'},
-        lastLocked              : {type:'[object Array]'}
+        userSubmissionTime      : {type:'[object Array]'}
     },
     REGULAR:        {
         answer                  : {type:'[object String]'}

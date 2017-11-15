@@ -60,7 +60,7 @@ var prepareQuestionData = function(question, callback){
     questionToAdd.mtime = currentDate;
     questionToAdd.ratings = [];
     questionToAdd.comments = [];
-    questionToAdd.lastLocked = [];
+    questionToAdd.userSubmissionTime = [];
     //Add specific attributes by Type
     switch (question.type) {
         case common.questionTypes.REGULAR.value:
@@ -557,9 +557,9 @@ exports.isQuestionLocked = function(userId,question){
     var lastLockedTime;
     var currentDate = new Date();
     console.log(question)
-    for (var obj = 0; obj < question.lastLocked.length; obj++){
-        if(question.lastLocked[obj]['userId'] === userId){
-            lastLockedTime = question.lastLocked[obj]['lastLockedTime'];
+    for (var obj = 0; obj < question.userSubmissionTime.length; obj++){
+        if(question.userSubmissionTime[obj]['userId'] === userId){
+            lastLockedTime = question.userSubmissionTime[obj]['submissionTime'];
         }
     }
     console.log(lastLockedTime)
@@ -570,8 +570,8 @@ exports.isQuestionLocked = function(userId,question){
             return true;
         } else {
             console.log('updating question lock to new time')
-            query['lastLocked.userId'] = userId;
-            update.$set = {"lastLocked.$.lastLockedTime":currentDate};
+            query['userSubmissionTime.userId'] = userId;
+            update.$set = {"userSubmissionTime.$.submissionTime":currentDate};
             db.updateQuestionByQuery(query, update, function (err, result){
                 if(err)
                     console.log(err);
@@ -579,7 +579,7 @@ exports.isQuestionLocked = function(userId,question){
         }
     } else {
         console.log('adding new user to quesition lock')
-        update.$push = {'lastLocked': {'userId':userId, lastLockedTime: currentDate}};
+        update.$push = {'userSubmissionTime': {'userId':userId, submissionTime: currentDate}};
         db.updateQuestionByQuery(query, update, function (err, result){
                 if(err)
                     console.log(err);
