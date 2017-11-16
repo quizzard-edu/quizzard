@@ -41,11 +41,11 @@
                 td #{s.username}
                 td #{s.email}
                 td
-                  button.btn.btn-default.edit-button(id='edit-' + s._id type='button' aria-label='Edit')
+                  button.btn.btn-default.edit-button(id='edit-' + s._id type='button' aria-label='Edit', name=s.username)
                     span.glyphicon.glyphicon-pencil(aria-hidden='true')
                   if (s.active)
-                    button.btn.btn-default.deactivate-button(id='deactivate-' + s._id type='button' aria-label='Delete')
+                    button.btn.btn-default.deactivate-button(id='deactivate-' + s._id type='button' aria-label='Delete', name=s.username)
                       i.material-icons close
                   else
-                    button.btn.btn-default.activate-button(id='activate-' + s._id type='button' aria-label='Delete')
+                    button.btn.btn-default.activate-button(id='activate-' + s._id type='button' aria-label='Delete', name=s.username)
                       i.material-icons check

@@ -218,15 +218,15 @@ var submitImportList = function() {
 var addAccountsTableEvents = function() {
     $('.deactivate-button').click(function(evt) {
         /* cut off the delete- */
-        deactivateUser(this.id.substring(11));
+        deactivateUser(this.id.substring(11), this.name);
     });
     $('.activate-button').click(function(evt) {
         /* cut off the delete- */
-        activateUser(this.id.substring(9));
+        activateUser(this.id.substring(9), this.name);
     });
     $('.edit-button').click(function(evt) {
         /* cut off the edit- */
-        editUser(this.id.substring(5));
+        editUser(this.id.substring(5), this.name);
     });
     $('.sort-table').click(function(evt) {
         sortAccountsTable(this.id.substring(5));
@@ -296,7 +296,7 @@ var addQuestionsTableEvents = function() {
         window.location.href = '/question?_id=' + this.id.substring(5);
     });
     $('.delete-button').click(function(evt) {
-        deleteQuestion(this.id.substring(7));
+        deleteQuestion(this.id.substring(7), this.name);
     });
     $('.edit-button').click(function(evt) {
         editQuestion(this.id.substring(5), this.name);
@@ -431,10 +431,10 @@ $('#option-settings').click(function(evt) {
  * Process user deactiavtion request.
  * First, display a confirmation message and then request the user's deactivation.
  */
-var deactivateUser = function(id) {
+var deactivateUser = function(id, username) {
     swal({
         title: 'Confirm Deactivation',
-        text: id + '\'s  account will be deactivated.',
+        text: username + '\'s  account will be deactivated.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
@@ -448,13 +448,13 @@ var deactivateUser = function(id) {
             success: function(data) {
                 displayAccountsTable();
                 const msg = ' has been&nbsp;<u><b>deactivated</b></u>&nbsp;';
-                warningSnackbar(id + ' account' + msg);
+                warningSnackbar(username + ' account' + msg);
             },
             error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Failed to deactivate ' + id + '\'s account');
+                    failSnackbar('Failed to deactivate ' + username + '\'s account');
                 }
             }
         });
@@ -465,10 +465,10 @@ var deactivateUser = function(id) {
  * Process user actiavtion request.
  * First, display a confirmation message and then request the user's activation.
  */
-var activateUser = function(id) {
+var activateUser = function(id, username) {
     swal({
         title: 'Confirm Activation',
-        text: id + '\'s  account will be activated.',
+        text: username + '\'s  account will be activated.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
@@ -481,13 +481,13 @@ var activateUser = function(id) {
             data: { userid: id, active: true },
             success: function(data) {
                 displayAccountsTable();
-                successSnackbar(id + '\'s account has been activated');
+                successSnackbar(username + '\'s account has been activated');
             },
             error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Failed to activate ' + id + '\'s account');
+                    failSnackbar('Failed to activate ' + username + '\'s account');
                 }
             }
         });
@@ -718,10 +718,10 @@ var submitQuestionForm = function() {
     });
 }
 
-var deleteQuestion = function(qid) {
+var deleteQuestion = function(qid, questionNumber) {
     swal({
         title: 'Confirm deletion',
-        text: 'Question ' + qid + ' will be removed from the database.',
+        text: 'Question ' + questionNumber + ' will be removed from the database.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
@@ -733,14 +733,14 @@ var deleteQuestion = function(qid) {
             url: '/questiondel',
             data: { qid: qid },
             success: function(data) {
-                successSnackbar('Question ' + qid + ' was removed from the database');
+                successSnackbar('Question ' + questionNumber + ' was removed from the database');
                 displayQuestionTable();
             },
             error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Coud not remove question ' + qid + ' from the database');
+                    failSnackbar('Coud not remove question ' + questionNumber + ' from the database');
                 }
             }
         });
