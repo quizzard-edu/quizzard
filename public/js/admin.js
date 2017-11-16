@@ -395,17 +395,30 @@ var displayStatistics = function() {
 }
 
 var displaySettings = function() {
-    $('#admin-label').html('Global Settings');
-    $('#admin-content').html('');
+    $.ajax({
+        type: 'GET',
+        url: '/settings',
+        success: function(data) {
+            $('#admin-label').html('Global Settings');
+            $('#admin-content').html(data);
 
-    $('#option-settings').addClass('active');
-    $('#option-stats').removeClass('active');
-    $('#option-accounts').removeClass('active');
-    $('#option-questions').removeClass('active');
+            $('#option-settings').addClass('active');
+            $('#option-stats').removeClass('active');
+            $('#option-accounts').removeClass('active');
+            $('#option-questions').removeClass('active');
 
-    $('#admin-button').off();
-    $('#admin-button').hide();
-    $('#admin-back').hide();
+            $('#admin-button').off();
+            $('#admin-button').hide();
+            $('#admin-back').hide();
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
+        }
+    });
 }
 
 /* Set up events for the sidebar buttons. */

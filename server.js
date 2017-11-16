@@ -186,6 +186,7 @@ const questionTable = pug.compileFile('views/question-table.pug');
 const questionForm = pug.compileFile('views/question-creation.pug');
 const questionEdit = pug.compileFile('views/question-edit.pug');
 const statistics = pug.compileFile('views/statistics.pug');
+const settings = pug.compileFile('views/settings.pug');
 const regexForm = pug.compileFile('views/question_types/regex-answer.pug');
 const mcForm = pug.compileFile('views/question_types/mc-answer.pug');
 const tfForm = pug.compileFile('views/question_types/tf-answer.pug');
@@ -319,7 +320,7 @@ app.get('/answerForm', function(req, res){
         case common.questionTypes.MATCHING.value:
             res.status(200).render(
                 common.questionTypes.MATCHING.template,{answerForm:true});
-            break;        
+            break;
         case common.questionTypes.ORDERING.value:
             res.status(200).render(
                 common.questionTypes.ORDERING.template,{answerForm:true});
@@ -1386,9 +1387,7 @@ app.get('/settings', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    return res.status(200).render('settings', {
-        user: req.session.user
-    });
+    return res.status(200).send(settings());
 });
 
 /* get analytics for a student*/
