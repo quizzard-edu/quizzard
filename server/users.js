@@ -52,7 +52,7 @@ exports.addAdmin = function(user, callback) {
         userToAdd.active = true;
         userToAdd.ratings = [];
 
-        db.addAdmin(userToAdd, function(err, res){
+        db.addAdmin(userToAdd, function(err, userObj){
             if(err){
                 if (err === 'failure'){
                     logger.error(common.formatString('Failed to create admin {0}, database issue', [userToAdd.username]));
@@ -67,7 +67,7 @@ exports.addAdmin = function(user, callback) {
             });
 
             logger.log(common.formatString('Admin {0} created', [userToAdd.username]));
-            return callback(null, 'created');
+            return callback(null, userObj);
         });
     });
 }
@@ -109,7 +109,7 @@ exports.addStudent = function(user, callback) {
         userToAdd.wrongAttemptsCount = 0;
         userToAdd.totalAttemptsCount = 0;
 
-        db.addStudent(userToAdd, function(err, res){
+        db.addStudent(userToAdd, function(err, userObj){
             if(err){
                 if (err === 'failure'){
                     logger.error(common.formatString('Failed to create student {0}, database issue', [userToAdd.username]));
@@ -125,7 +125,7 @@ exports.addStudent = function(user, callback) {
             });
 
             logger.log(common.formatString('Student {0} created', [userToAdd.username]));
-            return callback(null, 'Created');
+            return callback(null, userObj);
         });
     });
 }

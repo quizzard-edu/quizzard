@@ -142,6 +142,8 @@ var addStudent = function (name, accid, pass) {
 
         studentsCreated++;
 
+        allIds.push(account._id);
+
         if (studentsCreated === studentsCount) {
             createQuestionsRegular();
         }
@@ -1004,7 +1006,6 @@ var rateQuestion = function (questionId, userId, rating, callback) {
 var studentIdGenerator = function (name) {
     const combined = name.split(' ')[1] + name.split(' ')[0];
     var possibleIds = combined.slice(0, 7).toLowerCase();
-    allIds.push(possibleIds);
     return possibleIds;
 }
 

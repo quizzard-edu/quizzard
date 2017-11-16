@@ -70,13 +70,15 @@ var addUser = function(user, callback) {
         if (err) {
             logger.error(err);
             return callback(err, null);
-        } else if (obj) {
-            return callback('exists', null);
-        } else {
-            usersCollection.insert(user, function(err, res) {
-                return callback(err, res);
-            });
         }
+
+        if (obj) {
+            return callback('exists', null);
+        }
+
+        usersCollection.insert(user, function(err, res) {
+            return callback(err, user);
+        });
     });
 }
 

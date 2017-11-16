@@ -192,7 +192,7 @@ exports.submitRating = function (questionId, userId, rating, callback) {
 
     update.$push = {};
     update.$push.ratings = {
-        user: userId,
+        userId: userId,
         date: currentDate,
         rating: rating
     }
