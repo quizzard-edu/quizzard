@@ -216,7 +216,7 @@ exports.submitAnswer = function(questionId, userId, correct, points, answer, cal
     update.$push = {};
     update.$inc = {};
 
-    query['correctAttempts._id'] = { $ne : userId };
+    query['correctAttempts.userId'] = { $ne : userId };
     if (correct) {
         update.$inc.correctAttemptsCount = 1;
         update.$push.correctAttempts = {
