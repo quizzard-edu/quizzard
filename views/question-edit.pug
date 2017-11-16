@@ -16,6 +16,11 @@ block styles
           .form-group.row
             label.col-sm-2.col-form-label(for='qtext') Question Body
             .summernote#qtext(value=question.text)
+          .form-group.row
+            label.col-sm-2.col-form-label Visible
+            .col-sm-10
+              input.form-control(id='visible', type='checkbox', checked=question.visible)
+              label.col-sm-2.col-form-label(for='visible')
           #qAnswer
             | !{getQuestionForm()}
           .form-group.row
