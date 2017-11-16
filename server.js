@@ -18,23 +18,41 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var express = require('express');
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var fileUpload = require('express-fileupload');
-var db = require('./server/db.js');
-var users = require('./server/users.js');
-var questions = require('./server/questions.js');
-var logger = require('./server/log.js');
-var pug = require('pug');
-var common = require('./server/common.js');
-var analytics = require('./server/analytics.js');
-var json2csv = require('json2csv');
-var fs = require('fs');
-var csv2json = require('csvtojson');
+const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
+const db = require('./server/db.js');
+const users = require('./server/users.js');
+const questions = require('./server/questions.js');
+const logger = require('./server/log.js');
+const pug = require('pug');
+const common = require('./server/common.js');
+const analytics = require('./server/analytics.js');
+const json2csv = require('json2csv');
+const fs = require('fs');
+const csv2json = require('csvtojson');
 
-var app = express();
-var port = process.env.QUIZZARD_PORT || 8000;
+const app = express();
+const port = process.env.QUIZZARD_PORT || 8000;
+
+/* Pre-compiled Pug views */
+const studentTable = pug.compileFile('views/account-table.pug');
+const accountForm = pug.compileFile('views/account-creation.pug');
+const accountEdit = pug.compileFile('views/account-edit.pug');
+const questionTable = pug.compileFile('views/question-table.pug');
+const questionForm = pug.compileFile('views/question-creation.pug');
+const questionEdit = pug.compileFile('views/question-edit.pug');
+const statistics = pug.compileFile('views/statistics.pug');
+const regexForm = pug.compileFile('views/question_types/regex-answer.pug');
+const mcForm = pug.compileFile('views/question_types/mc-answer.pug');
+const tfForm = pug.compileFile('views/question_types/tf-answer.pug');
+const chooseAllForm = pug.compileFile('views/question_types/chooseAll-answer.pug');
+const matchingForm = pug.compileFile('views/question_types/matching-answer.pug');
+const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug');
+const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
+const questionList = pug.compileFile('views/questionlist.pug');
+const discussionBoard = pug.compileFile('views/discussion.pug');
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -115,7 +133,7 @@ app.get('/home', function(req, res) {
         return res.redirect('/');
     }
 
-    if (req.session.user.type == common.userTypes.ADMIN) {
+    if (req.session.user.type === common.userTypes.ADMIN) {
         return res.redirect('/admin');
     }
 
@@ -176,24 +194,6 @@ app.get('/about', function(req,res) {
 
     return res.render('about', { user: req.session.user });
 });
-
-/* Pre-compiled Pug views */
-const studentTable = pug.compileFile('views/account-table.pug');
-const accountForm = pug.compileFile('views/account-creation.pug');
-const accountEdit = pug.compileFile('views/account-edit.pug');
-const questionTable = pug.compileFile('views/question-table.pug');
-const questionForm = pug.compileFile('views/question-creation.pug');
-const questionEdit = pug.compileFile('views/question-edit.pug');
-const statistics = pug.compileFile('views/statistics.pug');
-const regexForm = pug.compileFile('views/question_types/regex-answer.pug');
-const mcForm = pug.compileFile('views/question_types/mc-answer.pug');
-const tfForm = pug.compileFile('views/question_types/tf-answer.pug');
-const chooseAllForm = pug.compileFile('views/question_types/chooseAll-answer.pug');
-const matchingForm = pug.compileFile('views/question_types/matching-answer.pug');
-const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug');
-const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
-const questionList = pug.compileFile('views/questionlist.pug');
-const discussionBoard = pug.compileFile('views/discussion.pug');
 
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
@@ -547,7 +547,7 @@ app.get('/question', function(req, res) {
             return res.status(400).send('Question is not available');
         }
 
-        var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts);
+        var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts, '_id');
         var hasQrating = false;
         for (var i in questionFound.ratings) {
             if (questionFound.ratings[i].userId === req.session.user._id) {

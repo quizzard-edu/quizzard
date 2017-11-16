@@ -250,7 +250,7 @@ exports.submitAnswer = function(userId, questionId, correct, points, answer, cal
  */
 exports.getQuestionsListByUser = function(request, callback) {
     var questionsQuery = {};
-    var sortQuery = {_id: 1};
+    var sortQuery = {number: 1};
     var user = request.user;
     var questionsStatus = request.questionsStatus;
 
@@ -272,7 +272,7 @@ exports.getQuestionsListByUser = function(request, callback) {
                 return callback(err, null);
             }
 
-            var compareList = common.getIdsListFromJSONList(user.correctAttempts);
+            var compareList = common.getIdsListFromJSONList(user.correctAttempts, 'questionId');
             var answeredList = [];
             var unansweredList = [];
 
