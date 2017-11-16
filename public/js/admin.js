@@ -607,7 +607,8 @@ var updateVisibility = function(qid, questionNumber) {
         function (isConfirm) {
             // User confirms the visiblity change
             if (isConfirm) {
-                question['visible'] = $('#checked-' + qid).is(':checked');
+                var visibilityStatus = $('#checked-' + qid).is(':checked');
+                question['visible'] = visibilityStatus;
                 $.ajax({
                     type: 'POST',
                     url: '/questionmod',
@@ -616,7 +617,6 @@ var updateVisibility = function(qid, questionNumber) {
                         id: qid
                     },
                     success: function(data) {
-                        displayQuestionTable();
                         // Toast notifiation
                         const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
 
@@ -630,8 +630,8 @@ var updateVisibility = function(qid, questionNumber) {
                         if (data['status'] === 401) {
                             window.location.href = '/';
                         } else {
-                            displayQuestionTable();
                             // Toast notification
+                            $('#checked-' + qid).prop('checked', !visibilityStatus);
                             failSnackbar('Could not change visibility of question');
                         }
                     }
