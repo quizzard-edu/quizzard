@@ -18,9 +18,6 @@
         li#nav-about
           a.navbarLink(href='/about') About
       ul.right.hide-on-med-and-down
-        if user.type === 0
-          li#nav-settings
-            a.navbarLink(href='/settings') Settings
         li#nav-profile
           a.navbarLink(href='/profile') Profile
         li#nav-logout
@@ -38,9 +35,6 @@ ul#mobile.side-nav
     a.navbarLinkHidden(href='/analytics') Analytics
   li#nav-about
     a.navbarLinkHidden(href='/about') About
-  if user.type === 0
-    li#nav-settings
-      a.navbarLinkHidden(href='/settings') Settings
   li#nav-profile
     a.navbarLinkHidden(href='/profile') Profile
   li#nav-logout

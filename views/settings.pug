@@ -19,7 +19,13 @@ block content
               i.material-icons settings
               | General Settings
             .collapsible-body
-              span Lorem ipsum dolor sit amet.
+              span Class available (if this is disabled, students will not be allowed to log in)
+              .switch
+                label
+                  | Disabled
+                  input(type="checkbox" checked=false)
+                  span.lever
+                  | Enabled
           li
             .collapsible-header
               i.material-icons person
@@ -61,11 +67,11 @@ block content
                 .input-field
                   input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off')
               .row
-                .col.s4.m6
+                .col.s6.m6
                   label(for='qMinPoints') Default Minimum points (optional)
                   .input-field
                     input.form-control#qMinPoints.autocomplete(type='number' name='minPoints' placeholder='Minimum Points')
-                .col.s4.m6
+                .col.s6.m6
                   label(for='qMaxPoints') Default Maximum points (optional)
                   .input-field
                     input.form-control#qMaxPoints.autocomplete(type='number' name='maxPoints' placeholder='Maximum Points')
@@ -78,7 +84,7 @@ block content
                     span.lever
                     | Enable
               .row
-                .col.s4.m12
+                .col.s12.m6
                   .input-field
                     input.form-control#qtimeout.autocomplete(type='number' name='timeout' placeholder='Enter timeout in minutes ex. 10')
           li
