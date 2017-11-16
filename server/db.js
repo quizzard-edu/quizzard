@@ -116,7 +116,7 @@ exports.getStudentsListSorted = function(lim, callback){
             .limit(lim)
             .toArray(function(err, docs) {
         if (err) {
-            return callback(err, []);
+            return callback(err, null);
         }
 
         return callback(null, docs);
@@ -258,7 +258,7 @@ var updateUserById = function(userId, info, callback){
     }
 
     if (info.points) {
-        update.$set.points = info.points;
+        update.$set.points = parseInt(info.points);
     }
 
     if (info.rating) {

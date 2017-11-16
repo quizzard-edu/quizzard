@@ -25,7 +25,6 @@ var fileUpload = require('express-fileupload');
 var db = require('./server/db.js');
 var users = require('./server/users.js');
 var questions = require('./server/questions.js');
-var lb = require('./server/leaderboard.js');
 var logger = require('./server/log.js');
 var pug = require('pug');
 var common = require('./server/common.js');
@@ -202,20 +201,21 @@ app.get('/leaderboard-table', function(req, res) {
         return res.redirect('/');
     }
 
-    var ft, shrt;
+    var fullTable = true;
+    var shortTable = false;
 
-    ft = true;
-    shrt = false;
+    if (req.query.fullTable === 'false') {
+        fullTable = false;
+    }
 
-    if (req.query.fullTable == 'false')
-        ft = false;
-    if (req.query.longTable == 'false')
-        shrt = true;
+    if (req.query.longTable === 'false') {
+        shortTable = true;
+    }
 
-    lb.leaderboard(req.session.user._id, shrt, function(leader) {
+    users.getLeaderboard(req.session.user._id, shortTable, function(leader) {
         var html = leaderboardTable({
-            fullTable: ft,
-            shortTable: shrt,
+            fullTable: fullTable,
+            shortTable: shortTable,
             leaderboard: leader,
             userid: req.session.user._id
         });
@@ -547,10 +547,10 @@ app.get('/question', function(req, res) {
             return res.status(400).send('Question is not available');
         }
 
-        var answeredList = common.getIdsListFromJSONList2(questionFound.correctAttempts);
+        var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts);
         var hasQrating = false;
         for (var i in questionFound.ratings) {
-            if (questionFound.ratings[i].user === req.session.user._id) {
+            if (questionFound.ratings[i].userId === req.session.user._id) {
                 hasQrating = true;
             }
         }
