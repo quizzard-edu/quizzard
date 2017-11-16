@@ -52,7 +52,8 @@ var questionsCorrectPercentage = 40;
 
 // variables used by the script for different functionality
 // Do NOT change the variables below
-var allIds = [];
+var studentsIds = [];
+var adminsIds = [];
 var totalNumberOfQuestions = 0;
 var questionsCount = 1;
 var questionsIds = 0;
@@ -78,9 +79,9 @@ var createAdmins = function () {
 
 /**
  * This functions adds the accounts of admins
- * 
- * @param {integer} accid 
- * @param {string} pass 
+ *
+ * @param {integer} accid
+ * @param {string} pass
  */
 var addAdmin = function (accid, pass) {
     var acc = {
@@ -96,9 +97,11 @@ var addAdmin = function (accid, pass) {
             logger.log(common.formatString('Account with username {0} exists.', [accid]));
         }else if (err) {
             logger.error(common.formatString('Could not create account {0}. Please try again.', [accid]));
-        } 
+        }
 
         adminsCreated++;
+
+        adminsIds.push(account._id);
 
         if (adminsCreated === adminsCount) {
             createStudents();
@@ -117,9 +120,9 @@ var createStudents = function () {
 
 /**
  * This functions adds the accounts of admins
- * 
- * @param {integer} accid 
- * @param {string} pass 
+ *
+ * @param {integer} accid
+ * @param {string} pass
  */
 var addStudent = function (name, accid, pass) {
     const firstName = name.split(' ')[0];
@@ -138,11 +141,11 @@ var addStudent = function (name, accid, pass) {
             logger.log(common.formatString('Account with username {0} exists.', [accid]));
         }else if (err) {
             logger.error(common.formatString('Could not create account {0}. Please try again.', [accid]));
-        } 
+        }
 
         studentsCreated++;
 
-        allIds.push(account._id);
+        studentsIds.push(account._id);
 
         if (studentsCreated === studentsCount) {
             createQuestionsRegular();
@@ -162,9 +165,9 @@ var createQuestionsRegular = function () {
 
 /**
  * This function adds the regular type question
- * 
- * @param {string} qTopic 
- * @param {integer} id 
+ *
+ * @param {string} qTopic
+ * @param {integer} id
  */
 var addQuestionRegular = function (qTopic, id) {
     var question = {
@@ -185,7 +188,7 @@ var addQuestionRegular = function (qTopic, id) {
             logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
+                rateQuestion(id, adminsIds[i], Math.floor(Math.random() * 6));
             }
         }
 
@@ -208,12 +211,12 @@ var answerQuestionsRegular = function () {
 
 /**
  * This function answers the regular type question
- * 
- * @param {integer} questionId 
+ *
+ * @param {integer} questionId
  */
 var answerQuestionRegular = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
+        var studentId = studentsIds[Math.floor(Math.random() * studentsCount)];
         var answer = 'NotKonniChiwa';
 
         if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
@@ -248,9 +251,9 @@ var createQuestionsMultipleChoice = function () {
 
 /**
  * This function adds the multiple choice type question
- * 
- * @param {string} qTopic 
- * @param {integer} id 
+ *
+ * @param {string} qTopic
+ * @param {integer} id
  */
 var addQuestionMultipleChoice = function (qTopic, id) {
     var question = {
@@ -272,7 +275,7 @@ var addQuestionMultipleChoice = function (qTopic, id) {
             logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
+                rateQuestion(id, adminsIds[i], Math.floor(Math.random() * 6));
             }
         }
 
@@ -295,12 +298,12 @@ var answerQuestionsMultipleChoice = function () {
 
 /**
  * This function answers the multiple choice type question
- * 
- * @param {integer} questionId 
+ *
+ * @param {integer} questionId
  */
 var answerQuestionMultipleChoice = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
+        var studentId = studentsIds[Math.floor(Math.random() * studentsCount)];
         var answer = 'Option2';
 
         if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
@@ -335,9 +338,9 @@ var createQuestionsTrueFalse = function () {
 
 /**
  * This function adds the true and false type question
- * 
- * @param {string} qTopic 
- * @param {integer} id 
+ *
+ * @param {string} qTopic
+ * @param {integer} id
  */
 var addQuestionTrueFalse = function (qTopic, id) {
     var question = {
@@ -358,7 +361,7 @@ var addQuestionTrueFalse = function (qTopic, id) {
             logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
+                rateQuestion(id, adminsIds[i], Math.floor(Math.random() * 6));
             }
         }
 
@@ -381,12 +384,12 @@ var answerQuestionsTrueFalse = function () {
 
 /**
  * This function answers the true and false type question
- * 
- * @param {integer} questionId 
+ *
+ * @param {integer} questionId
  */
 var answerQuestionTrueFalse = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
+        var studentId = studentsIds[Math.floor(Math.random() * studentsCount)];
         var answer = 'false';
 
         if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
@@ -421,9 +424,9 @@ var createQuestionsMatching = function () {
 
 /**
  * This function adds the matching type question
- * 
- * @param {string} qTopic 
- * @param {integer} id 
+ *
+ * @param {string} qTopic
+ * @param {integer} id
  */
 var addQuestionMatching = function (qTopic, id) {
     var question = {
@@ -446,7 +449,7 @@ var addQuestionMatching = function (qTopic, id) {
             logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
+                rateQuestion(id, adminsIds[i], Math.floor(Math.random() * 6));
             }
         }
 
@@ -469,12 +472,12 @@ var answerQuestionsMatching = function () {
 
 /**
  * This function answers the matching type question
- * 
- * @param {integer} questionId 
+ *
+ * @param {integer} questionId
  */
 var answerQuestionMatching = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
+        var studentId = studentsIds[Math.floor(Math.random() * studentsCount)];
         var answer = [['l3', 'l2', 'l1'], ['r1', 'r2', 'r3']];
 
         if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
@@ -509,9 +512,9 @@ var createQuestionsChooseAll = function () {
 
 /**
  * This function adds the choose all type question
- * 
- * @param {string} qTopic 
- * @param {integer} id 
+ *
+ * @param {string} qTopic
+ * @param {integer} id
  */
 var addQuestionChooseAll = function (qTopic, id) {
     var question = {
@@ -533,7 +536,7 @@ var addQuestionChooseAll = function (qTopic, id) {
             logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
+                rateQuestion(id, adminsIds[i], Math.floor(Math.random() * 6));
             }
         }
 
@@ -556,12 +559,12 @@ var answerQuestionsChooseAll = function () {
 
 /**
  * This function answers the choose all type question
- * 
- * @param {integer} questionId 
+ *
+ * @param {integer} questionId
  */
 var answerQuestionChooseAll = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
+        var studentId = studentsIds[Math.floor(Math.random() * studentsCount)];
         var answer = ['c1', 'c2', 'c3'];
 
         if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
@@ -596,9 +599,9 @@ var createQuestionsOrdering = function () {
 
 /**
  * This function adds the ordering type question
- * 
- * @param {string} qTopic 
- * @param {integer} id 
+ *
+ * @param {string} qTopic
+ * @param {integer} id
  */
 var addQuestionOrdering = function (qTopic, id) {
     var question = {
@@ -619,7 +622,7 @@ var addQuestionOrdering = function (qTopic, id) {
             logger.log(common.formatString('Questions {0} created', [id]));
 
             for (var i = 0; i < adminsCount; i++) {
-                rateQuestion(id, 'Admin' + i, Math.floor(Math.random() * 6));
+                rateQuestion(id, adminsIds[i], Math.floor(Math.random() * 6));
             }
         }
 
@@ -642,12 +645,12 @@ var answerQuestionsOrdering = function () {
 
 /**
  * This function answers the ordering type question
- * 
- * @param {integer} questionId 
+ *
+ * @param {integer} questionId
  */
 var answerQuestionOrdering = function (questionId) {
     for (var i = 0; i < questionsAttempts; i++) {
-        var studentId = allIds[Math.floor(Math.random() * studentsCount)];
+        var studentId = studentsIds[Math.floor(Math.random() * studentsCount)];
         var answer = ['i1', 'i2', 'i3', 'c4'];
 
         if (Math.floor(Math.random() * 100) > (100 - questionsCorrectPercentage)) {
@@ -683,9 +686,9 @@ var createComments = function () {
 /**
  * This function adds a number of comments to a given question based on
  * the number specified. It selects a random student to comment
- * 
- * @param {integer} questionId 
- * @param {function} callback 
+ *
+ * @param {integer} questionId
+ * @param {function} callback
  */
 var addComments = function (questionId, callback) {
     db.lookupQuestion({ number: questionId }, function (err, question) {
@@ -698,7 +701,7 @@ var addComments = function (questionId, callback) {
             var answeredList = [];
 
             for (var i in question.correctAttempts) {
-                answeredList.push(question.correctAttempts[i].id);
+                answeredList.push(question.correctAttempts[i].userId);
             }
 
             var userId = answeredList[Math.floor(Math.random() * answeredList.length)];
@@ -713,9 +716,9 @@ var addComments = function (questionId, callback) {
                 for (var i in usersList) {
                     var user = usersList[i];
 
-                    if (userId !== user.id &&
+                    if (userId !== user._id &&
                         (user.type === common.userTypes.ADMIN
-                            || answeredList.indexOf(user.id) !== -1)) {
+                            || answeredList.indexOf(user._id) !== -1)) {
                         totalList.push(user.fname + ' ' + user.lname);
                     }
                 }
@@ -770,9 +773,9 @@ var createCommentActions = function () {
 
 /**
  * This function adds the action comments to the question specified
- * 
- * @param {integer} questionId 
- * @param {function} callback 
+ *
+ * @param {integer} questionId
+ * @param {function} callback
  */
 var addCommentActions = function (questionId, callback) {
     db.lookupQuestion({ number: questionId }, function (err, question) {
@@ -785,7 +788,7 @@ var addCommentActions = function (questionId, callback) {
             var answeredList = [];
 
             for (var i in question.correctAttempts) {
-                answeredList.push(question.correctAttempts[i].id);
+                answeredList.push(question.correctAttempts[i].userId);
             }
 
             var userId = answeredList[Math.floor(Math.random() * answeredList.length)];
@@ -800,9 +803,9 @@ var addCommentActions = function (questionId, callback) {
                 for (var i in usersList) {
                     var user = usersList[i];
 
-                    if (userId !== user.id &&
+                    if (userId !== user._id &&
                         (user.type === common.userTypes.ADMIN
-                            || answeredList.indexOf(user.id) !== -1)) {
+                            || answeredList.indexOf(user._id) !== -1)) {
                         totalList.push(user.fname + ' ' + user.lname);
                     }
                 }
@@ -872,9 +875,9 @@ var createReplyActions = function () {
 
 /**
  * This function adds the action replies to the question specified
- * 
- * @param {integer} questionId 
- * @param {function} callback 
+ *
+ * @param {integer} questionId
+ * @param {function} callback
  */
 var addReplyActions = function (questionId, callback) {
     db.lookupQuestion({ number: questionId }, function (err, question) {
@@ -887,7 +890,7 @@ var addReplyActions = function (questionId, callback) {
             var answeredList = [];
 
             for (var i in question.correctAttempts) {
-                answeredList.push(question.correctAttempts[i].id);
+                answeredList.push(question.correctAttempts[i].userId);
             }
 
             for (var j = 0; j < question.comments.length; j++) {
@@ -920,11 +923,11 @@ var addReplyActions = function (questionId, callback) {
 
 /**
  * This function checks and answers the question specified, by the uer specified
- * 
- * @param {integer} questionId 
- * @param {string} userId 
- * @param {string} answer 
- * @param {function} callback 
+ *
+ * @param {integer} questionId
+ * @param {string} userId
+ * @param {string} answer
+ * @param {function} callback
  */
 var checkAnswer = function (questionId, userId, answer, callback) {
     logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
@@ -967,11 +970,11 @@ var checkAnswer = function (questionId, userId, answer, callback) {
 
 /**
  * This function rates the question specifed, by the user specified, using the rating givem
- * 
- * @param {integer} questionId 
- * @param {string} userId 
- * @param {integer} rating 
- * @param {function} callback 
+ *
+ * @param {integer} questionId
+ * @param {string} userId
+ * @param {integer} rating
+ * @param {function} callback
  */
 var rateQuestion = function (questionId, userId, rating, callback) {
     if (rating < 1 || rating > 5) {
@@ -1000,8 +1003,8 @@ var rateQuestion = function (questionId, userId, rating, callback) {
 /**
  * This function gives the ID of the user formatted as the first 7 letters
  * of `lastFirst` naming convention
- * 
- * @param {string} name 
+ *
+ * @param {string} name
  */
 var studentIdGenerator = function (name) {
     const combined = name.split(' ')[1] + name.split(' ')[0];
@@ -1011,7 +1014,7 @@ var studentIdGenerator = function (name) {
 
 /**
  * This function resets the variables that are needed for each question to be pupulated
- * 
+ *
  * @param {string} questionType
  */
 var variableReset = function (questionType) {
