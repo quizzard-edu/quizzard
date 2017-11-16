@@ -257,6 +257,10 @@ var updateUserById = function(userId, info, callback){
         update.$set.email = info.email;
     }
 
+    if (info.points) {
+        update.$set.points = info.points;
+    }
+
     if (info.rating) {
         update.$push.ratings = {
             question: info.questionId,

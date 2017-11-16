@@ -31,16 +31,16 @@ block styles
               tr
                 td
                   p
-                    input.checked(id='checked-' + q._id, type='checkbox', checked=q.visible)
-                    label.visbox(for='checked-' + q._id)
+                    input.checked(id='checked-' + q._id, name=q.number, type='checkbox', checked=q.visible)
+                    label.visbox(for='checked-' + q._id, name=q.number)
                 td #{q.number}
                 td #{q.title}
                 td #{q.topic}
                 td #{questionType(q.type)}
                 td
-                  button.btn.btn-default.view-button(id='view-' + q._id type='button' aria-label='View')
+                  button.btn.btn-default.view-button(id='view-' + q._id, name=q.number, type='button', aria-label='View')
                     i.material-icons remove_red_eye
-                  button.btn.btn-default.edit-button(id='edit-' + q._id type='button' aria-label='Edit')
+                  button.btn.btn-default.edit-button(id='edit-' + q._id, name=q.number, type='button', aria-label='Edit')
                     i.material-icons edit
-                  button.btn.btn-default.delete-button(id='delete-' + q._id type='button' aria-label='Delete')
+                  button.btn.btn-default.delete-button(id='delete-' + q._id, name=q.number, type='button', aria-label='Delete')
                     i.material-icons close

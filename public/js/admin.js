@@ -299,10 +299,10 @@ var addQuestionsTableEvents = function() {
         deleteQuestion(this.id.substring(7));
     });
     $('.edit-button').click(function(evt) {
-        editQuestion(this.id.substring(5));
+        editQuestion(this.id.substring(5), this.name);
     });
     $('.checked').change(function(evt) {
-        updateVisibility(this.id.substring(8));
+        updateVisibility(this.id.substring(8), this.name);
     });
 }
 
@@ -592,12 +592,12 @@ var submitEditForm = function(id) {
 }
 
 /* Updates the Vilibility of a Question */
-var updateVisibility = function(qid) {
+var updateVisibility = function(qid, questionNumber) {
     var question = {};
     swal({
         type: 'warning',
         title: 'Visibilty Change',
-        text: 'You are about to change the visibility status of question ' + qid,
+        text: 'You are about to change the visibility status of question ' + questionNumber,
         showCancelButton: true,
         showConfirmButton: true,
         // User can only close the swal if they click one of the buttons
@@ -620,10 +620,10 @@ var updateVisibility = function(qid) {
                         // Toast notifiation
                         const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
 
-                        if(question['visible']){
-                            successSnackbar('Question ' + qid + msg);
+                        if (question['visible']) {
+                            successSnackbar('Question ' + questionNumber + msg);
                         } else {
-                            warningSnackbar('Question ' + qid + msg);
+                            warningSnackbar('Question ' + questionNumber + msg);
                         }
                     },
                     error: function(data) {
@@ -747,7 +747,7 @@ var deleteQuestion = function(qid) {
     });
 }
 
-var editQuestion = function(qid) {
+var editQuestion = function(qid, questionNumber) {
     $.ajax({
         type: 'GET',
         url: '/questionedit',
@@ -765,7 +765,7 @@ var editQuestion = function(qid) {
             $('#qtext').summernote('code', data.qtext);
             $('#question-edit-form').submit(function(evt) {
                 evt.preventDefault();
-                submitQEditForm(qid);
+                submitQEditForm(qid, questionNumber);
             });
             setRating(data.qrating);
 
@@ -782,7 +782,7 @@ var editQuestion = function(qid) {
     });
 }
 
-var submitQEditForm = function(qid) {
+var submitQEditForm = function(qid, questionNumber) {
     if ($('#qtext').summernote('isEmpty')) {
         failSnackbar('Please enter a question body in the editor.');
         return;
@@ -801,7 +801,7 @@ var submitQEditForm = function(qid) {
             id: qid
         },
         success: function(data) {
-            successSnackbar('Question ' + qid + ' has been modified.');
+            successSnackbar('Question ' + questionNumber + ' has been modified.');
             displayQuestionTable();
         },
         error: function(data) {
