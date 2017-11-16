@@ -1,0 +1,30 @@
+li
+  .collapsible-header(onclick="$(this).parent().toggleClass('active'); $('#questionB')[0].style.display = ($('#questionB')[0].style.display === 'block') ? 'none' : 'block'")
+    i.material-icons library_books
+    | Question Settings
+  .collapsible-body#questionB
+    .row
+      label(for='qtopic') Default Topic (optional)
+      .input-field
+        input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off')
+    .row
+      .col.s6.m6
+        label(for='qMinPoints') Default Minimum points (optional)
+        .input-field
+          input.form-control#qMinPoints.autocomplete(type='number' name='minPoints' placeholder='Minimum Points')
+      .col.s6.m6
+        label(for='qMaxPoints') Default Maximum points (optional)
+        .input-field
+          input.form-control#qMaxPoints.autocomplete(type='number' name='maxPoints' placeholder='Maximum Points')
+    .row
+      span Timeout if the question is not answered correctly
+      .switch
+        label
+          | Disable
+          input#allowTimeout(type="checkbox" checked=false onclick="$(this)[0].checked ? $('#qtimeout').removeClass('hidden') : $('#qtimeout').addClass('hidden')")
+          span.lever
+          | Enable
+    .row
+      .col.s12.m6
+        .input-field
+          input.form-control#qtimeout.autocomplete(type='number' name='timeout' placeholder='Enter timeout in minutes ex. 10')

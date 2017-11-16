@@ -1,0 +1,12 @@
+li
+  .collapsible-header#aa(onclick="$(this).parent().toggleClass('active'); $('#generalB')[0].style.display = ($('#generalB')[0].style.display === 'block') ? 'none' : 'block'")
+    i.material-icons settings
+    | General Settings
+  .collapsible-body#generalB
+    span Class available (if this is disabled, students will not be allowed to log in)
+    .switch
+      label
+        | Disabled
+        input(type="checkbox" checked=false)
+        span.lever
+        | Enabled
