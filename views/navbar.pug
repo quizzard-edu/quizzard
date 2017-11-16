@@ -19,6 +19,8 @@
           a.navbarLink(href='/about') About
       ul.right.hide-on-med-and-down
         li#nav-profile
+          a.navbarLink(onclick='userFeedback();') Feedback
+        li#nav-profile
           a.navbarLink(href='/profile') Profile
         li#nav-logout
           a.navbarLink(href='/logout') Logout
@@ -36,6 +38,10 @@ ul#mobile.side-nav
   li#nav-about
     a.navbarLinkHidden(href='/about') About
   li#nav-profile
+    a.navbarLinkHidden(href='#' onclick='userFeedback();') Feedback
+  li#nav-profile
     a.navbarLinkHidden(href='/profile') Profile
   li#nav-logout
     a.navbarLinkHidden(href='/logout') Logout
+
+include modal-feedback

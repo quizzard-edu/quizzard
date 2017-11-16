@@ -1,0 +1,22 @@
+block style
+  link(rel='stylesheet' href='/css/modal-feedback.css')
+
+block content
+  #modalFeedback.modal
+    .modal-content
+      h3 Feedback
+
+      .row
+        form.col.s12
+          .row
+            .input-field.col.s12
+              i.material-icons.prefix label_outline
+              input#subject(placeholder='Subject', type='text' required)
+              label(for='subject') Subject
+          .row
+            .input-field.col.s12
+              i.material-icons.prefix mode_edit
+              textarea#feedbackArea.materialize-textarea(placeholder='Message', type='text' required) 
+              label(for='feedbackArea') Message
+          .row
+            button.modal-action.modal-close.btn.btn-info(type='submit') Submit

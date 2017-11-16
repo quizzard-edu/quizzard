@@ -1,7 +1,7 @@
-#modalAlert {
+#modalFeedback {
 	background-color: white;
 	max-width: 500px;
-	max-height:375px;
+	max-height:385px;
 	text-align: center;
 	border-radius: 5px;
 }
@@ -32,7 +32,6 @@
 	vertical-align: bottom;
 	background-color: #8CD4F5;
 	box-shadow: none !important;
-	margin-top: 5px;
 	border-radius: 5px;
 }
 

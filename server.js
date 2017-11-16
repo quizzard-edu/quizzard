@@ -1441,3 +1441,18 @@ app.get('/adminAnalytics', function(req,res){
 app.use(function(req, res, next){
     return res.status(404).render('page-not-found');
 });
+
+
+app.post('/submitFeedback',function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var userId = req.session.user.id;
+
+    logger.log(common.formatString('{0} - $TIME$: {1}', [userId, message]));
+
+    //DATABASE STUFF HERE
+
+    return res.status(200).send(value);
+});

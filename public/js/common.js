@@ -66,3 +66,35 @@ function failSnackbar(msg) {
 $(document).on('click', '#closeSnack', function() {
     $(this).parent().fadeOut();
 });
+
+function userFeedback() {
+    $('#modalFeedback').modal({
+        dismissible: false,
+        opacity: 0.5,
+        complete: function() {
+            var subject = $('#subject').val();
+            var message = $('#feedbackArea').val();
+
+            if(subject !== "" && message !== "") {
+                $.ajax({
+                    type: 'POST',
+                    url: '/submitFeedback',
+                    data: {
+                        subject: subject,
+                        message: message,
+                    },
+                    success: function(data) {
+                        
+                    },
+                    error: function(data) {
+                        
+                    }
+                });
+            } else {
+                failSnackbar("Please enter a valid subject and message");
+            }
+        }
+    });
+
+    $('#modalFeedback').modal('open');
+}
