@@ -17,6 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+const uuidv1 = require('uuid/v1');
 const fs = require('fs');
 const date = require('moment');
 const path = require('path');
@@ -38,7 +39,6 @@ const userTypes = Object.freeze({
     STUDENT   : 1
 });
 exports.userTypes = userTypes;
-
 
 // all question types
 const questionTypes = Object.freeze({
@@ -119,7 +119,12 @@ exports.questionAttributes = questionAttributes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
-var randomizeList = function(data) {
+/**
+* shuffle the given list and return the result as a new list
+*
+* @return {array}
+*/
+var randomizeList = function (data) {
     var oldIndex, newIndex, tempHolder;
 
     for (oldIndex = data.length-1; oldIndex > 0; oldIndex--) {
@@ -133,28 +138,26 @@ var randomizeList = function(data) {
 };
 exports.randomizeList = randomizeList;
 
-/* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
-var getIdsListFromJSONList = function (JSONList) {
+/**
+* given a list of JSON objects that have Id as one of their feilds, return a list of Ids
+*
+* @return {array}
+*/
+var getIdsListFromJSONList = function (JSONList, idType) {
     var list = [];
-    for (i in JSONList){
-        list.push(JSONList[i]._id);
+    for (i in JSONList) {
+        list.push(JSONList[i][idType]);
     }
     return list;
 }
 exports.getIdsListFromJSONList = getIdsListFromJSONList;
 
-/* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
-var getIdsListFromJSONList2 = function (JSONList) {
-    var list = [];
-    for (i in JSONList){
-        list.push(JSONList[i].id);
-    }
-    return list;
-}
-exports.getIdsListFromJSONList2 = getIdsListFromJSONList2;
-
-// check if json obejct is empty
-var isEmptyObject = function(obj) {
+/**
+* check if json obejct is empty
+*
+* @return {boolean}
+*/
+var isEmptyObject = function (obj) {
     for (var key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
             return false;
@@ -164,20 +167,41 @@ var isEmptyObject = function(obj) {
 }
 exports.isEmptyObject = isEmptyObject;
 
-// return the current date
-var getDate = function() {
+/**
+* return the current date
+*
+* @return {string}
+*/
+var getDate = function () {
     return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
 }
+exports.getDate = getDate;
 
-// return the current date with format
-var getDateByFormat = function(format) {
+/**
+* return the current date with format
+*
+* @return {string}
+*/
+var getDateByFormat = function (format) {
     return date().format(format);
 }
-
-exports.getDate = getDate;
 exports.getDateByFormat = getDateByFormat;
 
-// formating a string based on an array of parts of the string
+/**
+* get a unique Id
+*
+* @return {string}
+*/
+var getUUID = function () {
+    return uuidv1();
+}
+exports.getUUID = getUUID;
+
+/**
+* formating a string based on an array of parts of the string
+*
+* @return {string}
+*/
 var formatString = function (text, args) {
     var regex = new RegExp('{-?[0-9]+}', 'g');
     return text.replace(regex, function(item) {
@@ -237,7 +261,7 @@ exports.fileExists = existsSync;
 // write data to a fils
 var writeFile = function (filePath, fileName, fileExtension, fileData, callback) {
     var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
-    fs.writeFile(fullPath, fileData, function(err) {
+    fs.writeFile(fullPath, fileData, function (err) {
         return callback(err, err ? null : 'ok');
     });
 }
