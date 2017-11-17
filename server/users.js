@@ -23,9 +23,14 @@ var db = require('./db.js');
 var logger = require('./log.js');
 var common = require('./common.js');
 
-// Create an admin USER, if the USER object is valid
-exports.addAdmin = function(user, callback) {
-    if(!user.fname || !user.lname || !user.username || !user.password){
+/**
+ * Create a student USER, if the USER object is valid
+ *
+ * @param {object} user
+ * @param {function} callback
+ */
+exports.addAdmin = function (user, callback) {
+    if (!user.fname || !user.lname || !user.username || !user.password) {
         logger.error('Failed to create a new admin, missing requirements');
         return callback('failure', null);
     }
@@ -52,9 +57,9 @@ exports.addAdmin = function(user, callback) {
         userToAdd.active = true;
         userToAdd.ratings = [];
 
-        db.addAdmin(userToAdd, function(err, userObj){
+        db.addAdmin(userToAdd, function (err, userObj) {
             if(err){
-                if (err === 'failure'){
+                if (err === 'failure') {
                     logger.error(common.formatString('Failed to create admin {0}, database issue', [userToAdd.username]));
                 } else if (err === 'exists') {
                     logger.error(common.formatString('Admin {0} already exists', [userToAdd.username]));
@@ -72,14 +77,19 @@ exports.addAdmin = function(user, callback) {
     });
 }
 
-// Create a student USER, if the USER object is valid
-exports.addStudent = function(user, callback) {
-    if(!user.fname || !user.lname || !user.username || !user.password){
+/**
+ * Create a student USER, if the USER object is valid
+ *
+ * @param {object} user
+ * @param {function} callback
+ */
+exports.addStudent = function (user, callback) {
+    if (!user.fname || !user.lname || !user.username || !user.password) {
         logger.error('Failed to create a new student, missing requirements');
         return callback('failure', null);
     }
 
-    bcrypt.hash(user.password, 11, function(err, hash) {
+    bcrypt.hash(user.password, 11, function (err, hash) {
         if (err) {
             logger.error(err);
             return callback(err, null);
@@ -109,9 +119,9 @@ exports.addStudent = function(user, callback) {
         userToAdd.wrongAttemptsCount = 0;
         userToAdd.totalAttemptsCount = 0;
 
-        db.addStudent(userToAdd, function(err, userObj){
-            if(err){
-                if (err === 'failure'){
+        db.addStudent(userToAdd, function (err, userObj) {
+            if (err) {
+                if (err === 'failure') {
                     logger.error(common.formatString('Failed to create student {0}, database issue', [userToAdd.username]));
                 } else if (err === 'exists') {
                     logger.error(common.formatString('Student {0} already exists', [userToAdd.username]));
@@ -130,71 +140,143 @@ exports.addStudent = function(user, callback) {
     });
 }
 
-/*
+/**
  * Update the account with ID userid in the student database.
  * The user argument holds the complete new object to insert.
  * Fail if the ID has changed and the new ID already belongs
  * to a user.
-*/
-exports.updateUserById = function(userId, info, callback){
+ *
+ * @param {string} userId
+ * @param {object} info
+ * @param {function} callback
+ */
+exports.updateUserById = function (userId, info, callback) {
     db.updateUserById(userId, info, callback);
 }
 
-exports.updateStudentById = function(userId, info, callback){
+/**
+ * update student by id
+ *
+ * @param {string} userId
+ * @param {object} info
+ * @param {function} callback
+ */
+exports.updateStudentById = function (userId, info, callback) {
     db.updateStudentById(userId, info, callback);
 }
 
-exports.updateAdminById = function(userId, info, callback){
+/**
+ * update admin by id
+ *
+ * @param {string} userId
+ * @param {object} info
+ * @param {function} callback
+ */
+exports.updateAdminById = function (userId, info, callback) {
     db.updateAdminById(userId, info, callback);
 }
 
-/* Return an array of users in the database. */
-exports.getAdminsList = function(callback) {
+/**
+ * Return an array of users in the database.
+ *
+ * @param {function} callback
+ */
+exports.getAdminsList = function (callback) {
     db.getAdminsList(callback);
 }
 
-exports.getStudentsList = function(callback) {
+/**
+ * get students list
+ *
+ * @param {function} callback
+ */
+exports.getStudentsList = function (callback) {
     db.getStudentsList(callback);
 }
 
-exports.getStudentsListWithStatus = function(active, callback) {
+/**
+ * get students list with status
+ *
+ * @param {boolean} active
+ * @param {function} callback
+ */
+exports.getStudentsListWithStatus = function (active, callback) {
     db.getStudentsListWithStatus(active, callback);
 }
 
-exports.getUsersList = function(callback) {
+/**
+ * get users list
+ *
+ * @param {function} callback
+ */
+exports.getUsersList = function (callback) {
     db.getUsersList(callback);
 }
 
-/* Return an array of users in the database, sorted by rank. */
-var getStudentsListSorted = function(lim, callback) {
+/**
+ * Return an array of users in the database, sorted by rank.
+ *
+ * @param {int} lim
+ * @param {function} callback
+ */
+var getStudentsListSorted = function (lim, callback) {
     db.getStudentsListSorted(lim, callback);
 }
 exports.getStudentsListSorted = getStudentsListSorted;
 
-/*
+/**
  * Check if the account given by user and pass is valid.
  * Return account object if it is or null otherwise.
+ *
+ * @param {string} username
+ * @param {string} pass
+ * @param {function} callback
  */
-exports.checkLogin = function(username, pass, callback) {
+exports.checkLogin = function (username, pass, callback) {
     db.checkLogin(username, pass, callback);
 }
 
-/*
+/**
  * Fetch the user object with ID iserId in the users database.
+ *
+ * @param {string} userId
+ * @param {function} callback
  */
-exports.getUserById = function(userId, callback){
+exports.getUserById = function (userId, callback){
     db.getUserById(userId, callback);
 }
 
-exports.getStudentById = function(studentId, callback) {
+/**
+ * get the admin object by Id if exists
+ *
+ * @param {string} studentId
+ * @param {function} callback
+ */
+exports.getStudentById = function (studentId, callback) {
     db.getStudentById(studentId, callback);
 }
 
-exports.getAdminById = function(adminId, callback) {
+/**
+ * get the admin object by Id if exists
+ *
+ * @param {string} adminId
+ * @param {function} callback
+ */
+exports.getAdminById = function (adminId, callback) {
     db.getStudentById(adminId, callback);
 }
 
-exports.submitAnswer = function(userId, questionId, correct, points, answer, callback) {
+/**
+ * submit user's answer on a question by updating the collections
+ *
+ * @param {string} userId
+ * @param {string} questionId
+ * @param {boolean} correct
+ * @param {int} points
+ * @param {string} answer
+ * @param {function} callback
+ */
+exports.submitAnswer = function (userId, questionId, correct, points, answer, callback) {
     var currentDate = new Date().toString();
     var query = { _id : userId };
     var update = {};
@@ -245,10 +327,14 @@ exports.submitAnswer = function(userId, questionId, correct, points, answer, cal
         return callback(err, result);
     });
 }
-/*
+
+/**
  * Fetch the question list of userId
+ *
+ * @param {object} request
+ * @param {function} callback
  */
-exports.getQuestionsListByUser = function(request, callback) {
+exports.getQuestionsListByUser = function (request, callback) {
     var questionsQuery = {};
     var sortQuery = {number: 1};
     var user = request.user;
@@ -259,7 +345,7 @@ exports.getQuestionsListByUser = function(request, callback) {
     }
 
     if (user.type === common.userTypes.ADMIN) {
-        db.getQuestionsList(questionsQuery, sortQuery, function(err, docs){
+        db.getQuestionsList(questionsQuery, sortQuery, function (err, docs){
             return callback(err, docs);
         });
     }
@@ -267,7 +353,7 @@ exports.getQuestionsListByUser = function(request, callback) {
     if (user.type === common.userTypes.STUDENT) {
         questionsQuery.visible = true;
 
-        db.getQuestionsList(questionsQuery, sortQuery, function(err, docs) {
+        db.getQuestionsList(questionsQuery, sortQuery, function (err, docs) {
             if (err) {
                 return callback(err, null);
             }
@@ -290,16 +376,36 @@ exports.getQuestionsListByUser = function(request, callback) {
     }
 }
 
-// set the status of the user to active or in-active
-exports.setUserStatus = function(studentId, newStatus, callback){
+/**
+ * set the status of the user to active or in-active
+ *
+ * @param {string} studentId
+ * @param {boolean} newStatus
+ * @param {function} callback
+ */
+exports.setUserStatus = function (studentId, newStatus, callback) {
     db.updateUserById(studentId,{active: newStatus}, callback);
 }
 
-// adding rating to question collection
+/**
+ * adding rating to question collection
+ *
+ * @param {string} userId
+ * @param {string} questionId
+ * @param {int} rating
+ * @param {function} callback
+ */
 exports.submitRating = function (userId, questionId, rating, callback) {
     db.updateUserById(userId, {questionId: questionId, rating: rating}, callback);
 }
 
+/**
+ * update user's profile based on the given infomation
+ *
+ * @param {string} userId
+ * @param {object} request
+ * @param {function} callback
+ */
 exports.updateProfile = function (userId, request, callback) {
     var query = {_id: userId};
     var update = {};
@@ -322,14 +428,18 @@ exports.updateProfile = function (userId, request, callback) {
     });
 }
 
-/*
+/**
  * Fetch a list of students to display in the leaderboard.
  * The list is sorted by decreasing points.
  * Add rank to each student entry.
  *
  * If shrt is true, return leaderboard with max eight entries.
+ *
+ * @param {string} userid
+ * @param {boolean} shrt
+ * @param {function} callback
  */
-exports.getLeaderboard = function(userid, shrt, callback) {
+exports.getLeaderboard = function (userid, shrt, callback) {
     getStudentsListSorted(0, function(err, studentlist) {
         if (err) {
             logger.error(err);

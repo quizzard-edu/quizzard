@@ -124,7 +124,7 @@ exports.questionAttributes = questionAttributes;
 *
 * @return {array}
 */
-var randomizeList = function(data) {
+var randomizeList = function (data) {
     var oldIndex, newIndex, tempHolder;
 
     for (oldIndex = data.length-1; oldIndex > 0; oldIndex--) {
@@ -145,7 +145,7 @@ exports.randomizeList = randomizeList;
 */
 var getIdsListFromJSONList = function (JSONList, idType) {
     var list = [];
-    for (i in JSONList){
+    for (i in JSONList) {
         list.push(JSONList[i][idType]);
     }
     return list;
@@ -157,7 +157,7 @@ exports.getIdsListFromJSONList = getIdsListFromJSONList;
 *
 * @return {boolean}
 */
-var isEmptyObject = function(obj) {
+var isEmptyObject = function (obj) {
     for (var key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
             return false;
@@ -172,7 +172,7 @@ exports.isEmptyObject = isEmptyObject;
 *
 * @return {string}
 */
-var getDate = function() {
+var getDate = function () {
     return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
 }
 exports.getDate = getDate;
@@ -182,7 +182,7 @@ exports.getDate = getDate;
 *
 * @return {string}
 */
-var getDateByFormat = function(format) {
+var getDateByFormat = function (format) {
     return date().format(format);
 }
 exports.getDateByFormat = getDateByFormat;
@@ -261,7 +261,7 @@ exports.fileExists = existsSync;
 // write data to a fils
 var writeFile = function (filePath, fileName, fileExtension, fileData, callback) {
     var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
-    fs.writeFile(fullPath, fileData, function(err) {
+    fs.writeFile(fullPath, fileData, function (err) {
         return callback(err, err ? null : 'ok');
     });
 }
