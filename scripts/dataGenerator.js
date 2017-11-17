@@ -95,7 +95,7 @@ var addAdmin = function (accid, pass) {
     users.addAdmin(acc, function (err, account) {
         if (err === 'exists') {
             logger.log(common.formatString('Account with username {0} exists.', [accid]));
-        }else if (err) {
+        } else if (err) {
             logger.error(common.formatString('Could not create account {0}. Please try again.', [accid]));
         }
 
