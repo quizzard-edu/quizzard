@@ -774,8 +774,8 @@ var submitQEditForm = function(qid, questionNumber) {
 
     var question = collectQuestionFormData('#question-edit-form');
 
-    if (rating > -1 && rating < 5) {
-        submitQuestionRating(rating + 1, qid);
+    if (getRating() > 0 && getRating() < 6) {
+        submitQuestionRating(getRating(), qid);
     }
 
     $.ajax({
