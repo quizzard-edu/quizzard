@@ -119,6 +119,11 @@ exports.questionAttributes = questionAttributes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
+/**
+* shuffle the given list and return the result as a new list
+*
+* @return {array}
+*/
 var randomizeList = function(data) {
     var oldIndex, newIndex, tempHolder;
 
@@ -133,7 +138,11 @@ var randomizeList = function(data) {
 };
 exports.randomizeList = randomizeList;
 
-/* given a list of JSON objects that have Id as one of their feilds, return a list of Ids*/
+/**
+* given a list of JSON objects that have Id as one of their feilds, return a list of Ids
+*
+* @return {array}
+*/
 var getIdsListFromJSONList = function (JSONList, idType) {
     var list = [];
     for (i in JSONList){
@@ -143,7 +152,11 @@ var getIdsListFromJSONList = function (JSONList, idType) {
 }
 exports.getIdsListFromJSONList = getIdsListFromJSONList;
 
-// check if json obejct is empty
+/**
+* check if json obejct is empty
+*
+* @return {boolean}
+*/
 var isEmptyObject = function(obj) {
     for (var key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -154,25 +167,41 @@ var isEmptyObject = function(obj) {
 }
 exports.isEmptyObject = isEmptyObject;
 
-// return the current date
+/**
+* return the current date
+*
+* @return {string}
+*/
 var getDate = function() {
     return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
 }
 exports.getDate = getDate;
 
-// return the current date with format
+/**
+* return the current date with format
+*
+* @return {string}
+*/
 var getDateByFormat = function(format) {
     return date().format(format);
 }
 exports.getDateByFormat = getDateByFormat;
 
-// get UUID
+/**
+* get a unique Id
+*
+* @return {string}
+*/
 var getUUID = function () {
     return uuidv1();
 }
 exports.getUUID = getUUID;
 
-// formating a string based on an array of parts of the string
+/**
+* formating a string based on an array of parts of the string
+*
+* @return {string}
+*/
 var formatString = function (text, args) {
     var regex = new RegExp('{-?[0-9]+}', 'g');
     return text.replace(regex, function(item) {
