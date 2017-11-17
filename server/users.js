@@ -349,8 +349,9 @@ exports.getLeaderboard = function(userid, shrt, callback) {
             }
             studentlist[i].rank = rank;
 
-            if (studentlist[i]._id === userid)
+            if (studentlist[i]._id === userid) {
                 userind = i;
+            }
         }
 
         if (shrt) {
@@ -368,8 +369,9 @@ exports.getLeaderboard = function(userid, shrt, callback) {
              * students, followed by "...".
              */
             if (userind < 6) {
-                for (var i = 0; i < 7; ++i)
+                for (var i = 0; i < 7; ++i) {
                     lb.push(studentlist[i]);
+                }
                 lb.push(dots);
             } else {
                 /* The top 3 students are always displayed. */
@@ -383,8 +385,9 @@ exports.getLeaderboard = function(userid, shrt, callback) {
                  */
                 if (userind >= studentlist.length - 4) {
                     lb.push(dots);
-                    for (var i = studentlist.length - 4; i < studentlist.length; ++i)
+                    for (var i = studentlist.length - 4; i < studentlist.length; ++i) {
                         lb.push(studentlist[i]);
+                    }
                 } else {
                     /*
                      * Otherwise, display the user with the
@@ -397,7 +400,6 @@ exports.getLeaderboard = function(userid, shrt, callback) {
                     lb.push(dots);
                 }
             }
-
             callback(lb);
         } else {
             callback(studentlist);

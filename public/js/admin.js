@@ -887,9 +887,9 @@ var getQuestionsTopicsList = function () {
 
             // Setting up the autocomplete search for topics
             $('#qtopic').autocomplete({
-              data: autocompleteTopics,
-              limit: 20,
-              minLength: 0
+                data: autocompleteTopics,
+                limit: 20,
+                minLength: 0
             });
         },
         error: function(data) {
