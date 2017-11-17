@@ -455,10 +455,17 @@ app.get('/questionedit', function(req, res) {
             }
         });
 
+        var userRating = 0;
+        for (var i in question.ratings) {
+            if (req.session.user._id === question.ratings[i].userId) {
+                userRating = question.ratings[i].rating;
+            }
+        }
+
         return res.status(200).send({
             html: html,
             qtext: question.text,
-            qrating: parseInt(question.rating)
+            qrating: userRating
         });
     });
 });
@@ -687,6 +694,9 @@ app.post('/setUserStatus', function(req, res) {
     });
 });
 
+/*
+ * update the profile of a user given the information
+ */
 app.post('/profilemod', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');

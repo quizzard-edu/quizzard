@@ -78,8 +78,8 @@ var sendAnswerRequest = function(ans) {
                 dismissible: false,
                 opacity: 0.5,
                 complete: function() {
-                    if(getRating() > 0) {
-                        submitQuestionRating(getRating(), questionId);
+                    if(getRating()  > -1 && getRating()  < 5) {
+                        submitQuestionRating(getRating() + 1, questionId);
                     }
                     location.reload();
                 }
@@ -102,8 +102,8 @@ var sendAnswerRequest = function(ans) {
 
 /* Listener for the `rate` button */
 $(document).on('click', '#rateQuestion', function() {
-    if(getRating() > 0) {
-        submitQuestionRating(getRating(), questionId);
+    if(getRating()  > -1 && getRating()  < 5) {
+        submitQuestionRating(getRating() + 1, questionId);
     }
     location.reload();
 });

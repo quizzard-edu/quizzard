@@ -374,17 +374,12 @@ var displayStatistics = function() {
         type: 'GET',
         url: '/statistics',
         success: function(data) {
-            $('#admin-label').html('Statistics');
             $('#admin-content').html(data);
 
             $('#option-stats').addClass('active');
             $('#option-accounts').removeClass('active');
             $('#option-questions').removeClass('active');
             $('#option-settings').removeClass('active');
-
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').hide();
         },
         error: function(data) {
             if (data['status'] === 401) {
@@ -397,17 +392,12 @@ var displayStatistics = function() {
 }
 
 var displaySettings = function() {
-    $('#admin-label').html('Global Settings');
     $('#admin-content').html('');
 
     $('#option-settings').addClass('active');
     $('#option-stats').removeClass('active');
     $('#option-accounts').removeClass('active');
     $('#option-questions').removeClass('active');
-
-    $('#admin-button').off();
-    $('#admin-button').hide();
-    $('#admin-back').hide();
 }
 
 /* Set up events for the sidebar buttons. */
@@ -751,12 +741,8 @@ var editQuestion = function(qid, questionNumber) {
         url: '/questionedit',
         data: { questionid: qid },
         success: function(data) {
-            $('#admin-label').html('Edit Question');
             $('#admin-content').html(data.html);
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').show();
-            $('#admin-back').click(function(evt) {
+            $('#question-edit-back-button').click(function(evt) {
                 displayQuestionTable();
             });
             $('#qtext').summernote({ height: 150 });
@@ -788,9 +774,10 @@ var submitQEditForm = function(qid, questionNumber) {
 
     var question = collectQuestionFormData('#question-edit-form');
 
-    if (rating > 0 && rating < 6) {
-        submitQuestionRating(rating, qid);
+    if (rating > -1 && rating < 5) {
+        submitQuestionRating(rating + 1, qid);
     }
+
     $.ajax({
         type: 'POST',
         url: '/questionmod',
@@ -824,9 +811,7 @@ var submitQuestionRating = function (rating, qid) {
             qId: qid
         },
         async: false,
-        success: function(data) {
-            successSnackbar('Question ' + qid + ' rating has been updated.');
-        },
+        success: function(data) { },
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
