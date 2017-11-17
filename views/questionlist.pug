@@ -1,10 +1,10 @@
 ul.collection
   each q in questions
-    li.collection-item.avatar
+    li.collection-item.avatar.disable-select.question-list-hover(onClick='goToQuestion(this.id)', id=q._id)
       i.material-icons.circle #{getQuestionIcon(q.type)}
       span.title #{q.title}
       p
         | #{q.topic}
       a.secondary-content.question-block.noLineLink(href='/question?_id='+q._id, style='cursor: pointer;')
-        i.material-icons send
+        i.material-icons launch
         p.text-center.title
