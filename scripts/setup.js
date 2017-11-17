@@ -19,8 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var rls = require('readline-sync');
-var db = require('./server/db.js');
-var users = require('./server/users.js');
+var db = require('./../server/db.js');
+var users = require('./../server/users.js');
 
 var setupAdminAccount = function(accid, pass) {
     var acc = {

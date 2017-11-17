@@ -18,11 +18,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var logger = require('./server/log.js');
-var db = require('./server/db.js');
-var users = require('./server/users.js');
-var questions = require('./server/questions.js');
-var common = require('./server/common.js');
+var logger = require('./../server/log.js');
+var db = require('./../server/db.js');
+var users = require('./../server/users.js');
+var questions = require('./../server/questions.js');
+var common = require('./../server/common.js');
 var datagenInfo = require('./datagenInfo.js');
 
 // variables to control the genereated data
