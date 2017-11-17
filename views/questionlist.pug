@@ -1,6 +1,6 @@
 ul.collection
   each q in questions
-    li.collection-item.avatar(onClick='goToQuestion(this.id)', id=q._id)
+    li.collection-item.avatar.disable-select.question-list-hover(onClick='goToQuestion(this.id)', id=q._id)
       i.material-icons.circle #{getQuestionIcon(q.type)}
       span.title #{q.title}
       p
