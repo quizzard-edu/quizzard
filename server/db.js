@@ -241,27 +241,27 @@ var updateUserById = function(userId, info, callback){
     update.$set = { mtime : currentDate };
     update.$push = {};
 
-    if (info.username) {
+    if ('username' in info) {
         update.$set.username = info.username;
     }
 
-    if (info.fname) {
+    if ('fname' in info) {
         update.$set.fname = info.fname;
     }
 
-    if (info.lname) {
+    if ('lname' in info) {
         update.$set.lname = info.lname;
     }
 
-    if (info.email) {
+    if ('email' in info) {
         update.$set.email = info.email;
     }
 
-    if (info.points) {
+    if ('points' in info && parseInt(info.points)) {
         update.$set.points = parseInt(info.points);
     }
 
-    if (info.rating) {
+    if ('rating' in info && parseInt(info.rating)) {
         update.$push.ratings = {
             question: info.questionId,
             date: currentDate,

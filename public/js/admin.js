@@ -447,8 +447,7 @@ var deactivateUser = function(id, username) {
             data: { userid: id, active: false },
             success: function(data) {
                 displayAccountsTable();
-                const msg = ' has been&nbsp;<u><b>deactivated</b></u>&nbsp;';
-                warningSnackbar(username + ' account' + msg);
+                warningSnackbar(username + ' account has been&nbsp;<u><b>deactivated</b></u>&nbsp;');
             },
             error: function(data) {
                 if (data['status'] === 401) {
@@ -607,8 +606,7 @@ var updateVisibility = function(qid, questionNumber) {
         function (isConfirm) {
             // User confirms the visiblity change
             if (isConfirm) {
-                var visibilityStatus = $('#checked-' + qid).is(':checked');
-                question['visible'] = visibilityStatus;
+                question['visible'] = $('#checked-' + qid).is(':checked');
                 $.ajax({
                     type: 'POST',
                     url: '/questionmod',
@@ -631,7 +629,7 @@ var updateVisibility = function(qid, questionNumber) {
                             window.location.href = '/';
                         } else {
                             // Toast notification
-                            $('#checked-' + qid).prop('checked', !visibilityStatus);
+                            $('#checked-' + qid).prop('checked', !question['visible']);
                             failSnackbar('Could not change visibility of question');
                         }
                     }
