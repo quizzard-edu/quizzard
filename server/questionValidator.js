@@ -154,7 +154,6 @@ var chooseAllAttributeValidator = function(question){
 }
 
 var orderingAttributeValidator = function(question){
-    console.log(question)
     if (!validateAllAttributesInGroup(question,'ORDERING')){
         return qTypeFailMsg('Incorrect question answer fields!');
     }

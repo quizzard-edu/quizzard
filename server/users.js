@@ -61,6 +61,10 @@ exports.addAdmin = function(user, callback) {
                 return callback(err, null);
             }
 
+            common.mkdir(common.fsTree.USERS, userToAdd.id, function (err, result) {
+                logger.log(common.formatString('Creating user {0} directory: ', [userToAdd.id,  err ? err : result]));
+            });
+
             logger.log(common.formatString('Admin {0} created', [userToAdd.id]));
             return callback(null, 'created');
         });
@@ -113,6 +117,10 @@ exports.addStudent = function(user, callback) {
 
                 return callback(err, null);
             }
+
+            common.mkdir(common.fsTree.USERS, userToAdd.id, function (err, result) {
+                logger.log(common.formatString('Creating user {0} directory: ', [userToAdd.id, err ? err : result]));
+            });
 
             logger.log(common.formatString('Student {0} created', [userToAdd.id]));
             return callback(null, 'Created');

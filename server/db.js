@@ -177,13 +177,28 @@ var validatePassword = function(userobj, pass, callback) {
 
 // cleanup the users collection
 exports.removeAllUsers = function(callback){
-    usersCollection.remove({}, function(err, obj) {
-        if (err) {
+    common.rmrf(common.fsTree.HOME, 'Users', function (err, result) {
+        if(err){
             logger.error(err);
             return callback(err, null);
         }
-        logger.log('All users have been removed');
-        return callback(null, obj);
+
+        common.mkdir(common.fsTree.HOME, 'Users', function (err, result) {
+            if(err){
+                logger.error(err);
+                return callback(err, null);
+            }
+
+            usersCollection.remove({}, function(err, obj) {
+                if (err) {
+                    logger.error(err);
+                    return callback(err, null);
+                }
+
+                logger.log('All users have been removed');
+                return callback(null, obj);
+            });
+        });
     });
 }
 
@@ -381,16 +396,30 @@ exports.addQuestion = function(question, callback){
 
 // cleanup the users collection
 exports.removeAllQuestions = function(callback){
-    questionsCollection.remove({}, function(err, res) {
+    common.rmrf(common.fsTree.HOME, 'Questions', function (err, result) {
         if(err){
             logger.error(err);
             return callback(err, null);
         }
 
-        nextId = 0;
-        logger.log('All questions have been removed');
-        logger.log(common.formatString('next question: {0}', [nextId]));
-        return callback(null, res);
+        common.mkdir(common.fsTree.HOME, 'Questions', function (err, result) {
+            if(err){
+                logger.error(err);
+                return callback(err, null);
+            }
+
+            questionsCollection.remove({}, function(err, res) {
+                if(err){
+                    logger.error(err);
+                    return callback(err, null);
+                }
+
+                nextId = 0;
+                logger.log('All questions have been removed');
+                logger.log(common.formatString('next question: {0}', [nextId]));
+                return callback(null, res);
+            });
+        });
     });
 }
 
