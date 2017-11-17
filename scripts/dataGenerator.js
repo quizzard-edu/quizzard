@@ -38,7 +38,10 @@ var numberOfEachQuestion = {
 
 var adminsCount = 2;
 var studentsCount = 10;
-var questionsMaxValue = 20;
+var questionsMinMinValue = 10;
+var questionsMaxMinValue = 20;
+var questionsMinMaxValue = 60;
+var questionsMaxMaxValue = 100;
 var questionsAttempts = 10;
 var commentsPerQuestion = 3;
 var commentActionsPerQuestion = 3;
@@ -170,12 +173,15 @@ var createQuestionsRegular = function () {
  * @param {integer} id
  */
 var addQuestionRegular = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: 'KonniChiwa',
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.REGULAR.value,
         hint: 'KonniChiwa',
         visible: 'true'
@@ -256,12 +262,15 @@ var createQuestionsMultipleChoice = function () {
  * @param {integer} id
  */
 var addQuestionMultipleChoice = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: 'Option1',
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.MULTIPLECHOICE.value,
         hint: 'Option1',
         visible: 'true',
@@ -343,12 +352,15 @@ var createQuestionsTrueFalse = function () {
  * @param {integer} id
  */
 var addQuestionTrueFalse = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: 'true',
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.TRUEFALSE.value,
         hint: 'Option1',
         visible: 'true'
@@ -429,12 +441,15 @@ var createQuestionsMatching = function () {
  * @param {integer} id
  */
 var addQuestionMatching = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: 'true',
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.MATCHING.value,
         hint: 'Option1',
         visible: 'true',
@@ -517,12 +532,15 @@ var createQuestionsChooseAll = function () {
  * @param {integer} id
  */
 var addQuestionChooseAll = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: ['c1', 'c2', 'c4'],
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.CHOOSEALL.value,
         hint: 'Option1',
         visible: 'true',
@@ -604,12 +622,15 @@ var createQuestionsOrdering = function () {
  * @param {integer} id
  */
 var addQuestionOrdering = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: ['i1', 'i2', 'i3', 'c4'],
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.ORDERING.value,
         hint: 'Option1',
         visible: 'true'
@@ -939,7 +960,7 @@ var checkAnswer = function (questionId, userId, answer, callback) {
             return callback('Could not find the question', null);
         } else {
             var value = questions.verifyAnswer(question, answer);
-            var points = question.points;
+            var points = Math.floor(Math.max(question.minpoints, question.maxpoints/Math.cbrt(question.correctAttemptsCount + 1)));
 
             users.submitAnswer(
                 userId, questionId, value, points, answer,
@@ -1036,6 +1057,16 @@ var calculateTotalNumberOfQuestions = function () {
     }
 
     totalNumberOfQuestions = totalCreated;
+}
+
+/**
+* This function returns a random maximum and minimum points for a question based on the variables defined
+*/
+var minMaxPointGenerator = function () {
+    return [
+        Math.floor(Math.random() * (questionsMaxMinValue - questionsMinMinValue) + questionsMinMinValue),
+        Math.floor(Math.random() * (questionsMaxMaxValue - questionsMinMaxValue) + questionsMinMaxValue)
+    ]
 }
 
 db.initialize(function () {
