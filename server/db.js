@@ -508,8 +508,12 @@ exports.updateQuestionById = function(questionId, request, callback){
       update.$set.hint = request.hint;
     }
 
-    if ('points' in request) {
-      update.$set.points = request.points;
+    if ('minpoints' in request) {
+      update.$set.minpoints = request.minpoints;
+    }
+
+    if ('maxpoints' in request) {
+      update.$set.maxpoints = request.maxpoints;
     }
 
     if ('choices' in request) {

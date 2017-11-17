@@ -24,9 +24,12 @@ block styles
               .input-field
                 input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='New topic' value=question.topic autocomplete='off' required)
           .form-group.row
-            label.col-sm-2.col-form-label(for='qpoints') Points
-            .col-sm-10
-              input.form-control#qpoints(type='number' name='points' placeholder='New point count' value=question.points min="0")
+            label.col-sm-2.col-form-label(for='qminpoints') Min Points
+            .col-sm-4
+              input.form-control#qminpoints(type='number' name='minpoints' placeholder='New min points' value=question.minpoints min="0")
+            label.col-sm-2.col-form-label(for='qmaxpoints') Max Points
+            .col-sm-4
+              input.form-control#qmaxpoints(type='number' name='maxpoints' placeholder='New max point' value=question.maxpoints min="0")
           .form-group.row
             label.col-sm-2.col-form-label(for='qhint') Hint
             .col-sm-10

@@ -53,7 +53,8 @@ const questionAttributes = Object.freeze({
         title                   : {type:'[object String]'},
         text                    : {type:'[object String]'},
         hint                    : {type:'[object String]'},
-        points                  : {type:'[object Number]'},
+        minpoints               : {type:'[object Number]'},
+        maxpoints               : {type:'[object Number]'},
         visible                 : {type:'[object Boolean]'},
         type                    : {type:'[object String]'}
     },

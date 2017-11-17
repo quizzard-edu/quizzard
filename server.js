@@ -614,7 +614,7 @@ app.post('/submitanswer', function(req, res) {
         logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
 
         var value = questions.verifyAnswer(question, answer);
-        var points = question.points;
+        var points = Math.floor(Math.max(question.minpoints, question.maxpoints/Math.cbrt(question.correctAttemptsCount + 1)));
         var text = value ? 'correct' : 'incorrect';
         var status = value ? 200 : 500;
         var response = {text: text, points: points};

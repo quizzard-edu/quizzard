@@ -34,8 +34,13 @@ block styles
                 .input-field
                   input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' required)
               .form-group
-                label(for='qpoints') Points
-                input.form-control#qpoints(type='number' name='points' placeholder='Enter points'  min="0" required)
+                .row
+                  .col.s6
+                    label(for='qminpoints') Minimum Points
+                    input.form-control#qminpoints(type='number' name='minpoints' placeholder='Min points'  min="0" required)
+                  .col.s6
+                    label(for='qmaxpoints') Maximum Points
+                    input.form-control#qmaxpoints(type='number' name='maxpoints' placeholder='Max points'  min="0" required)
               .form-group
                 label(for='qhint') Hint
                 input.form-control#qhint(type='text' name='hint' placeholder='Enter Hint')

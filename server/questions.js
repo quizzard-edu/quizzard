@@ -27,11 +27,17 @@ var uuidv1 = require('uuid/v1');
 /*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question){
     var updatedQuestion = question;
+
     if ('visible' in question){
         updatedQuestion.visible = (question.visible === 'true');
     }
-    if ('points' in question){
-        updatedQuestion.points = parseInt(question.points);
+
+    if ('minpoints' in question){
+        updatedQuestion.minpoints = parseInt(question.minpoints);
+    }
+
+    if ('maxpoints' in question){
+        updatedQuestion.maxpoints = parseInt(question.maxpoints);
     }
 
     return updatedQuestion;
@@ -48,7 +54,8 @@ var prepareQuestionData = function(question, callback){
     questionToAdd.title = question.title;
     questionToAdd.text = question.text;
     questionToAdd.hint = question.hint;
-    questionToAdd.points = parseInt(question.points);
+    questionToAdd.minpoints = parseInt(question.minpoints);
+    questionToAdd.maxpoints = parseInt(question.maxpoints);
     questionToAdd.visible = (question.visible === 'true');
     questionToAdd.correctAttempts = [];
     questionToAdd.wrongAttempts = [];
@@ -106,7 +113,7 @@ var prepareQuestionData = function(question, callback){
 /*
 * Insert a new regular question into the database.
 * The question object passed to the function should have
-* the text, topic, type, answer, points and hint set.
+* the text, topic, type, answer, minpoints, maxpoints and hint set.
 */
 exports.addQuestion = function(question, callback) {
     prepareQuestionData(question, function(err, questionToAdd){

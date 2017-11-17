@@ -706,6 +706,12 @@ var submitQuestionForm = function() {
         failSnackbar('Please enter a question body in the editor.');
         return;
     }
+
+    if (parseInt($('#qminpoints').val()) > parseInt($('#qmaxpoints').val())) {
+        failSnackbar('Minimum points must be less than or equal to max points');
+        return;
+    }
+
     var question = collectQuestionFormData('#questionform');
 
     question['type'] = $('#qType').select().val();
