@@ -18,22 +18,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var Db = require('mongodb').Db;
-var Server = require('mongodb').Server;
-var logger = require('./log.js');
-var common = require('./common.js');
-var bcrypt = require('bcryptjs');
+const Db = require('mongodb').Db;
+const Server = require('mongodb').Server;
+const logger = require('./log.js');
+const common = require('./common.js');
+const bcrypt = require('bcryptjs');
 
-var DB_HOST = process.env.DB_HOST || 'localhost';
-var DB_PORT = process.env.DB_PORT || 27017;
-var DB_NAME = process.env.DB_NAME || 'quizzard';
+const DB_HOST = process.env.DB_HOST || 'localhost';
+const DB_PORT = process.env.DB_PORT || 27017;
+const DB_NAME = process.env.DB_NAME || 'quizzard';
 
-var db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
+const db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 
-var nextQuestionNumber = 0;
 var usersCollection;
 var questionsCollection;
 var analyticsCollection;
+var settingsCollection;
+
+var nextQuestionNumber = 0;
 
 /* Open a connection to the database. */
 exports.initialize = function(callback) {
@@ -47,6 +49,7 @@ exports.initialize = function(callback) {
         usersCollection = db.collection('users');
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
+        settingsCollection = db.collection('settings');
 
         getNextQuestionNumber(function() {
             logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
@@ -567,5 +570,57 @@ exports.updateQuestionById = function(questionId, request, callback) {
 exports.updateQuestionByQuery = function (query, update, callback) {
     questionsCollection.update(query, update, function(err, obj) {
         return callback(err, obj);
+    });
+}
+
+/**
+ * reset all settings to default
+ * 
+ * @param {function} callback 
+ */
+exports.resetAllSettings = function (callback) {
+    resetAllSettings(callback);
+}
+
+/**
+ * reset all settings to default
+ * 
+ * @param {function} callback 
+ */
+var resetAllSettings = function (callback) {
+    settingsCollection.remove({}, function (err, result) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var defaultSettings = {};
+        defaultSettings['general'] = {};
+        defaultSettings['student'] = {};
+        defaultSettings['question'] = {};
+        defaultSettings['discussionBoard'] = {};
+
+        defaultSettings.general['active'] = true;
+        defaultSettings.general['leaderboardLimit'] = 3;
+
+        defaultSettings.student['editNames'] = true;
+        defaultSettings.student['editEmail'] = true;
+        defaultSettings.student['editPassword'] = true;
+
+        defaultSettings.question['defaultTopic'] = '';
+        defaultSettings.question['defaultMinPoints'] = 10;
+        defaultSettings.question['defaultMaxPoints'] = 100;
+        defaultSettings.question['timeoutEnabled'] = true;
+        defaultSettings.question['timeoutPeriod'] = 1;
+
+        defaultSettings.discussionBoard['visibility'] = common.discussionBoardVisibility.ALL;
+        defaultSettings.discussionBoard['dislikesEnabled'] = true;
+
+        settingsCollection.insert(defaultSettings, function (err, obj) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            return callback(null, 'ok');
+        });
     });
 }

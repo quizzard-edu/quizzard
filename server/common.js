@@ -40,6 +40,13 @@ const userTypes = Object.freeze({
 });
 exports.userTypes = userTypes;
 
+const discussionBoardVisibility = Object.freeze({
+    NONE      : 'None',
+    ANSWERED  : 'Answered',
+    ALL       : 'All'
+});
+exports.discussionBoardVisibility = discussionBoardVisibility;
+
 // all question types
 const questionTypes = Object.freeze({
     MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'question_types/mc-answer', icon: 'format_list_bulleted'},

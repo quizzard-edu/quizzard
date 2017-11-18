@@ -1080,8 +1080,14 @@ db.initialize(function () {
                 process.exit(1);
             }
 
-            calculateTotalNumberOfQuestions();
-            createAdmins();
+            db.resetAllSettings(function (err, res) {
+                if (err) {
+                    process.exit(1);
+                }
+
+                calculateTotalNumberOfQuestions();
+                createAdmins();
+            });
         });
     });
 });
