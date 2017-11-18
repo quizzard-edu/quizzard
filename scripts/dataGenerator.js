@@ -729,7 +729,7 @@ var addComments = function (questionId, callback) {
 
             users.getUsersList(function (err, usersList) {
                 if (err) {
-                    return res.status(500).send('could not find the list of users');
+                    return callback('could not find the list of users', null);
                 }
 
                 var totalList = [];
@@ -816,7 +816,7 @@ var addCommentActions = function (questionId, callback) {
 
             users.getUsersList(function (err, usersList) {
                 if (err) {
-                    return res.status(500).send('could not find the list of users');
+                    return callback('could not find the list of users', null);
                 }
 
                 var totalList = [];
