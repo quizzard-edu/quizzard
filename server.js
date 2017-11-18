@@ -53,6 +53,7 @@ const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug')
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
 const questionList = pug.compileFile('views/questionlist.pug');
 const discussionBoard = pug.compileFile('views/discussion.pug');
+const settingPage = pug.compileFile('views/settings.pug');
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -1418,7 +1419,7 @@ app.get('/settings', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    return res.status(200).send(settings());
+    return res.status(200).send(settingPage());
 });
 
 /* get analytics for a student*/
