@@ -37,23 +37,23 @@ const app = express();
 const port = process.env.QUIZZARD_PORT || 8000;
 
 /* Pre-compiled Pug views */
-const studentTable = pug.compileFile('views/account-table.pug');
-const accountForm = pug.compileFile('views/account-creation.pug');
-const accountEdit = pug.compileFile('views/account-edit.pug');
-const questionTable = pug.compileFile('views/question-table.pug');
-const questionForm = pug.compileFile('views/question-creation.pug');
-const questionEdit = pug.compileFile('views/question-edit.pug');
-const statistics = pug.compileFile('views/statistics.pug');
-const regexForm = pug.compileFile('views/question_types/regex-answer.pug');
-const mcForm = pug.compileFile('views/question_types/mc-answer.pug');
-const tfForm = pug.compileFile('views/question_types/tf-answer.pug');
-const chooseAllForm = pug.compileFile('views/question_types/chooseAll-answer.pug');
-const matchingForm = pug.compileFile('views/question_types/matching-answer.pug');
-const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug');
-const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
-const questionList = pug.compileFile('views/questionlist.pug');
-const discussionBoard = pug.compileFile('views/discussion.pug');
-const settingPage = pug.compileFile('views/settings.pug');
+const studentTablePug = pug.compileFile('views/account-table.pug');
+const accountCreationPug = pug.compileFile('views/account-creation.pug');
+const accountEditPug = pug.compileFile('views/account-edit.pug');
+const questionCreattionPug = pug.compileFile('views/question-creation.pug');
+const questionEditPug = pug.compileFile('views/question-edit.pug');
+const questionTablePug = pug.compileFile('views/question-table.pug');
+const questionListPug = pug.compileFile('views/questionlist.pug');
+const statisticsPug = pug.compileFile('views/statistics.pug');
+const regexFormPug = pug.compileFile('views/question_types/regex-answer.pug');
+const mcFormPug = pug.compileFile('views/question_types/mc-answer.pug');
+const tfFormPug = pug.compileFile('views/question_types/tf-answer.pug');
+const chooseAllFormPug = pug.compileFile('views/question_types/chooseAll-answer.pug');
+const matchingFormPug = pug.compileFile('views/question_types/matching-answer.pug');
+const orderingFormPug = pug.compileFile('views/question_types/ordering-answer.pug');
+const leaderboardTablePug = pug.compileFile('views/leaderboard-table.pug');
+const discussionBoardPug = pug.compileFile('views/discussion.pug');
+const settingsPug = pug.compileFile('views/settings.pug');
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -214,7 +214,7 @@ app.get('/leaderboard-table', function(req, res) {
     }
 
     users.getLeaderboard(req.session.user._id, shortTable, function(leader) {
-        var html = leaderboardTable({
+        var html = leaderboardTablePug({
             fullTable: fullTable,
             shortTable: shortTable,
             leaderboard: leader,
@@ -241,7 +241,7 @@ app.get('/studentlist', function(req, res) {
             return res.status(500).send('Could not fetch student list');
         }
 
-        var html = studentTable({
+        var html = studentTablePug({
             students: studentlist
         });
 
@@ -256,7 +256,7 @@ app.post('/sortaccountlist', function(req, res) {
     }
 
     if (!req.session.adminStudentList) {
-        var html = studentTable( { students : [] });
+        var html = studentTablePug( { students : [] });
 
         return res.status(200).send(html);
     }
@@ -270,7 +270,7 @@ app.post('/sortaccountlist', function(req, res) {
                 return res.status(500).send('Could not fetch student list');
             }
 
-            var html = studentTable( { students : result } );
+            var html = studentTablePug( { students : result } );
 
             return res.status(200).send(html);
         }
@@ -283,7 +283,7 @@ app.get('/accountform', function(req, res) {
         return res.redirect('/');
     }
 
-    var html = accountForm();
+    var html = accountCreationPug();
 
     return res.status(200).send(html);
 });
@@ -294,9 +294,11 @@ app.get('/questionform', function(req, res) {
         return res.redirect('/');
     }
 
-    return res.status(200).render('question-creation',{
+    var html = questionCreattionPug({
         questionType: common.questionTypes
     });
+
+    return res.status(200).send(html);
 });
 
 app.get('/answerForm', function(req, res){
@@ -353,7 +355,7 @@ app.get('/accounteditform', function(req, res) {
             return res.status(500).send('Could not fetch user information');
         }
 
-        var html = accountEdit({
+        var html = accountEditPug({
             user: student,
             cdate: student.ctime
         });
@@ -384,7 +386,7 @@ app.get('/questionlist', function(req, res) {
 
             var html = null;
             if (req.session.user.type === common.userTypes.ADMIN) {
-                html = questionTable({
+                html = questionTablePug({
                     questions : questionsList,
                     questionType: function(type){
                         for (var i in common.questionTypes) {
@@ -398,7 +400,7 @@ app.get('/questionlist', function(req, res) {
             }
 
             if (req.session.user.type === common.userTypes.STUDENT) {
-                html = questionList({
+                html = questionListPug({
                     questions : questionsList,
                     getQuestionIcon: function(type) {
                         for (var i in common.questionTypes) {
@@ -433,22 +435,22 @@ app.get('/questionedit', function(req, res) {
             return res.status(400).send('Question not found');
         }
 
-        var html = questionEdit({
+        var html = questionEditPug({
             question: question,
             getQuestionForm: function(){
                 switch (question.type){
                     case common.questionTypes.REGULAR.value:
-                        return regexForm({adminQuestionEdit:true, question:question})
+                        return regexFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.MULTIPLECHOICE.value:
-                        return mcForm({adminQuestionEdit:true, question:question})
+                        return mcFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.TRUEFALSE.value:
-                        return tfForm({adminQuestionEdit:true, question:question})
+                        return tfFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.CHOOSEALL.value:
-                        return chooseAllForm({adminQuestionEdit:true, question:question})
+                        return chooseAllFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.MATCHING.value:
-                        return matchingForm({adminQuestionEdit:true, question:question})
+                        return matchingFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.ORDERING.value:
-                        return orderingForm({adminQuestionEdit:true, question:question})
+                        return orderingFormPug({adminQuestionEdit:true, question:question})
                     default:
                         return res.redirect('/')
                         break;
@@ -491,7 +493,7 @@ app.get('/statistics', function(req, res) {
                 res.status(500).send(err);
             }
 
-            var html = statistics({
+            var html = statisticsPug({
                 students: studentslist,
                 questions: questionslist
             });
@@ -525,7 +527,7 @@ app.post('/sortlist', function(req, res) {
 
     questions.sortQuestions(req.session.questions, common.sortTypes[type],
         function(err, results) {
-          var html = questionList({
+          var html = questionListPug({
               questions: results
           });
 
@@ -573,22 +575,22 @@ app.get('/question', function(req, res) {
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
-                        return regexForm({studentQuestionForm:true})
+                        return regexFormPug({studentQuestionForm:true})
                     case common.questionTypes.MULTIPLECHOICE.value:
-                        return mcForm({studentQuestionForm:true, question:questionFound})
+                        return mcFormPug({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.TRUEFALSE.value:
-                        return tfForm({studentQuestionForm:true, question:questionFound})
+                        return tfFormPug({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.CHOOSEALL.value:
-                        return chooseAllForm({studentQuestionForm:true, question:questionFound})
+                        return chooseAllFormPug({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.MATCHING.value:
                         // randomize the order of the matching
                         questionFound.leftSide = common.randomizeList(questionFound.leftSide);
                         questionFound.rightSide = common.randomizeList(questionFound.rightSide);
-                        return matchingForm({studentQuestionForm:true, question:questionFound})
+                        return matchingFormPug({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.ORDERING.value:
                         // randomize the order of ordering question
                         questionFound.answer = common.randomizeList(questionFound.answer);
-                        return orderingForm({studentQuestionForm:true, question:questionFound})
+                        return orderingFormPug({studentQuestionForm:true, question:questionFound})
                     default:
                         break;
                 }
@@ -764,7 +766,7 @@ app.post('/usermod', function(req, res) {
                 return res.status(500).send();
             }
 
-            var html = accountEdit({
+            var html = accountEditPug({
                 user: userFound,
                 cdate: creationDate(userFound.ctime)
             });
@@ -832,26 +834,7 @@ app.post('/questiondel', function(req, res) {
         return res.redirect('/');
     }
 
-    var qid = parseInt(req.body.qid);
-    questions.deleteQuestion(qid, function(err, result) {
-        if (err) {
-            logger.error(err);
-            return res.status(500);
-        }
-
-        if (req.session.adminQuestionList != null) {
-            /* Remove the deleted question from the stored question list. */
-            var ind;
-            for (ind in req.session.adminQuestionList) {
-                if (req.session.adminQuestionList[ind].id == qid) {
-                    break;
-                }
-            }
-            req.session.adminQuestionList.splice(ind, 1);
-        }
-
-        return res.status(200);
-    });
+    return res.status(200);
 });
 
 // submit question rating from both students and admins
@@ -918,7 +901,7 @@ app.get('/getDiscussionBoard', function(req, res){
                 usersList[user._id] = user.fname + ' ' + user.lname;
             }
 
-            var discussionHtml = discussionBoard({
+            var discussionHtml = discussionBoardPug({
                 comments: question.comments,
                 getCurrentUser: () =>{
                     var userId = req.session.user._id;
@@ -1419,7 +1402,7 @@ app.get('/settings', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    return res.status(200).send(settingPage());
+    return res.status(200).send(settingsPug());
 });
 
 /* get analytics for a student*/
