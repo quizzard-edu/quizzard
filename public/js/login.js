@@ -12,8 +12,11 @@ $('#login').submit(function(evt) {
         },
         error: function(data) {
             var msg = 'Invalid username or password';
-            if (data['responseText'] === 'notActive') {
+            if (data['responseText'] === 'userNotActive') {
                 msg = 'Account has been deactivated'
+            }
+            if (data['responseText'] === 'classNotActive') {
+                msg = 'Class has been deactivated'
             }
             $('#invalid').html(failedLoginTemplate.format([msg]));
         },

@@ -29,6 +29,7 @@ const logger = require('./server/log.js');
 const pug = require('pug');
 const common = require('./server/common.js');
 const analytics = require('./server/analytics.js');
+const settings = require('./server/settings.js');
 const json2csv = require('json2csv');
 const fs = require('fs');
 const csv2json = require('csvtojson');
@@ -94,7 +95,7 @@ app.post('/login', function(req, res) {
         return res.status(400).send('Invalid Request');
     }
 
-    if(!req.body.user || !req.body.passwd){
+    if (!req.body.user || !req.body.passwd) {
         return res.status(400).send('missing requirement');
     }
 
@@ -104,15 +105,32 @@ app.post('/login', function(req, res) {
     logger.log(common.formatString('Attempted login by user {0}', [username]));
 
     users.checkLogin(username, password, function(err, user) {
-        if(err){
+        if (err) {
             logger.error(common.formatString('User {0} failed logged in.', [username]));
             return res.status(403).send(err);
         }
 
-        if(user){
+        if (user) {
             logger.log(common.formatString('User {0} logged in.', [username]));
             req.session.user = user;
-            return res.status(200).send('success');
+
+            if (user.type === common.userTypes.ADMIN) {
+                return res.status(200).send('success');
+            }
+
+            if (user.type === common.userTypes.STUDENT) {
+                settings.getClassActive(function (err, isActive) {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+
+                    if (!isActive) {
+                        return res.status(403).send('classNotActive');
+                    }
+
+                    return res.status(200).send('success');
+                });
+            }
         }
     });
 });

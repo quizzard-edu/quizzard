@@ -142,11 +142,11 @@ exports.checkLogin = function(userId, pass, callback) {
         }
 
         if (!obj) {
-            return callback('notExist', null);
+            return callback('userNotExist', null);
         }
 
         if (!obj.active) {
-            return callback('notActive', null);
+            return callback('userNotActive', null);
         }
 
         validatePassword(obj, pass, function(err, valid) {
@@ -640,7 +640,7 @@ exports.getAllSettings = function (callback) {
  * @param {function} callback 
  */
 var getAllSettings = function (callback) {
-    settingsCollection.find({}, function (err, obj) {
+    settingsCollection.findOne({}, function (err, obj) {
         if (err) {
             return callback (err, null);
         }
