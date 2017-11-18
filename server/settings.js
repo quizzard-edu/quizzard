@@ -21,3 +21,102 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const db = require('./db.js');
 const logger = require('./log.js');
 const common = require('./common.js');
+
+/**
+ * reset the global settings to their default values
+ * 
+ * @param {function} callback 
+ */
+exports.resetAllSettings = function (callback) {
+    db.resetAllSettings (callback);
+}
+
+/**
+ * check if the class is active
+ * 
+ * @param {funtion} callback 
+ */
+exports.getClassActive = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.general.active);
+    });
+}
+
+/**
+ * get the limit of rows on the leaderboard
+ * 
+ * @param {funtion} callback 
+ */
+exports.getLeaderboardLimit = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.general.leaderboardLimit);
+    });
+}
+
+/**
+ * check if the student can edit their first and last name
+ * 
+ * @param {funtion} callback 
+ */
+exports.getStudentEditNameEnabled = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.student.editNames);
+    });
+}
+
+/**
+ * check if the student can edit their email
+ * 
+ * @param {funtion} callback 
+ */
+exports.getStudentEditEmailEnabled = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.student.editEmail);
+    });
+}
+
+/**
+ * check if the student can edit their password
+ * 
+ * @param {funtion} callback 
+ */
+exports.getStudentEditPasswordEnabled = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.student.editPassword);
+    });
+}
+
+/**
+ * get all settings object
+ * 
+ * @param {function} callback 
+ */
+var getAllSettings = function (callback) {
+    db.getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings);
+    });
+}

@@ -624,3 +624,31 @@ var resetAllSettings = function (callback) {
         });
     });
 }
+
+/**
+ * get all settings objects from the collection
+ * 
+ * @param {function} callback 
+ */
+exports.getAllSettings = function (callback) {
+    getAllSettings(callback);
+}
+
+/**
+ * get all settings objects from the collection
+ * 
+ * @param {function} callback 
+ */
+var getAllSettings = function (callback) {
+    settingsCollection.find({}, function (err, obj) {
+        if (err) {
+            return callback (err, null);
+        }
+
+        if (!obj) {
+            return callback ('No settings object found', null);
+        }
+
+        return callback (null, obj);
+    });
+}
