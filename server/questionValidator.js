@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var common = require('./common.js');
+const common = require('./common.js');
 
 const successMsg = {success:true, msg:'Validation Passed'}
 const failMsg = {success:false, msg:'Fields types are Incorrect'}

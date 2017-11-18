@@ -18,10 +18,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var db = require('./db.js');
-var logger = require('./log.js');
-var common = require('./common.js');
-var questionValidator = require('./questionValidator.js');
+const db = require('./db.js');
+const logger = require('./log.js');
+const common = require('./common.js');
+const questionValidator = require('./questionValidator.js');
 
 /*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question){

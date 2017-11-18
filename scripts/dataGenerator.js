@@ -18,16 +18,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var logger = require('./../server/log.js');
-var db = require('./../server/db.js');
-var users = require('./../server/users.js');
-var questions = require('./../server/questions.js');
-var common = require('./../server/common.js');
-var datagenInfo = require('./datagenInfo.js');
+const logger = require('./../server/log.js');
+const db = require('./../server/db.js');
+const users = require('./../server/users.js');
+const questions = require('./../server/questions.js');
+const common = require('./../server/common.js');
+const datagenInfo = require('./datagenInfo.js');
 
-// variables to control the genereated data
+// constants to control the genereated data
 
-var numberOfEachQuestion = {
+const numberOfEachQuestion = {
     'regular': 2,
     'multipleChoice': 2,
     'trueFalse': 2,
@@ -36,22 +36,22 @@ var numberOfEachQuestion = {
     'ordering': 2
 };
 
-var adminsCount = 2;
-var studentsCount = 10;
-var questionsMinMinValue = 10;
-var questionsMaxMinValue = 20;
-var questionsMinMaxValue = 60;
-var questionsMaxMaxValue = 100;
-var questionsAttempts = 10;
-var commentsPerQuestion = 3;
-var commentActionsPerQuestion = 3;
-var commentRepliesVotesPerQuestion = 3;
+const adminsCount = 2;
+const studentsCount = 10;
+const questionsMinMinValue = 10;
+const questionsMaxMinValue = 20;
+const questionsMinMaxValue = 60;
+const questionsMaxMaxValue = 100;
+const questionsAttempts = 10;
+const commentsPerQuestion = 3;
+const commentActionsPerQuestion = 3;
+const commentRepliesVotesPerQuestion = 3;
 
 // Probabilities used in generating data
-var commentPercentage = 50;
-var commentActionPercentage = 50;
-var mentionsPercentage = 50;
-var questionsCorrectPercentage = 40;
+const commentPercentage = 50;
+const commentActionPercentage = 50;
+const mentionsPercentage = 50;
+const questionsCorrectPercentage = 40;
 
 // variables used by the script for different functionality
 // Do NOT change the variables below
