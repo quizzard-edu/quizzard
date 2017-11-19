@@ -901,8 +901,9 @@ app.get('/getDiscussionBoard', function(req, res){
             return res.status(500).send(err);
         }
 
-        if (boardVisibility === common.discussionboardVisibility.NONE) {
-            return res.status(200).send('hidden');
+        if (boardVisibility === common.discussionboardVisibility.NONE
+            && req.session.user.type === common.userTypes.STUDENT) {
+            return res.status(500).send('hidden');
         }
 
         settings.getDiscussionboardDislikesEnabled(function (err, isDislikesEnabled) {
@@ -920,6 +921,15 @@ app.get('/getDiscussionBoard', function(req, res){
                 if (!question) {
                     logger.error(common.formatString('Could not find the question {0}', [questionId]));
                     return res.status(400).send('Could not find the question');
+                }
+
+                if (boardVisibility === common.discussionboardVisibility.ANSWERED) {
+                    var answeredList = common.getIdsListFromJSONList(question.correctAttempts, 'userId');
+                    var answered = (answeredList.indexOf(req.session.user._id) !== -1);
+
+                    if (req.session.user.type === common.userTypes.STUDENT && !answered) {
+                        return res.status(500).send('hidden');
+                    }
                 }
 
                 users.getUsersList((err, userObj) => {
