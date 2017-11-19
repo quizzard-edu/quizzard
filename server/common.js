@@ -166,9 +166,14 @@ var isEmptyObject = function(obj) {
 }
 exports.isEmptyObject = isEmptyObject;
 
-// return the current date
+// return the current date in a string format
 var getDate = function() {
     return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
+}
+
+// return the current date in a object format
+var getDateObject = function(){
+    return new Date();
 }
 
 // return the current date with format

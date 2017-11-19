@@ -576,7 +576,7 @@ exports.isUserLocked = function(userId,question){
 exports.updateUserSubmissionTime = function(userId, question, callback){
     var query = {_id:question._id};
     var update = {};
-    var currentDate = new Date();
+    var currentDate = common.getDateObject();
     var userInList = false;
     console.log(question.userSubmissionTime)
     // find the user in the submission list
