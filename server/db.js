@@ -652,3 +652,7 @@ var getAllSettings = function (callback) {
         return callback (null, obj);
     });
 }
+
+exports.updateSettings = function (findQuery, updateQuery, callback) {
+    settingsCollection.update(findQuery, updateQuery, callback);
+}

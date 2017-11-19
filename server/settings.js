@@ -47,6 +47,28 @@ exports.getClassActive = function (callback) {
 }
 
 /**
+ * set class activation status
+ * 
+ * @param {boolean} isActive
+ * @param {funtion} callback 
+ */
+exports.setClassActive = function (isActive, callback) {
+    if (Object.prototype.toString.call(isActive) !== '[object Boolean]') {
+        return callback('Invalid input', null);
+    }
+
+    var updateQuery = {};
+    updateQuery.$set = {'general.active': isActive};
+    updateSettings(updateQuery, function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+
+/**
  * get the limit of rows on the leaderboard
  * 
  * @param {funtion} callback 
@@ -216,6 +238,15 @@ exports.getDiscussionBoardDislikesEnabled = function (callback) {
  * 
  * @param {function} callback 
  */
+exports.getAllSettings = function (callback) {
+    getAllSettings(callback);
+}
+
+/**
+ * get all settings object
+ * 
+ * @param {function} callback 
+ */
 var getAllSettings = function (callback) {
     db.getAllSettings(function (err, allSettings) {
         if (err) {
@@ -224,4 +255,14 @@ var getAllSettings = function (callback) {
 
         return callback(null, allSettings);
     });
+}
+
+/**
+ * update settings object
+ * 
+ * @param {object} updateQuery 
+ * @param {function} callback 
+ */
+var updateSettings = function (updateQuery, callback) {
+    db.updateSettings({}, updateQuery, callback);
 }
