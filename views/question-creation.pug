@@ -31,15 +31,18 @@ block styles
               .form-group
                 label(for='qtopic') Topic
                 .input-field
-                  input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' required)
+                  if defaultTopic
+                    input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' value=defaultTopic required)
+                  else
+                    input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' required)
               .form-group
                 .row
                   .col.s6
                     label(for='qminpoints') Minimum Points
-                    input.form-control#qminpoints(type='number' name='minpoints' placeholder='Min points'  min="0" required)
+                    input.form-control#qminpoints(type='number' name='minpoints' placeholder='Min points'  min='0' value=defaultMinPoints required)
                   .col.s6
                     label(for='qmaxpoints') Maximum Points
-                    input.form-control#qmaxpoints(type='number' name='maxpoints' placeholder='Max points'  min="0" required)
+                    input.form-control#qmaxpoints(type='number' name='maxpoints' placeholder='Max points'  min='0' value=defaultMaxPoints required)
               .form-group
                 label(for='qhint') Hint
                 input.form-control#qhint(type='text' name='hint' placeholder='Enter Hint')

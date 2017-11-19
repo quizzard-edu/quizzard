@@ -606,7 +606,7 @@ var resetAllSettings = function (callback) {
         defaultSettings.student['editEmail'] = true;
         defaultSettings.student['editPassword'] = true;
 
-        defaultSettings.question['defaultTopic'] = '';
+        defaultSettings.question['defaultTopic'] = null;
         defaultSettings.question['defaultMinPoints'] = 10;
         defaultSettings.question['defaultMaxPoints'] = 100;
         defaultSettings.question['timeoutEnabled'] = true;

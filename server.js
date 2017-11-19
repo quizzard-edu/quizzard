@@ -41,7 +41,7 @@ const port = process.env.QUIZZARD_PORT || 8000;
 const studentTablePug = pug.compileFile('views/account-table.pug');
 const accountCreationPug = pug.compileFile('views/account-creation.pug');
 const accountEditPug = pug.compileFile('views/account-edit.pug');
-const questionCreattionPug = pug.compileFile('views/question-creation.pug');
+const questionCreationPug = pug.compileFile('views/question-creation.pug');
 const questionEditPug = pug.compileFile('views/question-edit.pug');
 const questionTablePug = pug.compileFile('views/question-table.pug');
 const questionListPug = pug.compileFile('views/questionlist.pug');
@@ -312,13 +312,23 @@ app.get('/questionform', function(req, res) {
         return res.redirect('/');
     }
 
-    var html = questionCreattionPug({
-        questionType: common.questionTypes
-    });
+    settings.getAllSettings(function (err, allSettings) {
+        if (err) {
+            logger.error(err);
+        }
 
-    return res.status(200).send(html);
+        var html = questionCreationPug({
+            questionType: common.questionTypes,
+            defaultTopic: err ? null : allSettings.question.defaultTopic,
+            defaultMinPoints: err ? 10 : allSettings.question.defaultMinPoints,
+            defaultMaxPoints: err ? 100 : allSettings.question.defaultMaxPoints
+        });
+
+        return res.status(200).send(html);
+    });
 });
 
+/* get question answer form */
 app.get('/answerForm', function(req, res){
     switch (req.query.qType){
         case common.questionTypes.REGULAR.value:
@@ -444,12 +454,12 @@ app.get('/questionedit', function(req, res) {
 
     var qId = req.query.questionid;
     questions.lookupQuestionById(qId, function(err, question){
-        if(err){
+        if (err) {
             logger.error(err);
             return res.status(500).send(err);
         }
 
-        if(!question){
+        if (!question) {
             return res.status(400).send('Question not found');
         }
 
