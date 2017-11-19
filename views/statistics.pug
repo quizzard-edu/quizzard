@@ -8,7 +8,7 @@
         table.bordered
           thead
             tr
-              th User ID
+              th Username
               th Questions Attempted
               th Correct Answers
               th Success Rate
@@ -16,7 +16,7 @@
           tbody
             each s in students
               tr
-                td #{s.id}
+                td #{s.username}
                 td #{s.totalAttemptsCount}
                 td #{s.correctAttemptsCount}
                 if s.totalAttemptsCount === 0
@@ -44,13 +44,13 @@
           tbody
             each q in questions
               tr
-                td #{q.id}
+                td #{q.number}
                 td #{q.title}
                 td #{q.points}
-                td #{q.totalCount}
-                td #{q.answeredCount}
-                if q.totalCount === 0
+                td #{q.totalAttemptsCount}
+                td #{q.correctAttemptsCount}
+                if q.totalAttemptsCount === 0
                   td 0%
                 else
-                  td #{((q.answeredCount / q.totalCount) * 100).toFixed(2)}%
+                  td #{((q.correctAttemptsCount / q.totalAttemptsCount) * 100).toFixed(2)}%
                 td #{q.firstAnswer}

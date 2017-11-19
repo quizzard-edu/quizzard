@@ -1,15 +1,12 @@
 ul.collection
   each q in questions
-    li.collection-item.avatar
-      if q.type == 0
-        i.material-icons.circle font_download
-      else
-        i.material-icons.circle format_list_bulleted
+    li.collection-item.avatar.disable-select.question-list-hover(onClick='goToQuestion(this.id)', id=q._id)
+      i.material-icons.circle #{getQuestionIcon(q.type)}
       span.title #{q.title}
       p
         | #{q.topic}
         br
         | #{q.points}
-      a.secondary-content.question-block.noLineLink(id=q.id, style='cursor: pointer;')
-        i.material-icons send
+      a.secondary-content.question-block.noLineLink
+        i.material-icons launch
         p.text-center.title

@@ -2,8 +2,19 @@
   .col.s12
     .card.center
       .card-image
-        a.btn-floating.halfway-fab.waves-effect.waves-light#account-creation-button
-          i.material-icons person_add
+        .fixed-action-btn.horizontal.click-to-toggle.right(style='position: inherit !important;')
+          a.btn-floating.btn-large.red
+            i.material-icons menu
+          ul
+            li
+              a.btn-floating.waves-effect.waves-light#account-import-button
+                i.material-icons cloud_upload
+            li
+              a.btn-floating.waves-effect.waves-light#account-export-button
+                i.material-icons cloud_download
+            li
+              a.btn-floating.waves-effect.waves-light#account-creation-button
+                i.material-icons person_add
       .card-content
         h5.card-title Manage Accounts
         h6 Add, modify or delete students' accounts.
@@ -19,7 +30,7 @@
             tr
               th First Name
               th Last Name
-              th User ID
+              th Username
               th Email
               th Action
           tbody
@@ -27,14 +38,14 @@
               tr
                 td #{s.fname}
                 td #{s.lname}
-                td #{s.id}
+                td #{s.username}
                 td #{s.email}
                 td
-                  button.btn.btn-default.edit-button(id='edit-' + s.id type='button' aria-label='Edit')
+                  button.btn.btn-default.edit-button(id='edit-' + s._id type='button' aria-label='Edit', name=s.username)
                     span.glyphicon.glyphicon-pencil(aria-hidden='true')
                   if (s.active)
-                    button.btn.btn-default.deactivate-button(id='deactivate-' + s.id type='button' aria-label='Delete')
+                    button.btn.btn-default.deactivate-button(id='deactivate-' + s._id type='button' aria-label='Delete', name=s.username)
                       i.material-icons close
                   else
-                    button.btn.btn-default.activate-button(id='activate-' + s.id type='button' aria-label='Delete')
+                    button.btn.btn-default.activate-button(id='activate-' + s._id type='button' aria-label='Delete', name=s.username)
                       i.material-icons check

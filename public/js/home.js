@@ -9,16 +9,6 @@ $.ajax({
     }
 });*/
 
-
-/* Make questions clickable. */
-var setupQuestionListeners = function() {
-    $('.question-block').click(function(evt) {
-        window.location.href = '/question?id=' + this.id;
-    });
-}
-
-setupQuestionListeners();
-
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
@@ -45,7 +35,6 @@ var fetchQList = function(which) {
         data: { type: which },
         success: function(data) {
             $('.question-list').html(data);
-            setupQuestionListeners();
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -78,9 +67,6 @@ var sortRequest = function(type) {
             }
             $('.question-list').html(data);
             $('#sort').html(s + '<span class="caret"></span>');
-
-            /* reset listeners for the new question elements */
-            setupQuestionListeners();
         },
         error: function(data){
             if (data['status'] === 401) {
@@ -89,6 +75,11 @@ var sortRequest = function(type) {
         }
     });
 };
+
+// chenge the href to point to the questoin page with the given id
+var goToQuestion = function (questionId) {
+    window.location.href = '/question?_id=' + questionId;
+}
 
 /*
  * Fetch the mini leaderboard table and display it in the sidebar.

@@ -24,20 +24,6 @@ var csv = require('csv');
 var db = require('./db.js');
 var logger = require('./log.js').logger;
 
-
-/* Remove an account from the database. */
-exports.deleteAccount = function(userid, callback) {
-    students.remove({id: userid}, function(err, res) {
-        if (err) {
-            logger.error(err);
-            callback('failure');
-        } else {
-            logger.info('Account %s deleted from database.', userid);
-            callback('success');
-        }
-    });
-};
-
 /* Sort the list of accounts as by the given criteria. */
 exports.sortAccounts = function(as, type, asc, callback) {
     var cmpfn;
@@ -61,52 +47,3 @@ exports.sortAccounts = function(as, type, asc, callback) {
     as.sort(cmpfn);
     callback(as);
 }
-
-var updatefn;
-
-/*
- * Read account entries from a csv file and add them to the database.
- */
-exports.parseFile = function(path, ufn, callback) {
-    updatefn = ufn;
-    logger.info('Reading accounts from file %s.', path);
-    fs.createReadStream(__dirname + '/../' + path)
-        .pipe(accountParser).on('end', function() {
-            callback();
-        });
-}
-
-/*
- * The provided csv file should have five fields per row:
- * user ID, initial password, first name, last name, email
- */
-var accountParser = csv.parse(function(err, data) {
-    if (err) {
-        logger.error(err);
-        return;
-    }
-
-    for (var i in data) {
-        if (data[i].length != 5)
-            continue;
-
-        var account = {};
-        account.id = data[i][0];
-        account.password = data[i][1];
-        account.fname = data[i][2];
-        account.lname = data[i][3];
-        account.email = data[i][4];
-
-        createAccount(account, function(res, acc) {
-            if (res == 'failure') {
-                logger.error('Could not insert account %s into database.', acc.id);
-            } else if (res == 'exists') {
-                logger.error('Account ID %s already exists.', acc.id);
-            } else {
-                logger.info('Account %s read from csv file.', acc.id);
-                delete acc._id;
-                updatefn(acc);
-            }
-        });
-    }
-});
