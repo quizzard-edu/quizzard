@@ -87,19 +87,19 @@ var addUser = function(user, callback) {
 
 /* Return an array of users in the database. */
 exports.getAdminsList = function(callback) {
-    getUsersList({type: common.userTypes.ADMIN}, {id: 1}, callback);
+    getUsersList({type: common.userTypes.ADMIN}, {username: 1}, callback);
 }
 
 exports.getStudentsList = function(callback) {
-    getUsersList({type: common.userTypes.STUDENT}, {id: 1}, callback);
+    getUsersList({type: common.userTypes.STUDENT}, {username: 1}, callback);
 }
 
 exports.getUsersList = function(callback) {
-    getUsersList({}, {id: 1}, callback);
+    getUsersList({}, {username: 1}, callback);
 }
 
 exports.getStudentsListWithStatus = function(status, callback) {
-    getUsersList({type: common.userTypes.STUDENT, active: status}, {id: 1}, callback);
+    getUsersList({type: common.userTypes.STUDENT, active: status}, {username: 1}, callback);
 }
 
 /* Return an array of users in the database, sorted by rank. */

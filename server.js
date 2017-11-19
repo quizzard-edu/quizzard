@@ -1319,7 +1319,7 @@ app.post('/accountsImportList', function (req, res) {
         var userToAdd = {
             fname: inputUser.fname,
             lname: inputUser.lname,
-            id: inputUser.username,
+            username: inputUser.username,
             email: inputUser.email,
             password: 'KonniChiwa'
         };
