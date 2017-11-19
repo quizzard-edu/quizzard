@@ -896,72 +896,89 @@ app.get('/getDiscussionBoard', function(req, res){
         return res.redirect('/');
     }
 
-    var questionId = req.query.questionId;
-    questions.lookupQuestionById(questionId, function (err, question) {
+    settings.getDiscussionboardVisibilityEnabled(function (err, boardVisibility) {
         if (err) {
-            logger.error(err);
             return res.status(500).send(err);
         }
 
-        if (!question) {
-            logger.error(common.formatString('Could not find the question {0}', [questionId]));
-            return res.status(400).send('Could not find the question');
+        if (boardVisibility === common.discussionboardVisibility.NONE) {
+            return res.status(200).send('hidden');
         }
 
-        users.getUsersList((err, userObj) => {
+        settings.getDiscussionboardDislikesEnabled(function (err, isDislikesEnabled) {
             if (err) {
-                return res.status(500).send('Could not get the list of students');
+                isDislikesEnabled = false;
             }
 
-            var usersList = {};
-            for (var i in userObj) {
-                var user = userObj[i];
-                usersList[user._id] = user.fname + ' ' + user.lname;
-            }
-
-            var discussionHtml = discussionBoardPug({
-                comments: question.comments,
-                getCurrentUser: () =>{
-                    var userId = req.session.user._id;
-                    if (!usersList[userId]) {
-                        return 'UNKNOWN';
-                    }
-                    return usersList[userId];
-                },
-                getFirstLastName: (userId) => {
-                    if (!usersList[userId]) {
-                        return 'UNKNOWN';
-                    }
-                    return usersList[userId];
-                },
-                isLiked: (likesList) => {
-                    return likesList.indexOf(req.session.user._id) !== -1;
-                },
-                isDisliked: (dislikesList) => {
-                    return dislikesList.indexOf(req.session.user._id) !== -1;
-                },
-                highlightMentionedUser: (comment) => {
-                    var userId = req.session.user._id;
-                    if (!usersList[userId]) {
-                        return '@UNKNOWN';
-                    }
-
-                    var fullName = '@' + usersList[userId];
-                    var newComment = '';
-                    if (comment.indexOf(fullName) > -1) {
-                        var parts = comment.split(fullName);
-                        for (var i = 0; i < parts.length-1; i++) {
-                            newComment += parts[i] + '<b>' + fullName + '</b>';
-                        }
-                        newComment += parts[parts.length-1];
-                    } else {
-                        newComment = comment;
-                    }
-                    return newComment;
+            var questionId = req.query.questionId;
+            questions.lookupQuestionById(questionId, function (err, question) {
+                if (err) {
+                    logger.error(err);
+                    return res.status(500).send(err);
                 }
-            });
 
-            return res.status(200).send(discussionHtml);
+                if (!question) {
+                    logger.error(common.formatString('Could not find the question {0}', [questionId]));
+                    return res.status(400).send('Could not find the question');
+                }
+
+                users.getUsersList((err, userObj) => {
+                    if (err) {
+                        return res.status(500).send('Could not get the list of students');
+                    }
+
+                    var usersList = {};
+                    for (var i in userObj) {
+                        var user = userObj[i];
+                        usersList[user._id] = user.fname + ' ' + user.lname;
+                    }
+
+                    var discussionHtml = discussionBoardPug({
+                        comments: question.comments,
+                        isDislikesEnabled: isDislikesEnabled,
+                        getCurrentUser: () =>{
+                            var userId = req.session.user._id;
+                            if (!usersList[userId]) {
+                                return 'UNKNOWN';
+                            }
+                            return usersList[userId];
+                        },
+                        getFirstLastName: (userId) => {
+                            if (!usersList[userId]) {
+                                return 'UNKNOWN';
+                            }
+                            return usersList[userId];
+                        },
+                        isLiked: (likesList) => {
+                            return likesList.indexOf(req.session.user._id) !== -1;
+                        },
+                        isDisliked: (dislikesList) => {
+                            return dislikesList.indexOf(req.session.user._id) !== -1;
+                        },
+                        highlightMentionedUser: (comment) => {
+                            var userId = req.session.user._id;
+                            if (!usersList[userId]) {
+                                return '@UNKNOWN';
+                            }
+
+                            var fullName = '@' + usersList[userId];
+                            var newComment = '';
+                            if (comment.indexOf(fullName) > -1) {
+                                var parts = comment.split(fullName);
+                                for (var i = 0; i < parts.length-1; i++) {
+                                    newComment += parts[i] + '<b>' + fullName + '</b>';
+                                }
+                                newComment += parts[parts.length-1];
+                            } else {
+                                newComment = comment;
+                            }
+                            return newComment;
+                        }
+                    });
+
+                    return res.status(200).send(discussionHtml);
+                });
+            });
         });
     });
 });
