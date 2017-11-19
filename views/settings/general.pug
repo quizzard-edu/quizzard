@@ -8,7 +8,7 @@ li
       .switch
         label
           | Disabled
-          input(type="checkbox" checked=false)
+          input(type="checkbox" checked=generalActive)
           span.lever
           | Enabled
     .row
@@ -16,4 +16,4 @@ li
       br
       .col.s12.m6
         .input-field
-          input.form-control#leaderboardStudents(type='number' name='studentsOnLeaderboard' placeholder='Number to show'  min="3" required)
+          input.form-control#leaderboardStudents(type='number' name='studentsOnLeaderboard' placeholder='Number to show'  min='3' value=generalLeaderboardLimit required)

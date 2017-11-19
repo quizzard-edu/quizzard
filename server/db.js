@@ -597,7 +597,7 @@ var resetAllSettings = function (callback) {
         defaultSettings['general'] = {};
         defaultSettings['student'] = {};
         defaultSettings['question'] = {};
-        defaultSettings['discussionBoard'] = {};
+        defaultSettings['discussionboard'] = {};
 
         defaultSettings.general['active'] = true;
         defaultSettings.general['leaderboardLimit'] = 3;
@@ -612,8 +612,8 @@ var resetAllSettings = function (callback) {
         defaultSettings.question['timeoutEnabled'] = true;
         defaultSettings.question['timeoutPeriod'] = 1;
 
-        defaultSettings.discussionBoard['visibility'] = common.discussionBoardVisibility.ALL;
-        defaultSettings.discussionBoard['dislikesEnabled'] = true;
+        defaultSettings.discussionboard['visibility'] = common.discussionboardVisibility.ALL;
+        defaultSettings.discussionboard['dislikesEnabled'] = true;
 
         settingsCollection.insert(defaultSettings, function (err, obj) {
             if (err) {
@@ -653,6 +653,13 @@ var getAllSettings = function (callback) {
     });
 }
 
+/**
+ * update settings object
+ * 
+ * @param {object} findQuery 
+ * @param {object} updateQuery 
+ * @param {function} callback 
+ */
 exports.updateSettings = function (findQuery, updateQuery, callback) {
     settingsCollection.update(findQuery, updateQuery, callback);
 }

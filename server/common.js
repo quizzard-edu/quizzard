@@ -42,12 +42,12 @@ const userTypes = Object.freeze({
 exports.userTypes = userTypes;
 
 // all types of visibility status for the dicussionboard
-const discussionBoardVisibility = Object.freeze({
-    NONE      : 'None',
-    ANSWERED  : 'Answered',
-    ALL       : 'All'
+const discussionboardVisibility = Object.freeze({
+    NONE      : 'NONE',
+    ANSWERED  : 'ANSWERED',
+    ALL       : 'ALL'
 });
-exports.discussionBoardVisibility = discussionBoardVisibility;
+exports.discussionboardVisibility = discussionboardVisibility;
 
 // all question types
 const questionTypes = Object.freeze({

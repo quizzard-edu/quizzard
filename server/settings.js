@@ -286,9 +286,9 @@ exports.setQuestionTimeoutPeriod = function (timeout, callback) {
  *
  * @param {funtion} callback
  */
-exports.getDiscussionBoardVisibilityEnabled = function (callback) {
+exports.getDiscussionboardVisibilityEnabled = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.discussionBoard.visibility);
+        return callback(err ? err : null, err ? null : allSettings.discussionboard.visibility);
     });
 }
 
@@ -298,12 +298,12 @@ exports.getDiscussionBoardVisibilityEnabled = function (callback) {
  * @param {boolean} isActive
  * @param {funtion} callback
  */
-exports.setDiscussionBoardVisibilityEnabled = function (isActive, callback) {
+exports.setDiscussionboardVisibilityEnabled = function (isActive, callback) {
     if (Object.prototype.toString.call(isActive) !== '[object Boolean]') {
         return callback('Invalid input', null);
     }
 
-    updateSettings({$set: {'discussionBoard.visibility': isActive}}, callback);
+    updateSettings({$set: {'discussionboard.visibility': isActive}}, callback);
 }
 
 /**
@@ -311,9 +311,9 @@ exports.setDiscussionBoardVisibilityEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getDiscussionBoardDislikesEnabled = function (callback) {
+exports.getDiscussionboardDislikesEnabled = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.discussionBoard.dislikesEnabled);
+        return callback(err ? err : null, err ? null : allSettings.discussionboard.dislikesEnabled);
     });
 }
 
@@ -323,12 +323,12 @@ exports.getDiscussionBoardDislikesEnabled = function (callback) {
  * @param {boolean} isActive
  * @param {funtion} callback
  */
-exports.setDiscussionBoardDislikesEnabled = function (isActive, callback) {
+exports.setDiscussionboardDislikesEnabled = function (isActive, callback) {
     if (Object.prototype.toString.call(isActive) !== '[object Boolean]') {
         return callback('Invalid input', null);
     }
 
-    updateSettings({$set: {'discussionBoard.dislikesEnabled': isActive}}, callback);
+    updateSettings({$set: {'discussionboard.dislikesEnabled': isActive}}, callback);
 }
 
 /**

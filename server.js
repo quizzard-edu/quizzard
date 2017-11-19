@@ -1420,7 +1420,30 @@ app.get('/settings', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    return res.status(200).send(settingsPug());
+    settings.getAllSettings(function (err, allSettings) {
+        if (err) {
+            return res.status(500).send('Could not fetch the settings');
+        }
+
+        var html = settingsPug({
+            generalActive: allSettings.general.active,
+            generalLeaderboardLimit: allSettings.general.leaderboardLimit,
+            studentEditNames: allSettings.student.editNames,
+            studentEditEmail: allSettings.student.editEmail,
+            studentEditPassword: allSettings.student.editPassword,
+            questionDefaultTopic: allSettings.question.defaultTopic,
+            questionDefaultMinPoints: allSettings.question.defaultMinPoints,
+            questionDefaultMaxPoints: allSettings.question.defaultMaxPoints,
+            questionTimeoutEnabled: allSettings.question.timeoutEnabled,
+            questionTimeoutPeriod: allSettings.question.timeoutPeriod,
+            discussionboardVisibility: allSettings.discussionboard.visibility,
+            discussionboardDislikesEnabled: allSettings.discussionboard.dislikesEnabled,
+            checkDiscussionboardVisibility: function (radioButtonValue) {
+                return allSettings.discussionboard.visibility === radioButtonValue;
+            }
+        });
+        return res.status(200).send(html);
+    });
 });
 
 /* get analytics for a student*/
