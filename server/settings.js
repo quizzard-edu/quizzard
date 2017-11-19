@@ -49,7 +49,7 @@ exports.getClassActive = function (callback) {
  * @param {funtion} callback
  */
 exports.setClassActive = function (isActive, callback) {
-    if (Object.prototype.toString.call(isActive) !== '[object Boolean]') {
+    if (common.getVariableType(isActive) !== '[object Boolean]') {
         return callback('Invalid input', null);
     }
 
@@ -74,7 +74,7 @@ exports.getLeaderboardLimit = function (callback) {
  * @param {funtion} callback
  */
 exports.setLeaderboardLimit = function (limit, callback) {
-    if (Object.prototype.toString.call(limit) !== '[object Number]') {
+    if (common.getVariableType(limit) !== '[object Number]') {
         return callback('Invalid input', null);
     }
 
@@ -99,7 +99,7 @@ exports.getStudentEditNameEnabled = function (callback) {
  * @param {funtion} callback
  */
 exports.setStudentEditNameEnabled = function (isActive, callback) {
-    if (Object.prototype.toString.call(isActive) !== '[object Boolean]') {
+    if (common.getVariableType(isActive) !== '[object Boolean]') {
         return callback('Invalid input', null);
     }
 
@@ -124,7 +124,7 @@ exports.getStudentEditEmailEnabled = function (callback) {
  * @param {funtion} callback
  */
 exports.setStudentEditEmailEnabled = function (isActive, callback) {
-    if (Object.prototype.toString.call(isActive) !== '[object Boolean]') {
+    if (common.getVariableType(isActive) !== '[object Boolean]') {
         return callback('Invalid input', null);
     }
 
@@ -149,7 +149,7 @@ exports.getStudentEditPasswordEnabled = function (callback) {
  * @param {funtion} callback
  */
 exports.setStudentEditPasswordEnabled = function (isActive, callback) {
-    if (Object.prototype.toString.call(isActive) !== '[object Boolean]') {
+    if (common.getVariableType(isActive) !== '[object Boolean]') {
         return callback('Invalid input', null);
     }
 
@@ -174,7 +174,7 @@ exports.getQuestionDefaultTopic = function (callback) {
  * @param {funtion} callback
  */
 exports.setQuestionDefaultTopic = function (topic, callback) {
-    if (Object.prototype.toString.call(topic) !== '[object String]') {
+    if (common.getVariableType(topic) !== '[object String]') {
         return callback('Invalid input', null);
     }
 
@@ -199,7 +199,7 @@ exports.getQuestionDefaultMinPoints = function (callback) {
  * @param {funtion} callback
  */
 exports.setQuestionDefaultMinPoints = function (points, callback) {
-    if (Object.prototype.toString.call(points) !== '[object Number]') {
+    if (common.getVariableType(points) !== '[object Number]') {
         return callback('Invalid input', null);
     }
 
@@ -224,7 +224,7 @@ exports.getQuestionDefaultMaxPoints = function (callback) {
  * @param {funtion} callback
  */
 exports.setQuestionDefaultMinPoints = function (points, callback) {
-    if (Object.prototype.toString.call(points) !== '[object Number]') {
+    if (common.getVariableType(points) !== '[object Number]') {
         return callback('Invalid input', null);
     }
 
@@ -249,7 +249,7 @@ exports.getQuestionTimeoutEnabled = function (callback) {
  * @param {funtion} callback
  */
 exports.setQuestionTimeoutEnabled = function (isActive, callback) {
-    if (Object.prototype.toString.call(isActive) !== '[object Boolean]') {
+    if (common.getVariableType(isActive) !== '[object Boolean]') {
         return callback('Invalid input', null);
     }
 
@@ -274,7 +274,7 @@ exports.getQuestionTimeoutPeriod = function (callback) {
  * @param {funtion} callback
  */
 exports.setQuestionTimeoutPeriod = function (timeout, callback) {
-    if (Object.prototype.toString.call(timeout) !== '[object Number]') {
+    if (common.getVariableType(timeout) !== '[object Number]') {
         return callback('Invalid input', null);
     }
 
@@ -299,7 +299,7 @@ exports.getDiscussionboardVisibilityEnabled = function (callback) {
  * @param {funtion} callback
  */
 exports.setDiscussionboardVisibilityEnabled = function (isActive, callback) {
-    if (Object.prototype.toString.call(isActive) !== '[object Boolean]') {
+    if (common.getVariableType(isActive) !== '[object Boolean]') {
         return callback('Invalid input', null);
     }
 
@@ -324,7 +324,7 @@ exports.getDiscussionboardDislikesEnabled = function (callback) {
  * @param {funtion} callback
  */
 exports.setDiscussionboardDislikesEnabled = function (isActive, callback) {
-    if (Object.prototype.toString.call(isActive) !== '[object Boolean]') {
+    if (common.getVariableType(isActive) !== '[object Boolean]') {
         return callback('Invalid input', null);
     }
 
@@ -349,6 +349,77 @@ var getAllSettings = function (callback) {
     db.getAllSettings(function (err, allSettings) {
         return callback(err ? err : null, err ? null : allSettings);
     });
+}
+
+/**
+ * update multiple settings based on the passed params
+ *
+ * @param {object} updateObject
+ * @param {function} callback
+ */
+exports.updateSettings = function (updateObject, callback) {
+    var updateQuery = {$set: {}};
+
+    if ('classActive' in updateObject 
+        && (updateObject.classActive === 'false'
+            || updateObject.classActive === 'true')) {
+        updateQuery.$set['general.active'] = (updateObject.classActive === 'true');
+    }
+
+    if ('studentsOnLeaderboard' in updateObject && parseInt(updateObject.leaderboardLimit)) {
+        updateQuery.$set['general.leaderboardLimit'] = parseInt(updateObject.leaderboardLimit);
+    }
+
+    if ('allowEditName' in updateObject 
+        && (updateObject.allowEditName === 'false'
+            || updateObject.allowEditName === 'true')) {
+        updateQuery.$set['student.editNames'] = (updateObject.allowEditName === 'true');
+    }
+
+    if ('allowEditEmail' in updateObject 
+        && (updateObject.allowEditEmail === 'false'
+            || updateObject.allowEditEmail === 'true')) {
+        updateQuery.$set['student.editEmail'] = (updateObject.allowEditEmail === 'true');
+    }
+
+    if ('allowEditPassword' in updateObject 
+        && (updateObject.allowEditPassword === 'false'
+            || updateObject.allowEditPassword === 'true')) {
+        updateQuery.$set['student.editPassword'] = (updateObject.allowEditPassword === 'true');
+    }
+
+    if ('minPoints' in updateObject && parseInt(updateObject.minPoints)) {
+        updateQuery.$set['question.defaultMinPoints'] = parseInt(updateObject.minPoints);
+    }
+
+    if ('maxPoints' in updateObject && parseInt(updateObject.maxPoints)) {
+        updateQuery.$set['question.defaultMaxPoints'] = parseInt(updateObject.maxPoints);
+    }
+    
+    if ('allowTimeout' in updateObject 
+        && (updateObject.allowTimeout === 'false'
+            || updateObject.allowTimeout === 'true')) {
+        updateQuery.$set['question.timeoutEnabled'] = (updateObject.allowTimeout === 'true');
+    }
+
+    if ('timeoutPeriod' in updateObject && parseInt(updateObject.timeoutPeriod)) {
+        updateQuery.$set['question.timeoutPeriod'] = parseInt(updateObject.timeoutPeriod);
+    }
+
+    if ('discussionView' in updateObject 
+        && (updateObject.discussionView === common.discussionboardVisibility.NONE
+            || updateObject.discussionView === common.discussionboardVisibility.ANSWERED
+            || updateObject.discussionView === common.discussionboardVisibility.ALL)) {
+        updateQuery.$set['discussionboard.visibility'] = updateObject.discussionView;
+    }
+
+    if ('allowDislikes' in updateObject 
+        && (updateObject.allowDislikes === 'false'
+            || updateObject.allowDislikes === 'true')) {
+        updateQuery.$set['discussionboard.dislikesEnabled'] = (updateObject.allowDislikes === 'true');
+    }
+    
+    updateSettings(updateQuery, callback);
 }
 
 /**

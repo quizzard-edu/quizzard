@@ -6,25 +6,25 @@ li
     .row
       label(for='qtopic') Default Topic (optional)
       .input-field
-        input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off')
+        input.form-control#qtopic.autocomplete(type='text', name='topic', placeholder='Enter Topic', autocomplete='off')
     .row
       .col.sm6
         label(for='qMinPoints') Default Minimum Points (optional)
         .input-field
-          input.form-control#qMinPoints.autocomplete(type='number' name='minPoints' placeholder='Minimum Points' value=questionDefaultMinPoints)
+          input.form-control#qMinPoints.autocomplete(type='number', name='minPoints', placeholder='Minimum Points', value=questionDefaultMinPoints)
       .col.sm6
         label(for='qMaxPoints') Default Maximum Points (optional)
         .input-field
-          input.form-control#qMaxPoints.autocomplete(type='number' name='maxPoints' placeholder='Maximum Points' value=questionDefaultMaxPoints)
+          input.form-control#qMaxPoints.autocomplete(type='number', name='maxPoints', placeholder='Maximum Points', value=questionDefaultMaxPoints)
     .row
       span Timeout if the question is not answered correctly
       .switch
         label
           | Disable
-          input#allowTimeout(type="checkbox" checked=questionTimeoutEnabled onclick="$(this)[0].checked ? $('#qtimeout').removeClass('hidden') : $('#qtimeout').addClass('hidden')")
+          input#allowTimeout(type='checkbox', name='allowTimeout', checked=questionTimeoutEnabled, onclick="$(this)[0].checked ? $('#qtimeout').removeClass('hidden') : $('#qtimeout').addClass('hidden')")
           span.lever
           | Enable
     .row
       .col.s12.m6
         .input-field
-          input.form-control#qtimeout.autocomplete(type='number' name='timeout' placeholder='Enter timeout in minutes ex. 10' min='1' value=questionTimeoutPeriod)
+          input.form-control#qtimeout.autocomplete(type='number', name='timeoutPeriod', placeholder='Enter timeout in minutes ex. 10', min='1', value=questionTimeoutPeriod)

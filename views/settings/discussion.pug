@@ -5,13 +5,13 @@ li
   .collapsible-body#discussionB
     h5 Discussion Board Status:
     form
-      input(type='radio' name='discussionView', value='none', id='none', checked=checkDiscussionboardVisibility('NONE'))
+      input(type='radio', name='discussionView', value='none', id='none', checked=checkDiscussionboardVisibility('NONE'))
       label(for='none') Don't use discussion board
       br
-      input(type='radio' name='discussionView', value='answered', id='answered', checked=checkDiscussionboardVisibility('ANSWERED'))
+      input(type='radio', name='discussionView', value='answered', id='answered', checked=checkDiscussionboardVisibility('ANSWERED'))
       label(for='answered') Available only for students who have answered the question
       br
-      input(type='radio' name='discussionView', value='all', id='all', checked=checkDiscussionboardVisibility('ALL'))
+      input(type='radio', name='discussionView', value='all', id='all', checked=checkDiscussionboardVisibility('ALL'))
       label(for='all') Available for all students
     br
     br
@@ -19,6 +19,6 @@ li
     .switch
       label
         | Don't allow
-        input(type="checkbox" checked=discussionboardDislikesEnabled)
+        input(type='checkbox', name='allowDislikes', checked=discussionboardDislikesEnabled)
         span.lever
         | Allow

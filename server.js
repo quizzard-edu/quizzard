@@ -1446,6 +1446,25 @@ app.get('/settings', function(req, res) {
     });
 });
 
+/* Update the settings collection */
+app.post('/updateSettings', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    settings.updateSettings(req.query.settings, function (err, result) {
+        if (err) {
+            return res.status(500).send('Could not update the settings');
+        }
+
+        return res.status(200).send('ok');
+    });
+});
+
 /* get analytics for a student*/
 app.get('/studentAnalytics', function(req,res){
     if (!req.session.user) {

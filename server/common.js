@@ -208,6 +208,16 @@ var getUUID = function () {
 exports.getUUID = getUUID;
 
 /**
+ * get variable type
+ * 
+ * @param {*} variable 
+ */
+var getVariableType = function (variable) {
+    return Object.prototype.toString.call(variable);
+}
+exports.getVariableType = getVariableType;
+
+/**
 * formating a string based on an array of parts of the string
 *
 * @return {string}
