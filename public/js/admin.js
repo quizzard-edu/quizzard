@@ -218,15 +218,15 @@ var submitImportList = function() {
 var addAccountsTableEvents = function() {
     $('.deactivate-button').click(function(evt) {
         /* cut off the delete- */
-        deactivateUser(this.id.substring(11));
+        deactivateUser(this.id.substring(11), this.name);
     });
     $('.activate-button').click(function(evt) {
         /* cut off the delete- */
-        activateUser(this.id.substring(9));
+        activateUser(this.id.substring(9), this.name);
     });
     $('.edit-button').click(function(evt) {
         /* cut off the edit- */
-        editUser(this.id.substring(5));
+        editUser(this.id.substring(5), this.name);
     });
     $('.sort-table').click(function(evt) {
         sortAccountsTable(this.id.substring(5));
@@ -275,6 +275,8 @@ var displayQuestionTable = function() {
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
 
+            $('.visbox').hide();
+
             $('#question-creation-button').click(function(evt) {
                 displayQuestionForm();
             });
@@ -294,13 +296,13 @@ var addQuestionsTableEvents = function() {
         window.location.href = '/question?_id=' + this.id.substring(5);
     });
     $('.delete-button').click(function(evt) {
-        deleteQuestion(this.id.substring(7));
+        deleteQuestion(this.id.substring(7), this.name);
     });
     $('.edit-button').click(function(evt) {
-        editQuestion(this.id.substring(5));
+        editQuestion(this.id.substring(5), this.name);
     });
     $('.checked').change(function(evt) {
-        updateVisibility(this.id.substring(8));
+        updateVisibility(this.id.substring(8), this.name);
     });
 }
 
@@ -372,17 +374,12 @@ var displayStatistics = function() {
         type: 'GET',
         url: '/statistics',
         success: function(data) {
-            $('#admin-label').html('Statistics');
             $('#admin-content').html(data);
 
             $('#option-stats').addClass('active');
             $('#option-accounts').removeClass('active');
             $('#option-questions').removeClass('active');
             $('#option-settings').removeClass('active');
-
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').hide();
         },
         error: function(data) {
             if (data['status'] === 401) {
@@ -395,17 +392,12 @@ var displayStatistics = function() {
 }
 
 var displaySettings = function() {
-    $('#admin-label').html('Global Settings');
     $('#admin-content').html('');
 
     $('#option-settings').addClass('active');
     $('#option-stats').removeClass('active');
     $('#option-accounts').removeClass('active');
     $('#option-questions').removeClass('active');
-
-    $('#admin-button').off();
-    $('#admin-button').hide();
-    $('#admin-back').hide();
 }
 
 /* Set up events for the sidebar buttons. */
@@ -429,10 +421,10 @@ $('#option-settings').click(function(evt) {
  * Process user deactiavtion request.
  * First, display a confirmation message and then request the user's deactivation.
  */
-var deactivateUser = function(id) {
+var deactivateUser = function(id, username) {
     swal({
         title: 'Confirm Deactivation',
-        text: id + '\'s  account will be deactivated.',
+        text: username + '\'s  account will be deactivated.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
@@ -445,14 +437,13 @@ var deactivateUser = function(id) {
             data: { userid: id, active: false },
             success: function(data) {
                 displayAccountsTable();
-                const msg = ' has been&nbsp;<u><b>deactivated</b></u>&nbsp;';
-                warningSnackbar(id + ' account' + msg);
+                warningSnackbar(username + ' account has been&nbsp;<u><b>deactivated</b></u>&nbsp;');
             },
             error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Failed to deactivate ' + id + '\'s account');
+                    failSnackbar('Failed to deactivate ' + username + '\'s account');
                 }
             }
         });
@@ -463,10 +454,10 @@ var deactivateUser = function(id) {
  * Process user actiavtion request.
  * First, display a confirmation message and then request the user's activation.
  */
-var activateUser = function(id) {
+var activateUser = function(id, username) {
     swal({
         title: 'Confirm Activation',
-        text: id + '\'s  account will be activated.',
+        text: username + '\'s  account will be activated.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
@@ -479,13 +470,13 @@ var activateUser = function(id) {
             data: { userid: id, active: true },
             success: function(data) {
                 displayAccountsTable();
-                successSnackbar(id + '\'s account has been activated');
+                successSnackbar(username + '\'s account has been activated');
             },
             error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Failed to activate ' + id + '\'s account');
+                    failSnackbar('Failed to activate ' + username + '\'s account');
                 }
             }
         });
@@ -524,7 +515,7 @@ var submitUserForm = function() {
     var user = {};
 
     jQuery.each(fields, function(i, field) {
-        user[field.name.substring(3)] = field.value;
+        user[field.name] = field.value;
     });
 
     $.ajax({
@@ -533,7 +524,7 @@ var submitUserForm = function() {
         data: user,
         success: function(data) {
             displayAccountsTable();
-            successSnackbar('User ' + user.id + ' added to database');
+            successSnackbar('User ' + user.username + ' added to database');
         },
         error: function(data) {
             if (data['status'] === 401) {
@@ -541,7 +532,7 @@ var submitUserForm = function() {
             } else if (data['responseText'] === 'failure') {
                 failSnackbar('User could not be added');
             } else if (data['responseText'] === 'exists') {
-                failSnackbar('User ' + user.id + ' already exists');
+                failSnackbar('User ' + user.username + ' already exists');
             } else {
                 failSnackbar('Something went wrong, please try again later!');
             }
@@ -553,7 +544,7 @@ var submitUserForm = function() {
 var submitEditForm = function(id) {
     var fields = $('#account-edit-form').serializeArray();
     var user = {
-        originalID: id
+        _id: id
     };
 
     jQuery.each(fields, function(i, field) {
@@ -570,10 +561,10 @@ var submitEditForm = function(id) {
             $('#admin-content').html(data.html);
             $('#account-edit-form').submit(function(evt) {
                 evt.preventDefault();
-                submitEditForm(user.id ? user.id : id);
+                submitEditForm(user._id);
             });
             displayAccountsTable();
-            successSnackbar('User ' + id + ' has been updated');
+            successSnackbar('User ' + user.username + ' has been updated');
         },
         error: function(data) {
             if (data['status'] === 401) {
@@ -581,7 +572,7 @@ var submitEditForm = function(id) {
             } else if (data.result === 'failure') {
                 failSnackbar('User could not be updated. Please try again');
             } else if (data.result === 'dupid') {
-                failSnackbar('User ID ' + user.id + ' is taken');
+                failSnackbar('Username ' + user.username + ' is taken');
             } else {
                 failSnackbar('Something went wrong, please try again later!');
             }
@@ -590,12 +581,12 @@ var submitEditForm = function(id) {
 }
 
 /* Updates the Vilibility of a Question */
-var updateVisibility = function(qid) {
+var updateVisibility = function(qid, questionNumber) {
     var question = {};
     swal({
         type: 'warning',
         title: 'Visibilty Change',
-        text: 'You are about to change the visibility status of question ' + qid,
+        text: 'You are about to change the visibility status of question ' + questionNumber,
         showCancelButton: true,
         showConfirmButton: true,
         // User can only close the swal if they click one of the buttons
@@ -614,22 +605,21 @@ var updateVisibility = function(qid) {
                         id: qid
                     },
                     success: function(data) {
-                        displayQuestionTable();
                         // Toast notifiation
                         const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
 
-                        if(question['visible']){
-                            successSnackbar('Question ' + qid + msg);
+                        if (question['visible']) {
+                            successSnackbar('Question ' + questionNumber + msg);
                         } else {
-                            warningSnackbar('Question ' + qid + msg);
+                            warningSnackbar('Question ' + questionNumber + msg);
                         }
                     },
                     error: function(data) {
                         if (data['status'] === 401) {
                             window.location.href = '/';
                         } else {
-                            displayQuestionTable();
                             // Toast notification
+                            $('#checked-' + qid).prop('checked', !question['visible']);
                             failSnackbar('Could not change visibility of question');
                         }
                     }
@@ -716,10 +706,10 @@ var submitQuestionForm = function() {
     });
 }
 
-var deleteQuestion = function(qid) {
+var deleteQuestion = function(qid, questionNumber) {
     swal({
         title: 'Confirm deletion',
-        text: 'Question ' + qid + ' will be removed from the database.',
+        text: 'Question ' + questionNumber + ' will be removed from the database.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
@@ -731,39 +721,35 @@ var deleteQuestion = function(qid) {
             url: '/questiondel',
             data: { qid: qid },
             success: function(data) {
-                successSnackbar('Question ' + qid + ' was removed from the database');
+                successSnackbar('Question ' + questionNumber + ' was removed from the database');
                 displayQuestionTable();
             },
             error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Coud not remove question ' + qid + ' from the database');
+                    failSnackbar('Coud not remove question ' + questionNumber + ' from the database');
                 }
             }
         });
     });
 }
 
-var editQuestion = function(qid) {
+var editQuestion = function(qid, questionNumber) {
     $.ajax({
         type: 'GET',
         url: '/questionedit',
         data: { questionid: qid },
         success: function(data) {
-            $('#admin-label').html('Edit Question');
             $('#admin-content').html(data.html);
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').show();
-            $('#admin-back').click(function(evt) {
+            $('#question-edit-back-button').click(function(evt) {
                 displayQuestionTable();
             });
             $('#qtext').summernote({ height: 150 });
             $('#qtext').summernote('code', data.qtext);
             $('#question-edit-form').submit(function(evt) {
                 evt.preventDefault();
-                submitQEditForm(qid);
+                submitQEditForm(qid, questionNumber);
             });
             setRating(data.qrating);
 
@@ -780,7 +766,7 @@ var editQuestion = function(qid) {
     });
 }
 
-var submitQEditForm = function(qid) {
+var submitQEditForm = function(qid, questionNumber) {
     if ($('#qtext').summernote('isEmpty')) {
         failSnackbar('Please enter a question body in the editor.');
         return;
@@ -788,9 +774,10 @@ var submitQEditForm = function(qid) {
 
     var question = collectQuestionFormData('#question-edit-form');
 
-    if (rating > 0 && rating < 6) {
-        submitQuestionRating(rating, qid);
+    if (getRating() > 0 && getRating() < 6) {
+        submitQuestionRating(getRating(), qid);
     }
+
     $.ajax({
         type: 'POST',
         url: '/questionmod',
@@ -799,7 +786,7 @@ var submitQEditForm = function(qid) {
             id: qid
         },
         success: function(data) {
-            successSnackbar('Question ' + qid + ' has been modified.');
+            successSnackbar('Question ' + questionNumber + ' has been modified.');
             displayQuestionTable();
         },
         error: function(data) {
@@ -824,9 +811,7 @@ var submitQuestionRating = function (rating, qid) {
             qId: qid
         },
         async: false,
-        success: function(data) {
-            successSnackbar('Question ' + qid + ' rating has been updated.');
-        },
+        success: function(data) { },
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
@@ -880,7 +865,7 @@ var sortAccountsTable = function(type) {
 
 // Toggles the view of the Visibility Checkboxes in the Question-Table View
 var toggleButtonVisibility = function() {
-    if (document.getElementById('sw').checked) {
+    if ($('#sw').is(':checked')) {
         $('.visbox').show();
     } else {
         $('.visbox').hide();
@@ -902,9 +887,9 @@ var getQuestionsTopicsList = function () {
 
             // Setting up the autocomplete search for topics
             $('#qtopic').autocomplete({
-              data: autocompleteTopics,
-              limit: 20,
-              minLength: 0
+                data: autocompleteTopics,
+                limit: 20,
+                minLength: 0
             });
         },
         error: function(data) {

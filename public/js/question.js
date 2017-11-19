@@ -78,7 +78,7 @@ var sendAnswerRequest = function(ans) {
                 dismissible: false,
                 opacity: 0.5,
                 complete: function() {
-                    if(getRating() > 0) {
+                    if(getRating()  > 0 && getRating()  < 6) {
                         submitQuestionRating(getRating(), questionId);
                     }
                     location.reload();
@@ -110,7 +110,7 @@ var sendAnswerRequest = function(ans) {
 
 /* Listener for the `rate` button */
 $(document).on('click', '#rateQuestion', function() {
-    if(getRating() > 0) {
+    if(getRating()  > 0 && getRating()  < 6) {
         submitQuestionRating(getRating(), questionId);
     }
     location.reload();
