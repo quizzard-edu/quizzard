@@ -1421,18 +1421,34 @@ app.get('/profile', function(req, res) {
         return res.redirect('/');
     }
 
-    users.getUserById(req.session.user._id, function(err, user) {
+    settings.getAllSettings(function (err, allSettings) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
         }
 
-        if (!user) {
-            return res.status(400).send('bad request, user does not exist');
-        }
+        users.getUserById(req.session.user._id, function(err, user) {
+            if (err) {
+                logger.error(err);
+                return res.status(500).send(err);
+            }
 
-        return res.status(200).render('profile', {
-            user: user
+            if (!user) {
+                return res.status(400).send('bad request, user does not exist');
+            }
+
+            if (user.type === common.userTypes.ADMIN) {
+                allSettings.student.editNames = true;
+                allSettings.student.editEmail = true;
+                allSettings.student.editPassword = true;
+            }
+
+            return res.status(200).render('profile', {
+                user: user,
+                editNamesEnabled: allSettings.student.editNames,
+                editEmailEnabled: allSettings.student.editEmail,
+                editPasswordEnabled: allSettings.student.editPassword
+            });
         });
     });
 });
