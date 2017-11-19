@@ -229,25 +229,15 @@ exports.submitAnswer = function(questionId, userId, correct, points, answer, cal
     } else {
         update.$inc.wrongAttemptsCount = 1;
         update.$push.wrongAttempts = {
-<<<<<<< HEAD
-            id : userId,
-            attempt: answer,
-=======
             userId : userId,
             attemp: answer,
->>>>>>> develop
             date : currentDate
         };
     }
     update.$inc.totalAttemptsCount = 1;
     update.$push.totalAttempts = {
-<<<<<<< HEAD
-        id : userId,
-        attempt: answer,
-=======
         userId : userId,
         attemp: answer,
->>>>>>> develop
         date : currentDate
     };
 

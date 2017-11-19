@@ -285,12 +285,7 @@ exports.submitAnswer = function (userId, questionId, correct, points, answer, ca
     update.$set = { mtime : currentDate };
     update.$push = {};
 
-
-<<<<<<< HEAD
-    query['correctAttempts._id'] = { $ne : questionId };
-=======
     query['correctAttempts.questionId'] = { $ne : questionId };
->>>>>>> develop
     if (correct) {
         update.$inc.points = points;
         update.$inc.correctAttemptsCount = 1;
