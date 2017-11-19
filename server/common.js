@@ -187,7 +187,7 @@ exports.getDate = getDate;
 var getDateObject = function(){
     return new Date();
 }
-
+exports.getDateObject = getDateObject;
 // return the current date with format
 var getDateByFormat = function(format) {
     return date().format(format);
