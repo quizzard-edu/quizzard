@@ -107,6 +107,111 @@ exports.getStudentEditPasswordEnabled = function (callback) {
 }
 
 /**
+ * get question default topic
+ * 
+ * @param {funtion} callback 
+ */
+exports.getQuestionDefaultTopic = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.question.defaultTopic);
+    });
+}
+
+/**
+ * get question default min points
+ * 
+ * @param {funtion} callback 
+ */
+exports.getQuestionDefaultMinPoints = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.question.defaultMinPoints);
+    });
+}
+
+/**
+ * get question default max points
+ * 
+ * @param {funtion} callback 
+ */
+exports.getQuestionDefaultMaxPoints = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.question.defaultMaxPoints);
+    });
+}
+
+/**
+ * get question timeout enabled
+ * 
+ * @param {funtion} callback 
+ */
+exports.getQuestionTimeoutEnabled = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.question.timeoutEnabled);
+    });
+}
+
+/**
+ * get question timeout period
+ * 
+ * @param {funtion} callback 
+ */
+exports.getQuestionTimeoutPeriod = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.question.timeoutPeriod);
+    });
+}
+
+/**
+ * get discussionboard visibility enabled
+ * 
+ * @param {funtion} callback 
+ */
+exports.getDiscussionBoardVisibilityEnabled = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.discussionBoard.visibility);
+    });
+}
+
+/**
+ * get discussionboard dislikes enabled
+ * 
+ * @param {funtion} callback 
+ */
+exports.getDiscussionBoardDislikesEnabled = function (callback) {
+    getAllSettings(function (err, allSettings) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return callback(null, allSettings.discussionBoard.dislikesEnabled);
+    });
+}
+
+/**
  * get all settings object
  * 
  * @param {function} callback 
