@@ -546,17 +546,14 @@ exports.voteReply = function (replyId, vote, userId, callback) {
     });
 }
 
-/*Checks if the user can submit an answer to a question
-* and logs the new lock time if the question is not locked
-*/
-exports.isUserLocked = function(userId,question){
+exports.isUserLocked = function(userId, question, callback){
     var lastSubmissionTime;
     var currentDate = common.getDateObject();
 
     // check if user already got the question correct
     for (var obj = 0; obj < question.correctAttempts.length; obj ++){
         if(question.correctAttempts[obj]['userId'] == userId){
-            return false;
+            return callback(false,null);
         }
     }
     // find the lastSubmissionTime for this user
@@ -569,10 +566,10 @@ exports.isUserLocked = function(userId,question){
     if(typeof lastSubmissionTime !== 'undefined'){
         var diff = Math.abs(currentDate - lastSubmissionTime);
         if (diff < common.waiting_time){
-            return true;
+            return callback(true,common.getTime(common.waiting_time - diff));
         }
     }
-    return false;
+    return callback(false,null);
 }
 
 /*Updates the Users Submission time for a Question*/

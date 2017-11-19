@@ -118,7 +118,7 @@ const questionAttributes = Object.freeze({
 });
 exports.questionAttributes = questionAttributes;
 // </Global Constants> ------------------------------------------
-const waiting_time = 0.1*60000;
+const waiting_time = 90*60000;
 exports.waiting_time = waiting_time;
 // <Global Function> --------------------------------------------
 /**
@@ -188,6 +188,35 @@ var getDateObject = function(){
     return new Date();
 }
 exports.getDateObject = getDateObject;
+
+/**
+* return the time in day hours minutes and seconds format
+*
+* @return {string}
+*/
+var getTime = function(time){
+    var date = new Date(time);
+    var str = '';
+    var days = date.getUTCDate()-1;
+    var hours = date.getUTCHours();
+    var minutes = date.getUTCMinutes();
+    var seconds = date.getUTCSeconds();
+    if (days){
+        str += date.getUTCDate()-1 + " days, ";
+    }
+    if (hours){
+        str += date.getUTCHours() + " hours, ";
+    }
+    if (minutes){
+        str += date.getUTCMinutes() + " minutes, ";
+    }
+    if (seconds){
+        str += date.getUTCSeconds() + " seconds";
+    }
+    return str;
+}
+exports.getTime = getTime;
+
 // return the current date with format
 var getDateByFormat = function(format) {
     return date().format(format);

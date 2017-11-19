@@ -618,41 +618,47 @@ app.post('/submitanswer', function(req, res) {
         }
 
         // check if question is locked for the student
-        if(req.session.user.type !== common.userTypes.ADMIN && questions.isUserLocked(userId, question)){
+        /*if(req.session.user.type !== common.userTypes.ADMIN && questions.isUserLocked(userId, question)){
             return res.status(423).send('Sorry question is Locked, please try again later');
-        }
-
-        logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
-
-        var value = questions.verifyAnswer(question, answer);
-        var points = question.points;
-        var text = value ? 'correct' : 'incorrect';
-        var status = value ? 200 : 405;
-        var response = {text: text, points: points};
-
-        if (req.session.user.type === common.userTypes.ADMIN) {
-            return res.status(status).send(response);
-        }
-
-        users.submitAnswer(userId, questionId, value, points, answer, function(err, result){
-            if(err){
-                logger.error(err);
-                return res.status(500).send(err);
+        }*/
+        questions.isUserLocked(userId, question, function(isLocked, waitTime){
+            console.log(waitTime);
+            if (isLocked){
+                return res.status(423).send(waitTime);
             }
 
-            questions.submitAnswer(questionId, userId, value, points, answer, function(err, result) {
+            logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
+
+            var value = questions.verifyAnswer(question, answer);
+            var points = question.points;
+            var text = value ? 'correct' : 'incorrect';
+            var status = value ? 200 : 405;
+            var response = {text: text, points: points};
+
+            if (req.session.user.type === common.userTypes.ADMIN) {
+                return res.status(status).send(response);
+            }
+
+            users.submitAnswer(userId, questionId, value, points, answer, function(err, result){
                 if(err){
                     logger.error(err);
                     return res.status(500).send(err);
                 }
 
-                questions.updateUserSubmissionTime(userId, question, function(err, result){
+                questions.submitAnswer(questionId, userId, value, points, answer, function(err, result) {
                     if(err){
                         logger.error(err);
                         return res.status(500).send(err);
                     }
 
-                    return res.status(status).send(response);
+                    questions.updateUserSubmissionTime(userId, question, function(err, result){
+                        if(err){
+                            logger.error(err);
+                            return res.status(500).send(err);
+                        }
+
+                        return res.status(status).send(response);
+                    });
                 });
             });
         });

@@ -92,8 +92,10 @@ var sendAnswerRequest = function(ans) {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['status'] === 423 || data['status'] === 400){
+            } else if (data['status'] === 400){
                 failSnackbar(data['responseText']);
+            } else if (data['status'] === 423){
+                swal('Question is Locked', 'Please try again in ' + data['responseText'], 'warning');
             } else if (data['status'] === 500) {
                 failSnackbar('Something went wrong!');
             } else if (data['status'] === 405) {            
