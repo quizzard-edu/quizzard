@@ -1,5 +1,5 @@
 $(function() {
-  getQuestionsTopicsList();
+    getQuestionsTopicsList();
 });
 
 
@@ -30,5 +30,50 @@ var getQuestionsTopicsList = function () {
             }
         }
     });
+}
 
+var cancel = function() {
+    swal({
+        title: 'Confirm Cancel',
+        text: 'Your current changes will not be applied',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Confirm',
+        closeOnConfirm: true
+    }, function() {
+        displaySettings();
+        successSnackbar('Changes canceled')
+    });
+}
+
+var resetDefault = function() {
+    swal({
+        title: 'Reset to Default',
+        text: 'All the settings will be reverted to their default value',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Confirm',
+        closeOnConfirm: true
+    }, function() {
+        //TODO: call the reset to default function
+        displaySettings();
+        successSnackbar('Default settings have been applied')
+    });
+}
+
+var save = function() {
+    swal({
+        title: 'Confirm Save',
+        text: 'Are you sure you would like to save the current changes',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Confirm',
+        closeOnConfirm: true
+    }, function() {
+        displaySettings();
+        successSnackbar('Changes have been updated')
+    });
 }
