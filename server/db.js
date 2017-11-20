@@ -69,7 +69,7 @@ exports.addAdmin = function(admin, callback){
 }
 
 var addUser = function(user, callback) {
-    usersCollection.findOne({_id: user._id}, function(err, obj) {
+    usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
