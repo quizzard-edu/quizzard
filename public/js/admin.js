@@ -16,7 +16,6 @@ var toggleUsersSwitch = function() {
 
 /* Display the table of user accounts. */
 var displayAccountsTable = function() {
-    //var status = $('#userStatusSwitch').is(':checked');
     $.ajax({
         type: 'GET',
         url: '/studentlist?active=' + usersTableActive,
@@ -172,24 +171,21 @@ var submitImportList = function() {
             return;
         }
 
-        var $tds = $(this).find('td'),
-            isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked'),
-            fname = $tds.eq(1).text(),
-            lname = $tds.eq(2).text(),
-            username = $tds.eq(3).text(),
-            email = $tds.eq(4).text();
-
+        var $tds = $(this).find('td');
+        var isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked');
         var userObj = {
-            fname: fname,
-            lname: lname,
-            username: username,
-            email: email
+            username: $tds.eq(1).text(),            
+            fname: $tds.eq(2).text(),
+            lname: $tds.eq(3).text(),
+            email: $tds.eq(4).text()
         };
 
         if (isSelected) {
             selected.push(userObj);
         }
     });
+
+    $('#admin-content').html(loadingAnimation);
 
     $.ajax({
         type: 'POST',
@@ -207,7 +203,8 @@ var submitImportList = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Upload failed');
+                failSnackbar('Importing failed');
+                displayAccountsTable();                
             }
         }
     });
@@ -850,7 +847,7 @@ var accountSortTypes = {
     fname: false,
     lname: false,
     id: false
-};
+}
 
 var sortAccountsTable = function(type) {
     /* Toggle type's sort order; reset all others. */

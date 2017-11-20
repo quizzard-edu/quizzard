@@ -1245,17 +1245,23 @@ app.post('/accountsExportFile', function(req, res) {
     var totalCount = requestedList.length;
     var studentsCount = 0;
     var studentsList = [];
+    var errors = 0;
 
     for (var i in requestedList) {
         users.getStudentById(requestedList[i], function(err, studentFound) {
             if (err || !studentFound) {
-                res.status(500).send('Could not find a student from the export list');
+                logger.error('Could not find a student from the export list');
+                errors++;
             }
 
             studentsList.push(studentFound);
             studentsCount++;
             if (studentsCount === totalCount) {
-                var fields = ['id', 'fname', 'lname', 'email'];
+                if (errors > 0) {
+                    return res.status(500).send('Could not find a student from the export list');
+                }
+
+                var fields = ['username', 'fname', 'lname', 'email'];
                 var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
                 var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
                 var file = 'exportJob-students-'+new Date().toString();
@@ -1309,7 +1315,7 @@ app.post('/accountsImportFile', function (req, res) {
         var importedList = [];
         csv2json().fromFile(newFile).on('json', function(jsonObj) {
             var userObj = {};
-            userObj['id'] = jsonObj['Username'];
+            userObj['username'] = jsonObj['Username'];
             userObj['fname'] = jsonObj['First Name'];
             userObj['lname'] = jsonObj['Last Name'];
             userObj['email'] = jsonObj['Email'];

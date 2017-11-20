@@ -23,8 +23,8 @@
                   tr(class=s.active ? '' : 'grey lighten-2')
                     td
                       p
-                        input.checked(id='cb-' + s.username type='checkbox' checked=s.active)
-                        label.visbox(for='cb-' + s.username)
+                        input.checked(id='cb-' + s._id, type='checkbox', checked=s.active)
+                        label.visbox(for='cb-' + s._id)
                     td #{s.username}
                     td #{s.fname}
                     td #{s.lname}
