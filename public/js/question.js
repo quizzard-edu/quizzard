@@ -74,7 +74,7 @@ var sendAnswerRequest = function(ans) {
         data: { questionId: questionId, answer: ans },
         success: function(data) {
 
-            $('#modalAlert').modal({
+            $('#alert').modal({
                 dismissible: false,
                 opacity: 0.5,
                 complete: function() {
@@ -85,9 +85,9 @@ var sendAnswerRequest = function(ans) {
                 }
             });
 
-            $('#modalAlertMsg').html('Congratulations! You gained ' + data.points + ' points!<br>Please rate the difficulty of this question:');
+            $('#alertMsg').html('Congratulations! You gained ' + data.points + ' points!<br>Please rate the difficulty of this question:');
 
-            $('#modalAlert').modal('open');
+            $('#alert').modal('open');
         },
         error: function(data) {
             $('#hint').removeClass('hidden');

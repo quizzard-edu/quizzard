@@ -33,6 +33,7 @@ var analytics = require('./server/analytics.js');
 var json2csv = require('json2csv');
 var fs = require('fs');
 var csv2json = require('csvtojson');
+var eml = require('sendmail')();
 
 var app = express();
 var port = process.env.QUIZZARD_PORT || 8000;
@@ -1437,22 +1438,30 @@ app.get('/adminAnalytics', function(req,res){
     });
 });
 
-// 404 route
-app.use(function(req, res, next){
-    return res.status(404).render('page-not-found');
-});
-
-
-app.post('/submitFeedback',function(req, res){
+app.post('/submitFeedback', function(req, res){
     if (!req.session.user) {
         return res.redirect('/');
     }
 
     var userId = req.session.user.id;
 
-    logger.log(common.formatString('{0} - $TIME$: {1}', [userId, message]));
+    logger.log(common.formatString('{0} - feedback:', [userId]));
 
-    //DATABASE STUFF HERE
+    eml({
+        from:   'feedback@quizzard.com',
+        to: 'mohammed.jskhan@gmail.com',
+        subject:    'Quizzard Feedback: ' + req.body.subject,
+        html:   ' user ' + req.session.user.id + ' said:<br><br>' + req.body.message
+    }, function (err, reply) {
+        if (err) {
+            return res.status(500).send(err);
+        } else {
+            return res.status(200).send('success');
+        }
+    });
+});
 
-    return res.status(200).send(value);
+// 404 route
+app.use(function(req, res, next){
+    return res.status(404).render('page-not-found');
 });

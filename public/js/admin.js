@@ -824,9 +824,7 @@ var submitQuestionRating = function (rating, qid) {
             qId: qid
         },
         async: false,
-        success: function(data) {
-            successSnackbar('Question ' + qid + ' rating has been updated.');
-        },
+        success: function(data) { },
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';

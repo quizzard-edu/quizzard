@@ -1,7 +1,7 @@
-#modalFeedback {
+#feedback {
 	background-color: white;
 	max-width: 500px;
-	max-height:385px;
+	max-height:360px;
 	text-align: center;
 	border-radius: 5px;
 }
@@ -37,4 +37,9 @@
 
 .modal-content button:hover {
 	background-color: #86CCEB;
+}
+
+.row {
+	margin: 0;
+	margin-bottom: 10px;
 }
