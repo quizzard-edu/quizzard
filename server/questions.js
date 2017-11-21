@@ -24,18 +24,18 @@ const common = require('./common.js');
 const questionValidator = require('./questionValidator.js');
 
 /*Preparing data on update/edit of a question */
-var questionUpdateParser = function(question){
+var questionUpdateParser = function(question) {
     var updatedQuestion = question;
 
-    if ('visible' in question){
+    if ('visible' in question) {
         updatedQuestion.visible = (question.visible === 'true');
     }
 
-    if ('minpoints' in question){
+    if ('minpoints' in question) {
         updatedQuestion.minpoints = parseInt(question.minpoints);
     }
 
-    if ('maxpoints' in question){
+    if ('maxpoints' in question) {
         updatedQuestion.maxpoints = parseInt(question.maxpoints);
     }
 
@@ -43,7 +43,7 @@ var questionUpdateParser = function(question){
 }
 
 /*Prepare question data on first pass to DB*/
-var prepareQuestionData = function(question, callback){
+var prepareQuestionData = function(question, callback) {
     // prepare regular data
     var currentDate = common.getDate();
     var questionToAdd = {};
@@ -115,14 +115,14 @@ var prepareQuestionData = function(question, callback){
 * the text, topic, type, answer, minpoints, maxpoints and hint set.
 */
 exports.addQuestion = function(question, callback) {
-    prepareQuestionData(question, function(err, questionToAdd){
-        if(err){
+    prepareQuestionData(question, function(err, questionToAdd) {
+        if(err) {
             return callback(err, null)
         }
 
         // validate constant question attributes
         result = questionValidator.questionCreationValidation(questionToAdd);
-        if (result.success){
+        if (result.success) {
             db.addQuestion(questionToAdd, function (err, questionId) {
                 if (err) {
                     return callback(err, null);
@@ -150,17 +150,17 @@ exports.updateQuestionById = function(questionId, info, callback) {
     updateQuestionById(questionId, info, callback);
 }
 
-var updateQuestionById = function(qId, infoToUpdate, callback){
+var updateQuestionById = function(qId, infoToUpdate, callback) {
     // Get Type of question and validate it
-    lookupQuestionById(qId, function(err, question){
-        if(err){
+    lookupQuestionById(qId, function(err, question) {
+        if(err) {
             return callback({status:500, msg:err},null);
         }
         infoToUpdate = questionUpdateParser(infoToUpdate);
 
         // validate each field that will be updated
         var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
-        if (result.success){
+        if (result.success) {
             db.updateQuestionById(qId, infoToUpdate, callback);
         } else {
             return callback({status:400, msg:result.msg}, null)
@@ -254,8 +254,8 @@ exports.submitAnswer = function(questionId, userId, correct, points, answer, cal
 
 // verify answer based on type
 exports.verifyAnswer = function(question, answer) {
-    if (answer){
-        switch (question.type){
+    if (answer) {
+        switch (question.type) {
             case common.questionTypes.MATCHING.value:
                 return verifyMatchingQuestionAnswer(question,answer);
             case common.questionTypes.CHOOSEALL.value:
@@ -269,11 +269,11 @@ exports.verifyAnswer = function(question, answer) {
     return false;
 }
 
-var verifyChooseAllQuestionAnswer = function(question,answer){
+var verifyChooseAllQuestionAnswer = function(question,answer) {
     return question.answer.sort().join(',') === answer.sort().join(',');
 }
 
-var verifyMatchingQuestionAnswer = function(question, answer){
+var verifyMatchingQuestionAnswer = function(question, answer) {
     var ansLeftSide = answer[0];
     var ansRightSide = answer[1];
 
@@ -293,7 +293,7 @@ var verifyMatchingQuestionAnswer = function(question, answer){
     return false;
 }
 // Check if answer submitted is correct for Ordering question Type
-var verifyOrderingQuestionAnswer = function(question,answer){
+var verifyOrderingQuestionAnswer = function(question,answer) {
     return question.answer.join(',') === answer.join(',');
 }
 // add comment to question by id with user and comment
@@ -360,7 +360,7 @@ exports.voteComment = function (commentId, vote, userId, callback) {
     var update = {};
     var voteValue = -2;
 
-    db.lookupQuestion(query, function(err, question){
+    db.lookupQuestion(query, function(err, question) {
         if (err) {
             return callback(err, null);
         }
@@ -446,7 +446,7 @@ exports.voteReply = function (replyId, vote, userId, callback) {
     var update = {};
     var voteValue = -2;
 
-    db.lookupQuestion(query, function(err, question){
+    db.lookupQuestion(query, function(err, question) {
         if (err) {
             return callback(err, null);
         }
