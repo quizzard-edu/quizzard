@@ -23,6 +23,13 @@ const snack = Object.freeze({
     close       :   '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
 })
 
+const leaderboardTypes = Object.freeze({
+    OVERALL  : {name: 'overall', displayName: 'Overall'},
+    POINTS   : {name: 'points', displayName: 'Points'},
+    ACCURACY : {name: 'accuracy', displayName: 'Accuracy'},
+    ATTEMPT  : {name: 'attempt', displayName: 'Points Per Attempt'}
+})
+
 // This is the function.
 String.prototype.format = function (args) {
     var str = this;

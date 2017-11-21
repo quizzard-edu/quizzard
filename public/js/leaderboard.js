@@ -1,52 +1,66 @@
 /* set home as the active navbar element */
 $('#nav-leaderboard').addClass('active');
 
+var boardType = leaderboardTypes.OVERALL;
+var leaderboardRow;
+var studentLeaderList;
 /* Get HTML for the complete leaderboard table from the server and display it. */
-var fetchLeaderboard = function(t) {
+var fetchLeaderboard = function() {
     
     $.ajax({
         type: 'GET',
         url: '/leaderboard-table',
         data: {
-            fullTable: true,
-            longTable: true,
-            type: t
+            longTable: true
         },
         success: function(data) {
-            $('.leaderboard-content').html(data);
+            $('.leaderboard-content').html(data.leaderboardTableHTML);
+            leaderboardRow = $(data.leaderboardRowHTML);
+            studentLeaderList = data.leader;
+            displayNewLeaderboard(boardType);
         }
     });
 }
 
-fetchLeaderboard('overall');
+fetchLeaderboard();
+
+var displayTable = function(studentLeaderList) {
+    $('#leaderboardBody').html('');
+    $('#criteriaName').html(boardType.displayName);
+    
+    studentLeaderList.forEach((studentObject, index) => {
+        leaderboardRow.find('#rank').html(index + 1);
+        leaderboardRow.find('#displayName').html(studentObject.displayName);
+        leaderboardRow.find('#criteria').html(studentObject[boardType.name] + 
+            ((boardType === leaderboardTypes.ACCURACY) ? '%' : ''));        
+        $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
+    });
+}
+
+var sortLeaderBoard = function(citeria) {
+    studentLeaderList = studentLeaderList.sort(function(student1,student2){
+        return student2[citeria] - student1[citeria];
+    });
+}
 
 $('#option-overall').click(function(evt) {
-    $('#points-board-card').addClass('hidden');
-    $('#accuracy-board-card').addClass('hidden');
-    $('#overall-board-card').removeClass('hidden');
-    fetchLeaderboard('overall');
+    displayNewLeaderboard(leaderboardTypes.OVERALL);
 });
 
 $('#option-points').click(function(evt) {
-    $('#overall-board-card').addClass('hidden');
-    $('#accuracy-board-card').addClass('hidden');
-    $('#points-board-card').removeClass('hidden');
-    fetchLeaderboard('points');
+    displayNewLeaderboard(leaderboardTypes.POINTS);
 });
 
 $('#option-accuracy').click(function(evt) {
-    $('#overall-board-card').addClass('hidden');
-    $('#points-board-card').addClass('hidden');
-    $('#accuracy-board-card').removeClass('hidden');
-    fetchLeaderboard('accuracy');
+    displayNewLeaderboard(leaderboardTypes.ACCURACY);
 });
 
 $('#option-attempt').click(function(evt) {
-    $('#overall-board-card').addClass('hidden');
-    $('#points-board-card').addClass('hidden');
-    $('#accuracy-board-card').addClass('hidden');
-    $('#attempt-board-card').removeClass('hidden');    
-    fetchLeaderboard('attempt');
+    displayNewLeaderboard(leaderboardTypes.ATTEMPT);
 });
 
-
+var displayNewLeaderboard = function(type) {
+    boardType = type;
+    sortLeaderBoard(type.name);
+    displayTable(studentLeaderList);
+}

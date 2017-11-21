@@ -1,58 +1,7 @@
 table.bordered
   thead
     tr
-      th Rank
-      th Username
-      th Points
-      if fullTable
-        th Attempts
-        th Correct Answers
-        th Success Rate
-  tbody
-    each s in leaderboard
-      if s.rank === 0
-        tr.col-default
-          td ...
-          td ...
-          td ...
-          if fullTable
-            td ...
-            td ...
-            td ...
-      else
-        if s.points !== 0 && s.rank <= 3
-          if s.rank === 1
-            - rowclass = 'col-gold';
-          if s.rank === 2
-            - rowclass = 'col-silver';
-          if s.rank === 3
-            - rowclass = 'col-bronze';
-        else
-          - rowclass = 'col-default';
-        if s._id === userid
-          - rowclass += ' col-isuser';
-        tr(class=rowclass)
-          td #{s.rank}
-          td #{s.username}
-          td #{s.points}
-          if fullTable
-            td #{s.totalAttemptsCount}
-            td #{s.correctAttemptsCount}
-            if s.totalAttemptsCount === 0
-              td 0%
-            else
-              - rowclass = 'col-default';
-            if s.id == userid
-              - rowclass += ' col-isuser';
-            tr(class=rowclass)
-              td #{s.rank}
-              if shortTable
-                td #{s.fname + ' ' + s.lname.substring(0, 1) + '.'}
-              else
-                td
-                  img.responsive-img.circle(src='img/leaderboard_profile.png')
-                  | #{s.fname + ' ' + s.lname.substring(0, 1) + '.'}
-              if s.totalAttemptsCount === 0
-                td 0
-              else
-               td #{(s.points * ((s.correctAttemptsCount / s.totalAttemptsCount) + (s.points / s.totalAttemptsCount))).toFixed(0)}
+      th.center Rank
+      th.center Username
+      th.center#criteriaName
+  tbody#leaderboardBody

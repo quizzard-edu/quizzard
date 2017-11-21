@@ -51,6 +51,7 @@ const chooseAllForm = pug.compileFile('views/question_types/chooseAll-answer.pug
 const matchingForm = pug.compileFile('views/question_types/matching-answer.pug');
 const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug');
 const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
+const leaderboardRow = pug.compileFile('views/leaderboard-row.pug');
 const questionList = pug.compileFile('views/questionlist.pug');
 const discussionBoard = pug.compileFile('views/discussion.pug');
 
@@ -201,26 +202,29 @@ app.get('/leaderboard-table', function(req, res) {
         return res.redirect('/');
     }
 
-    var fullTable = true;
     var shortTable = false;
-
-    if (req.query.fullTable === 'false') {
-        fullTable = false;
-    }
 
     if (req.query.longTable === 'false') {
         shortTable = true;
     }
 
     users.getLeaderboard(req.session.user._id, shortTable, function(leader) {
-        var html = leaderboardTable({
-            fullTable: fullTable,
-            shortTable: shortTable,
-            leaderboard: leader,
-            userid: req.session.user._id
-        });
+        
+        const leaderboardTableHTML = leaderboardTable();
+        const leaderboardRowHTML = leaderboardRow();
 
-        return res.status(200).send(html);
+        // var html = leaderboardTable({
+        //     fullTable: fullTable,
+        //     shortTable: shortTable,
+        //     leaderboard: leader,
+        //     userid: req.session.user._id
+        // });
+
+        return res.status(200).send({
+            leader: leader,
+            leaderboardTableHTML: leaderboardTableHTML,
+            leaderboardRowHTML: leaderboardRowHTML
+        });
     });
 });
 

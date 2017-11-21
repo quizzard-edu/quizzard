@@ -446,23 +446,47 @@ exports.getLeaderboard = function (userid, shrt, callback) {
             return (err, []);
         }
 
-        var rank = 0;
-        var last = -1;
-        var userind;
+        var leaderboardList = [];
 
-        /* assign ranks to each student */
         for (var i = 0; i < studentlist.length; ++i) {
-            /* subsequent users with same amount of points have same rank */
-            if (studentlist[i].points !== last) {
-                rank = i + 1;
-                last = studentlist[i].points;
-            }
-            studentlist[i].rank = rank;
+            let currentStudent = studentlist[i];
 
-            if (studentlist[i]._id === userid) {
-                userind = i;
+            var student = {
+                displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
+                points:currentStudent.points,
+                accuracy:(currentStudent.totalAttemptsCount === 0)
+                    ? 0
+                    : ((currentStudent.correctAttemptsCount / currentStudent.totalAttemptsCount) * 100).toFixed(2),
+                attempt:(currentStudent.totalAttemptsCount === 0)
+                    ? 0
+                    : (currentStudent.points / currentStudent.totalAttemptsCount).toFixed(2),
+                overall:(currentStudent.totalAttemptsCount === 0)
+                    ? 0
+                    : (currentStudent.points * 
+                      ((currentStudent.correctAttemptsCount/currentStudent.totalAttemptsCount) + 
+                      (currentStudent.points/currentStudent.totalAttemptsCount))).toFixed(2)
             }
+
+            leaderboardList.push(student);
         }
+
+        // var rank = 0;
+        // var last = -1;
+        // var userind;
+
+        // /* assign ranks to each student */
+        // for (var i = 0; i < studentlist.length; ++i) {
+        //     /* subsequent users with same amount of points have same rank */
+        //     if (studentlist[i].points !== last) {
+        //         rank = i + 1;
+        //         last = studentlist[i].points;
+        //     }
+        //     studentlist[i].rank = rank;
+
+        //     if (studentlist[i]._id === userid) {
+        //         userind = i;
+        //     }
+        // }
 
         if (shrt) {
             if (studentlist.length < 8) {
@@ -512,7 +536,7 @@ exports.getLeaderboard = function (userid, shrt, callback) {
             }
             callback(lb);
         } else {
-            callback(studentlist);
+            callback(leaderboardList);
         }
     });
 }
