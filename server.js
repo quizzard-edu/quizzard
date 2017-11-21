@@ -539,7 +539,7 @@ app.get('/question', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
-
+    const userId = req.session.user._id;
     questions.lookupQuestionById(req.query._id, function(err, questionFound) {
         if (err) {
             logger.error(err);
@@ -557,41 +557,45 @@ app.get('/question', function(req, res) {
         var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts, 'userId');
         var hasQrating = false;
         for (var i in questionFound.ratings) {
-            if (questionFound.ratings[i].userId === req.session.user._id) {
+            if (questionFound.ratings[i].userId === userId) {
                 hasQrating = true;
             }
         }
-        return res.status(200).render('question-view', {
-            user: req.session.user,
-            question: questionFound,
-            answered: (answeredList.indexOf(req.session.user._id) !== -1),
-            isAdmin : function() {
-                return req.session.user.type === common.userTypes.ADMIN;
-            },
-            hasQrating: hasQrating,
-            getQuestionForm: function(){
-                switch (questionFound.type){
-                    case common.questionTypes.REGULAR.value:
-                        return regexForm({studentQuestionForm:true})
-                    case common.questionTypes.MULTIPLECHOICE.value:
-                        return mcForm({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.TRUEFALSE.value:
-                        return tfForm({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.CHOOSEALL.value:
-                        return chooseAllForm({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.MATCHING.value:
-                        // randomize the order of the matching
-                        questionFound.leftSide = common.randomizeList(questionFound.leftSide);
-                        questionFound.rightSide = common.randomizeList(questionFound.rightSide);
-                        return matchingForm({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.ORDERING.value:
-                        // randomize the order of ordering question
-                        questionFound.answer = common.randomizeList(questionFound.answer);
-                        return orderingForm({studentQuestionForm:true, question:questionFound})
-                    default:
-                        break;
-                }
-            }
+        questions.isUserLocked(userId, questionFound, function(isLocked, waitTime){
+            return res.status(200).render('question-view', {
+                user: req.session.user,
+                question: questionFound,
+                answered: (answeredList.indexOf(userId) !== -1),
+                isAdmin : function() {
+                    return req.session.user.type === common.userTypes.ADMIN;
+                },
+                hasQrating: hasQrating,
+                getQuestionForm: function(){
+                    switch (questionFound.type){
+                        case common.questionTypes.REGULAR.value:
+                            return regexForm({studentQuestionForm:true})
+                        case common.questionTypes.MULTIPLECHOICE.value:
+                            return mcForm({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.TRUEFALSE.value:
+                            return tfForm({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.CHOOSEALL.value:
+                            return chooseAllForm({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.MATCHING.value:
+                            // randomize the order of the matching
+                            questionFound.leftSide = common.randomizeList(questionFound.leftSide);
+                            questionFound.rightSide = common.randomizeList(questionFound.rightSide);
+                            return matchingForm({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.ORDERING.value:
+                            // randomize the order of ordering question
+                            questionFound.answer = common.randomizeList(questionFound.answer);
+                            return orderingForm({studentQuestionForm:true, question:questionFound})
+                        default:
+                            break;
+                    }
+                },
+                isLocked: isLocked,
+                waitTime: waitTime
+            });
         });
     });
 });
