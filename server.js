@@ -18,25 +18,42 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var express = require('express');
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var fileUpload = require('express-fileupload');
-var db = require('./server/db.js');
-var users = require('./server/users.js');
-var questions = require('./server/questions.js');
-var lb = require('./server/leaderboard.js');
-var logger = require('./server/log.js');
-var pug = require('pug');
-var common = require('./server/common.js');
-var analytics = require('./server/analytics.js');
-var json2csv = require('json2csv');
-var fs = require('fs');
-var csv2json = require('csvtojson');
-var eml = require('sendmail')();
+const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
+const db = require('./server/db.js');
+const users = require('./server/users.js');
+const questions = require('./server/questions.js');
+const logger = require('./server/log.js');
+const pug = require('pug');
+const common = require('./server/common.js');
+const analytics = require('./server/analytics.js');
+const json2csv = require('json2csv');
+const fs = require('fs');
+const csv2json = require('csvtojson');
+const eml = require('sendmail')();
 
-var app = express();
-var port = process.env.QUIZZARD_PORT || 8000;
+const app = express();
+const port = process.env.QUIZZARD_PORT || 8000;
+
+/* Pre-compiled Pug views */
+const studentTable = pug.compileFile('views/account-table.pug');
+const accountForm = pug.compileFile('views/account-creation.pug');
+const accountEdit = pug.compileFile('views/account-edit.pug');
+const questionTable = pug.compileFile('views/question-table.pug');
+const questionForm = pug.compileFile('views/question-creation.pug');
+const questionEdit = pug.compileFile('views/question-edit.pug');
+const statistics = pug.compileFile('views/statistics.pug');
+const regexForm = pug.compileFile('views/question_types/regex-answer.pug');
+const mcForm = pug.compileFile('views/question_types/mc-answer.pug');
+const tfForm = pug.compileFile('views/question_types/tf-answer.pug');
+const chooseAllForm = pug.compileFile('views/question_types/chooseAll-answer.pug');
+const matchingForm = pug.compileFile('views/question_types/matching-answer.pug');
+const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug');
+const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
+const questionList = pug.compileFile('views/questionlist.pug');
+const discussionBoard = pug.compileFile('views/discussion.pug');
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -103,7 +120,7 @@ app.post('/login', function(req, res) {
 /* End a user's session. */
 app.get('/logout', function(req, res) {
     if (req.session.user) {
-        logger.log(common.formatString('User {0} logged out.', [req.session.user.id]));
+        logger.log(common.formatString('User {0} logged out.', [req.session.user._id]));
         req.session.destroy();
     }
 
@@ -117,7 +134,7 @@ app.get('/home', function(req, res) {
         return res.redirect('/');
     }
 
-    if (req.session.user.type == common.userTypes.ADMIN) {
+    if (req.session.user.type === common.userTypes.ADMIN) {
         return res.redirect('/admin');
     }
 
@@ -127,7 +144,7 @@ app.get('/home', function(req, res) {
             return res.status(500).send();
         }
 
-        users.getStudentById(req.session.user.id, function(err, userFound) {
+        users.getStudentById(req.session.user._id, function(err, userFound) {
             if (err) {
                 return res.status(500).send();
             }
@@ -179,46 +196,29 @@ app.get('/about', function(req,res) {
     return res.render('about', { user: req.session.user });
 });
 
-/* Pre-compiled Pug views */
-const studentTable = pug.compileFile('views/account-table.pug');
-const accountForm = pug.compileFile('views/account-creation.pug');
-const accountEdit = pug.compileFile('views/account-edit.pug');
-const questionTable = pug.compileFile('views/question-table.pug');
-const questionForm = pug.compileFile('views/question-creation.pug');
-const questionEdit = pug.compileFile('views/question-edit.pug');
-const statistics = pug.compileFile('views/statistics.pug');
-const regexForm = pug.compileFile('views/question_types/regex-answer.pug');
-const mcForm = pug.compileFile('views/question_types/mc-answer.pug');
-const tfForm = pug.compileFile('views/question_types/tf-answer.pug');
-const chooseAllForm = pug.compileFile('views/question_types/chooseAll-answer.pug');
-const matchingForm = pug.compileFile('views/question_types/matching-answer.pug');
-const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug');
-const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
-const questionList = pug.compileFile('views/questionlist.pug');
-const discussionBoard = pug.compileFile('views/discussion.pug');
-
 /* Fetch and render the leaderboard table. Send HTML as response. */
 app.get('/leaderboard-table', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    var ft, shrt;
+    var fullTable = true;
+    var shortTable = false;
 
-    ft = true;
-    shrt = false;
+    if (req.query.fullTable === 'false') {
+        fullTable = false;
+    }
 
-    if (req.query.fullTable == 'false')
-        ft = false;
-    if (req.query.longTable == 'false')
-        shrt = true;
+    if (req.query.longTable === 'false') {
+        shortTable = true;
+    }
 
-    lb.leaderboard(req.session.user.id, shrt, function(leader) {
+    users.getLeaderboard(req.session.user._id, shortTable, function(leader) {
         var html = leaderboardTable({
-            fullTable: ft,
-            shortTable: shrt,
+            fullTable: fullTable,
+            shortTable: shortTable,
             leaderboard: leader,
-            userid: req.session.user.id
+            userid: req.session.user._id
         });
 
         return res.status(200).send(html);
@@ -368,10 +368,10 @@ app.get('/questionlist', function(req, res) {
         return res.redirect('/');
     }
 
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
     users.getUserById(userId, function(err, user){
         if (err || !user) {
-            res.status(400).send('bad request, user does not exist');
+            return res.status(400).send('bad request, user does not exist');
         }
 
         var request = {};
@@ -456,10 +456,17 @@ app.get('/questionedit', function(req, res) {
             }
         });
 
+        var userRating = 0;
+        for (var i in question.ratings) {
+            if (req.session.user._id === question.ratings[i].userId) {
+                userRating = question.ratings[i].rating;
+            }
+        }
+
         return res.status(200).send({
             html: html,
             qtext: question.text,
-            qrating: parseInt(question.rating)
+            qrating: userRating
         });
     });
 });
@@ -548,17 +555,17 @@ app.get('/question', function(req, res) {
             return res.status(400).send('Question is not available');
         }
 
-        var answeredList = common.getIdsListFromJSONList2(questionFound.correctAttempts);
+        var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts, 'userId');
         var hasQrating = false;
         for (var i in questionFound.ratings) {
-            if (questionFound.ratings[i].user === req.session.user.id) {
+            if (questionFound.ratings[i].userId === req.session.user._id) {
                 hasQrating = true;
             }
         }
         return res.status(200).render('question-view', {
             user: req.session.user,
             question: questionFound,
-            answered: (answeredList.indexOf(req.session.user.id) !== -1),
+            answered: (answeredList.indexOf(req.session.user._id) !== -1),
             isAdmin : function() {
                 return req.session.user.type === common.userTypes.ADMIN;
             },
@@ -598,7 +605,7 @@ app.post('/submitanswer', function(req, res) {
 
     var questionId = req.body.questionId;
     var answer = req.body.answer;
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
 
     questions.lookupQuestionById(questionId,function(err, question){
         if(err){
@@ -688,6 +695,9 @@ app.post('/setUserStatus', function(req, res) {
     });
 });
 
+/*
+ * update the profile of a user given the information
+ */
 app.post('/profilemod', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
@@ -698,7 +708,7 @@ app.post('/profilemod', function(req, res) {
         return res.status(400).send('Confirm password doesn\'t match');
     }
 
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
     users.getUserById(userId, function (err, userObj) {
         if (err) {
             logger.error(err);
@@ -741,17 +751,15 @@ app.post('/usermod', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    var userId = req.body.originalID;
-    var updateId = req.body.id ? req.body.id : userId;
-
+    var userId = req.body._id;
     users.updateStudentById(userId, req.body, function(err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send();
         }
 
-        users.getStudentById(updateId, function(err, userFound) {
-            if (err) {
+        users.getStudentById(userId, function(err, userFound) {
+            if (err || !userFound) {
                 logger.error(err);
                 return res.status(500).send();
             }
@@ -856,7 +864,7 @@ app.post('/submitQuestionRating', function(req, res) {
 
 // question rating from both students and admins
 var submitQuestionRating = function (req, res) {
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
     var questionId = req.body.qId;
     var rating = parseInt(req.body.rating);
 
@@ -907,13 +915,13 @@ app.get('/getDiscussionBoard', function(req, res){
             var usersList = {};
             for (var i in userObj) {
                 var user = userObj[i];
-                usersList[user.id] = user.fname + ' ' + user.lname;
+                usersList[user._id] = user.fname + ' ' + user.lname;
             }
 
             var discussionHtml = discussionBoard({
                 comments: question.comments,
                 getCurrentUser: () =>{
-                    var userId = req.session.user.id;
+                    var userId = req.session.user._id;
                     if (!usersList[userId]) {
                         return 'UNKNOWN';
                     }
@@ -926,13 +934,13 @@ app.get('/getDiscussionBoard', function(req, res){
                     return usersList[userId];
                 },
                 isLiked: (likesList) => {
-                    return likesList.indexOf(req.session.user.id) !== -1;
+                    return likesList.indexOf(req.session.user._id) !== -1;
                 },
                 isDisliked: (dislikesList) => {
-                    return dislikesList.indexOf(req.session.user.id) !== -1;
+                    return dislikesList.indexOf(req.session.user._id) !== -1;
                 },
                 highlightMentionedUser: (comment) => {
-                    var userId = req.session.user.id;
+                    var userId = req.session.user._id;
                     if (!usersList[userId]) {
                         return '@UNKNOWN';
                     }
@@ -965,7 +973,7 @@ app.post('/addCommentToQuestion', function (req, res) {
 
     var questionId = req.body.questionId;
     var comment = req.body.commentText;
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
 
     questions.addComment(questionId, userId, comment, function (err, question) {
         if (err) {
@@ -985,7 +993,7 @@ app.post('/addReplyToComment', function (req, res) {
 
     var commentId = req.body.commentId;
     var reply = req.body.replyText;
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
 
     questions.addReply(commentId, userId, reply, function (err, question) {
         if (err) {
@@ -1005,7 +1013,7 @@ app.post('/voteOnComment', function (req, res) {
 
     var commentId = req.body.commentId;
     var vote = parseInt(req.body.vote);
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
 
     if (!vote || (vote !== 1 && vote !== -1)) {
         return res.status(400).send('Vote is invalid');
@@ -1031,7 +1039,7 @@ app.post('/voteOnReply', function (req, res) {
 
     var replyId = req.body.replyId;
     var vote = parseInt(req.body.vote);
-    var userId = req.session.user.id;
+    var userId = req.session.user._id;
 
     if (!vote || (vote !== 1 && vote !== -1)) {
         return res.status(400).send('Vote is invalid');
@@ -1079,9 +1087,9 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
             var totalList = [];
             for (var i in usersList) {
                 var user = usersList[i];
-                if (req.session.user.id !== user.id &&
+                if (req.session.user._id !== user._id &&
                     (user.type === common.userTypes.ADMIN
-                        || answeredList.indexOf(user.id) !== -1)) {
+                        || answeredList.indexOf(user._id) !== -1)) {
                     totalList.push(user.fname+' '+user.lname);
                 }
             }
@@ -1190,8 +1198,8 @@ app.post('/accountsExportFile', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
-        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
+    if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
         return res.status(500).send('User does not exists in the file system');
     }
 
@@ -1215,7 +1223,7 @@ app.post('/accountsExportFile', function(req, res) {
                 var file = 'exportJob-students-'+new Date().toString();
                 var fileName = file + '.csv';
 
-                var userDirectory = common.joinPath(common.fsTree.USERS, req.session.user.id);
+                var userDirectory = common.joinPath(common.fsTree.USERS, req.session.user._id);
                 common.saveFile(userDirectory, file, 'csv', csvData, function(err, result) {
                     if (err) {
                         logger.error(err);
@@ -1240,8 +1248,8 @@ app.post('/accountsImportFile', function (req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
-        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
+    if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
         return res.status(500).send('User does not exists in the file system');
     }
 
@@ -1251,7 +1259,7 @@ app.post('/accountsImportFile', function (req, res) {
     }
 
     var newFileName = 'importJob-students-' + uploadedFile.name;
-    var newFile = common.joinPath(common.fsTree.USERS, req.session.user.id, newFileName);
+    var newFile = common.joinPath(common.fsTree.USERS, req.session.user._id, newFileName);
     uploadedFile.mv(newFile, function(err) {
         if (err) {
             logger.error(err);
@@ -1345,19 +1353,19 @@ app.get('/download', function(req, res) {
         return res.redirect('/');
     }
 
-    if (!common.dirExists(common.fsTree.USERS, req.session.user.id)) {
-        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user.id]));
+    if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
+        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
         return res.status(500).send('User does not exists in the file system');
     }
 
     var fileName = req.query.file;
-    var userDir = common.joinPath(common.fsTree.USERS, req.session.user.id);
+    var userDir = common.joinPath(common.fsTree.USERS, req.session.user._id);
     if (!common.fileExists(userDir, fileName)) {
         logger.error(common.formatString('File: {0} does not exist', [fileName]));
         return res.status(500).send('File does not exist');
     }
 
-    var filePath = common.joinPath(common.fsTree.USERS, req.session.user.id, fileName);
+    var filePath = common.joinPath(common.fsTree.USERS, req.session.user._id, fileName);
     return res.download(filePath, fileName, function (err) {
         if (err) {
             logger.error(err);
@@ -1385,7 +1393,7 @@ app.get('/profile', function(req, res) {
         return res.redirect('/');
     }
 
-    users.getUserById(req.session.user.id, function(err, user) {
+    users.getUserById(req.session.user._id, function(err, user) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
@@ -1407,7 +1415,7 @@ app.get('/studentAnalytics', function(req,res){
         return res.redirect('/');
     }
 
-    var query = {userId: req.session.user.id, type: req.query.type};
+    var query = {userId: req.session.user._id, type: req.query.type};
 
     if (req.session.user.type === common.userTypes.ADMIN) {
         if (!req.query.studentId) {

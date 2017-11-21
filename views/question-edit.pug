@@ -4,6 +4,9 @@ block styles
 .row
   .col.s12
     .card.center
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light.red.left#question-edit-back-button
+          i.material-icons arrow_back
       .card-content
         h5.card-title Question Edit
         h6 Modify and update question's information.
@@ -16,6 +19,11 @@ block styles
           .form-group.row
             label.col-sm-2.col-form-label(for='qtext') Question Body
             .summernote#qtext(value=question.text)
+          .form-group.row
+            label.col-sm-2.col-form-label Visible
+            .col-sm-10
+              input.form-control(id='visible', type='checkbox', checked=question.visible)
+              label.col-sm-2.col-form-label(for='visible')
           #qAnswer
             | !{getQuestionForm()}
           .form-group.row
