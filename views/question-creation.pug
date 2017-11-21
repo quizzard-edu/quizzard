@@ -1,5 +1,4 @@
 block styles
-  link(rel='stylesheet' href='/css/admin.css')
   link(rel='stylesheet' href='/css/rating.css')
 
 .row
@@ -14,7 +13,7 @@ block styles
         h6 Create a new question
       .card-action
         .row
-          .input-field.col.s12
+          .input-field.s12
             select#qType(name='qType' )
               option(selected disabled) -- Select Question Type --
               each type, i in questionType
