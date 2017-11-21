@@ -270,10 +270,21 @@ exports.verifyAnswer = function(question, answer) {
 }
 
 var verifyChooseAllQuestionAnswer = function(question,answer) {
+    if (!questionValidator.validateAttributeType(answer,'answer','CHOOSEALL') ||
+        !questionValidator.validateArrayObject(answer,'String')) {
+        return false;
+    }
     return question.answer.sort().join(',') === answer.sort().join(',');
 }
 
 var verifyMatchingQuestionAnswer = function(question, answer) {
+    if (!questionValidator.validateAttributeType(answer,'Array','DATATYPES') ||
+        !questionValidator.validateArrayObject(answer,'Array') ||
+        !questionValidator.validateArrayObject(answer[0],'String') ||
+        !questionValidator.validateArrayObject(answer[1],'String')) {
+        return false;
+    }
+
     var ansLeftSide = answer[0];
     var ansRightSide = answer[1];
 
@@ -294,6 +305,10 @@ var verifyMatchingQuestionAnswer = function(question, answer) {
 }
 // Check if answer submitted is correct for Ordering question Type
 var verifyOrderingQuestionAnswer = function(question,answer) {
+    if (!questionValidator.validateAttributeType(answer,'answer','ORDERING') ||
+        !questionValidator.validateArrayObject(answer,'String')) {
+        return false;
+    }
     return question.answer.join(',') === answer.join(',');
 }
 // add comment to question by id with user and comment
