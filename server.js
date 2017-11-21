@@ -1451,22 +1451,33 @@ app.post('/submitFeedback', function(req, res){
         return res.redirect('/');
     }
 
-    var userId = req.session.user.id;
-
-    logger.log(common.formatString('{0} - feedback:', [userId]));
-
-    eml({
-        from:   'feedback@quizzard.com',
-        to: 'mohammed.jskhan@gmail.com',
-        subject:    'Quizzard Feedback: ' + req.body.subject,
-        html:   ' user ' + req.session.user.id + ' said:<br><br>' + req.body.message
-    }, function (err, reply) {
+    users.getUserById(req.session.user._id, function(err, user) {
         if (err) {
+            logger.error(err);
             return res.status(500).send(err);
-        } else {
-            return res.status(200).send('success');
         }
+
+        if (!user) {
+            return res.status(400).send('bad request, user does not exist');
+        }
+
+        logger.log(common.formatString('{0} - feedback:', [user.id]));
+
+        eml({
+            from:   'feedback@quizzard.com',
+            to: 'mohammed.jskhan@gmail.com',
+            subject:    'Quizzard Feedback: ' + req.body.subject,
+            html:   (req.session.user.type === common.userTypes.ADMIN ? 'Admin' : 'Student') + ' user "' + user.username + '" said:<br><br>' + req.body.message
+        }, function (err, reply) {
+            if (err) {
+                return res.status(500).send(err);
+            } else {
+                return res.status(200).send('success');
+            }
+        });
+
     });
+
 });
 
 // 404 route
