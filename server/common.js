@@ -190,30 +190,30 @@ var getDateObject = function(){
 exports.getDateObject = getDateObject;
 
 /**
-* return the time in day hours minutes and seconds format
+* return the time in "<0> days, <0> hours, <0> minutes, <0> seconds" format
 *
 * @return {string}
 */
 var getTime = function(time){
-    var date = new Date(time);
-    var str = '';
-    var days = date.getUTCDate()-1;
-    var hours = date.getUTCHours();
-    var minutes = date.getUTCMinutes();
-    var seconds = date.getUTCSeconds();
+    const date = new Date(time);
+    var timeString = '';
+    const days = date.getUTCDate()-1;
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
     if (days){
-        str += date.getUTCDate()-1 + " days, ";
+        timeString += date.getUTCDate()-1 + " days, ";
     }
     if (hours){
-        str += date.getUTCHours() + " hours, ";
+        timeString += date.getUTCHours() + " hours, ";
     }
     if (minutes){
-        str += date.getUTCMinutes() + " minutes, ";
+        timeString += date.getUTCMinutes() + " minutes, ";
     }
     if (seconds){
-        str += date.getUTCSeconds() + " seconds";
+        timeString += date.getUTCSeconds() + " seconds";
     }
-    return str;
+    return timeString;
 }
 exports.getTime = getTime;
 
