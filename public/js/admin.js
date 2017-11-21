@@ -316,7 +316,6 @@ var displayQuestionForm = function() {
                 displayQuestionTable();
             });
 
-            $('#qtext').summernote({ height: 100 });
             // choose the type of question creating
             $('#qType').change(function(evt) {
                 // get the answer part for the form requested
@@ -334,6 +333,8 @@ var displayQuestionForm = function() {
 
             // gets the updated topics list
             getQuestionsTopicsList();
+
+            initSummernote();
         },
         error: function(data) {
             if (data['status'] === 401) {
@@ -354,7 +355,6 @@ var getQuestionFormAnswer = function(form) {
         success: function(data) {
             $('#qAnswer').html(data);
         },
-
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
@@ -761,7 +761,7 @@ var editQuestion = function(qid, questionNumber) {
             $('#question-edit-back-button').click(function(evt) {
                 displayQuestionTable();
             });
-            $('#qtext').summernote({ height: 150 });
+            initSummernote();
             $('#qtext').summernote('code', data.qtext);
             $('#question-edit-form').submit(function(evt) {
                 evt.preventDefault();
@@ -917,4 +917,65 @@ var getQuestionsTopicsList = function () {
         }
     });
 
+}
+
+/* Initialize the summernote and all its sub modal */
+var initSummernote = function () {
+    $('#qtext').summernote({ height: 100 });
+    $('div.note-btn-group.btn-group.note-insert button').unbind();
+    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
+        $('#mediaModal0').modal('open');
+        $('#mediaModal0 > div > div > div.modal-footer > button')
+        .unbind()
+        .removeClass('disabled')
+        .removeAttr('href')
+        .prop('disabled', false)
+        .prop('type', 'button')
+        .click(function () {
+            var text = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(1) > input').val();
+            var url = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(2) > input').val();
+            $('#qtext').summernote('createLink', {
+                text: text,
+                url: url,
+                isNewWindow: true
+            });
+            $('#mediaModal0').modal('close');
+        });
+        $('#mediaModal0 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal0').modal('close');
+        });
+    });
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(2)').click(function () {
+        $('#mediaModal1').modal('open');
+        $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-select-from-files').hide();
+        $('#mediaModal1 > div > div > div.modal-footer > button')
+        .unbind()
+        .removeClass('disabled')
+        .removeAttr('href')
+        .prop('disabled', false)
+        .prop('type', 'button')
+        .click(function () {
+            var url = $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-image-url > input').val();
+            $('#qtext').summernote('insertImage', url);
+            $('#mediaModal1').modal('close');
+        });
+        $('#mediaModal1 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal1').modal('close');
+        });
+    });
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').prop('disabled', true)
+    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').click(function () {
+        $('#mediaModal3').modal('open');
+        $('#mediaModal3 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal3').modal('close');
+        });
+    });
+    $('.modal').modal({
+        dismissible: false
+    });
+    $('.modal').each(function( i ) {
+        $(this).attr('id', 'mediaModal' + i);
+        $('#mediaModal' + i +'> div > div').removeClass('modal-content');
+    });
 }
