@@ -51,22 +51,22 @@ block content
               .col.s10
                 .row
                   .input-field.col.s6
-                    input#fname(type='text', name='newfname', value=user.fname, disabled)
+                    input#fname(type='text', name='newfname', value=user.fname, disabled=!editNamesEnabled)
                     label(for='fname') First Name
                   .input-field.col.s6
-                    input#lname(type='text', name='newlname', value=user.lname, disabled)
+                    input#lname(type='text', name='newlname', value=user.lname, disabled=!editNamesEnabled)
                     label(for='lname') Last Name
                 .row
                   .input-field.col.s12
-                    input#passwd.validate(type='password', name='newpassword')
+                    input#passwd.validate(type='password', name='newpassword', disabled=!editPasswordEnabled)
                     label(for='passwd') New Password
                 .row
                   .input-field.col.s12
-                    input#confirmpasswd.validate(type='password', name='confirmpassword')
+                    input#confirmpasswd.validate(type='password', name='confirmpassword', disabled=!editPasswordEnabled)
                     label(for='confirmpasswd') Confirm Password
                 .row
                   .input-field.col.s12
-                    input#email.validate(type='email', name='newemail', value=user.email)
+                    input#email.validate(type='email', name='newemail', value=user.email, disabled=!editEmailEnabled)
                     label(for='email') New Email
                 .row
                   hr

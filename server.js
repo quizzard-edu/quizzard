@@ -29,6 +29,7 @@ const logger = require('./server/log.js');
 const pug = require('pug');
 const common = require('./server/common.js');
 const analytics = require('./server/analytics.js');
+const settings = require('./server/settings.js');
 const json2csv = require('json2csv');
 const fs = require('fs');
 const csv2json = require('csvtojson');
@@ -37,22 +38,23 @@ const app = express();
 const port = process.env.QUIZZARD_PORT || 8000;
 
 /* Pre-compiled Pug views */
-const studentTable = pug.compileFile('views/account-table.pug');
-const accountForm = pug.compileFile('views/account-creation.pug');
-const accountEdit = pug.compileFile('views/account-edit.pug');
-const questionTable = pug.compileFile('views/question-table.pug');
-const questionForm = pug.compileFile('views/question-creation.pug');
-const questionEdit = pug.compileFile('views/question-edit.pug');
-const statistics = pug.compileFile('views/statistics.pug');
-const regexForm = pug.compileFile('views/question_types/regex-answer.pug');
-const mcForm = pug.compileFile('views/question_types/mc-answer.pug');
-const tfForm = pug.compileFile('views/question_types/tf-answer.pug');
-const chooseAllForm = pug.compileFile('views/question_types/chooseAll-answer.pug');
-const matchingForm = pug.compileFile('views/question_types/matching-answer.pug');
-const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug');
-const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
-const questionList = pug.compileFile('views/questionlist.pug');
-const discussionBoard = pug.compileFile('views/discussion.pug');
+const studentTablePug = pug.compileFile('views/account-table.pug');
+const accountCreationPug = pug.compileFile('views/account-creation.pug');
+const accountEditPug = pug.compileFile('views/account-edit.pug');
+const questionCreationPug = pug.compileFile('views/question-creation.pug');
+const questionEditPug = pug.compileFile('views/question-edit.pug');
+const questionTablePug = pug.compileFile('views/question-table.pug');
+const questionListPug = pug.compileFile('views/questionlist.pug');
+const statisticsPug = pug.compileFile('views/statistics.pug');
+const regexFormPug = pug.compileFile('views/question_types/regex-answer.pug');
+const mcFormPug = pug.compileFile('views/question_types/mc-answer.pug');
+const tfFormPug = pug.compileFile('views/question_types/tf-answer.pug');
+const chooseAllFormPug = pug.compileFile('views/question_types/chooseAll-answer.pug');
+const matchingFormPug = pug.compileFile('views/question_types/matching-answer.pug');
+const orderingFormPug = pug.compileFile('views/question_types/ordering-answer.pug');
+const leaderboardTablePug = pug.compileFile('views/leaderboard-table.pug');
+const discussionBoardPug = pug.compileFile('views/discussion.pug');
+const settingsPug = pug.compileFile('views/settings.pug');
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -93,7 +95,7 @@ app.post('/login', function(req, res) {
         return res.status(400).send('Invalid Request');
     }
 
-    if(!req.body.user || !req.body.passwd){
+    if (!req.body.user || !req.body.passwd) {
         return res.status(400).send('missing requirement');
     }
 
@@ -103,15 +105,32 @@ app.post('/login', function(req, res) {
     logger.log(common.formatString('Attempted login by user {0}', [username]));
 
     users.checkLogin(username, password, function(err, user) {
-        if(err){
+        if (err) {
             logger.error(common.formatString('User {0} failed logged in.', [username]));
             return res.status(403).send(err);
         }
 
-        if(user){
+        if (user) {
             logger.log(common.formatString('User {0} logged in.', [username]));
             req.session.user = user;
-            return res.status(200).send('success');
+
+            if (user.type === common.userTypes.ADMIN) {
+                return res.status(200).send('success');
+            }
+
+            if (user.type === common.userTypes.STUDENT) {
+                settings.getClassActive(function (err, isActive) {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+
+                    if (!isActive) {
+                        return res.status(403).send('classNotActive');
+                    }
+
+                    return res.status(200).send('success');
+                });
+            }
         }
     });
 });
@@ -213,7 +232,7 @@ app.get('/leaderboard-table', function(req, res) {
     }
 
     users.getLeaderboard(req.session.user._id, shortTable, function(leader) {
-        var html = leaderboardTable({
+        var html = leaderboardTablePug({
             fullTable: fullTable,
             shortTable: shortTable,
             leaderboard: leader,
@@ -240,7 +259,7 @@ app.get('/studentlist', function(req, res) {
             return res.status(500).send('Could not fetch student list');
         }
 
-        var html = studentTable({
+        var html = studentTablePug({
             students: studentlist
         });
 
@@ -255,7 +274,7 @@ app.post('/sortaccountlist', function(req, res) {
     }
 
     if (!req.session.adminStudentList) {
-        var html = studentTable( { students : [] });
+        var html = studentTablePug( { students : [] });
 
         return res.status(200).send(html);
     }
@@ -269,7 +288,7 @@ app.post('/sortaccountlist', function(req, res) {
                 return res.status(500).send('Could not fetch student list');
             }
 
-            var html = studentTable( { students : result } );
+            var html = studentTablePug( { students : result } );
 
             return res.status(200).send(html);
         }
@@ -282,7 +301,7 @@ app.get('/accountform', function(req, res) {
         return res.redirect('/');
     }
 
-    var html = accountForm();
+    var html = accountCreationPug();
 
     return res.status(200).send(html);
 });
@@ -293,11 +312,23 @@ app.get('/questionform', function(req, res) {
         return res.redirect('/');
     }
 
-    return res.status(200).render('question-creation',{
-        questionType: common.questionTypes
+    settings.getAllSettings(function (err, allSettings) {
+        if (err) {
+            logger.error(err);
+        }
+
+        var html = questionCreationPug({
+            questionType: common.questionTypes,
+            defaultTopic: err ? null : allSettings.question.defaultTopic,
+            defaultMinPoints: err ? 10 : allSettings.question.defaultMinPoints,
+            defaultMaxPoints: err ? 100 : allSettings.question.defaultMaxPoints
+        });
+
+        return res.status(200).send(html);
     });
 });
 
+/* get question answer form */
 app.get('/answerForm', function(req, res){
     switch (req.query.qType){
         case common.questionTypes.REGULAR.value:
@@ -319,7 +350,7 @@ app.get('/answerForm', function(req, res){
         case common.questionTypes.MATCHING.value:
             res.status(200).render(
                 common.questionTypes.MATCHING.template,{answerForm:true});
-            break;        
+            break;
         case common.questionTypes.ORDERING.value:
             res.status(200).render(
                 common.questionTypes.ORDERING.template,{answerForm:true});
@@ -352,7 +383,7 @@ app.get('/accounteditform', function(req, res) {
             return res.status(500).send('Could not fetch user information');
         }
 
-        var html = accountEdit({
+        var html = accountEditPug({
             user: student,
             cdate: student.ctime
         });
@@ -383,7 +414,7 @@ app.get('/questionlist', function(req, res) {
 
             var html = null;
             if (req.session.user.type === common.userTypes.ADMIN) {
-                html = questionTable({
+                html = questionTablePug({
                     questions : questionsList,
                     questionType: function(type){
                         for (var i in common.questionTypes) {
@@ -397,7 +428,7 @@ app.get('/questionlist', function(req, res) {
             }
 
             if (req.session.user.type === common.userTypes.STUDENT) {
-                html = questionList({
+                html = questionListPug({
                     questions : questionsList,
                     getQuestionIcon: function(type) {
                         for (var i in common.questionTypes) {
@@ -423,31 +454,31 @@ app.get('/questionedit', function(req, res) {
 
     var qId = req.query.questionid;
     questions.lookupQuestionById(qId, function(err, question){
-        if(err){
+        if (err) {
             logger.error(err);
             return res.status(500).send(err);
         }
 
-        if(!question){
+        if (!question) {
             return res.status(400).send('Question not found');
         }
 
-        var html = questionEdit({
+        var html = questionEditPug({
             question: question,
             getQuestionForm: function(){
                 switch (question.type){
                     case common.questionTypes.REGULAR.value:
-                        return regexForm({adminQuestionEdit:true, question:question})
+                        return regexFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.MULTIPLECHOICE.value:
-                        return mcForm({adminQuestionEdit:true, question:question})
+                        return mcFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.TRUEFALSE.value:
-                        return tfForm({adminQuestionEdit:true, question:question})
+                        return tfFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.CHOOSEALL.value:
-                        return chooseAllForm({adminQuestionEdit:true, question:question})
+                        return chooseAllFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.MATCHING.value:
-                        return matchingForm({adminQuestionEdit:true, question:question})
+                        return matchingFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.ORDERING.value:
-                        return orderingForm({adminQuestionEdit:true, question:question})
+                        return orderingFormPug({adminQuestionEdit:true, question:question})
                     default:
                         return res.redirect('/')
                         break;
@@ -490,7 +521,7 @@ app.get('/statistics', function(req, res) {
                 res.status(500).send(err);
             }
 
-            var html = statistics({
+            var html = statisticsPug({
                 students: studentslist,
                 questions: questionslist
             });
@@ -524,7 +555,7 @@ app.post('/sortlist', function(req, res) {
 
     questions.sortQuestions(req.session.questions, common.sortTypes[type],
         function(err, results) {
-          var html = questionList({
+          var html = questionListPug({
               questions: results
           });
 
@@ -572,22 +603,22 @@ app.get('/question', function(req, res) {
             getQuestionForm: function(){
                 switch (questionFound.type){
                     case common.questionTypes.REGULAR.value:
-                        return regexForm({studentQuestionForm:true})
+                        return regexFormPug({studentQuestionForm:true})
                     case common.questionTypes.MULTIPLECHOICE.value:
-                        return mcForm({studentQuestionForm:true, question:questionFound})
+                        return mcFormPug({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.TRUEFALSE.value:
-                        return tfForm({studentQuestionForm:true, question:questionFound})
+                        return tfFormPug({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.CHOOSEALL.value:
-                        return chooseAllForm({studentQuestionForm:true, question:questionFound})
+                        return chooseAllFormPug({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.MATCHING.value:
                         // randomize the order of the matching
                         questionFound.leftSide = common.randomizeList(questionFound.leftSide);
                         questionFound.rightSide = common.randomizeList(questionFound.rightSide);
-                        return matchingForm({studentQuestionForm:true, question:questionFound})
+                        return matchingFormPug({studentQuestionForm:true, question:questionFound})
                     case common.questionTypes.ORDERING.value:
                         // randomize the order of ordering question
                         questionFound.answer = common.randomizeList(questionFound.answer);
-                        return orderingForm({studentQuestionForm:true, question:questionFound})
+                        return orderingFormPug({studentQuestionForm:true, question:questionFound})
                     default:
                         break;
                 }
@@ -620,7 +651,7 @@ app.post('/submitanswer', function(req, res) {
         logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
 
         var value = questions.verifyAnswer(question, answer);
-        var points = question.points;
+        var points = Math.floor(Math.max(question.minpoints, question.maxpoints/Math.cbrt(question.correctAttemptsCount + 1)));
         var text = value ? 'correct' : 'incorrect';
         var status = value ? 200 : 500;
         var response = {text: text, points: points};
@@ -763,7 +794,7 @@ app.post('/usermod', function(req, res) {
                 return res.status(500).send();
             }
 
-            var html = accountEdit({
+            var html = accountEditPug({
                 user: userFound,
                 cdate: creationDate(userFound.ctime)
             });
@@ -831,26 +862,7 @@ app.post('/questiondel', function(req, res) {
         return res.redirect('/');
     }
 
-    var qid = parseInt(req.body.qid);
-    questions.deleteQuestion(qid, function(err, result) {
-        if (err) {
-            logger.error(err);
-            return res.status(500);
-        }
-
-        if (req.session.adminQuestionList != null) {
-            /* Remove the deleted question from the stored question list. */
-            var ind;
-            for (ind in req.session.adminQuestionList) {
-                if (req.session.adminQuestionList[ind].id == qid) {
-                    break;
-                }
-            }
-            req.session.adminQuestionList.splice(ind, 1);
-        }
-
-        return res.status(200);
-    });
+    return res.status(200);
 });
 
 // submit question rating from both students and admins
@@ -894,72 +906,99 @@ app.get('/getDiscussionBoard', function(req, res){
         return res.redirect('/');
     }
 
-    var questionId = req.query.questionId;
-    questions.lookupQuestionById(questionId, function (err, question) {
+    settings.getDiscussionboardVisibilityEnabled(function (err, boardVisibility) {
         if (err) {
-            logger.error(err);
             return res.status(500).send(err);
         }
 
-        if (!question) {
-            logger.error(common.formatString('Could not find the question {0}', [questionId]));
-            return res.status(400).send('Could not find the question');
+        if (boardVisibility === common.discussionboardVisibility.NONE
+            && req.session.user.type === common.userTypes.STUDENT) {
+            return res.status(500).send('hidden');
         }
 
-        users.getUsersList((err, userObj) => {
+        settings.getDiscussionboardDislikesEnabled(function (err, isDislikesEnabled) {
             if (err) {
-                return res.status(500).send('Could not get the list of students');
+                isDislikesEnabled = false;
             }
 
-            var usersList = {};
-            for (var i in userObj) {
-                var user = userObj[i];
-                usersList[user._id] = user.fname + ' ' + user.lname;
-            }
-
-            var discussionHtml = discussionBoard({
-                comments: question.comments,
-                getCurrentUser: () =>{
-                    var userId = req.session.user._id;
-                    if (!usersList[userId]) {
-                        return 'UNKNOWN';
-                    }
-                    return usersList[userId];
-                },
-                getFirstLastName: (userId) => {
-                    if (!usersList[userId]) {
-                        return 'UNKNOWN';
-                    }
-                    return usersList[userId];
-                },
-                isLiked: (likesList) => {
-                    return likesList.indexOf(req.session.user._id) !== -1;
-                },
-                isDisliked: (dislikesList) => {
-                    return dislikesList.indexOf(req.session.user._id) !== -1;
-                },
-                highlightMentionedUser: (comment) => {
-                    var userId = req.session.user._id;
-                    if (!usersList[userId]) {
-                        return '@UNKNOWN';
-                    }
-
-                    var fullName = '@' + usersList[userId];
-                    var newComment = '';
-                    if (comment.indexOf(fullName) > -1) {
-                        var parts = comment.split(fullName);
-                        for (var i = 0; i < parts.length-1; i++) {
-                            newComment += parts[i] + '<b>' + fullName + '</b>';
-                        }
-                        newComment += parts[parts.length-1];
-                    } else {
-                        newComment = comment;
-                    }
-                    return newComment;
+            var questionId = req.query.questionId;
+            questions.lookupQuestionById(questionId, function (err, question) {
+                if (err) {
+                    logger.error(err);
+                    return res.status(500).send(err);
                 }
-            });
 
-            return res.status(200).send(discussionHtml);
+                if (!question) {
+                    logger.error(common.formatString('Could not find the question {0}', [questionId]));
+                    return res.status(400).send('Could not find the question');
+                }
+
+                if (boardVisibility === common.discussionboardVisibility.ANSWERED) {
+                    var answeredList = common.getIdsListFromJSONList(question.correctAttempts, 'userId');
+                    var answered = (answeredList.indexOf(req.session.user._id) !== -1);
+
+                    if (req.session.user.type === common.userTypes.STUDENT && !answered) {
+                        return res.status(500).send('hidden');
+                    }
+                }
+
+                users.getUsersList((err, userObj) => {
+                    if (err) {
+                        return res.status(500).send('Could not get the list of students');
+                    }
+
+                    var usersList = {};
+                    for (var i in userObj) {
+                        var user = userObj[i];
+                        usersList[user._id] = user.fname + ' ' + user.lname;
+                    }
+
+                    var discussionHtml = discussionBoardPug({
+                        comments: question.comments,
+                        isDislikesEnabled: isDislikesEnabled,
+                        getCurrentUser: () =>{
+                            var userId = req.session.user._id;
+                            if (!usersList[userId]) {
+                                return 'UNKNOWN';
+                            }
+                            return usersList[userId];
+                        },
+                        getFirstLastName: (userId) => {
+                            if (!usersList[userId]) {
+                                return 'UNKNOWN';
+                            }
+                            return usersList[userId];
+                        },
+                        isLiked: (likesList) => {
+                            return likesList.indexOf(req.session.user._id) !== -1;
+                        },
+                        isDisliked: (dislikesList) => {
+                            return dislikesList.indexOf(req.session.user._id) !== -1;
+                        },
+                        highlightMentionedUser: (comment) => {
+                            var userId = req.session.user._id;
+                            if (!usersList[userId]) {
+                                return '@UNKNOWN';
+                            }
+
+                            var fullName = '@' + usersList[userId];
+                            var newComment = '';
+                            if (comment.indexOf(fullName) > -1) {
+                                var parts = comment.split(fullName);
+                                for (var i = 0; i < parts.length-1; i++) {
+                                    newComment += parts[i] + '<b>' + fullName + '</b>';
+                                }
+                                newComment += parts[parts.length-1];
+                            } else {
+                                newComment = comment;
+                            }
+                            return newComment;
+                        }
+                    });
+
+                    return res.status(200).send(discussionHtml);
+                });
+            });
         });
     });
 });
@@ -1073,27 +1112,43 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
             return res.status(400).send('Invalid questionId');
         }
 
-        var answeredList = [];
-        for (var i in question.correctAttempts) {
-            answeredList.push(question.correctAttempts[i].id);
-        }
-
         users.getUsersList(function (err, usersList) {
             if (err) {
                 logger.error(err);
                 return res.status(500).send('could not find the list of users');
             }
-            var totalList = [];
-            for (var i in usersList) {
-                var user = usersList[i];
-                if (req.session.user._id !== user._id &&
-                    (user.type === common.userTypes.ADMIN
-                        || answeredList.indexOf(user._id) !== -1)) {
-                    totalList.push(user.fname+' '+user.lname);
-                }
-            }
 
-            return res.status(200).send(totalList);
+            settings.getAllSettings(function (err, allSettings) {
+                if (err) {
+                    return res.status(500).send('Could not fetch the settings');
+                }
+
+                var totalList = [];
+
+                if (allSettings.discussionboard.visibility === common.discussionboardVisibility.ALL) {
+                    for (var i in usersList) {
+                        let user = usersList[i];
+                        if (req.session.user._id !== user._id) {
+                            totalList.push(user.fname+' '+user.lname);
+                        }
+                    }
+                } else if (allSettings.discussionboard.visibility === common.discussionboardVisibility.ANSWERED) {
+                    var answeredList = [];
+                    for (var i in question.correctAttempts) {
+                        answeredList.push(question.correctAttempts[i].userId);
+                    }
+
+                    for (var i in usersList) {
+                        let user = usersList[i];
+                        if (req.session.user._id !== user._id &&
+                            (user.type === common.userTypes.ADMIN || answeredList.indexOf(user._id) !== -1)) {
+                              totalList.push(user.fname+' '+user.lname);
+                        }
+                    }
+                }
+
+                return res.status(200).send(totalList);
+            });
         });
     });
 });
@@ -1206,17 +1261,23 @@ app.post('/accountsExportFile', function(req, res) {
     var totalCount = requestedList.length;
     var studentsCount = 0;
     var studentsList = [];
+    var errors = 0;
 
     for (var i in requestedList) {
         users.getStudentById(requestedList[i], function(err, studentFound) {
             if (err || !studentFound) {
-                res.status(500).send('Could not find a student from the export list');
+                logger.error('Could not find a student from the export list');
+                errors++;
             }
 
             studentsList.push(studentFound);
             studentsCount++;
             if (studentsCount === totalCount) {
-                var fields = ['id', 'fname', 'lname', 'email'];
+                if (errors > 0) {
+                    return res.status(500).send('Could not find a student from the export list');
+                }
+
+                var fields = ['username', 'fname', 'lname', 'email'];
                 var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
                 var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
                 var file = 'exportJob-students-'+new Date().toString();
@@ -1270,7 +1331,7 @@ app.post('/accountsImportFile', function (req, res) {
         var importedList = [];
         csv2json().fromFile(newFile).on('json', function(jsonObj) {
             var userObj = {};
-            userObj['id'] = jsonObj['Username'];
+            userObj['username'] = jsonObj['Username'];
             userObj['fname'] = jsonObj['First Name'];
             userObj['lname'] = jsonObj['Last Name'];
             userObj['email'] = jsonObj['Email'];
@@ -1317,7 +1378,7 @@ app.post('/accountsImportList', function (req, res) {
         var userToAdd = {
             fname: inputUser.fname,
             lname: inputUser.lname,
-            id: inputUser.username,
+            username: inputUser.username,
             email: inputUser.email,
             password: 'KonniChiwa'
         };
@@ -1392,19 +1453,105 @@ app.get('/profile', function(req, res) {
         return res.redirect('/');
     }
 
-    users.getUserById(req.session.user._id, function(err, user) {
+    settings.getAllSettings(function (err, allSettings) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
         }
 
-        if (!user) {
-            return res.status(400).send('bad request, user does not exist');
+        users.getUserById(req.session.user._id, function(err, user) {
+            if (err) {
+                logger.error(err);
+                return res.status(500).send(err);
+            }
+
+            if (!user) {
+                return res.status(400).send('bad request, user does not exist');
+            }
+
+            if (user.type === common.userTypes.ADMIN) {
+                allSettings.student.editNames = true;
+                allSettings.student.editEmail = true;
+                allSettings.student.editPassword = true;
+            }
+
+            return res.status(200).render('profile', {
+                user: user,
+                editNamesEnabled: allSettings.student.editNames,
+                editEmailEnabled: allSettings.student.editEmail,
+                editPasswordEnabled: allSettings.student.editPassword
+            });
+        });
+    });
+});
+
+/* Get the settings page */
+app.get('/settings', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    settings.getAllSettings(function (err, allSettings) {
+        if (err) {
+            return res.status(500).send('Could not fetch the settings');
         }
 
-        return res.status(200).render('profile', {
-            user: user
+        var html = settingsPug({
+            generalActive: allSettings.general.active,
+            generalLeaderboardLimit: allSettings.general.leaderboardLimit,
+            studentEditNames: allSettings.student.editNames,
+            studentEditEmail: allSettings.student.editEmail,
+            studentEditPassword: allSettings.student.editPassword,
+            questionDefaultTopic: allSettings.question.defaultTopic,
+            questionDefaultMinPoints: allSettings.question.defaultMinPoints,
+            questionDefaultMaxPoints: allSettings.question.defaultMaxPoints,
+            questionTimeoutEnabled: allSettings.question.timeoutEnabled,
+            questionTimeoutPeriod: allSettings.question.timeoutPeriod,
+            discussionboardVisibility: allSettings.discussionboard.visibility,
+            discussionboardDislikesEnabled: allSettings.discussionboard.dislikesEnabled,
+            checkDiscussionboardVisibility: function (radioButtonValue) {
+                return allSettings.discussionboard.visibility === radioButtonValue;
+            }
         });
+        return res.status(200).send(html);
+    });
+});
+
+/* Reset the website settings to the default values */
+app.post('/resetSettings', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    settings.resetAllSettings(function (err, result) {
+        return res.status(err ? 500 : 200).send(err ? err : 'ok');
+    });
+});
+
+/* Update the settings collection */
+app.post('/updateSettings', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    settings.updateSettings(req.body.settings, function (err, result) {
+        if (err) {
+            return res.status(500).send('Could not update the settings');
+        }
+
+        return res.status(200).send('ok');
     });
 });
 

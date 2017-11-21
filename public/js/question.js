@@ -12,7 +12,7 @@ $(function () {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else {
+            } else if (data['responseText'] !== 'hidden') {
                 failSnackbar('something went wrong');
             }
         }

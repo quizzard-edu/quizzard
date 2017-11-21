@@ -16,7 +16,6 @@ var toggleUsersSwitch = function() {
 
 /* Display the table of user accounts. */
 var displayAccountsTable = function() {
-    //var status = $('#userStatusSwitch').is(':checked');
     $.ajax({
         type: 'GET',
         url: '/studentlist?active=' + usersTableActive,
@@ -172,24 +171,21 @@ var submitImportList = function() {
             return;
         }
 
-        var $tds = $(this).find('td'),
-            isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked'),
-            fname = $tds.eq(1).text(),
-            lname = $tds.eq(2).text(),
-            username = $tds.eq(3).text(),
-            email = $tds.eq(4).text();
-
+        var $tds = $(this).find('td');
+        var isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked');
         var userObj = {
-            fname: fname,
-            lname: lname,
-            username: username,
-            email: email
+            username: $tds.eq(1).text(),            
+            fname: $tds.eq(2).text(),
+            lname: $tds.eq(3).text(),
+            email: $tds.eq(4).text()
         };
 
         if (isSelected) {
             selected.push(userObj);
         }
     });
+
+    $('#admin-content').html(loadingAnimation);
 
     $.ajax({
         type: 'POST',
@@ -207,7 +203,8 @@ var submitImportList = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Upload failed');
+                failSnackbar('Importing failed');
+                displayAccountsTable();                
             }
         }
     });
@@ -392,12 +389,25 @@ var displayStatistics = function() {
 }
 
 var displaySettings = function() {
-    $('#admin-content').html('');
+    $.ajax({
+        type: 'GET',
+        url: '/settings',
+        success: function(data) {
+            $('#admin-content').html(data);
 
-    $('#option-settings').addClass('active');
-    $('#option-stats').removeClass('active');
-    $('#option-accounts').removeClass('active');
-    $('#option-questions').removeClass('active');
+            $('#option-settings').addClass('active');
+            $('#option-stats').removeClass('active');
+            $('#option-accounts').removeClass('active');
+            $('#option-questions').removeClass('active');
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
+        }
+    });
 }
 
 /* Set up events for the sidebar buttons. */
@@ -683,6 +693,12 @@ var submitQuestionForm = function() {
         failSnackbar('Please enter a question body in the editor.');
         return;
     }
+
+    if (parseInt($('#qminpoints').val()) > parseInt($('#qmaxpoints').val())) {
+        failSnackbar('Minimum points must be less than or equal to max points');
+        return;
+    }
+
     var question = collectQuestionFormData('#questionform');
 
     question['type'] = $('#qType').select().val();
@@ -831,7 +847,7 @@ var accountSortTypes = {
     fname: false,
     lname: false,
     id: false
-};
+}
 
 var sortAccountsTable = function(type) {
     /* Toggle type's sort order; reset all others. */

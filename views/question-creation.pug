@@ -6,9 +6,8 @@ block styles
   .col.s12
     .card.center
       .card-image
-        .hidden
-          a.btn-floating.halfway-fab.waves-effect.waves-light.red.left#question-creation-back-button
-            i.material-icons arrow_back
+        a.btn-floating.halfway-fab.waves-effect.waves-light.red.left#question-creation-back-button
+          i.material-icons arrow_back
       .card-content
         h5.card-title Question Creation Form
         h6 Create a new question
@@ -32,10 +31,18 @@ block styles
               .form-group
                 label(for='qtopic') Topic
                 .input-field
-                  input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' required)
+                  if defaultTopic
+                    input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' value=defaultTopic required)
+                  else
+                    input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' required)
               .form-group
-                label(for='qpoints') Points
-                input.form-control#qpoints(type='number' name='points' placeholder='Enter points'  min="0" required)
+                .row
+                  .col.s6
+                    label(for='qminpoints') Minimum Points
+                    input.form-control#qminpoints(type='number' name='minpoints' placeholder='Min points'  min='0' value=defaultMinPoints required)
+                  .col.s6
+                    label(for='qmaxpoints') Maximum Points
+                    input.form-control#qmaxpoints(type='number' name='maxpoints' placeholder='Max points'  min='0' value=defaultMaxPoints required)
               .form-group
                 label(for='qhint') Hint
                 input.form-control#qhint(type='text' name='hint' placeholder='Enter Hint')
