@@ -169,6 +169,7 @@ var orderingAttributeValidator = function(question){
 var validateAttributeType = function(valueToCheck, key, attributeType){
     return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;
 }
+exports.validateAttributeType = validateAttributeType;
 
 /*Validate all attributes in Object being passed and has correct field types*/
 var validateAllAttributesInGroup = function(objectToCheck, attributeType){
@@ -182,10 +183,11 @@ var validateAllAttributesInGroup = function(objectToCheck, attributeType){
 
 /*Validate an Array object to contain specific value types*/
 var validateArrayObject = function(arrayObject,typeOfvalue){
-    for (var value in arrayObject){
-        if(!validateAttributeType(value,typeOfvalue,'DATATYPES')){
+    for (var i = 0; i < arrayObject.length; i++){
+        if(!validateAttributeType(arrayObject[i],typeOfvalue,'DATATYPES')){
             return false;
         }
     }
     return true;
 }
+exports.validateArrayObject = validateArrayObject;
