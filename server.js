@@ -618,34 +618,37 @@ app.post('/submitanswer', function(req, res) {
         }
 
         // check if question is locked for the student
-        /*if(req.session.user.type !== common.userTypes.ADMIN && questions.isUserLocked(userId, question)){
-            return res.status(423).send('Sorry question is Locked, please try again later');
-        }*/
         questions.isUserLocked(userId, question, function(isLocked, waitTime){
-            console.log(waitTime);
             if (isLocked){
                 return res.status(423).send(waitTime);
             }
 
             logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
 
-            var value = questions.verifyAnswer(question, answer);
-            var points = question.points;
-            var text = value ? 'correct' : 'incorrect';
-            var status = value ? 200 : 405;
+            var isCorrect = questions.verifyAnswer(question, answer);
+            var points = 0;
+            var text = 'incorrect';
+            var status = 405;
+
+            if (isCorrect){
+                text = 'correct';
+                status = 200;
+                points = question.points;
+            }
+
             var response = {text: text, points: points};
 
             if (req.session.user.type === common.userTypes.ADMIN) {
                 return res.status(status).send(response);
             }
 
-            users.submitAnswer(userId, questionId, value, points, answer, function(err, result){
+            users.submitAnswer(userId, questionId, isCorrect, points, answer, function(err, result){
                 if(err){
                     logger.error(err);
                     return res.status(500).send(err);
                 }
 
-                questions.submitAnswer(questionId, userId, value, points, answer, function(err, result) {
+                questions.submitAnswer(questionId, userId, isCorrect, points, answer, function(err, result) {
                     if(err){
                         logger.error(err);
                         return res.status(500).send(err);

@@ -217,11 +217,6 @@ var getTime = function(time){
 }
 exports.getTime = getTime;
 
-// return the current date with format
-var getDateByFormat = function(format) {
-    return date().format(format);
-}
-
 /**
 * return the current date with format
 *

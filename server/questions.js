@@ -552,7 +552,7 @@ exports.isUserLocked = function(userId, question, callback){
 
     // check if user already got the question correct
     for (var obj = 0; obj < question.correctAttempts.length; obj ++){
-        if(question.correctAttempts[obj]['userId'] == userId){
+        if(question.correctAttempts[obj]['userId'] === userId){
             return callback(false,null);
         }
     }
@@ -560,11 +560,12 @@ exports.isUserLocked = function(userId, question, callback){
     for (var obj = 0; obj < question.userSubmissionTime.length; obj++){
         if(question.userSubmissionTime[obj]['userId'] === userId){
             lastSubmissionTime = question.userSubmissionTime[obj]['submissionTime'];
+            break;
         }
     }
 
-    if(typeof lastSubmissionTime !== 'undefined'){
-        var diff = Math.abs(currentDate - lastSubmissionTime);
+    if(lastSubmissionTime){
+        const diff = Math.abs(currentDate - lastSubmissionTime);
         if (diff < common.waiting_time){
             return callback(true,common.getTime(common.waiting_time - diff));
         }
@@ -582,6 +583,7 @@ exports.updateUserSubmissionTime = function(userId, question, callback){
     for (var obj = 0; obj < question.userSubmissionTime.length; obj++){
         if(question.userSubmissionTime[obj]['userId'] === userId){
             userInList = true;
+            break;
         }
     }
 
@@ -589,16 +591,18 @@ exports.updateUserSubmissionTime = function(userId, question, callback){
         query['userSubmissionTime.userId'] = userId;
         update.$set = {"userSubmissionTime.$.submissionTime":currentDate};
         db.updateQuestionByQuery(query, update, function (err, result){
-            if(err)
+            if(err){
                 return callback(err,null);
+            }
             return callback(null,'success');
         });
         
     } else {
         update.$push = {'userSubmissionTime': {'userId':userId, submissionTime: currentDate}};
         db.updateQuestionByQuery(query, update, function (err, result){
-            if(err)
+            if(err){
                 return callback(err,null);
+            }
             return callback(null,'success');
         });
     }
