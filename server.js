@@ -1112,27 +1112,43 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
             return res.status(400).send('Invalid questionId');
         }
 
-        var answeredList = [];
-        for (var i in question.correctAttempts) {
-            answeredList.push(question.correctAttempts[i].id);
-        }
-
         users.getUsersList(function (err, usersList) {
             if (err) {
                 logger.error(err);
                 return res.status(500).send('could not find the list of users');
             }
-            var totalList = [];
-            for (var i in usersList) {
-                var user = usersList[i];
-                if (req.session.user._id !== user._id &&
-                    (user.type === common.userTypes.ADMIN
-                        || answeredList.indexOf(user._id) !== -1)) {
-                    totalList.push(user.fname+' '+user.lname);
-                }
-            }
 
-            return res.status(200).send(totalList);
+            settings.getAllSettings(function (err, allSettings) {
+                if (err) {
+                    return res.status(500).send('Could not fetch the settings');
+                }
+
+                var totalList = [];
+
+                if (allSettings.discussionboard.visibility === common.discussionboardVisibility.ALL) {
+                    for (var i in usersList) {
+                        let user = usersList[i];
+                        if (req.session.user._id !== user._id) {
+                            totalList.push(user.fname+' '+user.lname);
+                        }
+                    }
+                } else if (allSettings.discussionboard.visibility === common.discussionboardVisibility.ANSWERED) {
+                    var answeredList = [];
+                    for (var i in question.correctAttempts) {
+                        answeredList.push(question.correctAttempts[i].userId);
+                    }
+
+                    for (var i in usersList) {
+                        let user = usersList[i];
+                        if (req.session.user._id !== user._id &&
+                            (user.type === common.userTypes.ADMIN || answeredList.indexOf(user._id) !== -1)) {
+                              totalList.push(user.fname+' '+user.lname);
+                        }
+                    }
+                }
+
+                return res.status(200).send(totalList);
+            });
         });
     });
 });

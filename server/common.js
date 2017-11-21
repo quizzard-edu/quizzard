@@ -209,8 +209,8 @@ exports.getUUID = getUUID;
 
 /**
  * get variable type
- * 
- * @param {*} variable 
+ *
+ * @param {*} variable
  */
 var getVariableType = function (variable) {
     return Object.prototype.toString.call(variable);
@@ -240,6 +240,25 @@ var formatString = function (text, args) {
     });
 };
 exports.formatString = formatString;
+
+/**
+* Returns a JSON from a list of JSONs given a key, value to search for
+*
+* @param {list} list
+* @param {string} field
+* @param {string} value
+* @return {boolean}
+*/
+var isKeyValuePairInJsonList = function(list, field, value) {
+    for (var i = 0; i < list.length; i++) {
+        if (list[i][field] === value) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isJsonInList = isJsonInList;
+
 // </Global Function> -----------------------------------------------
 
 // <File System functions> ------------------------------------------

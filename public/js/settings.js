@@ -2,6 +2,10 @@ $(function() {
     getQuestionsTopicsList();
 });
 
+/**
+ * get questions topics list
+ *
+ */
 var getQuestionsTopicsList = function () {
     $.ajax({
         async: false,
@@ -31,6 +35,10 @@ var getQuestionsTopicsList = function () {
     });
 }
 
+/**
+ * remove the modification done on the settings page
+ *
+ */
 var cancel = function() {
     swal({
         title: 'Confirm Cancel',
@@ -46,6 +54,10 @@ var cancel = function() {
     });
 }
 
+/**
+ * reset the settings to their default value
+ *
+ */
 var resetDefault = function() {
     swal({
         title: 'Reset to Default',
@@ -74,6 +86,11 @@ var resetDefault = function() {
     });
 }
 
+
+/**
+ * save the new set of settings
+ *
+ */
 var save = function() {
     swal({
         title: 'Confirm Save',
