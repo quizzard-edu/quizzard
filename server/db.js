@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var Db = require('mongodb').Db;
 var Server = require('mongodb').Server;
-var logger = require('./log.js').logger;
+var logger = require('./log.js');
 var common = require('./common.js');
 var bcrypt = require('bcryptjs');
 
@@ -30,7 +30,7 @@ var DB_NAME = process.env.DB_NAME || 'quizzard';
 
 var db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 
-var nextId = 0;
+var nextQuestionNumber = 0;
 var usersCollection;
 var questionsCollection;
 var analyticsCollection;
@@ -43,13 +43,13 @@ exports.initialize = function(callback) {
             process.exit(1);
         }
 
-        logger.info('Connection to Quizzard database successful.');
+        logger.log('Connection to Quizzard database successful.');
         usersCollection = db.collection('users');
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
 
-        getNextQuestionId(function(){
-            logger.info('next question: %d', nextId);
+        getNextQuestionNumber(function() {
+            logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
             return callback();
         });
     });
@@ -66,17 +66,19 @@ exports.addAdmin = function(admin, callback){
 }
 
 var addUser = function(user, callback) {
-    usersCollection.findOne({'id': user.id}, function(err, obj) {
+    usersCollection.findOne({_id: user._id}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
-        } else if (obj) {
-            return callback('exists', null);
-        } else {
-            usersCollection.insert(user, function(err, res) {
-                return callback(err, res);
-            });
         }
+
+        if (obj) {
+            return callback('exists', null);
+        }
+
+        usersCollection.insert(user, function(err, res) {
+            return callback(err, user);
+        });
     });
 }
 
@@ -104,10 +106,6 @@ var getUsersList = function(findQuery, sortQuery, callback){
             return callback(err, []);
         }
 
-        for (s in docs) {
-            delete docs[s]._id;
-        }
-
         return callback(null, docs);
     });
 }
@@ -118,18 +116,14 @@ exports.getStudentsListSorted = function(lim, callback){
             .limit(lim)
             .toArray(function(err, docs) {
         if (err) {
-            return callback(err, []);
-        }
-
-        for (s in docs) {
-            delete docs[s]._id;
+            return callback(err, null);
         }
 
         return callback(null, docs);
     });
 }
 
-exports.getUserById = function(userId, callback){
+exports.getUserById = function(userId, callback) {
     getUserById(userId, callback);
 }
 
@@ -138,7 +132,7 @@ exports.getUserById = function(userId, callback){
  * user type of null
  */
 exports.checkLogin = function(userId, pass, callback) {
-    usersCollection.findOne({id : userId}, function(err, obj) {
+    usersCollection.findOne({username : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
@@ -157,7 +151,6 @@ exports.checkLogin = function(userId, pass, callback) {
                 return callback(err, null);
             }
             if (valid) {
-                delete obj._id;
                 delete obj.password;
                 return callback(null, obj);
             }
@@ -177,13 +170,28 @@ var validatePassword = function(userobj, pass, callback) {
 
 // cleanup the users collection
 exports.removeAllUsers = function(callback){
-    usersCollection.remove({}, function(err, obj) {
-        if (err) {
+    common.rmrf(common.fsTree.HOME, 'Users', function (err, result) {
+        if(err){
             logger.error(err);
             return callback(err, null);
         }
-        logger.info('All users have been removed');
-        return callback(null, obj);
+
+        common.mkdir(common.fsTree.HOME, 'Users', function (err, result) {
+            if(err){
+                logger.error(err);
+                return callback(err, null);
+            }
+
+            usersCollection.remove({}, function(err, obj) {
+                if (err) {
+                    logger.error(err);
+                    return callback(err, null);
+                }
+
+                logger.log('All users have been removed');
+                return callback(null, obj);
+            });
+        });
     });
 }
 
@@ -199,7 +207,7 @@ exports.getAdminById = function(adminId, callback) {
 }
 
 var getUserById = function(userId, callback){
-    usersCollection.findOne({id : userId}, function(err, obj) {
+    usersCollection.findOne({_id : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
@@ -224,7 +232,7 @@ exports.updateAdminById = function(userId, info, callback){
 
 var updateUserById = function(userId, info, callback){
     var currentDate = new Date().toString();
-    var query = { id : userId };
+    var query = { _id : userId };
     var update = {};
 
     update.$addToSet = {};
@@ -233,23 +241,27 @@ var updateUserById = function(userId, info, callback){
     update.$set = { mtime : currentDate };
     update.$push = {};
 
-    if (info.id) {
-        update.$set.id = info.id;
+    if ('username' in info) {
+        update.$set.username = info.username;
     }
 
-    if (info.fname) {
+    if ('fname' in info) {
         update.$set.fname = info.fname;
     }
 
-    if (info.lname) {
+    if ('lname' in info) {
         update.$set.lname = info.lname;
     }
 
-    if (info.email) {
+    if ('email' in info) {
         update.$set.email = info.email;
     }
 
-    if (info.rating) {
+    if ('points' in info && parseInt(info.points)) {
+        update.$set.points = parseInt(info.points);
+    }
+
+    if ('rating' in info && parseInt(info.rating)) {
         update.$push.ratings = {
             question: info.questionId,
             date: currentDate,
@@ -259,30 +271,6 @@ var updateUserById = function(userId, info, callback){
 
     if (typeof info.active !== 'undefined') {
         update.$set.active = info.active;
-    }
-
-    if (typeof info.correct !== 'undefined') {
-        query['correctAttempts.id'] = { $ne : info.questionId };
-        if (info.correct) {
-            update.$inc.points = info.points;
-            update.$inc.correctAttemptsCount = 1;
-            update.$push.correctAttempts = {
-                id : info.questionId,
-                points : info.points,
-                answer : info.attempt,
-                date : currentDate };
-        } else {
-            update.$inc.wrongAttemptsCount = 1;
-            update.$push.wrongAttempts = {
-                id : info.questionId,
-                attempt : info.attempt,
-                date : currentDate };
-        }
-        update.$inc.totalAttemptsCount = 1;
-        update.$push.totalAttempts = {
-            id : info.questionId,
-            attempt : info.attempt,
-            date : currentDate };
     }
 
     if (isEmptyObject(update.$addToSet)) {
@@ -367,47 +355,61 @@ var isEmptyObject = function(obj) {
 
 // Questions functions
 // Add QUESTION to questionsCollection in the database
-exports.addQuestion = function(question, callback){
-    question.id = ++nextId;
+exports.addQuestion = function(question, callback) {
+    question.number = ++nextQuestionNumber;
     questionsCollection.insert(question, function(err, res) {
-        if(err){
+        if(err) {
             logger.error(err);
             return callback({status:500, msg:err}, null);
         }
 
-        return callback(null, question.id);
+        return callback(null, question.number);
     });
 }
 
 // cleanup the users collection
-exports.removeAllQuestions = function(callback){
-    questionsCollection.remove({}, function(err, res) {
+exports.removeAllQuestions = function(callback) {
+    common.rmrf(common.fsTree.HOME, 'Questions', function (err, result) {
         if(err){
             logger.error(err);
             return callback(err, null);
         }
 
-        nextId = 0;
-        logger.info('All questions have been removed');
-        logger.info('next question: %d', nextId);
-        return callback(null, res);
+        common.mkdir(common.fsTree.HOME, 'Questions', function (err, result) {
+            if(err){
+                logger.error(err);
+                return callback(err, null);
+            }
+
+            questionsCollection.remove({}, function(err, res) {
+                if(err){
+                    logger.error(err);
+                    return callback(err, null);
+                }
+
+                nextQuestionNumber = 0;
+                logger.log('All questions have been removed');
+                logger.log(common.formatString('next question: {0}', [nextQuestionNumber]));
+                return callback(null, res);
+            });
+        });
     });
 }
 
-// getNextQuestionId
-var getNextQuestionId = function(callback){
-      questionsCollection.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
+// get next question number
+var getNextQuestionNumber = function(callback) {
+      questionsCollection.find().sort({number: -1}).limit(1).toArray(function(err, docs) {
         if (err) {
             logger.error(err);
             process.exit(1);
         }
 
-        nextId = docs[0] ? docs[0].id : 0;
-        return callback(nextId);
+        nextQuestionNumber = docs[0] ? docs[0].number : 0;
+        return callback(nextQuestionNumber);
     });
 }
 
-exports.getQuestionsList = function(findQuery, sortQuery, callback){
+exports.getQuestionsList = function(findQuery, sortQuery, callback) {
     questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
             return callback(err, null);
@@ -477,7 +479,7 @@ exports.lookupQuestion = function(findQuery, callback) {
 }
 
 // update a question record based on its id
-exports.updateQuestionById = function(questionId, request, callback){
+exports.updateQuestionById = function(questionId, request, callback) {
     var currentDate = new Date().toString();
     var query = {_id: questionId};
     var update = {};
@@ -550,7 +552,6 @@ exports.updateQuestionById = function(questionId, request, callback){
 
     questionsCollection.update(query, update, function(err, info) {
         if (err) {
-            logger.error({status:500, msg:err});
             return callback(err, null);
         }
 
@@ -559,7 +560,7 @@ exports.updateQuestionById = function(questionId, request, callback){
 }
 
 // update users collection directly by a query
-exports.updateQuestionByQuery = function (query, update, callback){
+exports.updateQuestionByQuery = function (query, update, callback) {
     questionsCollection.update(query, update, function(err, obj) {
         return callback(err, obj);
     });
