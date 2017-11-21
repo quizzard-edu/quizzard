@@ -11,11 +11,11 @@ li
       .col.sm6
         label(for='qMinPoints') Default Minimum Points (optional)
         .input-field
-          input.form-control#qMinPoints.autocomplete(type='number', name='minPoints', placeholder='Minimum Points', value=questionDefaultMinPoints)
+          input.form-control#qMinPoints(type='number', name='minPoints', placeholder='Minimum Points', min='10', value=questionDefaultMinPoints)
       .col.sm6
         label(for='qMaxPoints') Default Maximum Points (optional)
         .input-field
-          input.form-control#qMaxPoints.autocomplete(type='number', name='maxPoints', placeholder='Maximum Points', value=questionDefaultMaxPoints)
+          input.form-control#qMaxPoints(type='number', name='maxPoints', placeholder='Maximum Points', min='100', value=questionDefaultMaxPoints)
     .row
       span Timeout if the question is not answered correctly
       .switch
@@ -27,4 +27,4 @@ li
     .row
       .col.s12.m6
         .input-field
-          input.form-control#qtimeout.autocomplete(type='number', name='timeoutPeriod', placeholder='Enter timeout in minutes ex. 10', min='1', value=questionTimeoutPeriod)
+          input.form-control#qtimeout(type='number', name='timeoutPeriod', placeholder='Enter timeout in minutes ex. 10', min='1', value=questionTimeoutPeriod)

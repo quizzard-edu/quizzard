@@ -43,7 +43,7 @@ var cancel = function() {
         closeOnConfirm: true
     }, function() {
         displaySettings();
-        successSnackbar('Changes canceled')
+        successSnackbar('Changes canceled');
     });
 }
 
@@ -57,9 +57,21 @@ var resetDefault = function() {
         confirmButtonText: 'Confirm',
         closeOnConfirm: true
     }, function() {
-        //TODO: call the reset to default function
-        displaySettings();
-        successSnackbar('Default settings have been applied')
+        $.ajax({
+            type: 'POST',
+            url: '/resetSettings',
+            success: function(data) {
+                displaySettings();
+                successSnackbar('Default settings have been applied');
+            },
+            error: function(data) {
+                if (data['status'] === 401) {
+                    window.location.href = '/';
+                } else {
+                    failSnackbar('Could not apply default settings, please try again!');
+                }
+            }
+        });        
     });
 }
 
@@ -73,7 +85,35 @@ var save = function() {
         confirmButtonText: 'Confirm',
         closeOnConfirm: true
     }, function() {
-        displaySettings();
-        successSnackbar('Changes have been updated')
+        $.ajax({
+            type: 'POST',
+            url: '/updateSettings',
+            data: {
+                settings: {
+                    classActive: $('#classActive').is(':checked'),
+                    studentsOnLeaderboard: $('#leaderboardStudents').val(),
+                    allowEditName: $('#allowEditName').is(':checked'),
+                    allowEditEmail: $('#allowEditEmail').is(':checked'),
+                    allowEditPassword: $('#allowEditPassword').is(':checked'),
+                    topic: $('#qtopic').val(),
+                    minPoints: $('#qMinPoints').val(),
+                    maxPoints: $('#qMaxPoints').val(),
+                    allowTimeout: $('#allowTimeout').is(':checked'),
+                    timeoutPeriod: $('#qtimeout').val(),
+                    discussionView: $("input[name='discussionView']:checked").val(),
+                    allowDislikes: $('#allowDislikes').is(':checked')
+                }
+            },
+            success: function(data) {
+                successSnackbar('Changes have been updated');
+            },
+            error: function(data) {
+                if (data['status'] === 401) {
+                    window.location.href = '/';
+                } else {
+                    failSnackbar('Could not save, please try again!');
+                }
+            }
+        });
     });
 }

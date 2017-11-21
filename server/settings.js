@@ -366,8 +366,10 @@ exports.updateSettings = function (updateObject, callback) {
         updateQuery.$set['general.active'] = (updateObject.classActive === 'true');
     }
 
-    if ('studentsOnLeaderboard' in updateObject && parseInt(updateObject.leaderboardLimit)) {
-        updateQuery.$set['general.leaderboardLimit'] = parseInt(updateObject.leaderboardLimit);
+    if ('studentsOnLeaderboard' in updateObject 
+        && parseInt(updateObject.studentsOnLeaderboard)
+        && parseInt(updateObject.studentsOnLeaderboard) >= 3) {
+        updateQuery.$set['general.leaderboardLimit'] = parseInt(updateObject.studentsOnLeaderboard);
     }
 
     if ('allowEditName' in updateObject
@@ -392,11 +394,15 @@ exports.updateSettings = function (updateObject, callback) {
         updateQuery.$set['question.defaultTopic'] = updateObject.topic;
     }
 
-    if ('minPoints' in updateObject && parseInt(updateObject.minPoints)) {
+    if ('minPoints' in updateObject 
+        && parseInt(updateObject.minPoints)
+        && parseInt(updateObject.minPoints) >= 10) {
         updateQuery.$set['question.defaultMinPoints'] = parseInt(updateObject.minPoints);
     }
 
-    if ('maxPoints' in updateObject && parseInt(updateObject.maxPoints)) {
+    if ('maxPoints' in updateObject 
+        && parseInt(updateObject.maxPoints)
+        && parseInt(updateObject.maxPoints) >= 100) {
         updateQuery.$set['question.defaultMaxPoints'] = parseInt(updateObject.maxPoints);
     }
 
@@ -406,7 +412,9 @@ exports.updateSettings = function (updateObject, callback) {
         updateQuery.$set['question.timeoutEnabled'] = (updateObject.allowTimeout === 'true');
     }
 
-    if ('timeoutPeriod' in updateObject && parseInt(updateObject.timeoutPeriod)) {
+    if ('timeoutPeriod' in updateObject 
+        && parseInt(updateObject.timeoutPeriod)
+        && parseInt(updateObject.timeoutPeriod) >= 1) {
         updateQuery.$set['question.timeoutPeriod'] = parseInt(updateObject.timeoutPeriod);
     }
 

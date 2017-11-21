@@ -1505,6 +1505,21 @@ app.get('/settings', function(req, res) {
     });
 });
 
+/* Reset the website settings to the default values */
+app.post('/resetSettings', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    settings.resetAllSettings(function (err, result) {
+        return res.status(err ? 500 : 200).send(err ? err : 'ok');
+    });
+});
+
 /* Update the settings collection */
 app.post('/updateSettings', function(req, res) {
     if (!req.session.user) {
@@ -1515,7 +1530,7 @@ app.post('/updateSettings', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    settings.updateSettings(req.query.settings, function (err, result) {
+    settings.updateSettings(req.body.settings, function (err, result) {
         if (err) {
             return res.status(500).send('Could not update the settings');
         }
