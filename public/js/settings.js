@@ -2,7 +2,6 @@ $(function() {
     getQuestionsTopicsList();
 });
 
-
 var getQuestionsTopicsList = function () {
     $.ajax({
         async: false,
@@ -71,7 +70,7 @@ var resetDefault = function() {
                     failSnackbar('Could not apply default settings, please try again!');
                 }
             }
-        });        
+        });
     });
 }
 
