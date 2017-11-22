@@ -257,7 +257,7 @@ var isKeyValuePairInJsonList = function(list, field, value) {
     }
     return false;
 }
-exports.isJsonInList = isJsonInList;
+exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
 
 // </Global Function> -----------------------------------------------
 
