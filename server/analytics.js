@@ -18,10 +18,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var users = require('./users.js');
-var logger = require('./log.js').logger;
-var common = require('./common.js');
-var db = require('./db.js');
+const users = require('./users.js');
+const logger = require('./log.js');
+const common = require('./common.js');
+const db = require('./db.js');
 
 // get charts
 exports.getChart = function(query, callback) {
@@ -34,6 +34,14 @@ exports.getChart = function(query, callback) {
             return getPointsVsClass(query, callback);
         case 'RatingVsClass':
             return getRatingVsClass(query, callback);
+        case 'classAnswered':
+            return getClassAnswered(query, callback);
+        case 'classAccuracy':
+            return getClassAccuracy(query, callback);
+        case 'classPoints':
+            return getClassPoints(query, callback);
+        case 'classRating':
+            return getClassRating(query, callback);
         default:
             return callback('notFound', null);
     }
@@ -150,7 +158,7 @@ var getRatingVsClass = function(query, callback) {
         var classRatingAverage = 0;
 
         for (i in students) {
-            if (students[i].ratings.length!==0) {
+            if (students[i].ratings.length !== 0) {
                 if (students[i].id === studentId) {
                     studentRating = getAverageRating(students[i].ratings);
                 } else {
@@ -183,4 +191,107 @@ if there are recards of the student, get the last recard and compute the deltas
 */
 exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
     db.addStudentAnalyticsWithDate(studentId, date, info, callback);
+}
+
+// Class statistics
+// get questions answered of the class
+var getClassAnswered = function(query, callback) {
+    users.getStudentsList(function(err, students) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!students) {
+            return  callback('no results', null);
+        }
+
+        var classAnswered = 0;
+        var classCount = 0;
+        var classAnsweredAverage = 0;
+
+        for (i in students) {
+            classAnswered += students[i].correctAttemptsCount;
+            classCount++;
+        }
+
+        classAnsweredAverage = Math.ceil(classAnswered / classCount);
+        return callback(null, [classAnsweredAverage]);
+    });
+}
+
+// get questions answered of the class
+var getClassAccuracy = function(query, callback) {
+    users.getStudentsList(function(err, students) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!students) {
+            return  callback('no results', null);
+        }
+
+        var classAccuracy = 0;
+        var classCount = 0;
+        var classAverageAccuracy = 0;
+
+        for (i in students) {
+            classAccuracy += parseFloat(students[i].totalAttemptsCount ? ((students[i].correctAttemptsCount / students[i].totalAttemptsCount)*100).toFixed(2) : 0);
+            classCount++;
+        }
+
+        classAverageAccuracy = parseFloat(classCount ? ((classAccuracy / classCount)).toFixed(2) : 0);
+        return callback(null, [classAverageAccuracy]);
+    });
+}
+
+// get points of the class
+var getClassPoints = function(query, callback) {
+    users.getStudentsList(function(err, students) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!students) {
+            return  callback('no results', null);
+        }
+
+        var classPoints = 0;
+        var classCount = 0;
+        var classPointsAverage = 0;
+
+        for (i in students) {
+            classPoints += students[i].points;
+            classCount++;
+        }
+
+        classPointsAverage = Math.ceil(classPoints / classCount);
+        return callback(null, [classPointsAverage]);
+    });
+}
+
+// get rating of the class
+var getClassRating = function(query, callback) {
+    users.getUsersList(function(err, students) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!students) {
+            return  callback('no results', null);
+        }
+
+        var classRating = 0;
+        var classCount = 0;
+        var classRatingAverage = 0;
+
+        for (i in students) {
+            if (students[i].ratings.length !== 0) {
+                classRating += getAverageRating(students[i].ratings);
+                classCount++;
+            }
+        }
+
+        classRatingAverage = classRating ? Math.ceil(classRating / classCount) : 0;
+        return callback(null, [classRatingAverage]);
+    });
 }

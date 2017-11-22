@@ -18,80 +18,126 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var db = require('./db.js');
-var logger = require('./log.js').logger;
-var common = require('./common.js');
+const db = require('./db.js');
+const logger = require('./log.js');
+const common = require('./common.js');
+const questionValidator = require('./questionValidator.js');
+
+/*Preparing data on update/edit of a question */
+var questionUpdateParser = function(question) {
+    var updatedQuestion = question;
+
+    if ('visible' in question) {
+        updatedQuestion.visible = (question.visible === 'true');
+    }
+
+    if ('minpoints' in question) {
+        updatedQuestion.minpoints = parseInt(question.minpoints);
+    }
+
+    if ('maxpoints' in question) {
+        updatedQuestion.maxpoints = parseInt(question.maxpoints);
+    }
+
+    return updatedQuestion;
+}
+
+/*Prepare question data on first pass to DB*/
+var prepareQuestionData = function(question, callback) {
+    // prepare regular data
+    var currentDate = common.getDate();
+    var questionToAdd = {};
+
+    questionToAdd._id = common.getUUID();
+    questionToAdd.topic = question.topic;
+    questionToAdd.title = question.title;
+    questionToAdd.text = question.text;
+    questionToAdd.hint = question.hint;
+    questionToAdd.minpoints = parseInt(question.minpoints);
+    questionToAdd.maxpoints = parseInt(question.maxpoints);
+    questionToAdd.visible = (question.visible === 'true');
+    questionToAdd.correctAttempts = [];
+    questionToAdd.wrongAttempts = [];
+    questionToAdd.totalAttempts = [];
+    questionToAdd.correctAttemptsCount = 0;
+    questionToAdd.wrongAttemptsCount = 0;
+    questionToAdd.totalAttemptsCount = 0;
+    questionToAdd.ctime = currentDate;
+    questionToAdd.mtime = currentDate;
+    questionToAdd.ratings = [];
+    questionToAdd.comments = [];
+
+    //Add specific attributes by Type
+    switch (question.type) {
+        case common.questionTypes.REGULAR.value:
+            questionToAdd.type = common.questionTypes.REGULAR.value;
+            questionToAdd.answer = question.answer;
+            break;
+
+        case common.questionTypes.MULTIPLECHOICE.value:
+            questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
+            questionToAdd.choices = question.choices;
+            questionToAdd.answer = question.answer;
+            break;
+
+        case common.questionTypes.TRUEFALSE.value:
+            questionToAdd.type = common.questionTypes.TRUEFALSE.value;
+            questionToAdd.answer = question.answer;
+            break;
+
+        case common.questionTypes.MATCHING.value:
+            questionToAdd.type = common.questionTypes.MATCHING.value;
+            questionToAdd.leftSide = question.leftSide;
+            questionToAdd.rightSide = question.rightSide;
+            break;
+
+        case common.questionTypes.CHOOSEALL.value:
+            questionToAdd.type = common.questionTypes.CHOOSEALL.value;
+            questionToAdd.choices = question.choices;
+            questionToAdd.answer = question.answer;
+            break;
+
+        case common.questionTypes.ORDERING.value:
+            questionToAdd.type = common.questionTypes.ORDERING.value;
+            questionToAdd.answer = question.answer;
+            break;
+
+        default:
+            return callback({status:400, msg:'Type of Question is Undefined'}, null)
+    }
+
+    return callback(null, questionToAdd);
+}
 
 /*
 * Insert a new regular question into the database.
 * The question object passed to the function should have
-* the text, topic, type, answer, points and hint set.
+* the text, topic, type, answer, minpoints, maxpoints and hint set.
 */
-exports.addQuestionByType = function(qType, question, callback) {
-	var currentDate = new Date().toString();
-	var questionToAdd = {};
+exports.addQuestion = function(question, callback) {
+    prepareQuestionData(question, function(err, questionToAdd) {
+        if(err) {
+            return callback(err, null)
+        }
 
-	questionToAdd.topic = question.topic;
-	questionToAdd.title = question.title;
-	questionToAdd.text = question.text;
-	questionToAdd.answer = question.answer;
-	questionToAdd.hint = question.hint;
-	questionToAdd.points = parseInt(question.points);
-	questionToAdd.visible = (question.visible === 'true');
-	questionToAdd.attempted = [];
-	questionToAdd.answered = [];
-	questionToAdd.attempts = [];
-	questionToAdd.ctime = currentDate;
-	questionToAdd.mtime = currentDate;
-	questionToAdd.ratings = [];
+        // validate constant question attributes
+        result = questionValidator.questionCreationValidation(questionToAdd);
+        if (result.success) {
+            db.addQuestion(questionToAdd, function (err, questionId) {
+                if (err) {
+                    return callback(err, null);
+                }
 
-	switch (question.type) {
-		case common.questionTypes.REGULAR.value:
-			questionToAdd.type = common.questionTypes.REGULAR.value;
-			break;
+                common.mkdir(common.fsTree.QUESTIONS, questionToAdd._id, function (err, result) {
+                    logger.log(common.formatString('Creating question directory: {0} {1}', [questionToAdd._id, err ? err : result]));
+                });
 
-		case common.questionTypes.MULTIPLECHOICE.value:
-			questionToAdd.type = common.questionTypes.MULTIPLECHOICE.value;
-			questionToAdd.choices = question.choices ? question.choices : [];
-			break;
-
-		case common.questionTypes.TRUEFALSE.value:
-			questionToAdd.type = common.questionTypes.TRUEFALSE.value;
-			questionToAdd.choices = question.choices ? question.choices : [];
-			break;
-
-		default:
-			return callback({status:400, msg:'Type of Question is Undefined'}, null)
-	}
-
-	// validate question by its type
-	var result = validateQuestionByType(questionToAdd, questionToAdd.type);
-	if (result !== null){
-		return callback({status:400, msg:result}, null)
-	}
-
-	db.addQuestion(questionToAdd, callback);
-}
-
-/*
-* Fetch amount questions from the database, using findType to
-* determine how to select and sort them.
-*
-* findType is laid out as follows:
-*
-* SORTING
-* The first bit that matches is the sort criterion. If none match, don't sort.
-* 0th bit: default sort
-* 1st bit: randomly shuffle
-* 2nd bit: sort by topic
-* 3rd bit: sort by points
-*
-* QUERYING
-* 4th bit: if 1, allow questions that have already been answered by user.
-* 5th bit: if 1, only show those questions that have been answered (with bit 4).
-*/
-exports.getQuestionsList = function(callback) {
-	db.getQuestionsList(callback);
+                return callback(null, questionId);
+            });
+        } else{
+            return callback({status:400,msg:result.msg}, null)
+        }
+    })
 }
 
 /* Sort questions by the given sort type. */
@@ -99,75 +145,38 @@ exports.sortQuestions = function(qs, type, callback) {
     db.sortQuestions(qs, type, callback);
 }
 
-
 /* Replace a question in the database with the provided question object. */
 exports.updateQuestionById = function(questionId, info, callback) {
-	updateQuestionById(questionId, info, callback);
+    updateQuestionById(questionId, info, callback);
 }
 
-var updateQuestionById = function(questionId, info, callback) {
-	updateQuestionByType(questionId,info,callback);
-}
+var updateQuestionById = function(qId, infoToUpdate, callback) {
+    // Get Type of question and validate it
+    lookupQuestionById(qId, function(err, question) {
+        if(err) {
+            return callback({status:500, msg:err},null);
+        }
+        infoToUpdate = questionUpdateParser(infoToUpdate);
 
-var updateQuestionByType = function(qId, infoToUpdate, callback){
-	// Get Type of question and validate it
-	db.lookupQuestionById(qId, function(err, question){
-		if(err){
-			return callback({status:500, msg:err},null);
-		}
-
-		// validate question by its type
-		var result = validateQuestionByType(infoToUpdate, question.type);
-		if (result !== null){
-			return callback({status:400, msg:result}, null)
-		}
-		db.updateQuestionById(qId, infoToUpdate, callback);
-	});
-}
-
-var validateQuestionByType = function(question, type){
-	var result = null;
-	switch (type) {
-		case common.questionTypes.REGULAR.value:
-			break;
-
-		case common.questionTypes.MULTIPLECHOICE.value:
-			result = multipleChoiceValidator(question);
-			break;
-
-		case common.questionTypes.TRUEFALSE.value:
-			result = trueAndFalseValidator(question);
-			break;
-
-		default:
-			break;
-	}
-	return result;
-}
-
-var multipleChoiceValidator = function(question){
-	if (question.choices && question.choices.length < 2){
-		return 'Need two or more options for Multiple Choice Question';
-	}
-	return null;
-}
-
-var trueAndFalseValidator = function(question){
-	if (question.choices && question.choices.length !== 2){
-		return 'True and False can only have 2 options!';
-	}
-	return null;
+        // validate each field that will be updated
+        var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
+        if (result.success) {
+            db.updateQuestionById(qId, infoToUpdate, callback);
+        } else {
+            return callback({status:400, msg:result.msg}, null)
+        }
+    });
 }
 
 /* Remove the question with ID qid from the database. */
 exports.deleteQuestion = function(questionId, callback) {
-    questions.remove({id: questionId}, function(err, res) {
+    questions.remove({_id: questionId}, function(err, res) {
         if (err) {
             logger.error(err);
             return callback(err, null);
-		}
+        }
 
-        logger.info('Question %d deleted from database.', questionId);
+        logger.log(common.formatString('Question {0} deleted from database.', [questionId]));
         return callback(null, 'success');
     });
 }
@@ -177,48 +186,384 @@ exports.lookupQuestionById = function(questionId, callback) {
     lookupQuestionById(questionId, callback);
 }
 
+// lookup question in database
 var lookupQuestionById = function(questionId, callback) {
-	db.lookupQuestionById(questionId, callback);
-}
-
-/*
-* Check if the provided answer matches the answer in the question object.
-* Update the question object in the database and call the callback function
-* with the result of the comparison and the new question object.
-*/
-exports.checkAnswer = function(questionId, user, answer, callback) {
-    logger.info('User %s attempted to answer question %d with "%s"', user.id, questionId, answer);
-	var userType = user.type;
-	var userId = user.id;
-
-	lookupQuestionById(questionId, function(err, question){
-		if(err || !question){
-			return callback('error', null);
-		}
-
-		var value = (answer === question.answer);
-
-		if (userType === common.userTypes.ADMIN) {
-			return callback(null, value);
-		}
-
-		db.updateStudentById(
-			userId,
-			{ questionId:questionId, correct:value, points:question.points, attempt:answer },
-			function(err, res){
-				updateQuestionById(
-					questionId,
-					{ userId:userId, correct:value, attempt:answer },
-					function(err, res) {
-						return callback(err, {correct: value, points: question.points});
-					}
-				);
-			}
-		);
-	});
+    db.lookupQuestion({_id: questionId}, callback);
 }
 
 // adding rating to question collection
 exports.submitRating = function (questionId, userId, rating, callback) {
-	db.updateQuestionById(questionId, {userId: userId, rating: rating}, callback);
+    var currentDate = common.getDate();
+    var query = {_id: questionId};
+    var update = {};
+
+    update.$push = {};
+    update.$push.ratings = {
+        userId: userId,
+        date: currentDate,
+        rating: rating
+    }
+
+    db.updateQuestionByQuery(query, update, function (err,result) {
+        return callback(err, result);
+    });
+}
+
+// get all questions list
+exports.getAllQuestionsList = function(callback) {
+    db.getQuestionsList({}, {number: 1}, callback);
+}
+
+// submit answer
+exports.submitAnswer = function(questionId, userId, correct, points, answer, callback) {
+    var currentDate = common.getDate();
+    var query = {_id: questionId};
+    var update = {};
+
+    update.$push = {};
+    update.$inc = {};
+
+    query['correctAttempts.userId'] = { $ne : userId };
+    if (correct) {
+        update.$inc.correctAttemptsCount = 1;
+        update.$push.correctAttempts = {
+            userId : userId,
+            points: points,
+            answer: answer,
+            date : currentDate
+        };
+    } else {
+        update.$inc.wrongAttemptsCount = 1;
+        update.$push.wrongAttempts = {
+            userId : userId,
+            attemp: answer,
+            date : currentDate
+        };
+    }
+    update.$inc.totalAttemptsCount = 1;
+    update.$push.totalAttempts = {
+        userId : userId,
+        attemp: answer,
+        date : currentDate
+    };
+
+    db.updateQuestionByQuery(query, update, function (err,result) {
+        return callback(err, result);
+    });
+}
+
+// verify answer based on type
+exports.verifyAnswer = function(question, answer) {
+    if (answer) {
+        switch (question.type) {
+            case common.questionTypes.MATCHING.value:
+                return verifyMatchingQuestionAnswer(question,answer);
+            case common.questionTypes.CHOOSEALL.value:
+                return verifyChooseAllQuestionAnswer(question,answer);
+            case common.questionTypes.ORDERING.value:
+                return verifyOrderingQuestionAnswer(question,answer);
+            default:
+                return (answer === question.answer);
+        }
+    }
+    return false;
+}
+
+var verifyChooseAllQuestionAnswer = function(question,answer) {
+    if (!questionValidator.validateAttributeType(answer,'answer','CHOOSEALL') ||
+        !questionValidator.validateArrayObject(answer,'String')) {
+        return false;
+    }
+    return question.answer.sort().join(',') === answer.sort().join(',');
+}
+
+var verifyMatchingQuestionAnswer = function(question, answer) {
+    if (!questionValidator.validateAttributeType(answer,'Array','DATATYPES') ||
+        !questionValidator.validateArrayObject(answer,'Array') ||
+        !questionValidator.validateArrayObject(answer[0],'String') ||
+        !questionValidator.validateArrayObject(answer[1],'String')) {
+        return false;
+    }
+
+    var ansLeftSide = answer[0];
+    var ansRightSide = answer[1];
+
+    if (ansLeftSide.length === question.leftSide.length) {
+        var checkIndexLeft;
+        var checkIndexRight;
+
+        for (i = 0; i < ansLeftSide.length; i++) {
+            checkIndexLeft = question.leftSide.indexOf(ansLeftSide[i]);
+            checkIndexRight = question.rightSide.indexOf(ansRightSide[i]);
+            if (checkIndexLeft !== checkIndexRight) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+// Check if answer submitted is correct for Ordering question Type
+var verifyOrderingQuestionAnswer = function(question,answer) {
+    if (!questionValidator.validateAttributeType(answer,'answer','ORDERING') ||
+        !questionValidator.validateArrayObject(answer,'String')) {
+        return false;
+    }
+    return question.answer.join(',') === answer.join(',');
+}
+// add comment to question by id with user and comment
+exports.addComment = function (questionId, userId, comment, callback) {
+    var currentDate = common.getDate();
+    var query = {_id: questionId};
+    var update = {};
+
+    update.$push = {};
+    update.$push.comments = {
+        _id: common.getUUID(),
+        date: currentDate,
+        userId: userId,
+        likes: [],
+        dislikes: [],
+        likesCount: 0,
+        dislikesCount: 0,
+        replies: [],
+        repliesCount: 0,
+        comment: comment
+    };
+
+    db.updateQuestionByQuery(query, update, function (err, result) {
+        return callback(err, result);
+    });
+}
+
+// add reply to comment by id with user and reply
+exports.addReply = function (commentId, userId, reply, callback) {
+    var currentDate = common.getDate();
+    var query = {'comments._id': commentId};
+    var update = {};
+
+    update.$push = {};
+    update.$inc = {};
+    update.$inc['comments.$.repliesCount'] = 1;
+    update.$push['comments.$.replies'] = {
+        _id: common.getUUID(),
+        date: currentDate,
+        userId: userId,
+        likes: [],
+        dislikes: [],
+        likesCount: 0,
+        dislikesCount: 0,
+        reply: reply
+    };
+
+    db.updateQuestionByQuery(query, update, function (err, result) {
+        return callback(err, result);
+    });
+}
+
+/*
+The way votes work:
+if the user already voted up, then if they vote up again the previous vote
+will get cancelled. Same for vote down.
+if the user already voted up, then vote down the previous vote gets removed
+and the new vote gets added.
+if they never voted before, just add the vote
+*/
+// vote on a comment
+exports.voteComment = function (commentId, vote, userId, callback) {
+    var query = {'comments._id': commentId};
+    var update = {};
+    var voteValue = -2;
+
+    db.lookupQuestion(query, function(err, question) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!question) {
+            return callback('Question not found based on commentId', null);
+        }
+
+        var comments = question.comments;
+        for (var i in comments) {
+            if (comments[i]._id === commentId) {
+                var userUpVoted = comments[i].likes.indexOf(userId) !== -1;
+                var userDownVoted = comments[i].dislikes.indexOf(userId) !== -1;
+                var updatedLikesCount = comments[i].likesCount;
+                var updatedDisLikesCount = comments[i].dislikesCount;
+
+                if (userUpVoted && userDownVoted) {
+                    return callback('User liked and disliked a comment at the sametime', null);
+                }
+
+                if (userUpVoted) {
+                    updatedLikesCount--;
+                    voteValue = 0;
+                    update.$pull = { 'comments.$.likes': userId };
+                    update.$inc = { 'comments.$.likesCount': -1 };
+
+                    if (vote === -1) {
+                        updatedDisLikesCount++;
+                        voteValue = -1;
+                        update.$push = { 'comments.$.dislikes': userId };
+                        update.$inc['comments.$.dislikesCount'] = 1;
+                    }
+                }
+
+                if (userDownVoted) {
+                    updatedDisLikesCount--;
+                    voteValue = 0;
+                    update.$pull = { 'comments.$.dislikes': userId };
+                    update.$inc = { 'comments.$.dislikesCount': -1 };
+
+                    if (vote === 1) {
+                        updatedLikesCount++;
+                        voteValue = 1;
+                        update.$push = { 'comments.$.likes': userId };
+                        update.$inc['comments.$.likesCount'] = 1;
+                    }
+                }
+
+                if (!userUpVoted && !userDownVoted) {
+                    if (vote === 1) {
+                        updatedLikesCount++;
+                        update.$push = { 'comments.$.likes': userId };
+                        update.$inc = { 'comments.$.likesCount': 1 };
+                    }
+
+                    if (vote === -1) {
+                        updatedDisLikesCount++;
+                        update.$push = { 'comments.$.dislikes': userId };
+                        update.$inc = { 'comments.$.dislikesCount': 1 };
+                    }
+
+                    voteValue = vote;
+                }
+
+                return db.updateQuestionByQuery(query, update, function (err, result) {
+                    return callback(err, {
+                        result: result,
+                        voteValue: voteValue,
+                        likesCount: updatedLikesCount,
+                        dislikesCount: updatedDisLikesCount
+                    });
+                });
+            }
+        }
+
+        return callback('Could not submit the vote on the comment', null);
+    });
+}
+
+// vote on a reply
+exports.voteReply = function (replyId, vote, userId, callback) {
+    var query = {'comments.replies._id': replyId};
+    var update = {};
+    var voteValue = -2;
+
+    db.lookupQuestion(query, function(err, question) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!question) {
+            return callback('Question not found based on replyId', null);
+        }
+
+        // TODO: optimize this using mongodb projections
+        var comments = question.comments;
+        for (var commentIndex in comments) {
+            var replies = comments[commentIndex].replies;
+            for (var replyIndex in replies) {
+                if (replies[replyIndex]._id === replyId) {
+                    var userUpVoted = replies[replyIndex].likes.indexOf(userId) !== -1;
+                    var userDownVoted = replies[replyIndex].dislikes.indexOf(userId) !== -1;
+                    var updatedLikesCount = replies[replyIndex].likesCount;
+                    var updatedDisLikesCount = replies[replyIndex].dislikesCount;
+                    var commonPrefix = 'comments.' + commentIndex + '.replies.' + replyIndex;
+
+                    if (userUpVoted && userDownVoted) {
+                        return callback('User liked and disliked a comment at the sametime', null);
+                    }
+
+                    if (userUpVoted) {
+                        updatedLikesCount--;
+                        voteValue = 0;
+                        var commentsreplieslikes = commonPrefix + '.likes';
+                        var commentsreplieslikesCount = commonPrefix + '.likesCount';
+                        update.$pull = {};
+                        update.$inc = {};
+                        update.$pull[commentsreplieslikes] = userId;
+                        update.$inc[commentsreplieslikesCount] = -1;
+
+                        if (vote === -1) {
+                            updatedDisLikesCount++;
+                            voteValue = -1;
+                            var commentsrepliesdislikes = commonPrefix + '.dislikes';
+                            var commentsrepliesdislikesCount = commonPrefix + '.dislikesCount';
+                            update.$push = {};
+                            update.$push[commentsrepliesdislikes] = userId;
+                            update.$inc[commentsrepliesdislikesCount] = 1;
+                        }
+                    }
+
+                    if (userDownVoted) {
+                        updatedDisLikesCount--;
+                        voteValue = 0;
+                        var commentsrepliesdislikes = commonPrefix + '.dislikes';
+                        var commentsrepliesdislikesCount = commonPrefix + '.dislikesCount';
+                        update.$pull = {};
+                        update.$inc = {};
+                        update.$pull[commentsrepliesdislikes] = userId;
+                        update.$inc[commentsrepliesdislikesCount] = -1;
+
+                        if (vote === 1) {
+                            updatedLikesCount++;
+                            voteValue = 1;
+                            var commentsreplieslikes = commonPrefix + '.likes';
+                            var commentsreplieslikesCount = commonPrefix + '.likesCount';
+                            update.$push = {};
+                            update.$push[commentsreplieslikes] = userId;
+                            update.$inc[commentsreplieslikesCount] = 1;
+                        }
+                    }
+
+                    if (!userUpVoted && !userDownVoted) {
+                        if (vote === 1) {
+                            updatedLikesCount++;
+                            var commentsreplieslikes = commonPrefix + '.likes';
+                            var commentsreplieslikesCount = commonPrefix + '.likesCount';
+                            update.$push = {};
+                            update.$inc = {};
+                            update.$push[commentsreplieslikes] = userId;
+                            update.$inc[commentsreplieslikesCount] = 1;
+                        }
+
+                        if (vote === -1) {
+                            updatedDisLikesCount++;
+                            var commentsrepliesdislikes = commonPrefix + '.dislikes';
+                            var commentsrepliesdislikesCount = commonPrefix + '.dislikesCount';
+                            update.$push = {};
+                            update.$inc = {};
+                            update.$push[commentsrepliesdislikes] = userId;
+                            update.$inc[commentsrepliesdislikesCount] = 1;
+                        }
+
+                        voteValue = vote;
+                    }
+
+                    return db.updateQuestionByQuery(query, update, function (err, result) {
+                        return callback(err, {
+                            result: result,
+                            voteValue: voteValue,
+                            likesCount: updatedLikesCount,
+                            dislikesCount: updatedDisLikesCount
+                        });
+                    });
+                }
+            }
+
+            return callback('Could not submit the vote on the reply', null);
+        }
+    });
 }

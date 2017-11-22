@@ -1,0 +1,19 @@
+li
+  .collapsible-header#aa(onclick="$(this).parent().toggleClass('active'); $('#generalB')[0].style.display = ($('#generalB')[0].style.display === 'block') ? 'none' : 'block'")
+    i.material-icons settings
+    | General Settings
+  .collapsible-body#generalB
+    .row
+      span Class available (if this is disabled, students will not be allowed to log in)
+      .switch
+        label
+          | Disabled
+          input(type='checkbox', id='classActive', name='classActive' , checked=generalActive)
+          span.lever
+          | Enabled
+    .row
+      label(for='leaderboardStudents') How many students to show in leaderboard:
+      br
+      .col.s12.m6
+        .input-field
+          input.form-control#leaderboardStudents(type='number', name='studentsOnLeaderboard', placeholder='Number to show'  min='3' value=generalLeaderboardLimit required)

@@ -18,22 +18,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var Db = require('mongodb').Db;
-var Server = require('mongodb').Server;
-var logger = require('./log.js').logger;
-var common = require('./common.js');
-var bcrypt = require('bcryptjs');
+const Db = require('mongodb').Db;
+const Server = require('mongodb').Server;
+const logger = require('./log.js');
+const common = require('./common.js');
+const bcrypt = require('bcryptjs');
 
-var DB_HOST = process.env.DB_HOST || 'localhost';
-var DB_PORT = process.env.DB_PORT || 27017;
-var DB_NAME = process.env.DB_NAME || 'quizzard';
+const DB_HOST = process.env.DB_HOST || 'localhost';
+const DB_PORT = process.env.DB_PORT || 27017;
+const DB_NAME = process.env.DB_NAME || 'quizzard';
 
-var db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
+const db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 
-var nextId = 0;
 var usersCollection;
 var questionsCollection;
 var analyticsCollection;
+var settingsCollection;
+
+var nextQuestionNumber = 0;
 
 /* Open a connection to the database. */
 exports.initialize = function(callback) {
@@ -43,13 +45,14 @@ exports.initialize = function(callback) {
             process.exit(1);
         }
 
-        logger.info('Connection to Quizzard database successful.');
+        logger.log('Connection to Quizzard database successful.');
         usersCollection = db.collection('users');
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
+        settingsCollection = db.collection('settings');
 
-        getNextQuestionId(function(){
-            logger.info('next question: %d', nextId);
+        getNextQuestionNumber(function() {
+            logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
             return callback();
         });
     });
@@ -66,35 +69,37 @@ exports.addAdmin = function(admin, callback){
 }
 
 var addUser = function(user, callback) {
-    usersCollection.findOne({'id': user.id}, function(err, obj) {
+    usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
-        } else if (obj) {
-            return callback('exists', null);
-        } else {
-            usersCollection.insert(user, function(err, res) {
-                return callback(err, res);
-            });
         }
+
+        if (obj) {
+            return callback('exists', null);
+        }
+
+        usersCollection.insert(user, function(err, res) {
+            return callback(err, user);
+        });
     });
 }
 
 /* Return an array of users in the database. */
 exports.getAdminsList = function(callback) {
-    getUsersList({type: common.userTypes.ADMIN}, {id: 1}, callback);
+    getUsersList({type: common.userTypes.ADMIN}, {username: 1}, callback);
 }
 
 exports.getStudentsList = function(callback) {
-    getUsersList({type: common.userTypes.STUDENT}, {id: 1}, callback);
+    getUsersList({type: common.userTypes.STUDENT}, {username: 1}, callback);
 }
 
 exports.getUsersList = function(callback) {
-    getUsersList({}, {id: 1}, callback);
+    getUsersList({}, {username: 1}, callback);
 }
 
 exports.getStudentsListWithStatus = function(status, callback) {
-    getUsersList({type: common.userTypes.STUDENT, active: status}, {id: 1}, callback);
+    getUsersList({type: common.userTypes.STUDENT, active: status}, {username: 1}, callback);
 }
 
 /* Return an array of users in the database, sorted by rank. */
@@ -114,18 +119,14 @@ exports.getStudentsListSorted = function(lim, callback){
             .limit(lim)
             .toArray(function(err, docs) {
         if (err) {
-            return callback(err, []);
-        }
-
-        for (s in docs) {
-            delete docs[s]._id;
+            return callback(err, null);
         }
 
         return callback(null, docs);
     });
 }
 
-exports.getUserById = function(userId, callback){
+exports.getUserById = function(userId, callback) {
     getUserById(userId, callback);
 }
 
@@ -134,18 +135,18 @@ exports.getUserById = function(userId, callback){
  * user type of null
  */
 exports.checkLogin = function(userId, pass, callback) {
-    usersCollection.findOne({id : userId}, function(err, obj) {
+    usersCollection.findOne({username : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
         }
 
         if (!obj) {
-            return callback('notExist', null);
+            return callback('userNotExist', null);
         }
 
         if (!obj.active) {
-            return callback('notActive', null);
+            return callback('userNotActive', null);
         }
 
         validatePassword(obj, pass, function(err, valid) {
@@ -153,7 +154,6 @@ exports.checkLogin = function(userId, pass, callback) {
                 return callback(err, null);
             }
             if (valid) {
-                delete obj._id;
                 delete obj.password;
                 return callback(null, obj);
             }
@@ -173,13 +173,28 @@ var validatePassword = function(userobj, pass, callback) {
 
 // cleanup the users collection
 exports.removeAllUsers = function(callback){
-    usersCollection.remove({}, function(err, obj) {
-        if (err) {
+    common.rmrf(common.fsTree.HOME, 'Users', function (err, result) {
+        if(err){
             logger.error(err);
             return callback(err, null);
         }
-        logger.info('All users have been removed');
-        return callback(null, obj);
+
+        common.mkdir(common.fsTree.HOME, 'Users', function (err, result) {
+            if(err){
+                logger.error(err);
+                return callback(err, null);
+            }
+
+            usersCollection.remove({}, function(err, obj) {
+                if (err) {
+                    logger.error(err);
+                    return callback(err, null);
+                }
+
+                logger.log('All users have been removed');
+                return callback(null, obj);
+            });
+        });
     });
 }
 
@@ -195,7 +210,7 @@ exports.getAdminById = function(adminId, callback) {
 }
 
 var getUserById = function(userId, callback){
-    usersCollection.findOne({id : userId}, function(err, obj) {
+    usersCollection.findOne({_id : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
@@ -220,7 +235,7 @@ exports.updateAdminById = function(userId, info, callback){
 
 var updateUserById = function(userId, info, callback){
     var currentDate = new Date().toString();
-    var query = { id : userId };
+    var query = { _id : userId };
     var update = {};
 
     update.$addToSet = {};
@@ -229,23 +244,27 @@ var updateUserById = function(userId, info, callback){
     update.$set = { mtime : currentDate };
     update.$push = {};
 
-    if (info.id) {
-        update.$set.id = info.id;
+    if ('username' in info) {
+        update.$set.username = info.username;
     }
 
-    if (info.fname) {
+    if ('fname' in info) {
         update.$set.fname = info.fname;
     }
 
-    if (info.lname) {
+    if ('lname' in info) {
         update.$set.lname = info.lname;
     }
 
-    if (info.email) {
+    if ('email' in info) {
         update.$set.email = info.email;
     }
 
-    if (info.rating) {
+    if ('points' in info && parseInt(info.points)) {
+        update.$set.points = parseInt(info.points);
+    }
+
+    if ('rating' in info && parseInt(info.rating)) {
         update.$push.ratings = {
             question: info.questionId,
             date: currentDate,
@@ -255,30 +274,6 @@ var updateUserById = function(userId, info, callback){
 
     if (typeof info.active !== 'undefined') {
         update.$set.active = info.active;
-    }
-
-    if (typeof info.correct !== 'undefined') {
-        query['correctAttempts.id'] = { $ne : info.questionId };
-        if (info.correct) {
-            update.$inc.points = info.points;
-            update.$inc.correctAttemptsCount = 1;
-            update.$push.correctAttempts = {
-                id : info.questionId,
-                points : info.points,
-                answer : info.attempt,
-                date : currentDate };
-        } else {
-            update.$inc.wrongAttemptsCount = 1;
-            update.$push.wrongAttempts = {
-                id : info.questionId,
-                attempt : info.attempt,
-                date : currentDate };
-        }
-        update.$inc.totalAttemptsCount = 1;
-        update.$push.totalAttempts = {
-            id : info.questionId,
-            attempt : info.attempt,
-            date : currentDate };
     }
 
     if (isEmptyObject(update.$addToSet)) {
@@ -311,28 +306,44 @@ var updateUserById = function(userId, info, callback){
             return callback(null, 'success');
         });
     } else {
-        bcrypt.hash(info.newPassword, 11, function(err, hash) {
+        update.$set.password = info.newPassword;
+        updateUserPassword(query, update, info.newPassword, callback);
+    }
+}
+
+exports.updateUserPassword = function(query, update, password, callback) {
+    updateUserPassword(query, update, password, callback);
+}
+
+var updateUserPassword = function(query, update, password, callback) {
+    bcrypt.hash(password, 11, function(err, hash) {
+        if (err) {
+            logger.error(err);
+            return callback(err, null);
+        }
+
+        if (update.$set && !isEmptyObject(update.$set)) {
+            update.$set.password = hash;
+        } else {
+            update.$set = {password: hash};
+        }
+
+        usersCollection.update(query, update, function(err, obj) {
             if (err) {
                 logger.error(err);
                 return callback(err, null);
             }
 
-            if (update.$set && !isEmptyObject(update.$set)) {
-                update.$set.password = hash;
-            } else {
-                update.$set = {password:hash};
-            }
-
-            usersCollection.update(query, update, function(err, obj) {
-                if (err) {
-                    logger.error(err);
-                    return callback(err, null);
-                }
-
-                return callback(null, 'success');
-            });
+            return callback(null, 'success');
         });
-    }
+    });
+}
+
+// update users collection directly by a query
+exports.updateUserByQuery = function (query, update, callback) {
+    usersCollection.update(query, update, function(err, obj) {
+        return callback(err, obj);
+    });
 }
 
 // check if json obejct is empty
@@ -347,137 +358,68 @@ var isEmptyObject = function(obj) {
 
 // Questions functions
 // Add QUESTION to questionsCollection in the database
-exports.addQuestion = function(question, callback){
-	question.id = ++nextId;
+exports.addQuestion = function(question, callback) {
+    question.number = ++nextQuestionNumber;
     questionsCollection.insert(question, function(err, res) {
-        if(err){
+        if(err) {
             logger.error(err);
             return callback({status:500, msg:err}, null);
         }
 
-        return callback(null, question.id);
+        return callback(null, question.number);
     });
 }
 
 // cleanup the users collection
-exports.removeAllQuestions = function(callback){
-    questionsCollection.remove({}, function(err, res) {
+exports.removeAllQuestions = function(callback) {
+    common.rmrf(common.fsTree.HOME, 'Questions', function (err, result) {
         if(err){
             logger.error(err);
             return callback(err, null);
         }
 
-        nextId = 0;
-        logger.info('All questions have been removed');
-        logger.info('next question: %d', nextId);
-        return callback(null, res);
+        common.mkdir(common.fsTree.HOME, 'Questions', function (err, result) {
+            if(err){
+                logger.error(err);
+                return callback(err, null);
+            }
+
+            questionsCollection.remove({}, function(err, res) {
+                if(err){
+                    logger.error(err);
+                    return callback(err, null);
+                }
+
+                nextQuestionNumber = 0;
+                logger.log('All questions have been removed');
+                logger.log(common.formatString('next question: {0}', [nextQuestionNumber]));
+                return callback(null, res);
+            });
+        });
     });
 }
 
-// getNextQuestionId
-var getNextQuestionId = function(callback){
-  	questionsCollection.find().sort({id: -1}).limit(1).toArray(function(err, docs) {
+// get next question number
+var getNextQuestionNumber = function(callback) {
+      questionsCollection.find().sort({number: -1}).limit(1).toArray(function(err, docs) {
         if (err) {
             logger.error(err);
             process.exit(1);
         }
 
-        nextId = docs[0] ? docs[0].id : 0;
-        return callback(nextId);
+        nextQuestionNumber = docs[0] ? docs[0].number : 0;
+        return callback(nextQuestionNumber);
     });
 }
 
-exports.getQuestionsListByUser = function(request, callback) {
-    var questionsQuery = {};
-    var user = request.user;
-    var questionsStatus = request.questionsStatus;
-
-    if (!user) {
-        return callback('No user object', null);
-    }
-
-    if (user.type == common.userTypes.ADMIN) {
-        questionsCollection.find(questionsQuery).sort({id: 1}).toArray(function(err, docs) {
-            if (err) {
-                return callback(err, null);
-            }
-
-            for (q in docs) {
-                docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-                docs[q].attemptedCount = docs[q].attempted.length;
-                docs[q].answeredCount = docs[q].answered.length;
-                docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
-                delete docs[q]._id;
-            }
-
-            return callback(null, docs);
-        });
-    } else if (user.type == common.userTypes.STUDENT) {
-        questionsQuery.visible = true;
-
-        getUserById(user.id, function(err, requiredUser) {
-            if (err) {
-                return callback(err, null);
-            }
-
-            if (!requiredUser) {
-                return callback('user does not exist', null);
-            }
-
-            questionsCollection.find(questionsQuery).sort({id: 1}).toArray(function(err, docs) {
-                if (err) {
-                    return callback(err, null);
-                }
-
-                var compareList = getListFromJSONList(requiredUser.correctAttempts);
-                var answeredList = [];
-                var unansweredList = [];
-
-                for (q in docs) {
-                    docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-                    docs[q].attemptedCount = docs[q].attempted.length;
-                    docs[q].answeredCount = docs[q].answered.length;
-                    docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
-                    delete docs[q]._id;
-
-                    if (compareList.indexOf(docs[q].id) === -1) {
-                        unansweredList.push(docs[q]);
-                    } else {
-                        answeredList.push(docs[q]);
-                    }
-                }
-
-                var returnList = (questionsStatus === 'answered') ? answeredList : unansweredList;
-                return callback(null, returnList);
-            });
-        });
-    }
-}
-
-var getListFromJSONList = function (JSONList) {
-    var list = [];
-    for (i in JSONList){
-        list.push(JSONList[i].id);
-    }
-    return list;
-}
-
-exports.getQuestionsList = function(callback) {
-    getQuestions({}, {id:1}, callback);
-}
-
-var getQuestions = function(findQuery, sortQuery, callback){
+exports.getQuestionsList = function(findQuery, sortQuery, callback) {
     questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
             return callback(err, null);
         }
 
         for (q in docs) {
-            docs[q].firstAnswer = docs[q].answered[0] ? docs[q].answered[0] : 'No One';
-            docs[q].attemptedCount = docs[q].attempted.length;
-            docs[q].answeredCount = docs[q].answered.length;
-            docs[q].totalCount = docs[q].attempted.length + docs[q].answered.length;
-            delete docs[q]._id;
+            docs[q].firstAnswer = docs[q].correctAttempts[0] ? docs[q].correctAttempts[0].id : 'No One';
         }
 
         return callback(null, docs);
@@ -523,8 +465,8 @@ exports.sortQuestions = function(questions, type, callback) {
 }
 
 /* Extract a question object from the database using its ID. */
-exports.lookupQuestionById = function(questionId, callback) {
-    questionsCollection.findOne({id: questionId}, function(err, question) {
+exports.lookupQuestion = function(findQuery, callback) {
+    questionsCollection.findOne(findQuery, function(err, question) {
         if (err) {
             return callback(err, null);
         }
@@ -534,75 +476,65 @@ exports.lookupQuestionById = function(questionId, callback) {
         }
 
         /* necessary for later database update */
-        question.firstAnswer = question.answered[0] ? question.answered[0] : 'No One';
-        question.attemptedCount = question.attempted.length;
-        question.answeredCount = question.answered.length;
-        question.totalCount = question.attempted.length + question.answered.length;
-        delete question._id;
+        question.firstAnswer = question.correctAttempts[0] ? question.correctAttempts[0].id : 'No One';
         return callback(null, question);
     });
 }
 
 // update a question record based on its id
-exports.updateQuestionById = function(questionId, request, callback){
+exports.updateQuestionById = function(questionId, request, callback) {
     var currentDate = new Date().toString();
-    var query = { id:questionId };
+    var query = {_id: questionId};
     var update = {};
 
     update.$addToSet = {};
     update.$push = {};
     update.$pull = {};
     update.$set = {};
+    update.$inc = {};
 
-    if (request.topic) {
+    if ('topic' in request) {
       update.$set.topic = request.topic;
     }
 
-    if (request.title) {
+    if ('title' in request) {
       update.$set.title = request.title;
     }
 
-    if (request.text) {
+    if ('text' in request) {
       update.$set.text = request.text;
     }
 
-    if (request.answer) {
+    if ('answer' in request) {
       update.$set.answer = request.answer;
     }
 
-    if (request.hint) {
+    if ('hint' in request) {
       update.$set.hint = request.hint;
     }
 
-    if (request.points) {
-      update.$set.points = request.points;
+    if ('minpoints' in request) {
+      update.$set.minpoints = request.minpoints;
     }
 
-    if (request.choices) {
+    if ('maxpoints' in request) {
+      update.$set.maxpoints = request.maxpoints;
+    }
+
+    if ('choices' in request) {
       update.$set.choices = request.choices;
     }
 
-    if (request.rating) {
-        update.$push.ratings = {
-            user: request.userId,
-            date: currentDate,
-            rating: request.rating
-        }
-    }
-    
-    if (request.visible) {
-        update.$set.visible = (request.visible === 'true');
+    if ('leftSide' in request) {
+      update.$set.leftSide = request.leftSide;
     }
 
-    if (typeof request.correct !== 'undefined') {
-        if (request.correct) {
-            update.$addToSet.answered = request.userId;
-            update.$pull.attempted = { $in : [request.userId] };
-        } else {
-            update.$addToSet.attempted = request.userId;
-            update.$push.attempts = request.attempt;
-            update.$pull.answered = { $in : [request.userId] };//to be removed
-        }
+    if ('rightSide' in request) {
+      update.$set.rightSide = request.rightSide;
+    }
+
+    if ('visible' in request) {
+        update.$set.visible = request.visible;
     }
 
     if (isEmptyObject(update.$addToSet)) {
@@ -621,9 +553,12 @@ exports.updateQuestionById = function(questionId, request, callback){
         delete update.$pull;
     }
 
+    if (isEmptyObject(update.$inc)) {
+        delete update.$inc;
+    }
+
     questionsCollection.update(query, update, function(err, info) {
         if (err) {
-            logger.error({status:500, msg:err});
             return callback(err, null);
         }
 
@@ -631,12 +566,90 @@ exports.updateQuestionById = function(questionId, request, callback){
     });
 }
 
-// update the analytics collection by pulling the latest changes to the users collection
-var updateAnalytics = function() {
-    analyticsCollection.insert({name:'hi'}, function(err, info){
-        console.log(err);
-        console.log(info);
-        return;
+// update users collection directly by a query
+exports.updateQuestionByQuery = function (query, update, callback) {
+    questionsCollection.update(query, update, function(err, obj) {
+        return callback(err, obj);
+    });
+}
+
+/**
+ * reset all settings to default
+ *
+ * @param {function} callback
+ */
+exports.resetAllSettings = function (callback) {
+    resetAllSettings(callback);
+}
+
+/**
+ * reset all settings to default
+ *
+ * @param {function} callback
+ */
+var resetAllSettings = function (callback) {
+    settingsCollection.remove({}, function (err, result) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var defaultSettings = {};
+        defaultSettings['general'] = {};
+        defaultSettings['student'] = {};
+        defaultSettings['question'] = {};
+        defaultSettings['discussionboard'] = {};
+
+        defaultSettings.general['active'] = true;
+        defaultSettings.general['leaderboardLimit'] = 3;
+
+        defaultSettings.student['editNames'] = true;
+        defaultSettings.student['editEmail'] = true;
+        defaultSettings.student['editPassword'] = true;
+
+        defaultSettings.question['defaultTopic'] = null;
+        defaultSettings.question['defaultMinPoints'] = 10;
+        defaultSettings.question['defaultMaxPoints'] = 100;
+        defaultSettings.question['timeoutEnabled'] = true;
+        defaultSettings.question['timeoutPeriod'] = 1;
+
+        defaultSettings.discussionboard['visibility'] = common.discussionboardVisibility.ALL;
+        defaultSettings.discussionboard['dislikesEnabled'] = true;
+
+        settingsCollection.insert(defaultSettings, function (err, obj) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            return callback(null, 'ok');
+        });
+    });
+}
+
+/**
+ * get all settings objects from the collection
+ *
+ * @param {function} callback
+ */
+exports.getAllSettings = function (callback) {
+    getAllSettings(callback);
+}
+
+/**
+ * get all settings objects from the collection
+ *
+ * @param {function} callback
+ */
+var getAllSettings = function (callback) {
+    settingsCollection.findOne({}, function (err, obj) {
+        if (err) {
+            return callback (err, null);
+        }
+
+        if (!obj) {
+            return callback ('No settings object found', null);
+        }
+
+        return callback (null, obj);
     });
 }
 
@@ -683,4 +696,15 @@ exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback)
             });
         }
     });
+}
+
+/**
+ * update settings object
+ *
+ * @param {object} findQuery
+ * @param {object} updateQuery
+ * @param {function} callback
+ */
+exports.updateSettings = function (findQuery, updateQuery, callback) {
+    settingsCollection.update(findQuery, updateQuery, callback);
 }

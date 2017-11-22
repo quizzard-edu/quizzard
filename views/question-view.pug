@@ -1,0 +1,66 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/question.css')
+  link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/css/discussion.css')
+  link(rel='stylesheet' href='/lib/atwho/jquery.atwho.min.css')
+  link(rel='stylesheet' href='/css/rating.css')
+
+block title
+  title Quizzard - Question
+
+block content
+  include navbar
+  br
+  .container
+    .row.center
+      .col.s12.m8
+        .card
+          .card-image
+            a.btn-floating.halfway-fab.waves-effect.waves-light.red.left(href='/')
+              i.material-icons arrow_back
+          .card-content
+            h4.qtext #{question.title}
+          .card-action
+            h5.qtext !{question.text}
+            | !{getQuestionForm()}
+        if answered
+          .success
+            h4.text-center#success-header Learn more
+            p#success-message #{question.successMessage}
+
+      .col.s12.m4
+        .card
+          .card-content
+            h4.sidebar-item#topic #{question.topic}
+          .card-action
+            span.sidebar-item This question has been attempted&nbsp
+            if answered || isAdmin()
+              span.sidebar-item #{question.totalAttemptsCount}
+            else
+              span.sidebar-item#attempts #{question.totalAttemptsCount}
+            span.sidebar-item &nbsptimes.
+            if question.correctAttemptsCount === 0
+              p.sidebar-item#first-answer You could be the first person to correctly answer this question!
+            else
+              p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
+            h4.sidebar-item#hint.hidden Hint: #{question.hint}
+          if answered && !hasQrating && !isAdmin()
+            .card-action
+              h5.sidebar-item.hide-on-med-down#rating Please rate this question's difficulty:
+              include rating
+              button.btn.btn-lg.btn-primary.btn-block#rateQuestion Rate
+
+      .row
+        .col.s12
+            #discussion
+
+  include modal-alert
+
+block scripts
+  script(src='/js/common.js')
+  script(src='/js/question.js')
+  script(src='/js/navbar.js')
+  script(src='/js/admin.js')
+  script(src='/js/rating.js')

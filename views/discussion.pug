@@ -1,0 +1,68 @@
+h3.center Discussion Board
+each itemComment, indexReply in comments
+  .row.comment
+    .col.s12
+      .row.identification-section
+        i.small.material-icons.profile-picture account_circle
+        span.name=getFirstLastName(itemComment['userId'])
+        span.likes-section
+          i.small.material-icons.reply-picture.cursor-pointer(onclick='repliesSection("#viewReplies_" + "'+itemComment['_id']+'")') reply
+          span.likes-number #{itemComment['repliesCount']}
+          span &nbsp&nbsp
+          i.small.material-icons.thumb-up-picture.cursor-pointer(id='like_' + itemComment['_id'], onclick='voteClickComment($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)', class=isLiked(itemComment['likes']) ? 'liked' : '') thumb_up
+          span.likes-number(id='numLikes_' + itemComment['_id']) #{itemComment['likesCount']}
+          span &nbsp&nbsp
+          if isDislikesEnabled
+            i.small.material-icons.thumb-down-picture.cursor-pointer(id='dislike_' + itemComment['_id'], onclick='voteClickComment($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)', class=isDisliked(itemComment['dislikes']) ? 'disliked' : '') thumb_down
+            span.likes-number(id='numDislikes_' + itemComment['_id']) #{itemComment['dislikesCount']}
+        br
+        span.date=itemComment['date']
+
+      hr.divider
+      .row
+        p.comment-text !{highlightMentionedUser(itemComment['comment'])}
+    .col.s12
+      .row
+        i.medium.material-icons.cursor-pointer.view-replies-button(id='viewReplies_' + itemComment['_id'], onclick='repliesSection("#viewReplies_" + "'+itemComment['_id']+'")') expand_more
+
+    .hidden.animated(id='replies_' + itemComment['_id'])
+      each itemReply, indexReply in itemComment['replies']
+        .col.s11.reply
+          .row.identification-section
+            i.small.material-icons.profile-picture account_circle
+            span.name=getFirstLastName(itemReply['userId'])
+            span.likes-section
+              i.small.material-icons.thumb-up-picture.cursor-pointer(id='like_' + itemReply['_id'], onclick='voteClickReply($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)', class=isLiked(itemReply['likes']) ? 'liked' : '') thumb_up
+              span.likes-number(id='numLikes_' + itemReply['_id']) #{itemReply['likesCount']}
+              span &nbsp&nbsp
+              if isDislikesEnabled
+                i.small.material-icons.thumb-down-picture.cursor-pointer(id='dislike_' + itemReply['_id'], onclick='voteClickReply($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)', class=isDisliked(itemReply['dislikes']) ? 'disliked' : '') thumb_down
+                span.likes-number(id='numDislikes_' + itemReply['_id']) #{itemReply['dislikesCount']}
+            br
+            span.date=itemReply['date']
+          hr.divider
+          .row
+            p.comment-text(id='reply_' + itemReply['_id']) !{highlightMentionedUser(itemReply['reply'])}
+      .col.s12.reply
+        h5 Add a Reply:
+        .row.identification-section
+          i.small.material-icons.profile-picture account_circle
+          span.name #{getCurrentUser()}
+        .row
+          textarea.comment-box(id='replyTo_' + itemComment['_id'], placeholder='Enter a Reply...', spellcheck='true')
+          .button.comment-reply-button(class='btn btn-lg btn-primary', onclick='reply("'+itemComment['_id']+'")') Reply
+
+.row.comment
+  .col.s12
+    h5 Add a comment:
+    .row.identification-section
+      i.small.material-icons.profile-picture account_circle
+      span.name #{getCurrentUser()}
+    .row
+      textarea.comment-box#commentBox(placeholder='Enter a comment...', spellcheck='true')
+      .button.comment-reply-button(class='btn btn-lg btn-primary', onclick='comment()') Comment
+
+block scripts
+  script(src='/lib/caret/jquery.caret.min.js')
+  script(src='/lib/atwho/jquery.atwho.min.js')
+  script(src='/js/discussion.js')

@@ -1,3 +1,6 @@
+block styles
+  link(rel='stylesheet' href='/css/rating.css')
+
 .row
   .col.s12
     .card.center
@@ -9,7 +12,7 @@
         h6 Create a new question
       .card-action
         .row
-          .input-field.col.s12
+          .input-field.s12
             select#qType(name='qType' )
               option(selected disabled) -- Select Question Type --
               each type, i in questionType
@@ -26,10 +29,19 @@
                 input.form-control#qtitle(type='text' name='title' placeholder='Enter title' required autofocus )
               .form-group
                 label(for='qtopic') Topic
-                input.form-control#qtopic(type='text' name='topic' placeholder='Enter topic' required)
+                .input-field
+                  if defaultTopic
+                    input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' value=defaultTopic required)
+                  else
+                    input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='Enter Topic' autocomplete='off' required)
               .form-group
-                label(for='qpoints') Points
-                input.form-control#qpoints(type='number' name='points' placeholder='Enter points'  min="0" required)
+                .row
+                  .col.s6
+                    label(for='qminpoints') Minimum Points
+                    input.form-control#qminpoints(type='number' name='minpoints' placeholder='Min points'  min='0' value=defaultMinPoints required)
+                  .col.s6
+                    label(for='qmaxpoints') Maximum Points
+                    input.form-control#qmaxpoints(type='number' name='maxpoints' placeholder='Max points'  min='0' value=defaultMaxPoints required)
               .form-group
                 label(for='qhint') Hint
                 input.form-control#qhint(type='text' name='hint' placeholder='Enter Hint')

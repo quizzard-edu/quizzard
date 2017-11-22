@@ -1,11 +1,5 @@
-/* This is the index for referencing colours for the snackbars */
-var colours = Object.freeze({
-    SUCCESS: 'green',
-    FAIL: 'red darken-4',
-    WARNING: 'orange accent-4',
-});
-
 var usersTableActive = true;
+var autocompleteTopics;
 
 $(function(){
     /* show the account table by default */
@@ -22,7 +16,6 @@ var toggleUsersSwitch = function() {
 
 /* Display the table of user accounts. */
 var displayAccountsTable = function() {
-    //var status = $('#userStatusSwitch').is(':checked');
     $.ajax({
         type: 'GET',
         url: '/studentlist?active=' + usersTableActive,
@@ -36,33 +29,201 @@ var displayAccountsTable = function() {
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
 
-            $('#account-creation-button').click(function(){
+            $('#account-creation-button').click(function() {
                 displayAccountForm();
+            });
+
+            $('#account-export-button').click(function() {
+                displayExportAccountsForm();
+            });
+
+            $('#account-import-button').click(function() {
+                displayImportAccountsForm();
             });
 
             $('#usersSwitch').prop('checked', usersTableActive);
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
 
+/* display Export Accounts Form */
+var displayExportAccountsForm = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/accountsExportForm',
+        success: function(data) {
+            $('#admin-content').html(data);
+
+            $('#account-export-back-button').click(function() {
+                displayAccountsTable();
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
+        }
+    });
+}
+
+/* display Import Accounts Form */
+var displayImportAccountsForm = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/accountsImportForm',
+        success: function(data) {
+            $('#admin-content').html(data);
+
+            $('#account-import-back-button').click(function() {
+                displayAccountsTable();
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
+        }
+    });
+}
+
+/* submit export form */
+var submitExportForm = function() {
+    var selected = [];
+    $('div#exportForm input[type=checkbox]').each(function() {
+        if ($(this).is(':checked')) {
+            selected.push($(this).attr('id').substring(3));
+        }
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: '/accountsExportFile',
+        data: {studentsList: selected},
+        success: function(data) {
+            $('#admin-content').html(data);
+
+            $('#account-export-complete-back-button').click(function() {
+                displayAccountsTable();
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
+        }
+    });
+}
+
+/* Upload a file of users to the server. */
+var submitImportForm = function() {
+    var files = $('#import-form-input').get(0).files;
+    var formData = new FormData();
+
+    if (files.length !== 1) {
+        warningSnackbar('You can only import one file!');
+        return;
+    }
+
+    formData.append('usercsv', files[0]);
+
+    $.ajax({
+        type: 'POST',
+        url: '/accountsImportFile',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(data) {
+            successSnackbar('File uploaded successfully');
+            $('#admin-content').html(data);
+
+            $('#account-import-list-back-button').click(function() {
+                displayAccountsTable();
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Upload failed');
+            }
+        }
+    });
+}
+
+/* submit export form */
+var submitImportList = function() {
+    var selected = [];
+    $('#importList').find('tr').each(function (i, el) {
+        if (i === 0) {
+            return;
+        }
+
+        var $tds = $(this).find('td');
+        var isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked');
+        var userObj = {
+            username: $tds.eq(1).text(),            
+            fname: $tds.eq(2).text(),
+            lname: $tds.eq(3).text(),
+            email: $tds.eq(4).text()
+        };
+
+        if (isSelected) {
+            selected.push(userObj);
+        }
+    });
+
+    $('#admin-content').html(loadingAnimation);
+
+    $.ajax({
+        type: 'POST',
+        url: '/accountsImportList',
+        data: {selectedList: selected},
+        success: function(data) {
+            successSnackbar('Students\' list uploaded successfully');
+            $('#admin-content').html(data);
+
+            $('#account-import-complete-back-button').click(function() {
+                displayAccountsTable();
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Importing failed');
+                displayAccountsTable();                
+            }
+        }
+    });
+}
+
+
 /* Add click events to the buttons in the account table. */
 var addAccountsTableEvents = function() {
     $('.deactivate-button').click(function(evt) {
         /* cut off the delete- */
-        deactivateUser(this.id.substring(11));
+        deactivateUser(this.id.substring(11), this.name);
     });
     $('.activate-button').click(function(evt) {
         /* cut off the delete- */
-        activateUser(this.id.substring(9));
+        activateUser(this.id.substring(9), this.name);
     });
     $('.edit-button').click(function(evt) {
         /* cut off the edit- */
-        editUser(this.id.substring(5));
+        editUser(this.id.substring(5), this.name);
     });
     $('.sort-table').click(function(evt) {
         sortAccountsTable(this.id.substring(5));
@@ -77,7 +238,7 @@ var displayAccountForm = function() {
         success: function(data) {
             $('#admin-content').html(data);
 
-            $('#account-creation-back-button').click(function(){
+            $('#account-creation-back-button').click(function() {
                 displayAccountsTable();
             });
 
@@ -86,9 +247,11 @@ var displayAccountForm = function() {
                 submitUserForm();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -109,30 +272,34 @@ var displayQuestionTable = function() {
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
 
+            $('.visbox').hide();
+
             $('#question-creation-button').click(function(evt) {
                 displayQuestionForm();
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
 
-var addQuestionsTableEvents = function(){
+var addQuestionsTableEvents = function() {
     $('.view-button').click(function(evt) {
-        window.location.href = '/question?id=' + this.id.substring(5);
+        window.location.href = '/question?_id=' + this.id.substring(5);
     });
     $('.delete-button').click(function(evt) {
-        deleteQuestion(this.id.substring(7));
+        deleteQuestion(this.id.substring(7), this.name);
     });
     $('.edit-button').click(function(evt) {
-        editQuestion(this.id.substring(5));
+        editQuestion(this.id.substring(5), this.name);
     });
     $('.checked').change(function(evt) {
-        updateVisibility(this.id.substring(8));
+        updateVisibility(this.id.substring(8), this.name);
     });
 }
 
@@ -149,7 +316,6 @@ var displayQuestionForm = function() {
                 displayQuestionTable();
             });
 
-            $('#qtext').summernote({ height: 100 });
             // choose the type of question creating
             $('#qType').change(function(evt) {
                 // get the answer part for the form requested
@@ -164,44 +330,32 @@ var displayQuestionForm = function() {
                 submitQuestionForm();
             });
             $('select').material_select();
+
+            // gets the updated topics list
+            getQuestionsTopicsList();
+
+            initSummernote();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
 
-/*String Formating option*/
-String.prototype.format = function() {
-  a = this;
-  for (k in arguments) {
-    a = a.replace("{" + k + "}", arguments[k])
-  }
-  return a
-}
-
-var mcAnswerCount = 4;
-var addMCAnswers = function(dom){
-    mcAnswerCount++;
-    var newdiv = document.createElement('p');
-    var inputdiv = '<input type="radio" name="radbutton" value="mcans{0}" id="mcans{1}" required/><label for="mcans{2}">Is Correct</label><input type="text" name="mcans{3}" placeholder="Enter Answer Here" required style="float:left;" class="form-control"/><a onclick="$(this).parent().remove()" class="btn-floating btn-tiny waves-effect waves-light red"><i class="tiny material-icons">close</i></a>';
-    newdiv.innerHTML = inputdiv.format(mcAnswerCount,mcAnswerCount,mcAnswerCount,mcAnswerCount);
-    $('#qAnswer > div.form-group').append(newdiv);
-}
-
 // replace the answer field in Question-creation.pug for specific question
-var getQuestionFormAnswer = function(form){
+var getQuestionFormAnswer = function(form) {
     $.ajax({
         type: 'GET',
         url: '/answerForm',
         data: {qType:form},
-        success: function(data){
+        success: function(data) {
             $('#qAnswer').html(data);
         },
-
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -209,7 +363,6 @@ var getQuestionFormAnswer = function(form){
             }
         }
     });
-
 }
 
 /* Display the application statistics form. */
@@ -218,47 +371,43 @@ var displayStatistics = function() {
         type: 'GET',
         url: '/statistics',
         success: function(data) {
-            $('#admin-label').html('Statistics');
             $('#admin-content').html(data);
 
             $('#option-stats').addClass('active');
             $('#option-accounts').removeClass('active');
             $('#option-questions').removeClass('active');
             $('#option-settings').removeClass('active');
-
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').hide();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
 
 var displaySettings = function() {
-    $('#admin-label').html('Global Settings');
-    $('#admin-content').html('');
-
-    $('#option-settings').addClass('active');
-    $('#option-stats').removeClass('active');
-    $('#option-accounts').removeClass('active');
-    $('#option-questions').removeClass('active');
-
-    $('#admin-button').off();
-    $('#admin-button').hide();
-    $('#admin-back').hide();
-
-    /*
     $.ajax({
         type: 'GET',
-        url: '/statistics',
+        url: '/settings',
         success: function(data) {
+            $('#admin-content').html(data);
+
+            $('#option-settings').addClass('active');
+            $('#option-stats').removeClass('active');
+            $('#option-accounts').removeClass('active');
+            $('#option-questions').removeClass('active');
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
         }
     });
-    */
 }
 
 /* Set up events for the sidebar buttons. */
@@ -282,10 +431,10 @@ $('#option-settings').click(function(evt) {
  * Process user deactiavtion request.
  * First, display a confirmation message and then request the user's deactivation.
  */
-var deactivateUser = function(id) {
+var deactivateUser = function(id, username) {
     swal({
         title: 'Confirm Deactivation',
-        text: id + '\'s  account will be deactivated.',
+        text: username + '\'s  account will be deactivated.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
@@ -298,17 +447,13 @@ var deactivateUser = function(id) {
             data: { userid: id, active: false },
             success: function(data) {
                 displayAccountsTable();
-                const msg = ' has been&nbsp;<u><b>deactivated</b></u>&nbsp;';
-                const colour = colours.WARNING;
-                const icon = '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
-                dropSnack(colour, icon + id + ' account' + msg);
+                warningSnackbar(username + ' account has been&nbsp;<u><b>deactivated</b></u>&nbsp;');
             },
-            error: function(data){
+            error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    const icon = '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp';
-                    dropSnack(colours.FAIL, icon + 'Failed to deactivate ' + id + '\' account');
+                    failSnackbar('Failed to deactivate ' + username + '\'s account');
                 }
             }
         });
@@ -319,10 +464,10 @@ var deactivateUser = function(id) {
  * Process user actiavtion request.
  * First, display a confirmation message and then request the user's activation.
  */
-var activateUser = function(id) {
+var activateUser = function(id, username) {
     swal({
         title: 'Confirm Activation',
-        text: id + '\'s  account will be activated.',
+        text: username + '\'s  account will be activated.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
@@ -335,17 +480,13 @@ var activateUser = function(id) {
             data: { userid: id, active: true },
             success: function(data) {
                 displayAccountsTable();
-                const msg = ' has been activated';
-                const colour = colours.SUCCESS;
-                const icon = '<i class="material-icons">check</i>&nbsp&nbsp&nbsp';
-                dropSnack(colour, icon + id + ' account' + msg);
+                successSnackbar(username + '\'s account has been activated');
             },
-            error: function(data){
+            error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    const icon = '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp';
-                    dropSnack(colours.FAIL, icon + 'Failed to activate ' + id + '\'s account');
+                    failSnackbar('Failed to activate ' + username + '\'s account');
                 }
             }
         });
@@ -368,9 +509,11 @@ var editUser = function(id) {
                 submitEditForm(id);
             });
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -382,7 +525,7 @@ var submitUserForm = function() {
     var user = {};
 
     jQuery.each(fields, function(i, field) {
-        user[field.name.substring(3)] = field.value;
+        user[field.name] = field.value;
     });
 
     $.ajax({
@@ -391,47 +534,17 @@ var submitUserForm = function() {
         data: user,
         success: function(data) {
             displayAccountsTable();
-            dropSnack(colours.SUCCESS, 'User ' + user.id + ' added to database');
+            successSnackbar('User ' + user.username + ' added to database');
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['responseText'] === 'failure') {
-                dropSnack(colours.FAIL, 'User could not be added');
+                failSnackbar('User could not be added');
             } else if (data['responseText'] === 'exists') {
-                dropSnack(colours.FAIL, 'User ' + user.id + ' already exists');
-            }
-        }
-    });
-}
-
-/* Upload a file of users to the server. */
-var submitUploadForm = function() {
-    var files = $('#upload-file').get(0).files;
-    var formData = new FormData();
-
-    if (files.length > 1) {
-        $('#upload-result').html('Select a single file');
-        return;
-    }
-
-    formData.append('usercsv', files[0]);
-
-    $.ajax({
-        type: 'POST',
-        url: '/userupload',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-            dropSnack(colours.SUCCESS, 'File successfully uploaded');
-            setTimeout(displayAccountsTable, 3000);
-        },
-        error: function(data){
-            if (data['status'] === 401) {
-                window.location.href = '/';
+                failSnackbar('User ' + user.username + ' already exists');
             } else {
-                dropSnack(colours.FAIL, 'Upload failed');
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
@@ -441,12 +554,13 @@ var submitUploadForm = function() {
 var submitEditForm = function(id) {
     var fields = $('#account-edit-form').serializeArray();
     var user = {
-        originalID: id
+        _id: id
     };
 
     jQuery.each(fields, function(i, field) {
-        if (field.value)
+        if (field.value) {
             user[field.name] = field.value;
+        }
     });
 
     $.ajax({
@@ -457,105 +571,161 @@ var submitEditForm = function(id) {
             $('#admin-content').html(data.html);
             $('#account-edit-form').submit(function(evt) {
                 evt.preventDefault();
-                submitEditForm(user.id ? user.id : id);
+                submitEditForm(user._id);
             });
             displayAccountsTable();
-            dropSnack(colours.SUCCESS, 'User ' + id + ' has been updated');
+            successSnackbar('User ' + user.username + ' has been updated');
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data.result === 'failure') {
-                dropSnack(colours.FAIL, 'User could not be updated. Please try again');
+                failSnackbar('User could not be updated. Please try again');
             } else if (data.result === 'dupid') {
-                dropSnack(colours.FAIL, 'User ID ' + user.id + ' is taken');
+                failSnackbar('Username ' + user.username + ' is taken');
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
 
-var updateVisibility = function(qid) {
+/* Updates the Vilibility of a Question */
+var updateVisibility = function(qid, questionNumber) {
     var question = {};
-
-    question['visible'] = $('#checked-' + qid).is(':checked');
-
-    $.ajax({
-        type: 'POST',
-        url: '/questionmod',
-        data: {
-            question: question,
-            id: qid
+    swal({
+        type: 'warning',
+        title: 'Visibilty Change',
+        text: 'You are about to change the visibility status of question ' + questionNumber,
+        showCancelButton: true,
+        showConfirmButton: true,
+        // User can only close the swal if they click one of the buttons
+        allowEscapeKey: false,
+        allowClickOutside: false,
         },
-        success: function(data) {
-            displayQuestionTable();
-            const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
-            const colour = question['visible'] ? colours.SUCCESS : colours.WARNING;
-            const warn = question['visible'] ? '<i class="material-icons">check</i>&nbsp&nbsp&nbsp' : '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp';
-            dropSnack(colour, warn + 'Question ' + qid + msg);
-        },
-        error: function(data){
-            if (data['status'] === 401) {
-                window.location.href = '/';
+        function (isConfirm) {
+            // User confirms the visiblity change
+            if (isConfirm) {
+                question['visible'] = $('#checked-' + qid).is(':checked');
+                $.ajax({
+                    type: 'POST',
+                    url: '/questionmod',
+                    data: {
+                        question: question,
+                        id: qid
+                    },
+                    success: function(data) {
+                        // Toast notifiation
+                        const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
+
+                        if (question['visible']) {
+                            successSnackbar('Question ' + questionNumber + msg);
+                        } else {
+                            warningSnackbar('Question ' + questionNumber + msg);
+                        }
+                    },
+                    error: function(data) {
+                        if (data['status'] === 401) {
+                            window.location.href = '/';
+                        } else {
+                            // Toast notification
+                            $('#checked-' + qid).prop('checked', !question['visible']);
+                            failSnackbar('Could not change visibility of question');
+                        }
+                    }
+                });
+            // User cancels the visibility change
             } else {
                 displayQuestionTable();
-                dropSnack(colours.FAIL, 'Could not change visibility of question');
             }
         }
+    );
+}
+
+/*Collects form fields for Question-Creation and Question-Edit*/
+var collectQuestionFormData = function(form){
+    var fields = $(form).serializeArray();
+    var question = {};
+    question['choices'] = [];
+    question['leftSide'] = [];
+    question['rightSide'] = [];
+    question['answer'] = [];
+
+    jQuery.each(fields, function(i, field) {
+        if(field.name.startsWith('radbutton')) {
+            question['answer'] = fields[i+1].value;
+        }
+
+        if(field.name.startsWith('option')) {
+            question['choices'].push(field.value);
+        }
+
+        if(field.name.startsWith('matchLeft')) {
+            question['leftSide'].push(field.value);
+        }
+
+        if(field.name.startsWith('matchRight')) {
+            question['rightSide'].push(field.value);
+        }
+
+        if(field.name.startsWith('tfbutton')) {
+            question['answer'] = field.value;
+        }
+
+        if(field.name.startsWith('checkButton') ){
+           question['answer'].push(fields[i+1].value);
+        }
+
+        if(field.name.startsWith('orderItem')) {
+            question['answer'].push(field.value);
+        }
+        question[field.name] = field.value;
     });
+    question['rating'] = getRating();
+    question['text'] = $('#qtext').summernote('code');
+    question['visible'] = $('#visible').is(':checked');
+    return question;
 }
 
 /* Process submitted question edit form. */
 var submitQuestionForm = function() {
-    var fields = $('#questionform').serializeArray();
-    var question = {};
-    question['choices'] = [];
-
-    jQuery.each(fields, function(i, field) {
-        if(field.name.startsWith('radbutton')){
-            question['answer'] = fields[i+1].value;
-        }
-
-        if(field.name.startsWith('mcans')){
-            question['choices'].push(field.value);
-        }
-
-        question[field.name] = field.value;
-    });
-
     if ($('#qtext').summernote('isEmpty')) {
-        dropSnack(colours.FAIL, 'Please enter a question body in the editor.');
+        failSnackbar('Please enter a question body in the editor.');
         return;
     }
 
-    question['rating'] = getRating();
-    question['text'] = $('#qtext').summernote('code');
-    question['type'] = $('#qType').select().val();
-    question['visible'] = $('#visible').is(':checked');
+    if (parseInt($('#qminpoints').val()) > parseInt($('#qmaxpoints').val())) {
+        failSnackbar('Minimum points must be less than or equal to max points');
+        return;
+    }
 
+    var question = collectQuestionFormData('#questionform');
+
+    question['type'] = $('#qType').select().val();
     $.ajax({
         type: 'PUT',
         url: '/questionadd',
         data: question,
         success: function(data) {
-            dropSnack(colours.SUCCESS, 'Question added to database');
+            successSnackbar('Question added to database');
             displayQuestionTable();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['status'] === 400){
-                dropSnack(colours.WARNING, data['responseText']);
+            } else if (data['status'] === 400) {
+                warningSnackbar(data['responseText']);
             } else {
-                dropSnack(colours.FAIL, 'Question could not be added.');
+                failSnackbar('Question could not be added.');
             }
         }
     });
 }
 
-var deleteQuestion = function(qid) {
+var deleteQuestion = function(qid, questionNumber) {
     swal({
         title: 'Confirm deletion',
-        text: 'Question ' + qid + ' will be removed from the database.',
+        text: 'Question ' + questionNumber + ' will be removed from the database.',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
@@ -567,79 +737,61 @@ var deleteQuestion = function(qid) {
             url: '/questiondel',
             data: { qid: qid },
             success: function(data) {
-                dropSnack(colours.SUCCESS, 'Question ' + qid + ' was removed from the database');
+                successSnackbar('Question ' + questionNumber + ' was removed from the database');
                 displayQuestionTable();
             },
-            error: function(data){
+            error: function(data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    dropSnack(colours.FAIL, 'Coud not remove question ' + qid + ' from the database');
+                    failSnackbar('Coud not remove question ' + questionNumber + ' from the database');
                 }
             }
         });
     });
 }
 
-var editQuestion = function(qid) {
+var editQuestion = function(qid, questionNumber) {
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: '/questionedit',
         data: { questionid: qid },
         success: function(data) {
-            $('#admin-label').html('Edit Question');
             $('#admin-content').html(data.html);
-            $('#admin-button').off();
-            $('#admin-button').hide();
-            $('#admin-back').show();
-            $('#admin-back').click(function(evt) {
+            $('#question-edit-back-button').click(function(evt) {
                 displayQuestionTable();
             });
-            $('#qtext').summernote({ height: 150 });
+            initSummernote();
             $('#qtext').summernote('code', data.qtext);
             $('#question-edit-form').submit(function(evt) {
                 evt.preventDefault();
-                submitQEditForm(qid);
+                submitQEditForm(qid, questionNumber);
             });
             setRating(data.qrating);
+
+            // gets the updated topics list
+            getQuestionsTopicsList();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
 
-var submitQEditForm = function(qid) {
-    var fields = $('#question-edit-form').serializeArray();
-    var question = {};
-    var rating = getRating();
-    
-    question['choices'] = [];
-
+var submitQEditForm = function(qid, questionNumber) {
     if ($('#qtext').summernote('isEmpty')) {
-        dropSnack(colours.FAIL, 'Please enter a question body in the editor.');
+        failSnackbar('Please enter a question body in the editor.');
         return;
     }
 
-    jQuery.each(fields, function(i, field) {
-        if(field.name.startsWith('radbutton')){
-            question['answer'] = fields[i+1].value;
-        }
+    var question = collectQuestionFormData('#question-edit-form');
 
-        if(field.name.startsWith('mcans')){
-            question['choices'].push(field.value);
-        }
-
-        question[field.name] = field.value;
-    });
-
-    question['text'] = $('#qtext').summernote('code');
-    question['visible'] = $('#visible').is(':checked');
-
-    if (rating > 0 && rating < 6) {
-        submitQuestionRating(rating, qid);
+    if (getRating() > 0 && getRating() < 6) {
+        submitQuestionRating(getRating(), qid);
     }
 
     $.ajax({
@@ -650,16 +802,16 @@ var submitQEditForm = function(qid) {
             id: qid
         },
         success: function(data) {
-            dropSnack(colours.SUCCESS, 'Question ' + qid + ' has been modified.');
+            successSnackbar('Question ' + questionNumber + ' has been modified.');
             displayQuestionTable();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 400){
-                dropSnack(colours.WARNING, data['responseText']);
+                warningSnackbar(data['responseText']);
             } else {
-                dropSnack(colours.FAIL, 'Question could not be edited.');
+                failSnackbar('Question could not be edited.');
             }
         }
     });
@@ -674,14 +826,13 @@ var submitQuestionRating = function (rating, qid) {
             rating: rating,
             qId: qid
         },
-        success: function(data) {
-            dropSnack(colours.SUCCESS, 'Question ' + qid + ' rating has been updated.');
-        },
-        error: function(data){
+        async: false,
+        success: function(data) { },
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                dropSnack(colours.FAIL, 'Question could not be updated.');
+                failSnackbar('Question could not be updated.');
             }
         }
     });
@@ -696,7 +847,7 @@ var accountSortTypes = {
     fname: false,
     lname: false,
     id: false
-};
+}
 
 var sortAccountsTable = function(type) {
     /* Toggle type's sort order; reset all others. */
@@ -718,30 +869,113 @@ var sortAccountsTable = function(type) {
             $('#admin-content').html(data);
             addAccountsTableEvents();
         },
-        error: function(data){
+        error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
             }
         }
     });
 }
 
 // Toggles the view of the Visibility Checkboxes in the Question-Table View
-var toggleButtonVisibility = function(){
-    if (document.getElementById('sw').checked) {
+var toggleButtonVisibility = function() {
+    if ($('#sw').is(':checked')) {
         $('.visbox').show();
     } else {
         $('.visbox').hide();
     }
 }
 
-/* This function slides down a snakbar */
-function dropSnack(colour, msg) {
-    // runs the toast function for 5s with given msg and colour
-    Materialize.toast(msg + '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>', 5000, 'rounded ' + colour);
+// get questions topics list
+var getQuestionsTopicsList = function () {
+    $.ajax({
+        async: false,
+        type: 'GET',
+        url: '/questionsListofTopics',
+        success: function(data) {
+            autocompleteTopics = {};
+
+            for (var t in data) {
+                autocompleteTopics[data[t]] = null;
+            }
+
+            // Setting up the autocomplete search for topics
+            $('#qtopic').autocomplete({
+                data: autocompleteTopics,
+                limit: 20,
+                minLength: 0
+            });
+        },
+        error: function(data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar('Sorry, something went wrong, please try again');
+            }
+        }
+    });
+
 }
 
-/* Listener for the `x` on the snackbar/toasts */
-$(document).on('click', '#closeSnack', function() {
-    $(this).parent().fadeOut();
-});
+/* Initialize the summernote and all its sub modal */
+var initSummernote = function () {
+    $('#qtext').summernote({ height: 100 });
+    $('div.note-btn-group.btn-group.note-insert button').unbind();
+    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
+        $('#mediaModal0').modal('open');
+        $('#mediaModal0 > div > div > div.modal-footer > button')
+        .unbind()
+        .removeClass('disabled')
+        .removeAttr('href')
+        .prop('disabled', false)
+        .prop('type', 'button')
+        .click(function () {
+            var text = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(1) > input').val();
+            var url = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(2) > input').val();
+            $('#qtext').summernote('createLink', {
+                text: text,
+                url: url,
+                isNewWindow: true
+            });
+            $('#mediaModal0').modal('close');
+        });
+        $('#mediaModal0 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal0').modal('close');
+        });
+    });
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(2)').click(function () {
+        $('#mediaModal1').modal('open');
+        $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-select-from-files').hide();
+        $('#mediaModal1 > div > div > div.modal-footer > button')
+        .unbind()
+        .removeClass('disabled')
+        .removeAttr('href')
+        .prop('disabled', false)
+        .prop('type', 'button')
+        .click(function () {
+            var url = $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-image-url > input').val();
+            $('#qtext').summernote('insertImage', url);
+            $('#mediaModal1').modal('close');
+        });
+        $('#mediaModal1 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal1').modal('close');
+        });
+    });
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').prop('disabled', true)
+    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').click(function () {
+        $('#mediaModal3').modal('open');
+        $('#mediaModal3 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal3').modal('close');
+        });
+    });
+    $('.modal').modal({
+        dismissible: false
+    });
+    $('.modal').each(function( i ) {
+        $(this).attr('id', 'mediaModal' + i);
+        $('#mediaModal' + i +'> div > div').removeClass('modal-content');
+    });
+}

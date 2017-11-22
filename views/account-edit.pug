@@ -6,13 +6,13 @@
           i.material-icons arrow_back
       .card-content
         h5.card-title Account Edit
-        h6 Modify and update #{user.id}'s information.
+        h6 Modify and update #{user.username}'s information.
       .card-action
         form.form-edit#account-edit-form
           .form-group.row
             label.col-sm-2.col-form-label(for='userid') Username
             .col-sm-10
-              input.form-control#userid(type='text' name='id' value=user.id autofocus)
+              input.form-control#userid(type='text' name='username' value=user.username autofocus)
           .form-group
             .row
               label.col-sm-2.col-form-label(for='fname') First Name

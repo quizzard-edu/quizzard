@@ -1,0 +1,18 @@
+ul.collapsible.popout(data-collapsible='expandable')
+  include settings/general
+  include settings/student
+  include settings/question
+  include settings/discussion
+
+.row.center
+  button.waves-effect.waves-light.btn.grey(type='button', onclick='resetDefault()') Default
+    i.material-icons.right replay
+  span &nbsp&nbsp
+  button.waves-effect.waves-light.btn.red(type='submit', onclick='cancel()') Cancel
+    i.material-icons.right close
+  span &nbsp&nbsp
+  button.waves-effect.waves-light.btn(type='submit', onclick='save()') Save
+    i.material-icons.right save
+
+block scripts
+  script(src='/js/settings.js')

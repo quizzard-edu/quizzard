@@ -1,0 +1,36 @@
+.row
+  .col.s12
+    .card.center
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light.red.left#account-export-back-button
+          i.material-icons arrow_back
+      .card-content
+        h5.card-title Accounts Export Form
+        h6 Export the list of students' accounts as a csv file
+      .card-action
+        #exportForm
+          table.bordered.highlight
+              thead
+                tr
+                  th Included
+                  th Username
+                  th First Name
+                  th Last Name
+                  th Email
+                  th Active
+              tbody
+                each s in students
+                  tr(class=s.active ? '' : 'grey lighten-2')
+                    td
+                      p
+                        input.checked(id='cb-' + s._id, type='checkbox', checked=s.active)
+                        label.visbox(for='cb-' + s._id)
+                    td #{s.username}
+                    td #{s.fname}
+                    td #{s.lname}
+                    td #{s.email}
+                    td #{s.active}
+          br
+          a.waves-effect.waves-light.btn(onClick='submitExportForm()')
+            i.material-icons.left cloud_download
+            | Export
