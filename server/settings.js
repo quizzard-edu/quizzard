@@ -430,7 +430,7 @@ exports.updateSettings = function (updateObject, callback) {
             || updateObject.allowDislikes === 'true')) {
         updateQuery.$set['discussionboard.dislikesEnabled'] = allSettings.discussionboard.dislikesEnabled = (updateObject.allowDislikes === 'true');
     }
-
+console.log(allSettings);
     updateSettings(updateQuery, callback);
 }
 
