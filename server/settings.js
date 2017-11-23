@@ -36,10 +36,8 @@ exports.resetAllSettings = function (callback) {
  *
  * @param {funtion} callback
  */
-exports.getClassActive = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.general.active);
-    });
+exports.getClassActive = function () {
+    return allSettings.general.active;
 }
 
 /**
@@ -61,10 +59,8 @@ exports.setClassActive = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getLeaderboardLimit = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.general.leaderboardLimit);
-    });
+exports.getLeaderboardLimit = function () {
+    return allSettings.general.leaderboardLimit;
 }
 
 /**
@@ -86,10 +82,8 @@ exports.setLeaderboardLimit = function (limit, callback) {
  *
  * @param {funtion} callback
  */
-exports.getStudentEditNameEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.student.editNames);
-    });
+exports.getStudentEditNameEnabled = function () {
+    return allSettings.student.editNames;
 }
 
 /**
@@ -111,10 +105,8 @@ exports.setStudentEditNameEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getStudentEditEmailEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.student.editEmail);
-    });
+exports.getStudentEditEmailEnabled = function () {
+    return allSettings.student.editEmail;
 }
 
 /**
@@ -136,10 +128,8 @@ exports.setStudentEditEmailEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getStudentEditPasswordEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.student.editPassword);
-    });
+exports.getStudentEditPasswordEnabled = function () {
+    return allSettings.student.editPassword;
 }
 
 /**
@@ -161,10 +151,8 @@ exports.setStudentEditPasswordEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getQuestionDefaultTopic = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.defaultTopic);
-    });
+exports.getQuestionDefaultTopic = function () {
+    return allSettings.question.defaultTopic;
 }
 
 /**
@@ -186,10 +174,8 @@ exports.setQuestionDefaultTopic = function (topic, callback) {
  *
  * @param {funtion} callback
  */
-exports.getQuestionDefaultMinPoints = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.defaultMinPoints);
-    });
+exports.getQuestionDefaultMinPoints = function () {
+    return allSettings.question.defaultMinPoints;
 }
 
 /**
@@ -211,10 +197,8 @@ exports.setQuestionDefaultMinPoints = function (points, callback) {
  *
  * @param {funtion} callback
  */
-exports.getQuestionDefaultMaxPoints = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.defaultMaxPoints);
-    });
+exports.getQuestionDefaultMaxPoints = function () {
+    return allSettings.question.defaultMaxPoints;
 }
 
 /**
@@ -236,10 +220,8 @@ exports.setQuestionDefaultMinPoints = function (points, callback) {
  *
  * @param {funtion} callback
  */
-exports.getQuestionTimeoutEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.timeoutEnabled);
-    });
+exports.getQuestionTimeoutEnabled = function () {
+    return allSettings.question.timeoutEnabled;
 }
 
 /**
@@ -261,10 +243,8 @@ exports.setQuestionTimeoutEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getQuestionTimeoutPeriod = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.timeoutPeriod);
-    });
+exports.getQuestionTimeoutPeriod = function () {
+    return allSettings.question.timeoutPeriod;
 }
 
 /**
@@ -286,10 +266,8 @@ exports.setQuestionTimeoutPeriod = function (timeout, callback) {
  *
  * @param {funtion} callback
  */
-exports.getDiscussionboardVisibilityEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.discussionboard.visibility);
-    });
+exports.getDiscussionboardVisibilityEnabled = function () {
+    return allSettings.discussionboard.visibility;
 }
 
 /**
@@ -311,10 +289,8 @@ exports.setDiscussionboardVisibilityEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getDiscussionboardDislikesEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.discussionboard.dislikesEnabled);
-    });
+exports.getDiscussionboardDislikesEnabled = function () {
+    return allSettings.discussionboard.dislikesEnabled;
 }
 
 /**
@@ -337,11 +313,11 @@ exports.setDiscussionboardDislikesEnabled = function (isActive, callback) {
  * @param {function} callback
  */
 exports.getAllSettings = function (callback) {
-    getAllSettings(callback);
+    return allSettings;
 }
 
 /**
- * get all settings object
+ * get all settings object from database
  *
  * @param {function} callback
  */
@@ -430,7 +406,6 @@ exports.updateSettings = function (updateObject, callback) {
             || updateObject.allowDislikes === 'true')) {
         updateQuery.$set['discussionboard.dislikesEnabled'] = allSettings.discussionboard.dislikesEnabled = (updateObject.allowDislikes === 'true');
     }
-console.log(allSettings);
     updateSettings(updateQuery, callback);
 }
 
@@ -450,7 +425,7 @@ var updateSettings = function (updateQuery, callback) {
 var allSettings = {};
 
 /**
- * update settings object
+ * Initialize allSettings object
  *
  */
 exports.initialize = function(callback){
