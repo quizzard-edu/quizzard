@@ -81,7 +81,7 @@ app.listen(port, function() {
 /* main page */
 app.get('/', function(req, res) {
     /* if the user has already logged in, redirect to home */
-    if (req.session.user){
+    if (req.session.user) {
         return res.redirect('home');
     }
 
@@ -92,11 +92,11 @@ app.get('/', function(req, res) {
 app.post('/login', function(req, res) {
     if ('user' in req.session) {
         req.session.destroy();
-        return res.status(400).send('Invalid Request');
+        return res.status(400).send(common.getError(1000));
     }
 
     if (!req.body.user || !req.body.passwd) {
-        return res.status(400).send('missing requirement');
+        return res.status(400).send(common.getError(1001));
     }
 
     var username = req.body.user.toLowerCase();
@@ -107,7 +107,7 @@ app.post('/login', function(req, res) {
     users.checkLogin(username, password, function(err, user) {
         if (err) {
             logger.error(common.formatString('User {0} failed logged in.', [username]));
-            return res.status(403).send(err);
+            return res.status(403).send(common.getError(1002));
         }
 
         if (user) {
@@ -121,11 +121,11 @@ app.post('/login', function(req, res) {
             if (user.type === common.userTypes.STUDENT) {
                 settings.getClassActive(function (err, isActive) {
                     if (err) {
-                        return res.status(500).send(err);
+                        return res.status(500).send(common.getError(1003));
                     }
 
                     if (!isActive) {
-                        return res.status(403).send('classNotActive');
+                        return res.status(403).send(common.getError(1004));
                     }
 
                     return res.status(200).send('success');
@@ -159,12 +159,12 @@ app.get('/home', function(req, res) {
     var request = { user : req.session.user, questionsStatus : 'unanswered' };
     users.getQuestionsListByUser(request, function(err, results) {
         if (err) {
-            return res.status(500).send();
+            return res.status(500).send(common.getError(1005));
         }
 
         users.getStudentById(req.session.user._id, function(err, userFound) {
             if (err) {
-                return res.status(500).send();
+                return res.status(500).send(common.getError(1006));
             }
 
             return res.status(200).render('home', {
@@ -250,13 +250,13 @@ app.get('/studentlist', function(req, res) {
     }
 
     if (typeof req.query.active === 'undefined') {
-        return res.status(500).send('Could not fetch student list');
+        return res.status(500).send(common.getError(1007));
     }
 
     /* only fetch student list once, then store it */
     users.getStudentsListWithStatus(req.query.active === 'true', function(err, studentlist) {
         if (err) {
-            return res.status(500).send('Could not fetch student list');
+            return res.status(500).send(common.getError(1008));
         }
 
         var html = studentTablePug({
@@ -285,7 +285,7 @@ app.post('/sortaccountlist', function(req, res) {
         req.body.asc == 'true',
         function (err, result) {
             if (err) {
-                return res.status(500).send('Could not fetch student list');
+                return res.status(500).send(common.getError(1009));
             }
 
             var html = studentTablePug( { students : result } );
@@ -314,7 +314,7 @@ app.get('/questionform', function(req, res) {
 
     settings.getAllSettings(function (err, allSettings) {
         if (err) {
-            logger.error(err);
+            logger.error(common.getError(1010));
         }
 
         var html = questionCreationPug({
@@ -329,8 +329,8 @@ app.get('/questionform', function(req, res) {
 });
 
 /* get question answer form */
-app.get('/answerForm', function(req, res){
-    switch (req.query.qType){
+app.get('/answerForm', function(req, res) {
+    switch (req.query.qType) {
         case common.questionTypes.REGULAR.value:
             res.status(200).render(
                 common.questionTypes.REGULAR.template,{answerForm:true});
@@ -356,7 +356,7 @@ app.get('/answerForm', function(req, res){
                 common.questionTypes.ORDERING.template,{answerForm:true});
             break;
         default:
-            return res.status(400).send('Please select an appropriate question Type.')
+            return res.status(400).send(common.getError(1011))
     }
 })
 
@@ -375,12 +375,12 @@ app.get('/accounteditform', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
-    users.getStudentById(req.query.userid, function(err, student){
+    users.getStudentById(req.query.userid, function(err, student) {
         if (err || !student) {
-            return res.status(500).send('Could not fetch user information');
+            return res.status(500).send(common.getError(1006));
         }
 
         var html = accountEditPug({
@@ -399,24 +399,24 @@ app.get('/questionlist', function(req, res) {
     }
 
     var userId = req.session.user._id;
-    users.getUserById(userId, function(err, user){
+    users.getUserById(userId, function(err, user) {
         if (err || !user) {
-            return res.status(400).send('bad request, user does not exist');
+            return res.status(400).send(common.getError(1013));
         }
 
         var request = {};
         request.questionsStatus = req.query.type;
         request.user = user;
-        users.getQuestionsListByUser(request, function(err, questionsList){
+        users.getQuestionsListByUser(request, function(err, questionsList) {
             if (err) {
-                return res.status(500).send('Could not fetch questions list');
+                return res.status(500).send(common.getError(1005));
             }
 
             var html = null;
             if (req.session.user.type === common.userTypes.ADMIN) {
                 html = questionTablePug({
                     questions : questionsList,
-                    questionType: function(type){
+                    questionType: function(type) {
                         for (var i in common.questionTypes) {
                             if (type === common.questionTypes[i].value) {
                                 return common.questionTypes[i].name;
@@ -453,20 +453,20 @@ app.get('/questionedit', function(req, res) {
     }
 
     var qId = req.query.questionid;
-    questions.lookupQuestionById(qId, function(err, question){
+    questions.lookupQuestionById(qId, function(err, question) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1014));
         }
 
         if (!question) {
-            return res.status(400).send('Question not found');
+            return res.status(400).send(common.getError(1015));
         }
 
         var html = questionEditPug({
             question: question,
-            getQuestionForm: function(){
-                switch (question.type){
+            getQuestionForm: function() {
+                switch (question.type) {
                     case common.questionTypes.REGULAR.value:
                         return regexFormPug({adminQuestionEdit:true, question:question})
                     case common.questionTypes.MULTIPLECHOICE.value:
@@ -508,17 +508,17 @@ app.get('/statistics', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        res.status(403).send('Permission Denied');
+        res.status(403).send(common.getError(1012));
     }
 
     questions.getAllQuestionsList(function(err, questionslist) {
         if (err) {
-            res.status(500).send(err);
+            res.status(500).send(common.getError(1016));
         }
 
         users.getStudentsList(function(err, studentslist) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send(common.getError(1008));
             }
 
             var html = statisticsPug({
@@ -574,7 +574,7 @@ app.get('/question', function(req, res) {
     questions.lookupQuestionById(req.query._id, function(err, questionFound) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1014));
         }
 
         if (!questionFound) {
@@ -582,7 +582,7 @@ app.get('/question', function(req, res) {
         }
 
         if (!questionFound.visible && req.session.user.type === common.userTypes.STUDENT) {
-            return res.status(400).send('Question is not available');
+            return res.status(400).send(common.getError(1017));
         }
 
         var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts, 'userId');
@@ -600,8 +600,8 @@ app.get('/question', function(req, res) {
                 return req.session.user.type === common.userTypes.ADMIN;
             },
             hasQrating: hasQrating,
-            getQuestionForm: function(){
-                switch (questionFound.type){
+            getQuestionForm: function() {
+                switch (questionFound.type) {
                     case common.questionTypes.REGULAR.value:
                         return regexFormPug({studentQuestionForm:true})
                     case common.questionTypes.MULTIPLECHOICE.value:
@@ -637,15 +637,15 @@ app.post('/submitanswer', function(req, res) {
     var answer = req.body.answer;
     var userId = req.session.user._id;
 
-    questions.lookupQuestionById(questionId,function(err, question){
-        if(err){
+    questions.lookupQuestionById(questionId,function(err, question) {
+        if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1014));
         }
 
-        if(!question){
+        if (!question) {
             logger.log(common.formatString('Could not find the question {0}', [questionId]));
-            return res.status(400).send('Could not find the question');
+            return res.status(400).send(common.getError(1015));
         }
 
         logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
@@ -660,16 +660,16 @@ app.post('/submitanswer', function(req, res) {
             return res.status(status).send(response);
         }
 
-        users.submitAnswer(userId, questionId, value, points, answer, function(err, result){
-            if(err){
+        users.submitAnswer(userId, questionId, value, points, answer, function(err, result) {
+            if (err) {
                 logger.error(err);
-                return res.status(500).send(err);
+                return res.status(500).send(common.getError(1018));
             }
 
             questions.submitAnswer(questionId, userId, value, points, answer, function(err, result) {
-                if(err){
+                if (err) {
                     logger.error(err);
-                    return res.status(500).send(err);
+                    return res.status(500).send(common.getError(1018));
                 }
 
                 return res.status(status).send(response);
@@ -694,7 +694,7 @@ app.put('/useradd', function(req, res) {
     users.addStudent(req.body, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1019));
         }
 
         return res.status(201).send('User created');
@@ -712,13 +712,13 @@ app.post('/setUserStatus', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     users.setUserStatus(req.body.userid, req.body.active === 'true' , function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send('Failed to deactivate student account');
+            return res.status(500).send(common.getError(1020));
         }
 
         return res.status(200).send('Student account has been deactivcated');
@@ -735,30 +735,30 @@ app.post('/profilemod', function(req, res) {
 
     if (req.body.newpassword !== req.body.confirmpassword) {
         logger.log('Confirm password doesn\'t match');
-        return res.status(400).send('Confirm password doesn\'t match');
+        return res.status(400).send(common.getError(1021));
     }
 
     var userId = req.session.user._id;
     users.getUserById(userId, function (err, userObj) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1013));
         }
 
         if (!userObj) {
-            return res.status(400).send('User can not be found');
+            return res.status(400).send(common.getError(1022));
         }
 
         users.checkLogin(userId, req.body.currentpasswd, function(err, user) {
             if (err || !user) {
                 logger.error(common.formatString('User {0} failed to authenticate.', [userId]));
-                return res.status(403).send(err);
+                return res.status(403).send(common.getError(1023));
             }
 
             if (user) {
                 users.updateProfile(userId, req.body, function (err, result) {
                     if (err) {
-                        return res.status(500).send(err);
+                        return res.status(500).send(common.getError(1024));
                     }
 
                     return res.status(200).send('ok');
@@ -778,20 +778,20 @@ app.post('/usermod', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     var userId = req.body._id;
     users.updateStudentById(userId, req.body, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send();
+            return res.status(500).send(common.getError(1025));
         }
 
         users.getStudentById(userId, function(err, userFound) {
             if (err || !userFound) {
                 logger.error(err);
-                return res.status(500).send();
+                return res.status(500).send(common.getError(1006));
             }
 
             var html = accountEditPug({
@@ -819,7 +819,7 @@ app.put('/questionadd', function(req, res) {
     questions.addQuestion(req.body, function(err, qId) {
         if (err) {
             logger.error(err);
-            return res.status(err.status).send(err.msg);
+            return res.status(err.status).send(common.getError(1026));
         }
 
         if (req.body.rating && parseInt(req.body.rating) > 0 && parseInt(req.body.rating) < 6) {
@@ -845,7 +845,7 @@ app.post('/questionmod', function(req, res) {
     var q = req.body.question;
 
     questions.updateQuestionById(qid, q, function(err, result) {
-        if (err){
+        if (err) {
             logger.error(err);
             return res.status(err.status).send(err.msg);
         }
@@ -880,19 +880,19 @@ var submitQuestionRating = function (req, res) {
     var rating = parseInt(req.body.rating);
 
     if (!rating || rating < 1 || rating > 5) {
-        return res.status(400).send('bad rating');
+        return res.status(400).send(common.getError(1027));
     }
 
     questions.submitRating(questionId, userId, rating, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send('could not submit rating');
+            return res.status(500).send(common.getError(1028));
         }
 
         users.submitRating(userId, questionId, rating, function(err, result) {
             if (err) {
                 logger.error(err);
-                return res.status(500).send('could not submit rating');
+                return res.status(500).send(common.getError(1028));
             }
 
             return res.status(200).send('rating submitted');
@@ -901,19 +901,19 @@ var submitQuestionRating = function (req, res) {
 }
 
 // get discussion board
-app.get('/getDiscussionBoard', function(req, res){
+app.get('/getDiscussionBoard', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
     settings.getDiscussionboardVisibilityEnabled(function (err, boardVisibility) {
         if (err) {
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1029));
         }
 
         if (boardVisibility === common.discussionboardVisibility.NONE
             && req.session.user.type === common.userTypes.STUDENT) {
-            return res.status(500).send('hidden');
+            return res.status(500).send(common.getError(1030));
         }
 
         settings.getDiscussionboardDislikesEnabled(function (err, isDislikesEnabled) {
@@ -925,12 +925,12 @@ app.get('/getDiscussionBoard', function(req, res){
             questions.lookupQuestionById(questionId, function (err, question) {
                 if (err) {
                     logger.error(err);
-                    return res.status(500).send(err);
+                    return res.status(500).send(common.getError(1014));
                 }
 
                 if (!question) {
                     logger.error(common.formatString('Could not find the question {0}', [questionId]));
-                    return res.status(400).send('Could not find the question');
+                    return res.status(400).send(common.getError(1015));
                 }
 
                 if (boardVisibility === common.discussionboardVisibility.ANSWERED) {
@@ -938,13 +938,13 @@ app.get('/getDiscussionBoard', function(req, res){
                     var answered = (answeredList.indexOf(req.session.user._id) !== -1);
 
                     if (req.session.user.type === common.userTypes.STUDENT && !answered) {
-                        return res.status(500).send('hidden');
+                        return res.status(500).send(common.getError(1030));
                     }
                 }
 
                 users.getUsersList((err, userObj) => {
                     if (err) {
-                        return res.status(500).send('Could not get the list of students');
+                        return res.status(500).send(common.getError(1031));
                     }
 
                     var usersList = {};
@@ -1016,7 +1016,7 @@ app.post('/addCommentToQuestion', function (req, res) {
     questions.addComment(questionId, userId, comment, function (err, question) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1032));
         }
 
         return res.status(200).send('Ok');
@@ -1036,7 +1036,7 @@ app.post('/addReplyToComment', function (req, res) {
     questions.addReply(commentId, userId, reply, function (err, question) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1033));
         }
 
         return res.status(200).send('Ok');
@@ -1054,7 +1054,7 @@ app.post('/voteOnComment', function (req, res) {
     var userId = req.session.user._id;
 
     if (!vote || (vote !== 1 && vote !== -1)) {
-        return res.status(400).send('Vote is invalid');
+        return res.status(400).send(common.getError(1034));
     }
 
     logger.log(common.formatString('{0} {1} {2}', [commentId, vote, userId]));
@@ -1062,7 +1062,7 @@ app.post('/voteOnComment', function (req, res) {
     questions.voteComment(commentId, vote, userId, function (err, value) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1035));
         }
 
         return res.status(200).send(value);
@@ -1080,7 +1080,7 @@ app.post('/voteOnReply', function (req, res) {
     var userId = req.session.user._id;
 
     if (!vote || (vote !== 1 && vote !== -1)) {
-        return res.status(400).send('Vote is invalid');
+        return res.status(400).send(common.getError(1034));
     }
 
     logger.log(common.formatString('{0} {1} {2}', [replyId, vote, userId]));
@@ -1088,7 +1088,7 @@ app.post('/voteOnReply', function (req, res) {
     questions.voteReply(replyId, vote, userId, function (err, value) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1036));
         }
 
         return res.status(200).send(value);
@@ -1102,25 +1102,25 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
     }
 
     var questionId = req.query.questionId;
-    questions.lookupQuestionById(questionId, function (err, question){
+    questions.lookupQuestionById(questionId, function (err, question) {
         if (err) {
             logger.error(err);
-            return res.status(500).send('could not find the question');
+            return res.status(500).send(common.getError(1014));
         }
 
         if (!question) {
-            return res.status(400).send('Invalid questionId');
+            return res.status(400).send(common.getError(1015));
         }
 
         users.getUsersList(function (err, usersList) {
             if (err) {
                 logger.error(err);
-                return res.status(500).send('could not find the list of users');
+                return res.status(500).send(common.getError(1031));
             }
 
             settings.getAllSettings(function (err, allSettings) {
                 if (err) {
-                    return res.status(500).send('Could not fetch the settings');
+                    return res.status(500).send(common.getError(1010));
                 }
 
                 var totalList = [];
@@ -1160,13 +1160,13 @@ app.get('/questionsListofTopics', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     questions.getAllQuestionsList(function(err, docs) {
         if (err) {
             logger.error(err);
-            return res.status(500).send('could not get the list of questions topics');
+            return res.status(500).send(common.getError(1037));
         }
 
         var topicsList = [];
@@ -1187,13 +1187,13 @@ app.get('/studentsListofIdsNames', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     users.getStudentsList(function(err, studentList) {
         if (err) {
             logger.error(err);
-            return res.status(500).send('Could not fetch student list');
+            return res.status(500).send(common.getError(1008));
         }
 
         var idsList = [];
@@ -1211,13 +1211,13 @@ app.get('/accountsExportForm', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     users.getStudentsList(function(err, studentsList) {
         if (err) {
             logger.error(err);
-            return res.status(500).send('Failed to get students list');
+            return res.status(500).send(common.getError(1008));
         }
 
         return res.status(200).render('users/accounts-export-form', {
@@ -1234,7 +1234,7 @@ app.get('/accountsImportForm', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     return res.status(200).render('users/accounts-import-form', {
@@ -1249,12 +1249,12 @@ app.post('/accountsExportFile', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
         logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
-        return res.status(500).send('User does not exists in the file system');
+        return res.status(500).send(common.getError(1022));
     }
 
     var requestedList = req.body.studentsList;
@@ -1266,7 +1266,7 @@ app.post('/accountsExportFile', function(req, res) {
     for (var i in requestedList) {
         users.getStudentById(requestedList[i], function(err, studentFound) {
             if (err || !studentFound) {
-                logger.error('Could not find a student from the export list');
+                logger.error(common.getError(1006));
                 errors++;
             }
 
@@ -1274,7 +1274,7 @@ app.post('/accountsExportFile', function(req, res) {
             studentsCount++;
             if (studentsCount === totalCount) {
                 if (errors > 0) {
-                    return res.status(500).send('Could not find a student from the export list');
+                    return res.status(500).send(common.getError(1038));
                 }
 
                 var fields = ['username', 'fname', 'lname', 'email'];
@@ -1287,7 +1287,7 @@ app.post('/accountsExportFile', function(req, res) {
                 common.saveFile(userDirectory, file, 'csv', csvData, function(err, result) {
                     if (err) {
                         logger.error(err);
-                        return res.status(500).send('Export job failed');
+                        return res.status(500).send(common.getError(1039));
                     }
                     return res.status(200).render('users/accounts-export-complete', {
                         file: fileName
@@ -1305,17 +1305,17 @@ app.post('/accountsImportFile', function (req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
         logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
-        return res.status(500).send('User does not exists in the file system');
+        return res.status(500).send(common.getError(1022));
     }
 
     var uploadedFile = req.files.usercsv;
     if (!uploadedFile || uploadedFile.mimetype !== 'text/csv') {
-        return res.status(400).send('Invalid file format');
+        return res.status(400).send(common.getError(1040));
     }
 
     var newFileName = 'importJob-students-' + uploadedFile.name;
@@ -1323,7 +1323,7 @@ app.post('/accountsImportFile', function (req, res) {
     uploadedFile.mv(newFile, function(err) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1041));
         }
 
         logger.log(common.formatString('Uploaded: {0}', [newFile]));
@@ -1338,7 +1338,7 @@ app.post('/accountsImportFile', function (req, res) {
             importedList.push(userObj);
         }).on('done', function(err) {
             if (err) {
-                return res.status(500).send('Failed to parse the csv file');
+                return res.status(500).send(common.getError(1042));
             }
 
             return res.status(200).render('users/accounts-import-list', {
@@ -1355,11 +1355,11 @@ app.post('/accountsImportList', function (req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     if (!req.body.selectedList) {
-        return res.status(400).send('Invalid students\' list');
+        return res.status(400).send(common.getError(1043));
     }
 
     var inputLen = req.body.selectedList.length;
@@ -1415,26 +1415,26 @@ app.get('/download', function(req, res) {
 
     if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
         logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
-        return res.status(500).send('User does not exists in the file system');
+        return res.status(500).send(common.getError(1022));
     }
 
     var fileName = req.query.file;
     var userDir = common.joinPath(common.fsTree.USERS, req.session.user._id);
     if (!common.fileExists(userDir, fileName)) {
         logger.error(common.formatString('File: {0} does not exist', [fileName]));
-        return res.status(500).send('File does not exist');
+        return res.status(500).send(common.getError(1044));
     }
 
     var filePath = common.joinPath(common.fsTree.USERS, req.session.user._id, fileName);
     return res.download(filePath, fileName, function (err) {
         if (err) {
-            logger.error(err);
+            logger.error(common.getError(1045));
         }
     });
 });
 
 /* Display some charts and graphs */
-app.get('/analytics', function(req, res){
+app.get('/analytics', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1456,13 +1456,13 @@ app.get('/profile', function(req, res) {
     settings.getAllSettings(function (err, allSettings) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(1010));
         }
 
         users.getUserById(req.session.user._id, function(err, user) {
             if (err) {
                 logger.error(err);
-                return res.status(500).send(err);
+                return res.status(500).send(common.getError(1013));
             }
 
             if (!user) {
@@ -1492,12 +1492,12 @@ app.get('/settings', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     settings.getAllSettings(function (err, allSettings) {
         if (err) {
-            return res.status(500).send('Could not fetch the settings');
+            return res.status(500).send(common.getError(1010));
         }
 
         var html = settingsPug({
@@ -1528,11 +1528,11 @@ app.post('/resetSettings', function (req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     settings.resetAllSettings(function (err, result) {
-        return res.status(err ? 500 : 200).send(err ? err : 'ok');
+        return res.status(err ? 500 : 200).send(err ? common.getError(1046) : 'ok');
     });
 });
 
@@ -1543,12 +1543,12 @@ app.post('/updateSettings', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     settings.updateSettings(req.body.settings, function (err, result) {
         if (err) {
-            return res.status(500).send('Could not update the settings');
+            return res.status(500).send(common.getError(1047));
         }
 
         return res.status(200).send('ok');
@@ -1556,7 +1556,7 @@ app.post('/updateSettings', function(req, res) {
 });
 
 /* get analytics for a student*/
-app.get('/studentAnalytics', function(req,res){
+app.get('/studentAnalytics', function(req,res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1565,34 +1565,34 @@ app.get('/studentAnalytics', function(req,res){
 
     if (req.session.user.type === common.userTypes.ADMIN) {
         if (!req.query.studentId) {
-            return res.status(500).send('no student graphs for admins');
+            return res.status(500).send(common.getError(1048));
         }
         query.userId = req.query.studentId;
     }
 
-    analytics.getChart(query, function(err, result){
+    analytics.getChart(query, function(err, result) {
         return res.status(200).send(result);
     });
 });
 
 /* get analytics for a admins*/
-app.get('/adminAnalytics', function(req,res){
+app.get('/adminAnalytics', function(req,res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1012));
     }
 
     var query = {user: req.session.user, type: req.query.type};
 
-    analytics.getChart(query, function(err, result){
+    analytics.getChart(query, function(err, result) {
         return res.status(200).send(result);
     });
 });
 
 // 404 route
-app.use(function(req, res, next){
+app.use(function(req, res, next) {
     return res.status(404).render('page-not-found');
 });

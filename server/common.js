@@ -126,9 +126,71 @@ const questionAttributes = Object.freeze({
     }
 });
 exports.questionAttributes = questionAttributes;
+
+const errors = Object.freeze({
+    1000: 'invalid request',
+    1001: 'missing requirement',
+    1002: 'user failed to log in',
+    1003: 'failed to check if the class is active',
+    1004: 'class is not active',
+    1005: 'failed to get question list by user',
+    1006: 'failed to get student by id',
+    1007: 'failed to get student list',
+    1008: 'failed to get student list with status',
+    1009: 'failed to sort accounts',
+    1010: 'failed to get all settings',
+    1011: 'failed to find matching question type',
+    1012: 'permission denied',
+    1013: 'failed to get user by id',
+    1014: 'failed to look up question by id',
+    1015: 'question not found',
+    1016: 'failed to get all questions list',
+    1017: 'question is not available',
+    1018: 'failed to submit answer',
+    1019: 'failed to add student',
+    1020: 'failed to deactivate student account',
+    1021: 'confirm password doesn\'t match',
+    1022: 'user cannot be found',
+    1023: 'user failed to authenticate',
+    1024: 'failed to update profile',
+    1025: 'failed to update student by id',
+    1026: 'failed to add question',
+    1027: 'invalid rating',
+    1028: 'failed to submit rating',
+    1029: 'failed to get discussion board visibility enabled',
+    1030: 'discussion board is not available',
+    1031: 'failed to get users list',
+    1032: 'failed to add comment',
+    1033: 'failed to add reply',
+    1034: 'invalid vote',
+    1035: 'failed to vote on comment',
+    1036: 'failed to vote on reply',
+    1037: 'failed to get question list',
+    1038: 'failed to find a student from the export list',
+    1039: 'export job failed',
+    1040: 'invalid file format',
+    1041: 'failed to upload file',
+    1042: 'failed to parse the CSV file',
+    1043: 'invalid student list',
+    1044: 'file cannot be found',
+    1045: 'failed to download',
+    1046: 'failed to reset all settings',
+    1047: 'failed to update settings',
+    1048: 'graphs not available'
+
+});
+exports.errors = errors;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
+var getError = function(errorCode) {
+    return {
+       code: errorCode,
+       message: errors[errorCode]
+    }
+}
+exports.getError = getError;
+
 /**
 * shuffle the given list and return the result as a new list
 *
