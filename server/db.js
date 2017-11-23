@@ -657,13 +657,18 @@ var getAllSettings = function (callback) {
     });
 }
 
-/*
-add student analytics
-if there are no records of the student, create a new record
-if there are recards of the student, get the last recard and compute the deltas
-*/
+/**
+ * add student analytics
+ * if there are no records of the student, create a new record
+ * if there are recards of the student, get the last recard and compute the deltas
+ * 
+ * @param {string} studentId 
+ * @param {string} date 
+ * @param {object} info 
+ * @param {function} callback 
+ */
 exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
-    var query = {id: studentId};
+    var query = {_id: studentId};
     var update = {};
 
     analyticsCollection.findOne(query, function(err, student) {
@@ -675,7 +680,7 @@ exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback)
             info.correctAttemptsDelta = 0;
             info.wrongAttemptsDelta = 0;
             info.totalAttemptsDelta = 0;
-            update.id = studentId;
+            update._id = studentId;
             update.dates = [{date: date, info: info}];
 
             analyticsCollection.insert(update, function(err, obj){

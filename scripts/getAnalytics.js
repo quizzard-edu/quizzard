@@ -18,32 +18,32 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var logger = require('./server/log.js').logger;
-var db = require('./server/db.js');
-var users = require('./server/users.js');
-var analytics = require('./server/analytics.js');
+const logger = require('../server/log.js');
+const db = require('../server/db.js');
+const users = require('../server/users.js');
+const analytics = require('../server/analytics.js');
+const common = require('../server/common.js');
 
 var studentsCount = 0;
 
 /* get analytics for a admins */
 var getAnalytics = function() {
-    var currentDate = new Date().toString();
+    var currentDate = common.getDate();
     users.getStudentsList(function(err, studentsList){
         if (err) {
-            return logger.info(err);
+            return logger.error(err);
         }
 
         for (var i in studentsList) {
             var student = studentsList[i];
             var row = {};
-            var obj = {id: student.id};
 
             row.correctAttemptsCount = student.correctAttemptsCount;
             row.wrongAttemptsCount = student.wrongAttemptsCount;
             row.totalAttemptsCount = student.totalAttemptsCount;
 
             analytics.addStudentAnalyticsWithDate(
-                student.id,
+                student._id,
                 currentDate,
                 row,
                 function(err, result){
@@ -52,7 +52,7 @@ var getAnalytics = function() {
                     }
                     studentsCount++;
                     if(studentsCount === studentsList.length-1) {
-                        logger.info('Done, everything looks fine.');
+                        logger.log('Done, everything looks fine.');
                         process.exit(0);
                     }
                 }
