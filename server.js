@@ -119,17 +119,10 @@ app.post('/login', function(req, res) {
             }
 
             if (user.type === common.userTypes.STUDENT) {
-                settings.getClassActive(function (err, isActive) {
-                    if (err) {
-                        return res.status(500).send(err);
-                    }
-
-                    if (!isActive) {
-                        return res.status(403).send('classNotActive');
-                    }
-
-                    return res.status(200).send('success');
-                });
+                if (!settings.getClassActive()) {
+                    return res.status(403).send('classNotActive');
+                }
+                return res.status(200).send('success');
             }
         }
     });
@@ -312,20 +305,15 @@ app.get('/questionform', function(req, res) {
         return res.redirect('/');
     }
 
-    settings.getAllSettings(function (err, allSettings) {
-        if (err) {
-            logger.error(err);
-        }
-
-        var html = questionCreationPug({
-            questionType: common.questionTypes,
-            defaultTopic: err ? null : allSettings.question.defaultTopic,
-            defaultMinPoints: err ? 10 : allSettings.question.defaultMinPoints,
-            defaultMaxPoints: err ? 100 : allSettings.question.defaultMaxPoints
-        });
-
-        return res.status(200).send(html);
+    const allSettings = settings.getAllSettings();
+    var html = questionCreationPug({
+        questionType: common.questionTypes,
+        defaultTopic: allSettings.question.defaultTopic,
+        defaultMinPoints: allSettings.question.defaultMinPoints,
+        defaultMaxPoints: allSettings.question.defaultMaxPoints
     });
+
+    return res.status(200).send(html);
 });
 
 /* get question answer form */
@@ -906,99 +894,90 @@ app.get('/getDiscussionBoard', function(req, res){
         return res.redirect('/');
     }
 
-    settings.getDiscussionboardVisibilityEnabled(function (err, boardVisibility) {
+    var boardVisibility = settings.getDiscussionboardVisibilityEnabled();
+    var isDislikesEnabled = settings.getDiscussionboardVisibilityEnabled();
+
+    if (boardVisibility === common.discussionboardVisibility.NONE
+        && req.session.user.type === common.userTypes.STUDENT) {
+        return res.status(500).send('hidden');
+    }
+
+    var questionId = req.query.questionId;
+    questions.lookupQuestionById(questionId, function (err, question) {
         if (err) {
+            logger.error(err);
             return res.status(500).send(err);
         }
 
-        if (boardVisibility === common.discussionboardVisibility.NONE
-            && req.session.user.type === common.userTypes.STUDENT) {
-            return res.status(500).send('hidden');
+        if (!question) {
+            logger.error(common.formatString('Could not find the question {0}', [questionId]));
+            return res.status(400).send('Could not find the question');
         }
 
-        settings.getDiscussionboardDislikesEnabled(function (err, isDislikesEnabled) {
+        if (boardVisibility === common.discussionboardVisibility.ANSWERED) {
+            var answeredList = common.getIdsListFromJSONList(question.correctAttempts, 'userId');
+            var answered = (answeredList.indexOf(req.session.user._id) !== -1);
+
+            if (req.session.user.type === common.userTypes.STUDENT && !answered) {
+                return res.status(500).send('hidden');
+            }
+        }
+
+        users.getUsersList((err, userObj) => {
             if (err) {
-                isDislikesEnabled = false;
+                return res.status(500).send('Could not get the list of students');
             }
 
-            var questionId = req.query.questionId;
-            questions.lookupQuestionById(questionId, function (err, question) {
-                if (err) {
-                    logger.error(err);
-                    return res.status(500).send(err);
-                }
+            var usersList = {};
+            for (var i in userObj) {
+                var user = userObj[i];
+                usersList[user._id] = user.fname + ' ' + user.lname;
+            }
 
-                if (!question) {
-                    logger.error(common.formatString('Could not find the question {0}', [questionId]));
-                    return res.status(400).send('Could not find the question');
-                }
-
-                if (boardVisibility === common.discussionboardVisibility.ANSWERED) {
-                    var answeredList = common.getIdsListFromJSONList(question.correctAttempts, 'userId');
-                    var answered = (answeredList.indexOf(req.session.user._id) !== -1);
-
-                    if (req.session.user.type === common.userTypes.STUDENT && !answered) {
-                        return res.status(500).send('hidden');
+            var discussionHtml = discussionBoardPug({
+                comments: question.comments,
+                isDislikesEnabled: isDislikesEnabled,
+                getCurrentUser: () =>{
+                    var userId = req.session.user._id;
+                    if (!usersList[userId]) {
+                        return 'UNKNOWN';
                     }
-                }
-
-                users.getUsersList((err, userObj) => {
-                    if (err) {
-                        return res.status(500).send('Could not get the list of students');
+                    return usersList[userId];
+                },
+                getFirstLastName: (userId) => {
+                    if (!usersList[userId]) {
+                        return 'UNKNOWN';
+                    }
+                    return usersList[userId];
+                },
+                isLiked: (likesList) => {
+                    return likesList.indexOf(req.session.user._id) !== -1;
+                },
+                isDisliked: (dislikesList) => {
+                    return dislikesList.indexOf(req.session.user._id) !== -1;
+                },
+                highlightMentionedUser: (comment) => {
+                    var userId = req.session.user._id;
+                    if (!usersList[userId]) {
+                        return '@UNKNOWN';
                     }
 
-                    var usersList = {};
-                    for (var i in userObj) {
-                        var user = userObj[i];
-                        usersList[user._id] = user.fname + ' ' + user.lname;
-                    }
-
-                    var discussionHtml = discussionBoardPug({
-                        comments: question.comments,
-                        isDislikesEnabled: isDislikesEnabled,
-                        getCurrentUser: () =>{
-                            var userId = req.session.user._id;
-                            if (!usersList[userId]) {
-                                return 'UNKNOWN';
-                            }
-                            return usersList[userId];
-                        },
-                        getFirstLastName: (userId) => {
-                            if (!usersList[userId]) {
-                                return 'UNKNOWN';
-                            }
-                            return usersList[userId];
-                        },
-                        isLiked: (likesList) => {
-                            return likesList.indexOf(req.session.user._id) !== -1;
-                        },
-                        isDisliked: (dislikesList) => {
-                            return dislikesList.indexOf(req.session.user._id) !== -1;
-                        },
-                        highlightMentionedUser: (comment) => {
-                            var userId = req.session.user._id;
-                            if (!usersList[userId]) {
-                                return '@UNKNOWN';
-                            }
-
-                            var fullName = '@' + usersList[userId];
-                            var newComment = '';
-                            if (comment.indexOf(fullName) > -1) {
-                                var parts = comment.split(fullName);
-                                for (var i = 0; i < parts.length-1; i++) {
-                                    newComment += parts[i] + '<b>' + fullName + '</b>';
-                                }
-                                newComment += parts[parts.length-1];
-                            } else {
-                                newComment = comment;
-                            }
-                            return newComment;
+                    var fullName = '@' + usersList[userId];
+                    var newComment = '';
+                    if (comment.indexOf(fullName) > -1) {
+                        var parts = comment.split(fullName);
+                        for (var i = 0; i < parts.length-1; i++) {
+                            newComment += parts[i] + '<b>' + fullName + '</b>';
                         }
-                    });
-
-                    return res.status(200).send(discussionHtml);
-                });
+                        newComment += parts[parts.length-1];
+                    } else {
+                        newComment = comment;
+                    }
+                    return newComment;
+                }
             });
+
+            return res.status(200).send(discussionHtml);
         });
     });
 });
@@ -1118,37 +1097,33 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
                 return res.status(500).send('could not find the list of users');
             }
 
-            settings.getAllSettings(function (err, allSettings) {
-                if (err) {
-                    return res.status(500).send('Could not fetch the settings');
-                }
+            const allSettings = settings.getAllSettings(); 
 
-                var totalList = [];
+            var totalList = [];
 
-                if (allSettings.discussionboard.visibility === common.discussionboardVisibility.ALL) {
-                    for (var i in usersList) {
-                        var user = usersList[i];
-                        if (req.session.user._id !== user._id) {
-                            totalList.push(user.fname+' '+user.lname);
-                        }
-                    }
-                } else if (allSettings.discussionboard.visibility === common.discussionboardVisibility.ANSWERED) {
-                    var answeredList = [];
-                    for (var i in question.correctAttempts) {
-                        answeredList.push(question.correctAttempts[i].userId);
-                    }
-
-                    for (var i in usersList) {
-                        var user = usersList[i];
-                        if (req.session.user._id !== user._id &&
-                            (user.type === common.userTypes.ADMIN || answeredList.indexOf(user._id) !== -1)) {
-                              totalList.push(user.fname+' '+user.lname);
-                        }
+            if (allSettings.discussionboard.visibility === common.discussionboardVisibility.ALL) {
+                for (var i in usersList) {
+                    var user = usersList[i];
+                    if (req.session.user._id !== user._id) {
+                        totalList.push(user.fname+' '+user.lname);
                     }
                 }
+            } else if (allSettings.discussionboard.visibility === common.discussionboardVisibility.ANSWERED) {
+                var answeredList = [];
+                for (var i in question.correctAttempts) {
+                    answeredList.push(question.correctAttempts[i].userId);
+                }
 
-                return res.status(200).send(totalList);
-            });
+                for (var i in usersList) {
+                    var user = usersList[i];
+                    if (req.session.user._id !== user._id &&
+                        (user.type === common.userTypes.ADMIN || answeredList.indexOf(user._id) !== -1)) {
+                          totalList.push(user.fname+' '+user.lname);
+                    }
+                }
+            }
+
+            return res.status(200).send(totalList);
         });
     });
 });
@@ -1452,35 +1427,29 @@ app.get('/profile', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
+    const allSettings = settings.getAllSettings();
 
-    settings.getAllSettings(function (err, allSettings) {
+    users.getUserById(req.session.user._id, function(err, user) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
         }
 
-        users.getUserById(req.session.user._id, function(err, user) {
-            if (err) {
-                logger.error(err);
-                return res.status(500).send(err);
-            }
+        if (!user) {
+            return res.status(400).send('bad request, user does not exist');
+        }
 
-            if (!user) {
-                return res.status(400).send('bad request, user does not exist');
-            }
+        if (user.type === common.userTypes.ADMIN) {
+            allSettings.student.editNames = true;
+            allSettings.student.editEmail = true;
+            allSettings.student.editPassword = true;
+        }
 
-            if (user.type === common.userTypes.ADMIN) {
-                allSettings.student.editNames = true;
-                allSettings.student.editEmail = true;
-                allSettings.student.editPassword = true;
-            }
-
-            return res.status(200).render('profile', {
-                user: user,
-                editNamesEnabled: allSettings.student.editNames,
-                editEmailEnabled: allSettings.student.editEmail,
-                editPasswordEnabled: allSettings.student.editPassword
-            });
+        return res.status(200).render('profile', {
+            user: user,
+            editNamesEnabled: allSettings.student.editNames,
+            editEmailEnabled: allSettings.student.editEmail,
+            editPasswordEnabled: allSettings.student.editPassword
         });
     });
 });
@@ -1495,30 +1464,26 @@ app.get('/settings', function(req, res) {
         return res.status(403).send('Permission Denied');
     }
 
-    settings.getAllSettings(function (err, allSettings) {
-        if (err) {
-            return res.status(500).send('Could not fetch the settings');
-        }
+    const allSettings = settings.getAllSettings();
 
-        var html = settingsPug({
-            generalActive: allSettings.general.active,
-            generalLeaderboardLimit: allSettings.general.leaderboardLimit,
-            studentEditNames: allSettings.student.editNames,
-            studentEditEmail: allSettings.student.editEmail,
-            studentEditPassword: allSettings.student.editPassword,
-            questionDefaultTopic: allSettings.question.defaultTopic,
-            questionDefaultMinPoints: allSettings.question.defaultMinPoints,
-            questionDefaultMaxPoints: allSettings.question.defaultMaxPoints,
-            questionTimeoutEnabled: allSettings.question.timeoutEnabled,
-            questionTimeoutPeriod: allSettings.question.timeoutPeriod,
-            discussionboardVisibility: allSettings.discussionboard.visibility,
-            discussionboardDislikesEnabled: allSettings.discussionboard.dislikesEnabled,
-            checkDiscussionboardVisibility: function (radioButtonValue) {
-                return allSettings.discussionboard.visibility === radioButtonValue;
-            }
-        });
-        return res.status(200).send(html);
+    var html = settingsPug({
+        generalActive: allSettings.general.active,
+        generalLeaderboardLimit: allSettings.general.leaderboardLimit,
+        studentEditNames: allSettings.student.editNames,
+        studentEditEmail: allSettings.student.editEmail,
+        studentEditPassword: allSettings.student.editPassword,
+        questionDefaultTopic: allSettings.question.defaultTopic,
+        questionDefaultMinPoints: allSettings.question.defaultMinPoints,
+        questionDefaultMaxPoints: allSettings.question.defaultMaxPoints,
+        questionTimeoutEnabled: allSettings.question.timeoutEnabled,
+        questionTimeoutPeriod: allSettings.question.timeoutPeriod,
+        discussionboardVisibility: allSettings.discussionboard.visibility,
+        discussionboardDislikesEnabled: allSettings.discussionboard.dislikesEnabled,
+        checkDiscussionboardVisibility: function (radioButtonValue) {
+            return allSettings.discussionboard.visibility === radioButtonValue;
+        }
     });
+    return res.status(200).send(html);
 });
 
 /* Reset the website settings to the default values */
