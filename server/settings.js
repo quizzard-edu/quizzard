@@ -363,72 +363,72 @@ exports.updateSettings = function (updateObject, callback) {
     if ('classActive' in updateObject
         && (updateObject.classActive === 'false'
             || updateObject.classActive === 'true')) {
-        updateQuery.$set['general.active'] = (updateObject.classActive === 'true');
+        updateQuery.$set['general.active'] = allSettings.general.active = (updateObject.classActive === 'true');
     }
 
     if ('studentsOnLeaderboard' in updateObject 
         && parseInt(updateObject.studentsOnLeaderboard)
         && parseInt(updateObject.studentsOnLeaderboard) >= 3) {
-        updateQuery.$set['general.leaderboardLimit'] = parseInt(updateObject.studentsOnLeaderboard);
+        updateQuery.$set['general.leaderboardLimit'] = allSettings.general.leaderboardLimit = parseInt(updateObject.studentsOnLeaderboard);
     }
 
     if ('allowEditName' in updateObject
         && (updateObject.allowEditName === 'false'
             || updateObject.allowEditName === 'true')) {
-        updateQuery.$set['student.editNames'] = (updateObject.allowEditName === 'true');
+        updateQuery.$set['student.editNames'] = allSettings.student.editNames = (updateObject.allowEditName === 'true');
     }
 
     if ('allowEditEmail' in updateObject
         && (updateObject.allowEditEmail === 'false'
             || updateObject.allowEditEmail === 'true')) {
-        updateQuery.$set['student.editEmail'] = (updateObject.allowEditEmail === 'true');
+        updateQuery.$set['student.editEmail'] = allSettings.student.editEmail = (updateObject.allowEditEmail === 'true');
     }
 
     if ('allowEditPassword' in updateObject
         && (updateObject.allowEditPassword === 'false'
             || updateObject.allowEditPassword === 'true')) {
-        updateQuery.$set['student.editPassword'] = (updateObject.allowEditPassword === 'true');
+        updateQuery.$set['student.editPassword'] = allSettings.student.editPassword = (updateObject.allowEditPassword === 'true');
     }
 
     if ('topic' in updateObject && common.getVariableType(updateObject.topic) === '[object String]') {
-        updateQuery.$set['question.defaultTopic'] = updateObject.topic;
+        updateQuery.$set['question.defaultTopic'] = allSettings.question.defaultTopic = updateObject.topic;
     }
 
     if ('minPoints' in updateObject 
         && parseInt(updateObject.minPoints)
         && parseInt(updateObject.minPoints) >= 10) {
-        updateQuery.$set['question.defaultMinPoints'] = parseInt(updateObject.minPoints);
+        updateQuery.$set['question.defaultMinPoints'] = allSettings.question.defaultMinPoints = parseInt(updateObject.minPoints);
     }
 
     if ('maxPoints' in updateObject 
         && parseInt(updateObject.maxPoints)
         && parseInt(updateObject.maxPoints) >= 100) {
-        updateQuery.$set['question.defaultMaxPoints'] = parseInt(updateObject.maxPoints);
+        updateQuery.$set['question.defaultMaxPoints'] = allSettings.question.defaultMaxPoints = parseInt(updateObject.maxPoints);
     }
 
     if ('allowTimeout' in updateObject
         && (updateObject.allowTimeout === 'false'
             || updateObject.allowTimeout === 'true')) {
-        updateQuery.$set['question.timeoutEnabled'] = (updateObject.allowTimeout === 'true');
+        updateQuery.$set['question.timeoutEnabled'] = allSettings.question.timeoutEnabled = (updateObject.allowTimeout === 'true');
     }
 
     if ('timeoutPeriod' in updateObject 
         && parseInt(updateObject.timeoutPeriod)
         && parseInt(updateObject.timeoutPeriod) >= 1) {
-        updateQuery.$set['question.timeoutPeriod'] = parseInt(updateObject.timeoutPeriod);
+        updateQuery.$set['question.timeoutPeriod'] = allSettings.question.timeoutPeriod = parseInt(updateObject.timeoutPeriod)*60000;
     }
 
     if ('discussionView' in updateObject
         && (updateObject.discussionView === common.discussionboardVisibility.NONE
             || updateObject.discussionView === common.discussionboardVisibility.ANSWERED
             || updateObject.discussionView === common.discussionboardVisibility.ALL)) {
-        updateQuery.$set['discussionboard.visibility'] = updateObject.discussionView;
+        updateQuery.$set['discussionboard.visibility'] = allSettings.discussionboard.visibility = updateObject.discussionView;
     }
 
     if ('allowDislikes' in updateObject
         && (updateObject.allowDislikes === 'false'
             || updateObject.allowDislikes === 'true')) {
-        updateQuery.$set['discussionboard.dislikesEnabled'] = (updateObject.allowDislikes === 'true');
+        updateQuery.$set['discussionboard.dislikesEnabled'] = allSettings.discussionboard.dislikesEnabled = (updateObject.allowDislikes === 'true');
     }
 
     updateSettings(updateQuery, callback);
@@ -444,26 +444,21 @@ var updateSettings = function (updateQuery, callback) {
     db.updateSettings({}, updateQuery, callback);
 }
 
-var allSettings = {
-    classActive             : null,
-    studentsOnLeaderboard   : null,
-    allowEditName           : null,
-    allowEditEmail          : null,
-    allowEditPassword       : null,
-    topic                   : null,
-    minPoints               : null,
-    maxPoints               : null,
-    allowTimeout            : null,
-    timeoutPeriod           : null,
-    discussionView          : null,
-    allowDislikes           : null
-}
+/**
+ * Stores the setting data
+ */
+var allSettings = {};
 
-exports.initialize = function(){
-    getAllSettings(function(err, allSettings){
+/**
+ * update settings object
+ *
+ */
+exports.initialize = function(callback){
+    getAllSettings(function(err, allSettingsObj){
         if(err){
-            return err;
+            return callback(err, null);
         }
-        
-    })
+        allSettings = allSettingsObj;
+        return callback(null,'success');
+    });
 }

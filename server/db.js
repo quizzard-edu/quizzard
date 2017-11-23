@@ -50,7 +50,7 @@ exports.initialize = function(callback) {
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
         settingsCollection = db.collection('settings');
-        settings.initialize(function(err,result){
+        settings.initialize(function(err){
             if (err){
                 logger.error(err);
                 process.exit(1);
