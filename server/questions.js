@@ -116,7 +116,7 @@ var prepareQuestionData = function(question, callback) {
 */
 exports.addQuestion = function(question, callback) {
     prepareQuestionData(question, function(err, questionToAdd) {
-        if(err) {
+        if (err) {
             return callback(common.getError(1067), null)
         }
 
@@ -153,7 +153,7 @@ exports.updateQuestionById = function(questionId, info, callback) {
 var updateQuestionById = function(qId, infoToUpdate, callback) {
     // Get Type of question and validate it
     lookupQuestionById(qId, function(err, question) {
-        if(err) {
+        if (err) {
             return callback(common.getError(1062), null);
         }
         infoToUpdate = questionUpdateParser(infoToUpdate);
