@@ -29,13 +29,23 @@ var fetchLeaderboard = function() {
 fetchLeaderboard();
 
 var displayTable = function(studentLeaderList) {
+    var bestScore = -1;
+    var bestIndex = 0;
     $('#leaderboardBody').html('');
     $('#criteriaName').html(boardType.displayName);
     topScore = studentLeaderList[0][boardType.name];
     leaderboardTable.find('#topScore').html(topScore);
     studentLeaderList.forEach((studentObject, index) => {
-        topThreeColours(leaderboardRow, index);
-        leaderboardRow.find('#rank').html(index + 1);
+        
+        if (studentObject[boardType.name] !== bestScore) {
+            bestIndex = index;
+            bestScore = studentObject[boardType.name];            
+            leaderboardRow.find('#rank').html(bestIndex + 1);
+        }
+        else {
+            leaderboardRow.find('#rank').html(bestIndex + 1);            
+        }
+        leaderboardRow.attr('class', topThree(bestIndex));
         leaderboardRow.find('#displayName').html(studentObject.displayName);
         leaderboardRow.find('#criteria').html(studentObject[boardType.name] + 
             ((boardType === leaderboardTypes.ACCURACY) ? '%' : ''));        
@@ -71,19 +81,14 @@ var displayNewLeaderboard = function(type) {
     displayTable(studentLeaderList);
 }
 
-var topThreeColours = function(row, rank){
-    switch(rank){
-        case 0:
-            row.addClass('col-gold');
-            break;
-        case 1:
-            row.addClass('col-silver');
-            break;
-        case 2:
-            row.addClass('col-bronze');
-            break;
-        default:
-            row.addClass('col-default');
-            break;
+var topThree = function(rank){
+    if (rank === 0) {
+        return 'col-gold';
+    } else if (rank === 1) {
+        return 'col-silver';
+    } else if (rank === 2) {
+        return 'col-bronze';
+    } else {
+        return 'col-default';
     }
 }

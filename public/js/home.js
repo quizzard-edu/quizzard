@@ -100,7 +100,7 @@ var fetchLeaderboard = function(t) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             }
-        }
+        },
     });
 }
 
