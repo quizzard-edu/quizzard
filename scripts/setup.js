@@ -27,8 +27,8 @@ var setupAdminAccount = function(accid, pass) {
     var acc = {
         username: accid,
         password: pass,
-        fname: accid,
-        lname: accid,
+        fname: 'root',
+        lname: 'user',
         email: common.formatString('{0}@mail.utoronto.ca', [accid])
     };
 
