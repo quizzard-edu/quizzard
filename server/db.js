@@ -423,7 +423,7 @@ exports.getQuestionsList = function(findQuery, sortQuery, callback) {
         }
 
         for (q in docs) {
-            docs[q].firstAnswer = docs[q].correctAttempts[0] ? docs[q].correctAttempts[0].id : 'No One';
+            docs[q].firstAnswer = docs[q].correctAttempts[0] ? docs[q].correctAttempts[0].userId : 'No One';
         }
 
         return callback(null, docs);
@@ -480,7 +480,7 @@ exports.lookupQuestion = function(findQuery, callback) {
         }
 
         /* necessary for later database update */
-        question.firstAnswer = question.correctAttempts[0] ? question.correctAttempts[0].id : 'No One';
+        question.firstAnswer = question.correctAttempts[0] ? question.correctAttempts[0].userId : 'No One';
         return callback(null, question);
     });
 }
