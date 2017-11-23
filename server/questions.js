@@ -22,6 +22,7 @@ const db = require('./db.js');
 const logger = require('./log.js');
 const common = require('./common.js');
 const questionValidator = require('./questionValidator.js');
+const settings = require('./settings.js')
 
 /*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question) {
@@ -569,6 +570,7 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 }
 
 exports.isUserLocked = function(userId, question, callback){
+    var waiting_time = settings.getQuestionTimeoutPeriod();
     var lastSubmissionTime;
     var currentDate = common.getDateObject();
 

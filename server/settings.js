@@ -415,7 +415,7 @@ exports.updateSettings = function (updateObject, callback) {
     if ('timeoutPeriod' in updateObject 
         && parseInt(updateObject.timeoutPeriod)
         && parseInt(updateObject.timeoutPeriod) >= 1) {
-        updateQuery.$set['question.timeoutPeriod'] = parseInt(updateObject.timeoutPeriod);
+        updateQuery.$set['question.timeoutPeriod'] = parseInt(updateObject.timeoutPeriod)*60000;
     }
 
     if ('discussionView' in updateObject
