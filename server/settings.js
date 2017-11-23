@@ -443,3 +443,27 @@ exports.updateSettings = function (updateObject, callback) {
 var updateSettings = function (updateQuery, callback) {
     db.updateSettings({}, updateQuery, callback);
 }
+
+var allSettings = {
+    classActive             : null,
+    studentsOnLeaderboard   : null,
+    allowEditName           : null,
+    allowEditEmail          : null,
+    allowEditPassword       : null,
+    topic                   : null,
+    minPoints               : null,
+    maxPoints               : null,
+    allowTimeout            : null,
+    timeoutPeriod           : null,
+    discussionView          : null,
+    allowDislikes           : null
+}
+
+exports.initialize = function(){
+    getAllSettings(function(err, allSettings){
+        if(err){
+            return err;
+        }
+        
+    })
+}

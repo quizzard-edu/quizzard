@@ -23,7 +23,7 @@ const Server = require('mongodb').Server;
 const logger = require('./log.js');
 const common = require('./common.js');
 const bcrypt = require('bcryptjs');
-
+const settings = require('./settings.js')
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || 27017;
 const DB_NAME = process.env.DB_NAME || 'quizzard';
@@ -50,7 +50,12 @@ exports.initialize = function(callback) {
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
         settingsCollection = db.collection('settings');
-
+        settings.initialize(function(err,result){
+            if (err){
+                logger.error(err);
+                process.exit(1);
+            }
+        });
         getNextQuestionNumber(function() {
             logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
             return callback();
