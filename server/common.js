@@ -176,7 +176,26 @@ const errors = Object.freeze({
     1045: 'failed to download',
     1046: 'failed to reset all settings',
     1047: 'failed to update settings',
-    1048: 'graphs not available'
+    1048: 'graphs not available',
+    1049: 'failed to initialize database connection',
+    1050: 'failed to check if user exists',
+    1051: 'failed to get sorted student list',
+    1052: 'failed to validate password',
+    1053: 'invalid credentials',
+    1054: 'failed to remove all users',
+    1055: 'failed to make directory',
+    1056: 'failed to remove',
+    1057: 'failed to find user',
+    1058: 'failed to update user',
+    1059: 'failed to hash password',
+    1060: 'failed to add question',
+    1061: 'failed to remove rmrf',
+    1062: 'failed to find question',
+    1063: 'failed to update question',
+    1064: 'failed to add setting',
+    1065: 'failed to get settings object',
+    1066: 'settings object not found'
+
 
 });
 exports.errors = errors;
