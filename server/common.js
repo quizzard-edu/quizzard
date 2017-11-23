@@ -127,77 +127,101 @@ const questionAttributes = Object.freeze({
 });
 exports.questionAttributes = questionAttributes;
 
+/*
+1000 -> system
+2000 -> user
+3000 -> question
+4000 -> class
+5000 -> analytics
+6000 -> import/export
+7000 -> settings
+*/
+
 const errors = Object.freeze({
+    //1000 system
     1000: 'invalid request',
     1001: 'missing requirement',
+    1012: 'permission denied',
+    1021: 'confirm password doesn\'t match',
+    1049: 'failed to initialize database connection',
+    1052: 'failed to validate password',
+    1053: 'invalid credentials',
+    1055: 'failed to make directory',
+    1056: 'failed to remove from database',
+    1059: 'failed to hash password',
+    1061: 'failed to remove rmrf',
+
+    //2000 user
     1002: 'user failed to log in',
-    1003: 'failed to check if the class is active',
-    1004: 'class is not active',
-    1005: 'failed to get question list by user',
     1006: 'failed to get student by id',
     1007: 'failed to get student list',
     1008: 'failed to get student list with status',
     1009: 'failed to sort accounts',
     1010: 'failed to get all settings',
-    1011: 'failed to find matching question type',
-    1012: 'permission denied',
     1013: 'failed to get user by id',
+    1019: 'failed to add student',
+    1020: 'failed to deactivate student account',
+    1022: 'user cannot be found',
+    1023: 'user failed to authenticate',
+    1024: 'failed to update profile',
+    1025: 'failed to update student by id',
+    1031: 'failed to get users list',
+    1050: 'failed to check if user exists',
+    1051: 'failed to get sorted student list',
+    1054: 'failed to remove all users',
+    1057: 'failed to find user',
+    1058: 'failed to update user',
+
+    //3000 question
+    1005: 'failed to get question list by user',
+    1011: 'failed to find matching question type',
     1014: 'failed to look up question by id',
     1015: 'question not found',
     1016: 'failed to get all questions list',
     1017: 'question is not available',
     1018: 'failed to submit answer',
-    1019: 'failed to add student',
-    1020: 'failed to deactivate student account',
-    1021: 'confirm password doesn\'t match',
-    1022: 'user cannot be found',
-    1023: 'user failed to authenticate',
-    1024: 'failed to update profile',
-    1025: 'failed to update student by id',
     1026: 'failed to add question',
     1027: 'invalid rating',
     1028: 'failed to submit rating',
     1029: 'failed to get discussion board visibility enabled',
     1030: 'discussion board is not available',
-    1031: 'failed to get users list',
     1032: 'failed to add comment',
     1033: 'failed to add reply',
     1034: 'invalid vote',
     1035: 'failed to vote on comment',
     1036: 'failed to vote on reply',
     1037: 'failed to get question list',
-    1038: 'failed to find a student from the export list',
-    1039: 'export job failed',
-    1040: 'invalid file format',
-    1041: 'failed to upload file',
-    1042: 'failed to parse the CSV file',
-    1043: 'invalid student list',
-    1044: 'file cannot be found',
-    1045: 'failed to download',
-    1046: 'failed to reset all settings',
-    1047: 'failed to update settings',
-    1048: 'graphs not available',
-    1049: 'failed to initialize database connection',
-    1050: 'failed to check if user exists',
-    1051: 'failed to get sorted student list',
-    1052: 'failed to validate password',
-    1053: 'invalid credentials',
-    1054: 'failed to remove all users',
-    1055: 'failed to make directory',
-    1056: 'failed to remove',
-    1057: 'failed to find user',
-    1058: 'failed to update user',
-    1059: 'failed to hash password',
     1060: 'failed to add question',
-    1061: 'failed to remove rmrf',
     1062: 'failed to find question',
     1063: 'failed to update question',
-    1064: 'failed to add setting',
-    1065: 'failed to get settings object',
-    1066: 'settings object not found',
     1067: 'failed to prepare question data',
-    1068: 'invalid question',
-    1069: 'failed to remove question'
+    1068: 'invalid question attributes',
+    1069: 'failed to remove question',
+
+    //4000 class
+    4000: 'failed to check if the class is active',
+    4001: 'class is not active',
+
+    //5000 analytics
+    5000: 'graphs not available',
+
+    //6000 import/export
+    6000: 'failed to find a student from the export list',
+    6001: 'export job failed',
+    6002: 'invalid file format',
+    6003: 'failed to upload file',
+    6004: 'failed to parse the CSV file',
+    6005: 'invalid student list',
+    6006: 'file cannot be found',
+    6007: 'failed to download',
+
+    //7000 setting
+    7000: 'failed to reset all settings',
+    7001: 'failed to update settings',
+    7002: 'failed to add setting',
+    7003: 'failed to get settings object',
+    7004: 'settings object not found',
+
 
 
 });

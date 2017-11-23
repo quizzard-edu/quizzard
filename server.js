@@ -121,11 +121,11 @@ app.post('/login', function(req, res) {
             if (user.type === common.userTypes.STUDENT) {
                 settings.getClassActive(function (err, isActive) {
                     if (err) {
-                        return res.status(500).send(common.getError(1003));
+                        return res.status(500).send(common.getError(4000));
                     }
 
                     if (!isActive) {
-                        return res.status(403).send(common.getError(1004));
+                        return res.status(403).send(common.getError(4001));
                     }
 
                     return res.status(200).send('success');
@@ -1274,7 +1274,7 @@ app.post('/accountsExportFile', function(req, res) {
             studentsCount++;
             if (studentsCount === totalCount) {
                 if (errors > 0) {
-                    return res.status(500).send(common.getError(1038));
+                    return res.status(500).send(common.getError(6000));
                 }
 
                 var fields = ['username', 'fname', 'lname', 'email'];
@@ -1287,7 +1287,7 @@ app.post('/accountsExportFile', function(req, res) {
                 common.saveFile(userDirectory, file, 'csv', csvData, function(err, result) {
                     if (err) {
                         logger.error(err);
-                        return res.status(500).send(common.getError(1039));
+                        return res.status(500).send(common.getError(6001));
                     }
                     return res.status(200).render('users/accounts-export-complete', {
                         file: fileName
@@ -1315,7 +1315,7 @@ app.post('/accountsImportFile', function (req, res) {
 
     var uploadedFile = req.files.usercsv;
     if (!uploadedFile || uploadedFile.mimetype !== 'text/csv') {
-        return res.status(400).send(common.getError(1040));
+        return res.status(400).send(common.getError(6002));
     }
 
     var newFileName = 'importJob-students-' + uploadedFile.name;
@@ -1323,7 +1323,7 @@ app.post('/accountsImportFile', function (req, res) {
     uploadedFile.mv(newFile, function(err) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1041));
+            return res.status(500).send(common.getError(6003));
         }
 
         logger.log(common.formatString('Uploaded: {0}', [newFile]));
@@ -1338,7 +1338,7 @@ app.post('/accountsImportFile', function (req, res) {
             importedList.push(userObj);
         }).on('done', function(err) {
             if (err) {
-                return res.status(500).send(common.getError(1042));
+                return res.status(500).send(common.getError(6004));
             }
 
             return res.status(200).render('users/accounts-import-list', {
@@ -1359,7 +1359,7 @@ app.post('/accountsImportList', function (req, res) {
     }
 
     if (!req.body.selectedList) {
-        return res.status(400).send(common.getError(1043));
+        return res.status(400).send(common.getError(6005));
     }
 
     var inputLen = req.body.selectedList.length;
@@ -1422,13 +1422,13 @@ app.get('/download', function(req, res) {
     var userDir = common.joinPath(common.fsTree.USERS, req.session.user._id);
     if (!common.fileExists(userDir, fileName)) {
         logger.error(common.formatString('File: {0} does not exist', [fileName]));
-        return res.status(500).send(common.getError(1044));
+        return res.status(500).send(common.getError(6006));
     }
 
     var filePath = common.joinPath(common.fsTree.USERS, req.session.user._id, fileName);
     return res.download(filePath, fileName, function (err) {
         if (err) {
-            logger.error(common.getError(1045));
+            logger.error(common.getError(6007));
         }
     });
 });
@@ -1532,7 +1532,7 @@ app.post('/resetSettings', function (req, res) {
     }
 
     settings.resetAllSettings(function (err, result) {
-        return res.status(err ? 500 : 200).send(err ? common.getError(1046) : 'ok');
+        return res.status(err ? 500 : 200).send(err ? common.getError(7000) : 'ok');
     });
 });
 
@@ -1548,7 +1548,7 @@ app.post('/updateSettings', function(req, res) {
 
     settings.updateSettings(req.body.settings, function (err, result) {
         if (err) {
-            return res.status(500).send(common.getError(1047));
+            return res.status(500).send(common.getError(7001));
         }
 
         return res.status(200).send('ok');
@@ -1565,7 +1565,7 @@ app.get('/studentAnalytics', function(req,res) {
 
     if (req.session.user.type === common.userTypes.ADMIN) {
         if (!req.query.studentId) {
-            return res.status(500).send(common.getError(1048));
+            return res.status(500).send(common.getError(5000));
         }
         query.userId = req.query.studentId;
     }

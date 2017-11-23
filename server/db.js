@@ -592,7 +592,7 @@ exports.resetAllSettings = function (callback) {
 var resetAllSettings = function (callback) {
     settingsCollection.remove({}, function (err, result) {
         if (err) {
-            return callback(common.getError(1046), null);
+            return callback(common.getError(7000), null);
         }
 
         var defaultSettings = {};
@@ -619,7 +619,7 @@ var resetAllSettings = function (callback) {
 
         settingsCollection.insert(defaultSettings, function (err, obj) {
             if (err) {
-                return callback(common.getError(1064), null);
+                return callback(common.getError(7002), null);
             }
 
             return callback(null, 'ok');
@@ -644,11 +644,11 @@ exports.getAllSettings = function (callback) {
 var getAllSettings = function (callback) {
     settingsCollection.findOne({}, function (err, obj) {
         if (err) {
-            return callback (common.getError(1065), null);
+            return callback (common.getError(7003), null);
         }
 
         if (!obj) {
-            return callback (common.getError(1066), null);
+            return callback (common.getError(7004), null);
         }
 
         return callback (null, obj);

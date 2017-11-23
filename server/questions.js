@@ -103,7 +103,7 @@ var prepareQuestionData = function(question, callback) {
             break;
 
         default:
-            return callback({status:400, msg:'Type of Question is Undefined'}, null)
+            return callback(common.getError(1011), null)
     }
 
     return callback(null, questionToAdd);
