@@ -5,24 +5,38 @@ block content
   #feedback.modal
     .modal-content
       h3 Feedback
+      
+      i.modal-action.modal-close.material-icons#closeFeedback(onclick='cancelling=true;') close
 
-      .row
-        form.col.s12
-          .row
-            .input-field.col.s12
-              i.material-icons.prefix label_outline
-              input#subject(placeholder='Subject', type='text')
-              label(for='subject') Subject
-          .row
-            .input-field.col.s12
-              i.material-icons.prefix mode_edit
-              textarea#feedbackArea.materialize-textarea(placeholder='Message', type='text')
-              label(for='feedbackArea') Message
-          .row
-            .input-field.col.s6
-              button.modal-action.btn.btn-info(href='#') Cancel
-            .input-field.col.s6
-              button.modal-action.modal-close.btn.btn-info(type='button') Submit
+      ul.collapsible(data-collapsible="accordion")
+        li
+          .collapsible-header
+            i.material-icons filter_drama
+            | Course Feedback
+          #feedbackBody.collapsible-body
+            .row
+              .col.s12
+                .row
+                  #subjectBox.input-field.col.s12
+                    i.material-icons.prefix label_outline
+                    input#subject(placeholder='Subject', type='text')
+                    label(for='subject') Subject
+                .row
+                  #messageBox.input-field.col.s12
+                    i.material-icons.prefix mode_edit
+                    textarea#feedbackArea.materialize-textarea(placeholder='Message', type='text')
+                    label(for='feedbackArea') Message
+                .row
+                  .input-field.col.s6
+                    button.modal-action.modal-close.btn.btn-info(onclick='cancelling=true;') Cancel
+                  .input-field.col.s6
+                    button.modal-action.modal-close.btn.btn-info Submit
+        li
+          .collapsible-header
+            i.material-icons place
+            | Website Feedback
+          .collapsible-body
+            span Lorem ipsum dolor sit amet.
 
 block scripts
   script(src='/js/feedback.js')

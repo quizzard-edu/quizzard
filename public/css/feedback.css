@@ -1,7 +1,7 @@
 #feedback {
 	background-color: white;
 	max-width: 500px;
-	max-height:370px;
+	max-height: 555px;
 	text-align: center;
 	border-radius: 5px;
 }
@@ -42,4 +42,25 @@
 .row {
 	margin: 0;
 	margin-bottom: 10px;
+}
+
+#feedbackArea {
+	max-height: 44px;
+	overflow-y: scroll;
+}
+
+#feedbackBody {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+#subjectBox #messageBox {
+	padding-left: 0;
+	padding-right: 5;
+}
+
+#closeFeedback {
+	position: absolute;
+	top: 15px;
+	right: 15px;
 }

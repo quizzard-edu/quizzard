@@ -1,4 +1,8 @@
+var cancelling = false;
+
 function userFeedback() {
+    $('.collapsible').collapsible();
+    
     $('#feedback').modal({
         dismissible: false,
         opacity: 0.5,
@@ -6,7 +10,13 @@ function userFeedback() {
             var subject = $('#subject').val();
             var message = $('#feedbackArea').val();
 
-            if(subject !== "" && message !== "") {
+            $('#subject').val('');
+            $('#feedbackArea').val('');
+            $('#feedbackArea').trigger('autoresize');
+            $('#modal-content').scrollTop(0);
+            $('.collapsible').collapsible('close', 0);
+
+            if(subject !== "" && message !== "" && !cancelling) { // if all is good, make call
                 $.ajax({
                     type: 'POST',
                     url: '/submitFeedback',
@@ -15,15 +25,30 @@ function userFeedback() {
                         message: message,
                     },
                     success: function(data) {
+                        
+                        // wait for snackbar to finish, then reload page
                         setTimeout(function(){location.reload(); }, 5500);
                         successSnackbar("Successfully submitted feedback");
                     },
                     error: function(data) {
+
+                        // wait for snackbar to finish, then reload the page
                         setTimeout(function(){location.reload(); }, 5500);
                         failSnackbar("Something went wrong");
                     }
                 });
-            } else {
+            } else if(cancelling) { // if they hit the cancel button, clear stuff, dont go anywhere
+                cancelling = false;
+
+                $('#subject').val('');
+                $('#feedbackArea').val('');
+                $('#feedbackArea').trigger('autoresize');
+                $('#modal-content').scrollTop(0);
+                $('.collapsible').collapsible('close', 0);
+
+            } else { // if their content was empty, do nothing and notify them
+                $('#subject').val(subject);
+                $('#feedbackArea').val(message);
                 failSnackbar("Please enter a subject and a message");
             }
         }

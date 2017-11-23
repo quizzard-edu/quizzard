@@ -34,6 +34,7 @@ var nextQuestionNumber = 0;
 var usersCollection;
 var questionsCollection;
 var analyticsCollection;
+var feedbackCollection;
 
 /* Open a connection to the database. */
 exports.initialize = function(callback) {
@@ -47,6 +48,7 @@ exports.initialize = function(callback) {
         usersCollection = db.collection('users');
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
+        feedbackCollection = db.collection('feedback');
 
         getNextQuestionNumber(function() {
             logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
@@ -563,5 +565,26 @@ exports.updateQuestionById = function(questionId, request, callback) {
 exports.updateQuestionByQuery = function (query, update, callback) {
     questionsCollection.update(query, update, function(err, obj) {
         return callback(err, obj);
+    });
+}
+
+// add feedback to feedback collections directly using a query
+exports.addFeedback = function(feedback, callback) {
+    feedbackCollection.insert(feedback, function(err, res) {
+        if (err) {
+            return callback(err, null);
+        }
+        
+        return callback(null, 'success');
+    });
+}
+
+exports.getFeedback = function(callback) {
+    feedbackCollection.find(function(err, res) {
+        if (err) {
+            return callback(err, null);
+        }
+        
+        return callback(null, 'success');
     });
 }

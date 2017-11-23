@@ -1451,33 +1451,37 @@ app.post('/submitFeedback', function(req, res){
         return res.redirect('/');
     }
 
-    users.getUserById(req.session.user._id, function(err, user) {
+    logger.log(common.formatString('Feedback from {0} regarding {1}', [req.session.user._id, req.body.subject]));
+
+    users.addFeedback(req.session.user._id, req.body.subject, req.body.message, function(err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
         }
 
-        if (!user) {
-            return res.status(400).send('bad request, user does not exist');
+        return res.status(201).send('User feedback submitted');
+    });
+});
+
+app.get('/getFeedback', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
+    logger.log(common.formatString('Getting feedback for {0}', [req.session.user._id]));
+
+    users.getFeedback(function(err, result) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
         }
 
-        logger.log(common.formatString('{0} - feedback:', [user.id]));
-
-        eml({
-            from:   'feedback@quizzard.com',
-            to: 'mohammed.jskhan@gmail.com',
-            subject:    'Quizzard Feedback: ' + req.body.subject,
-            html:   (req.session.user.type === common.userTypes.ADMIN ? 'Admin' : 'Student') + ' user "' + user.username + '" said:<br><br>' + req.body.message
-        }, function (err, reply) {
-            if (err) {
-                return res.status(500).send(err);
-            } else {
-                return res.status(200).send('success');
-            }
-        });
-
-    });
-
+        return res.status(201).send('Got user feedback');
+    })
 });
 
 // 404 route
