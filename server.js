@@ -531,39 +531,6 @@ app.get('/statistics', function(req, res) {
     });
 });
 
-app.get('/sortlist', function(req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    return res.status(200).send(common.sortTypes);
-});
-
-/* Sort question list by specified criterion and send new HTML. */
-app.post('/sortlist', function(req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    var type;
-
-    for (type in common.sortTypes) {
-        if (req.body.sort == common.sortTypes[type]) {
-            break;
-        }
-    }
-
-    questions.sortQuestions(req.session.questions, common.sortTypes[type],
-        function(err, results) {
-          var html = questionListPug({
-              questions: results
-          });
-
-          return res.status(200).send(html);
-        }
-    );
-});
-
 /* Display the question page. */
 app.get('/question', function(req, res) {
     /* if the user has not yet logged in, redirect to login page */

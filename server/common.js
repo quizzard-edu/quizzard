@@ -259,6 +259,25 @@ var isKeyValuePairInJsonList = function(list, field, value) {
 }
 exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
 
+/**
+ * Classic Fisher-Yates shuffle. Nothing to see here
+ * 
+ * @param {list} arr 
+ */
+var shuffle = function(arr) {
+    var curr, tmp, rnd;
+
+    curr = arr.length;
+
+    while (curr) {
+        rnd = Math.floor(Math.random() * curr);
+        --curr;
+        tmp = arr[curr];
+        arr[curr] = arr[rnd];
+        arr[rnd] = tmp;
+    }
+}
+exports.shuffleList = shuffleList;
 // </Global Function> -----------------------------------------------
 
 // <File System functions> ------------------------------------------

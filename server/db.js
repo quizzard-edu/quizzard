@@ -37,7 +37,11 @@ var settingsCollection;
 
 var nextQuestionNumber = 0;
 
-/* Open a connection to the database. */
+/**
+ * Open a connection to the database
+ *
+ * @param {function} callback
+ */
 exports.initialize = function(callback) {
     db.open(function(err, db) {
         if (err) {
@@ -58,16 +62,32 @@ exports.initialize = function(callback) {
     });
 }
 
-// Users functions
-// Add USER to usersCollection in the database
+/**
+ * add a student
+ *
+ * @param {object} student
+ * @param {function} callback
+ */
 exports.addStudent = function(student, callback){
     addUser(student, callback);
 }
 
+/**
+ * add a user
+ *
+ * @param {object} admin
+ * @param {function} callback
+ */
 exports.addAdmin = function(admin, callback){
     addUser(admin, callback);
 }
 
+/**
+ * add a user
+ *
+ * @param {object} user
+ * @param {function} callback
+ */
 var addUser = function(user, callback) {
     usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function(err, obj) {
         if (err) {
@@ -85,24 +105,50 @@ var addUser = function(user, callback) {
     });
 }
 
-/* Return an array of users in the database. */
+/**
+ * get admin list
+ *
+ * @param {function} callback
+ */
 exports.getAdminsList = function(callback) {
     getUsersList({type: common.userTypes.ADMIN}, {username: 1}, callback);
 }
 
+/**
+ * get student list
+ *
+ * @param {function} callback
+ */
 exports.getStudentsList = function(callback) {
     getUsersList({type: common.userTypes.STUDENT}, {username: 1}, callback);
 }
 
+/**
+ * get users list
+ *
+ * @param {function} callback
+ */
 exports.getUsersList = function(callback) {
     getUsersList({}, {username: 1}, callback);
 }
 
+/**
+ * get students list with status
+ *
+ * @param {string} status
+ * @param {function} callback
+ */
 exports.getStudentsListWithStatus = function(status, callback) {
     getUsersList({type: common.userTypes.STUDENT, active: status}, {username: 1}, callback);
 }
 
-/* Return an array of users in the database, sorted by rank. */
+/**
+ * Return an array of users in the database, sorted by rank
+ *
+ * @param {object} findQuery
+ * @param {object} sortQuery
+ * @param {function} callback
+ */
 var getUsersList = function(findQuery, sortQuery, callback){
     usersCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
@@ -113,6 +159,12 @@ var getUsersList = function(findQuery, sortQuery, callback){
     });
 }
 
+/**
+ * get students list sorted
+ *
+ * @param {int} lim
+ * @param {function} callback
+ */
 exports.getStudentsListSorted = function(lim, callback){
     usersCollection.find({type: common.userTypes.STUDENT})
             .sort({points: -1})
@@ -126,13 +178,23 @@ exports.getStudentsListSorted = function(lim, callback){
     });
 }
 
+/**
+ * get user by id
+ *
+ * @param {string} userId
+ * @param {function} callback
+ */
 exports.getUserById = function(userId, callback) {
     getUserById(userId, callback);
 }
 
-/*
- * Check if the account given by user and pass is valid.
+/**
+ * Check if the account given by user and pass is valid
  * user type of null
+ *
+ * @param {string} userId
+ * @param {string} pass
+ * @param {function} callback
  */
 exports.checkLogin = function(userId, pass, callback) {
     usersCollection.findOne({username : userId}, function(err, obj) {
@@ -162,8 +224,12 @@ exports.checkLogin = function(userId, pass, callback) {
     });
 }
 
-/*
- * Check the hash of pass against the password stored in userobj.
+/**
+ * Check the hash of pass against the password stored in userobj
+ *
+ * @param {object} userobj
+ * @param {string} pass
+ * @param {function} callback
  */
 var validatePassword = function(userobj, pass, callback) {
     bcrypt.compare(pass, userobj.password, function(err, obj) {
@@ -171,7 +237,11 @@ var validatePassword = function(userobj, pass, callback) {
     });
 }
 
-// cleanup the users collection
+/**
+ * cleanup the users collection
+ *
+ * @param {function} callback
+ */
 exports.removeAllUsers = function(callback){
     common.rmrf(common.fsTree.HOME, 'Users', function (err, result) {
         if(err){
@@ -198,17 +268,32 @@ exports.removeAllUsers = function(callback){
     });
 }
 
-/*
- * Fetch the user object with ID userId in the users database.
+/**
+ * get student by id
+ *
+ * @param {string} studentId
+ * @param {function} callback
  */
 exports.getStudentById = function(studentId, callback) {
     getUserById(studentId, callback);
 }
 
+/**
+ * get admin by id
+ *
+ * @param {string} adminId
+ * @param {function} callback
+ */
 exports.getAdminById = function(adminId, callback) {
     getUserById(adminId, callback);
 }
 
+/**
+ * get user by id
+ *
+ * @param {string} userId
+ * @param {function} callback
+ */
 var getUserById = function(userId, callback){
     usersCollection.findOne({_id : userId}, function(err, obj) {
         if (err) {
@@ -220,23 +305,46 @@ var getUserById = function(userId, callback){
     });
 }
 
-// Update a student record using its Id
+/**
+ * update user by id
+ *
+ * @param {string} userId
+ * @param {object} info
+ * @param {function} callback
+ */
 exports.updateUserById = function(userId, info, callback){
     updateUserById(userId, info, callback);
 }
 
+/**
+ * update student by id
+ *
+ * @param {string} userId
+ * @param {object} info
+ * @param {function} callback
+ */
 exports.updateStudentById = function(userId, info, callback){
     updateUserById(userId, info, callback);
 }
 
+/**
+ * update admin by id
+ *
+ * @param {string} userId
+ * @param {object} info
+ * @param {function} callback
+ */
 exports.updateAdminById = function(userId, info, callback){
     updateUserById(userId, info, callback);
 }
 
-exports.getStudentRank = function (studentId, callback) {
-	db.getStudentRank(studentId, callback);
-}
-
+/**
+ * update user by id
+ *
+ * @param {string} userId
+ * @param {object} info
+ * @param {function} callback
+ */
 var updateUserById = function(userId, info, callback){
     var currentDate = new Date().toString();
     var query = { _id : userId };
@@ -280,23 +388,23 @@ var updateUserById = function(userId, info, callback){
         update.$set.active = info.active;
     }
 
-    if (isEmptyObject(update.$addToSet)) {
+    if (common.isEmptyObject(update.$addToSet)) {
         delete update.$addToSet;
     }
 
-    if (isEmptyObject(update.$inc)) {
+    if (common.isEmptyObject(update.$inc)) {
         delete update.$inc;
     }
 
-    if (isEmptyObject(update.$set)) {
+    if (common.isEmptyObject(update.$set)) {
         delete update.$set;
     }
 
-    if (isEmptyObject(update.$pull)) {
+    if (common.isEmptyObject(update.$pull)) {
         delete update.$pull;
     }
 
-    if (isEmptyObject(update.$push)) {
+    if (common.isEmptyObject(update.$push)) {
         delete update.$push;
     }
 
@@ -315,10 +423,26 @@ var updateUserById = function(userId, info, callback){
     }
 }
 
+/**
+ * update user password
+ *
+ * @param {object} query
+ * @param {object} update
+ * @param {string} password
+ * @param {function} callback
+ */
 exports.updateUserPassword = function(query, update, password, callback) {
     updateUserPassword(query, update, password, callback);
 }
 
+/**
+ * update user password
+ *
+ * @param {object} query
+ * @param {object} update
+ * @param {string} password
+ * @param {function} callback
+ */
 var updateUserPassword = function(query, update, password, callback) {
     bcrypt.hash(password, 11, function(err, hash) {
         if (err) {
@@ -326,7 +450,7 @@ var updateUserPassword = function(query, update, password, callback) {
             return callback(err, null);
         }
 
-        if (update.$set && !isEmptyObject(update.$set)) {
+        if (update.$set && !common.isEmptyObject(update.$set)) {
             update.$set.password = hash;
         } else {
             update.$set = {password: hash};
@@ -343,25 +467,26 @@ var updateUserPassword = function(query, update, password, callback) {
     });
 }
 
-// update users collection directly by a query
+/**
+ * update users collection directly by a query
+ *
+ * @param {object} query
+ * @param {object} update
+ * @param {function} callback
+ */
 exports.updateUserByQuery = function (query, update, callback) {
     usersCollection.update(query, update, function(err, obj) {
         return callback(err, obj);
     });
 }
 
-// check if json obejct is empty
-var isEmptyObject = function(obj) {
-    for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-// Questions functions
-// Add QUESTION to questionsCollection in the database
+/**
+ * Questions functions
+ * Add QUESTION to questionsCollection in the database
+ *
+ * @param {object} question
+ * @param {function} callback
+ */
 exports.addQuestion = function(question, callback) {
     question.number = ++nextQuestionNumber;
     questionsCollection.insert(question, function(err, res) {
@@ -374,7 +499,11 @@ exports.addQuestion = function(question, callback) {
     });
 }
 
-// cleanup the users collection
+/**
+ * cleanup the users collection
+ *
+ * @param {function} callback
+ */
 exports.removeAllQuestions = function(callback) {
     common.rmrf(common.fsTree.HOME, 'Questions', function (err, result) {
         if(err){
@@ -403,7 +532,11 @@ exports.removeAllQuestions = function(callback) {
     });
 }
 
-// get next question number
+/**
+ * get next question number
+ *
+ * @param {function} callback
+ */
 var getNextQuestionNumber = function(callback) {
       questionsCollection.find().sort({number: -1}).limit(1).toArray(function(err, docs) {
         if (err) {
@@ -416,6 +549,13 @@ var getNextQuestionNumber = function(callback) {
     });
 }
 
+/**
+ * get the list of questions sorted
+ *
+ * @param {object} findQuery
+ * @param {object} sortQuery
+ * @param {function} callback
+ */
 exports.getQuestionsList = function(findQuery, sortQuery, callback) {
     questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
@@ -430,45 +570,12 @@ exports.getQuestionsList = function(findQuery, sortQuery, callback) {
     });
 }
 
-/* Classic Fisher-Yates shuffle. Nothing to see here. */
-var shuffle = function(arr) {
-    var curr, tmp, rnd;
-
-    curr = arr.length;
-
-    while (curr) {
-        rnd = Math.floor(Math.random() * curr);
-        --curr;
-        tmp = arr[curr];
-        arr[curr] = arr[rnd];
-        arr[rnd] = tmp;
-    }
-}
-
-/* Sort questions by the given sort type. */
-exports.sortQuestions = function(questions, type, callback) {
-    var cmpfn;
-
-    if (type & common.sortTypes.SORT_RANDOM) {
-        shuffle(questions);
-        return callback(null, questions);
-    } else if (type & common.sortTypes.SORT_TOPIC) {
-        cmpfn = function(a, b) {
-            return a.topic < b.topic ? -1 : 1;
-        };
-    } else if (type & common.sortTypes.SORT_POINTS) {
-        cmpfn = function(a, b) {
-            return b.points - a.points;
-        };
-    } else {
-        cmpfn = function(a, b) { return -1; };
-    }
-
-    questions.sort(cmpfn);
-    return callback(null, questions);
-}
-
-/* Extract a question object from the database using its ID. */
+/**
+ * Extract a question object from the database using its ID
+ *
+ * @param {object} findQuery
+ * @param {function} callback
+ */
 exports.lookupQuestion = function(findQuery, callback) {
     questionsCollection.findOne(findQuery, function(err, question) {
         if (err) {
@@ -485,7 +592,13 @@ exports.lookupQuestion = function(findQuery, callback) {
     });
 }
 
-// update a question record based on its id
+/**
+ * update a question record based on its id
+ *
+ * @param {string} questionId
+ * @param {object} request
+ * @param {function} callback
+ */
 exports.updateQuestionById = function(questionId, request, callback) {
     var currentDate = new Date().toString();
     var query = {_id: questionId};
@@ -541,23 +654,23 @@ exports.updateQuestionById = function(questionId, request, callback) {
         update.$set.visible = request.visible;
     }
 
-    if (isEmptyObject(update.$addToSet)) {
+    if (common.isEmptyObject(update.$addToSet)) {
         delete update.$addToSet;
     }
 
-    if (isEmptyObject(update.$push)) {
+    if (common.isEmptyObject(update.$push)) {
         delete update.$push;
     }
 
-    if (isEmptyObject(update.$set)) {
+    if (common.isEmptyObject(update.$set)) {
         delete update.$set;
     }
 
-    if (isEmptyObject(update.$pull)) {
+    if (common.isEmptyObject(update.$pull)) {
         delete update.$pull;
     }
 
-    if (isEmptyObject(update.$inc)) {
+    if (common.isEmptyObject(update.$inc)) {
         delete update.$inc;
     }
 
@@ -570,7 +683,13 @@ exports.updateQuestionById = function(questionId, request, callback) {
     });
 }
 
-// update users collection directly by a query
+/**
+ * update users collection directly by a query
+ *
+ * @param {object} query
+ * @param {object} update
+ * @param {function} callback
+ */
 exports.updateQuestionByQuery = function (query, update, callback) {
     questionsCollection.update(query, update, function(err, obj) {
         return callback(err, obj);
@@ -661,11 +780,11 @@ var getAllSettings = function (callback) {
  * add student analytics
  * if there are no records of the student, create a new record
  * if there are recards of the student, get the last recard and compute the deltas
- * 
- * @param {string} studentId 
- * @param {string} date 
- * @param {object} info 
- * @param {function} callback 
+ *
+ * @param {string} studentId
+ * @param {string} date
+ * @param {object} info
+ * @param {function} callback
  */
 exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
     var query = {_id: studentId};

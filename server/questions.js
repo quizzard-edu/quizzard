@@ -140,11 +140,6 @@ exports.addQuestion = function(question, callback) {
     })
 }
 
-/* Sort questions by the given sort type. */
-exports.sortQuestions = function(qs, type, callback) {
-    db.sortQuestions(qs, type, callback);
-}
-
 /* Replace a question in the database with the provided question object. */
 exports.updateQuestionById = function(questionId, info, callback) {
     updateQuestionById(questionId, info, callback);

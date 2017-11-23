@@ -399,10 +399,6 @@ exports.submitRating = function (userId, questionId, rating, callback) {
     db.updateUserById(userId, {questionId: questionId, rating: rating}, callback);
 }
 
-exports.getStudentRank = function (studentId, callback) {
-    db.getStudentRank(studentId, callback);
-}
-
 /**
  * update user's profile based on the given infomation
  *
