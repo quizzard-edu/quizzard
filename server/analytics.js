@@ -18,9 +18,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var users = require('./users.js');
-var logger = require('./log.js');
-var common = require('./common.js');
+const users = require('./users.js');
+const logger = require('./log.js');
+const common = require('./common.js');
 
 // get charts
 exports.getChart = function(query, callback) {

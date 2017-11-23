@@ -12,8 +12,9 @@ each itemComment, indexReply in comments
           i.small.material-icons.thumb-up-picture.cursor-pointer(id='like_' + itemComment['_id'], onclick='voteClickComment($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)', class=isLiked(itemComment['likes']) ? 'liked' : '') thumb_up
           span.likes-number(id='numLikes_' + itemComment['_id']) #{itemComment['likesCount']}
           span &nbsp&nbsp
-          i.small.material-icons.thumb-down-picture.cursor-pointer(id='dislike_' + itemComment['_id'], onclick='voteClickComment($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)', class=isDisliked(itemComment['dislikes']) ? 'disliked' : '') thumb_down
-          span.likes-number(id='numDislikes_' + itemComment['_id']) #{itemComment['dislikesCount']}
+          if isDislikesEnabled
+            i.small.material-icons.thumb-down-picture.cursor-pointer(id='dislike_' + itemComment['_id'], onclick='voteClickComment($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)', class=isDisliked(itemComment['dislikes']) ? 'disliked' : '') thumb_down
+            span.likes-number(id='numDislikes_' + itemComment['_id']) #{itemComment['dislikesCount']}
         br
         span.date=itemComment['date']
 
@@ -34,8 +35,9 @@ each itemComment, indexReply in comments
               i.small.material-icons.thumb-up-picture.cursor-pointer(id='like_' + itemReply['_id'], onclick='voteClickReply($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)', class=isLiked(itemReply['likes']) ? 'liked' : '') thumb_up
               span.likes-number(id='numLikes_' + itemReply['_id']) #{itemReply['likesCount']}
               span &nbsp&nbsp
-              i.small.material-icons.thumb-down-picture.cursor-pointer(id='dislike_' + itemReply['_id'], onclick='voteClickReply($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)', class=isDisliked(itemReply['dislikes']) ? 'disliked' : '') thumb_down
-              span.likes-number(id='numDislikes_' + itemReply['_id']) #{itemReply['dislikesCount']}
+              if isDislikesEnabled
+                i.small.material-icons.thumb-down-picture.cursor-pointer(id='dislike_' + itemReply['_id'], onclick='voteClickReply($(this), -1)', onmouseover='voteHover($(this), -1)', onmouseout='voteLeave($(this), -1)', class=isDisliked(itemReply['dislikes']) ? 'disliked' : '') thumb_down
+                span.likes-number(id='numDislikes_' + itemReply['_id']) #{itemReply['dislikesCount']}
             br
             span.date=itemReply['date']
           hr.divider

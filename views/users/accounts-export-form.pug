@@ -13,9 +13,9 @@
               thead
                 tr
                   th Included
+                  th Username
                   th First Name
                   th Last Name
-                  th User ID
                   th Email
                   th Active
               tbody
@@ -23,11 +23,11 @@
                   tr(class=s.active ? '' : 'grey lighten-2')
                     td
                       p
-                        input.checked(id='cb-' + s.id type='checkbox' checked=s.active)
-                        label.visbox(for='cb-' + s.id)
+                        input.checked(id='cb-' + s._id, type='checkbox', checked=s.active)
+                        label.visbox(for='cb-' + s._id)
+                    td #{s.username}
                     td #{s.fname}
                     td #{s.lname}
-                    td #{s.id}
                     td #{s.email}
                     td #{s.active}
           br

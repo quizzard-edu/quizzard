@@ -36,7 +36,8 @@
             tr
               th ID
               th Title
-              th Points
+              th Min Points
+              th Max Points
               th Total Attempts
               th Correct Answers
               th Success Rate
@@ -46,7 +47,8 @@
               tr
                 td #{q.number}
                 td #{q.title}
-                td #{q.points}
+                td #{q.minpoints}
+                td #{q.maxpoints}
                 td #{q.totalAttemptsCount}
                 td #{q.correctAttemptsCount}
                 if q.totalAttemptsCount === 0

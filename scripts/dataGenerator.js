@@ -18,16 +18,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var logger = require('./../server/log.js');
-var db = require('./../server/db.js');
-var users = require('./../server/users.js');
-var questions = require('./../server/questions.js');
-var common = require('./../server/common.js');
-var datagenInfo = require('./datagenInfo.js');
+const logger = require('./../server/log.js');
+const db = require('./../server/db.js');
+const users = require('./../server/users.js');
+const questions = require('./../server/questions.js');
+const common = require('./../server/common.js');
+const datagenInfo = require('./datagenInfo.js');
 
-// variables to control the genereated data
+// constants to control the genereated data
 
-var numberOfEachQuestion = {
+const numberOfEachQuestion = {
     'regular': 2,
     'multipleChoice': 2,
     'trueFalse': 2,
@@ -36,19 +36,22 @@ var numberOfEachQuestion = {
     'ordering': 2
 };
 
-var adminsCount = 2;
-var studentsCount = 10;
-var questionsMaxValue = 20;
-var questionsAttempts = 10;
-var commentsPerQuestion = 3;
-var commentActionsPerQuestion = 3;
-var commentRepliesVotesPerQuestion = 3;
+const adminsCount = 2;
+const studentsCount = 10;
+const questionsMinMinValue = 10;
+const questionsMaxMinValue = 20;
+const questionsMinMaxValue = 60;
+const questionsMaxMaxValue = 100;
+const questionsAttempts = 10;
+const commentsPerQuestion = 3;
+const commentActionsPerQuestion = 3;
+const commentRepliesVotesPerQuestion = 3;
 
 // Probabilities used in generating data
-var commentPercentage = 50;
-var commentActionPercentage = 50;
-var mentionsPercentage = 50;
-var questionsCorrectPercentage = 40;
+const commentPercentage = 50;
+const commentActionPercentage = 50;
+const mentionsPercentage = 50;
+const questionsCorrectPercentage = 40;
 
 // variables used by the script for different functionality
 // Do NOT change the variables below
@@ -170,12 +173,15 @@ var createQuestionsRegular = function () {
  * @param {integer} id
  */
 var addQuestionRegular = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: 'KonniChiwa',
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.REGULAR.value,
         hint: 'KonniChiwa',
         visible: 'true'
@@ -256,12 +262,15 @@ var createQuestionsMultipleChoice = function () {
  * @param {integer} id
  */
 var addQuestionMultipleChoice = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: 'Option1',
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.MULTIPLECHOICE.value,
         hint: 'Option1',
         visible: 'true',
@@ -343,12 +352,15 @@ var createQuestionsTrueFalse = function () {
  * @param {integer} id
  */
 var addQuestionTrueFalse = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: 'true',
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.TRUEFALSE.value,
         hint: 'Option1',
         visible: 'true'
@@ -429,12 +441,15 @@ var createQuestionsMatching = function () {
  * @param {integer} id
  */
 var addQuestionMatching = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: 'true',
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.MATCHING.value,
         hint: 'Option1',
         visible: 'true',
@@ -517,12 +532,15 @@ var createQuestionsChooseAll = function () {
  * @param {integer} id
  */
 var addQuestionChooseAll = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: ['c1', 'c2', 'c4'],
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.CHOOSEALL.value,
         hint: 'Option1',
         visible: 'true',
@@ -604,12 +622,15 @@ var createQuestionsOrdering = function () {
  * @param {integer} id
  */
 var addQuestionOrdering = function (qTopic, id) {
+    const minMaxPoints = minMaxPointGenerator();
+
     var question = {
         topic: 'CSC492',
         title: qTopic,
         text: '<p>' + qTopic + ' Text</p>',
         answer: ['i1', 'i2', 'i3', 'c4'],
-        points: Math.floor(Math.random() * questionsMaxValue),
+        minpoints: minMaxPoints[0],
+        maxpoints: minMaxPoints[1],
         type: common.questionTypes.ORDERING.value,
         hint: 'Option1',
         visible: 'true'
@@ -708,7 +729,7 @@ var addComments = function (questionId, callback) {
 
             users.getUsersList(function (err, usersList) {
                 if (err) {
-                    return res.status(500).send('could not find the list of users');
+                    return callback('could not find the list of users', null);
                 }
 
                 var totalList = [];
@@ -795,7 +816,7 @@ var addCommentActions = function (questionId, callback) {
 
             users.getUsersList(function (err, usersList) {
                 if (err) {
-                    return res.status(500).send('could not find the list of users');
+                    return callback('could not find the list of users', null);
                 }
 
                 var totalList = [];
@@ -939,7 +960,7 @@ var checkAnswer = function (questionId, userId, answer, callback) {
             return callback('Could not find the question', null);
         } else {
             var value = questions.verifyAnswer(question, answer);
-            var points = question.points;
+            var points = Math.floor(Math.max(question.minpoints, question.maxpoints/Math.cbrt(question.correctAttemptsCount + 1)));
 
             users.submitAnswer(
                 userId, questionId, value, points, answer,
@@ -1038,6 +1059,16 @@ var calculateTotalNumberOfQuestions = function () {
     totalNumberOfQuestions = totalCreated;
 }
 
+/**
+* This function returns a random maximum and minimum points for a question based on the variables defined
+*/
+var minMaxPointGenerator = function () {
+    return [
+        Math.floor(Math.random() * (questionsMaxMinValue - questionsMinMinValue) + questionsMinMinValue),
+        Math.floor(Math.random() * (questionsMaxMaxValue - questionsMinMaxValue) + questionsMinMaxValue)
+    ]
+}
+
 db.initialize(function () {
     db.removeAllUsers(function (err, res) {
         if (err) {
@@ -1049,8 +1080,14 @@ db.initialize(function () {
                 process.exit(1);
             }
 
-            calculateTotalNumberOfQuestions();
-            createAdmins();
+            db.resetAllSettings(function (err, res) {
+                if (err) {
+                    process.exit(1);
+                }
+
+                calculateTotalNumberOfQuestions();
+                createAdmins();
+            });
         });
     });
 });
