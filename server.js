@@ -1127,7 +1127,7 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
 
                 if (allSettings.discussionboard.visibility === common.discussionboardVisibility.ALL) {
                     for (var i in usersList) {
-                        let user = usersList[i];
+                        var user = usersList[i];
                         if (req.session.user._id !== user._id) {
                             totalList.push(user.fname+' '+user.lname);
                         }
@@ -1139,7 +1139,7 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
                     }
 
                     for (var i in usersList) {
-                        let user = usersList[i];
+                        var user = usersList[i];
                         if (req.session.user._id !== user._id &&
                             (user.type === common.userTypes.ADMIN || answeredList.indexOf(user._id) !== -1)) {
                               totalList.push(user.fname+' '+user.lname);
