@@ -194,7 +194,10 @@ const errors = Object.freeze({
     1063: 'failed to update question',
     1064: 'failed to add setting',
     1065: 'failed to get settings object',
-    1066: 'settings object not found'
+    1066: 'settings object not found',
+    1067: 'failed to prepare question data',
+    1068: 'invalid question',
+    1069: 'failed to remove question'
 
 
 });
