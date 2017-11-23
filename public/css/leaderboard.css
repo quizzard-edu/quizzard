@@ -33,11 +33,12 @@ li.silver {
 }
 
 .silver, .bronze {
-    transform: scale(0.75);
+    transform: scale(0.50);
 }
 
 li img {
     display: inline-flex;
+    max-width: 60%;
 }
 
 li span.score {
