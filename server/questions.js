@@ -588,8 +588,9 @@ exports.isUserLocked = function(userId, question, callback){
 
     if(lastSubmissionTime){
         const diff = Math.abs(currentDate - lastSubmissionTime);
+        const timeLeftToWait = common.waiting_time - diff;
         if (diff < common.waiting_time){
-            return callback(true,common.getTime(common.waiting_time - diff));
+            return callback(true,common.getTime(timeLeftToWait), timeLeftToWait);
         }
     }
     return callback(false,null);

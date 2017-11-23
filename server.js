@@ -592,7 +592,7 @@ app.get('/question', function(req, res) {
                 hasQrating = true;
             }
         }
-        questions.isUserLocked(userId, questionFound, function(isLocked, waitTime){
+        questions.isUserLocked(userId, questionFound, function(isLocked, waitTimeMessage, waitTimeinMiliSeconds){
             return res.status(200).render('question-view', {
                 user: req.session.user,
                 question: questionFound,
@@ -604,28 +604,28 @@ app.get('/question', function(req, res) {
                 getQuestionForm: function(){
                     switch (questionFound.type){
                         case common.questionTypes.REGULAR.value:
-                            return regexForm({studentQuestionForm:true})
+                            return regexFormPug({studentQuestionForm:true})
                         case common.questionTypes.MULTIPLECHOICE.value:
-                            return mcForm({studentQuestionForm:true, question:questionFound})
+                            return mcFormPug({studentQuestionForm:true, question:questionFound})
                         case common.questionTypes.TRUEFALSE.value:
-                            return tfForm({studentQuestionForm:true, question:questionFound})
+                            return tfFormPug({studentQuestionForm:true, question:questionFound})
                         case common.questionTypes.CHOOSEALL.value:
-                            return chooseAllForm({studentQuestionForm:true, question:questionFound})
+                            return chooseAllFormPug({studentQuestionForm:true, question:questionFound})
                         case common.questionTypes.MATCHING.value:
                             // randomize the order of the matching
                             questionFound.leftSide = common.randomizeList(questionFound.leftSide);
                             questionFound.rightSide = common.randomizeList(questionFound.rightSide);
-                            return matchingForm({studentQuestionForm:true, question:questionFound})
+                            return matchingFormPug({studentQuestionForm:true, question:questionFound})
                         case common.questionTypes.ORDERING.value:
                             // randomize the order of ordering question
                             questionFound.answer = common.randomizeList(questionFound.answer);
-                            return orderingForm({studentQuestionForm:true, question:questionFound})
+                            return orderingFormPug({studentQuestionForm:true, question:questionFound})
                         default:
                             break;
                     }
                 },
                 isLocked: isLocked,
-                waitTime: waitTime
+                waitTime: waitTimeinMiliSeconds
             });
         });
     });
@@ -653,9 +653,9 @@ app.post('/submitanswer', function(req, res) {
         }
 
         // check if question is locked for the student
-        questions.isUserLocked(userId, question, function(isLocked, waitTime){
+        questions.isUserLocked(userId, question, function(isLocked, waitTimeMessage, waitTimeinMiliSeconds){
             if (isLocked){
-                return res.status(423).send(waitTime);
+                return res.status(423).send(waitTimeMessage);
             }
 
             logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
