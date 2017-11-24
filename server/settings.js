@@ -38,7 +38,7 @@ exports.resetAllSettings = function (callback) {
  */
 exports.getClassActive = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.general.active);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.general.active);
     });
 }
 
@@ -50,7 +50,7 @@ exports.getClassActive = function (callback) {
  */
 exports.setClassActive = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'general.active': isActive}}, callback);
@@ -63,7 +63,7 @@ exports.setClassActive = function (isActive, callback) {
  */
 exports.getLeaderboardLimit = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.general.leaderboardLimit);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.general.leaderboardLimit);
     });
 }
 
@@ -75,7 +75,7 @@ exports.getLeaderboardLimit = function (callback) {
  */
 exports.setLeaderboardLimit = function (limit, callback) {
     if (common.getVariableType(limit) !== '[object Number]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'general.leaderboardLimit': limit}}, callback);
@@ -88,7 +88,7 @@ exports.setLeaderboardLimit = function (limit, callback) {
  */
 exports.getStudentEditNameEnabled = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.student.editNames);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.student.editNames);
     });
 }
 
@@ -100,7 +100,7 @@ exports.getStudentEditNameEnabled = function (callback) {
  */
 exports.setStudentEditNameEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'student.editNames': isActive}}, callback);
@@ -113,7 +113,7 @@ exports.setStudentEditNameEnabled = function (isActive, callback) {
  */
 exports.getStudentEditEmailEnabled = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.student.editEmail);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.student.editEmail);
     });
 }
 
@@ -125,7 +125,7 @@ exports.getStudentEditEmailEnabled = function (callback) {
  */
 exports.setStudentEditEmailEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'student.editEmail': isActive}}, callback);
@@ -138,7 +138,7 @@ exports.setStudentEditEmailEnabled = function (isActive, callback) {
  */
 exports.getStudentEditPasswordEnabled = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.student.editPassword);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.student.editPassword);
     });
 }
 
@@ -150,7 +150,7 @@ exports.getStudentEditPasswordEnabled = function (callback) {
  */
 exports.setStudentEditPasswordEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'student.editPassword': isActive}}, callback);
@@ -163,7 +163,7 @@ exports.setStudentEditPasswordEnabled = function (isActive, callback) {
  */
 exports.getQuestionDefaultTopic = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.defaultTopic);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.question.defaultTopic);
     });
 }
 
@@ -175,7 +175,7 @@ exports.getQuestionDefaultTopic = function (callback) {
  */
 exports.setQuestionDefaultTopic = function (topic, callback) {
     if (common.getVariableType(topic) !== '[object String]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'question.defaultTopic': topic}}, callback);
@@ -188,7 +188,7 @@ exports.setQuestionDefaultTopic = function (topic, callback) {
  */
 exports.getQuestionDefaultMinPoints = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.defaultMinPoints);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.question.defaultMinPoints);
     });
 }
 
@@ -200,7 +200,7 @@ exports.getQuestionDefaultMinPoints = function (callback) {
  */
 exports.setQuestionDefaultMinPoints = function (points, callback) {
     if (common.getVariableType(points) !== '[object Number]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'question.defaultMinPoints': points}}, callback);
@@ -213,7 +213,7 @@ exports.setQuestionDefaultMinPoints = function (points, callback) {
  */
 exports.getQuestionDefaultMaxPoints = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.defaultMaxPoints);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.question.defaultMaxPoints);
     });
 }
 
@@ -225,7 +225,7 @@ exports.getQuestionDefaultMaxPoints = function (callback) {
  */
 exports.setQuestionDefaultMinPoints = function (points, callback) {
     if (common.getVariableType(points) !== '[object Number]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'question.defaultMaxPoints': points}}, callback);
@@ -238,7 +238,7 @@ exports.setQuestionDefaultMinPoints = function (points, callback) {
  */
 exports.getQuestionTimeoutEnabled = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.timeoutEnabled);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.question.timeoutEnabled);
     });
 }
 
@@ -250,7 +250,7 @@ exports.getQuestionTimeoutEnabled = function (callback) {
  */
 exports.setQuestionTimeoutEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'question.timeoutEnabled': isActive}}, callback);
@@ -263,7 +263,7 @@ exports.setQuestionTimeoutEnabled = function (isActive, callback) {
  */
 exports.getQuestionTimeoutPeriod = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.timeoutPeriod);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.question.timeoutPeriod);
     });
 }
 
@@ -275,7 +275,7 @@ exports.getQuestionTimeoutPeriod = function (callback) {
  */
 exports.setQuestionTimeoutPeriod = function (timeout, callback) {
     if (common.getVariableType(timeout) !== '[object Number]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'question.timeoutPeriod': timeout}}, callback);
@@ -288,7 +288,7 @@ exports.setQuestionTimeoutPeriod = function (timeout, callback) {
  */
 exports.getDiscussionboardVisibilityEnabled = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.discussionboard.visibility);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.discussionboard.visibility);
     });
 }
 
@@ -300,7 +300,7 @@ exports.getDiscussionboardVisibilityEnabled = function (callback) {
  */
 exports.setDiscussionboardVisibilityEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'discussionboard.visibility': isActive}}, callback);
@@ -313,7 +313,7 @@ exports.setDiscussionboardVisibilityEnabled = function (isActive, callback) {
  */
 exports.getDiscussionboardDislikesEnabled = function (callback) {
     getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.discussionboard.dislikesEnabled);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings.discussionboard.dislikesEnabled);
     });
 }
 
@@ -325,7 +325,7 @@ exports.getDiscussionboardDislikesEnabled = function (callback) {
  */
 exports.setDiscussionboardDislikesEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'discussionboard.dislikesEnabled': isActive}}, callback);
@@ -347,7 +347,7 @@ exports.getAllSettings = function (callback) {
  */
 var getAllSettings = function (callback) {
     db.getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings);
     });
 }
 

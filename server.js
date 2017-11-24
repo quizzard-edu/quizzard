@@ -314,7 +314,7 @@ app.get('/questionform', function(req, res) {
 
     settings.getAllSettings(function (err, allSettings) {
         if (err) {
-            logger.error(common.getError(2005));
+            logger.error(common.getError(7005));
         }
 
         var html = questionCreationPug({
@@ -1120,7 +1120,7 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
 
             settings.getAllSettings(function (err, allSettings) {
                 if (err) {
-                    return res.status(500).send(common.getError(2005));
+                    return res.status(500).send(common.getError(7005));
                 }
 
                 var totalList = [];
@@ -1456,7 +1456,7 @@ app.get('/profile', function(req, res) {
     settings.getAllSettings(function (err, allSettings) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(2005));
+            return res.status(500).send(common.getError(7005));
         }
 
         users.getUserById(req.session.user._id, function(err, user) {
@@ -1497,7 +1497,7 @@ app.get('/settings', function(req, res) {
 
     settings.getAllSettings(function (err, allSettings) {
         if (err) {
-            return res.status(500).send(common.getError(2005));
+            return res.status(500).send(common.getError(7005));
         }
 
         var html = settingsPug({

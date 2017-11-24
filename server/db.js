@@ -406,7 +406,7 @@ var getNextQuestionNumber = function(callback) {
       questionsCollection.find().sort({number: -1}).limit(1).toArray(function(err, docs) {
         if (err) {
             logger.error(err);
-            process.exit(1); //TODO: should this be changed
+            process.exit(1);
         }
 
         nextQuestionNumber = docs[0] ? docs[0].number : 0;
