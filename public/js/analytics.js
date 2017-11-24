@@ -116,6 +116,7 @@ var displayStudentStatistics = function(studentId) {
     getAccuracyStudentAndClass(path);
     getPointsStudentAndClass(path);
     getRatingStudentAndClass(path);
+    getCorrectAttemptsOverTime(path);
 }
 
 // Student statistics
@@ -286,6 +287,54 @@ var getClassRating = function(path) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
         $('#classRatingI').html('No Data');
+      }
+    }
+  });
+}
+
+var getCorrectAttemptsOverTime = function(path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'correctAttemptsOverTime'
+    },
+    success: function(data) {
+      $('#classRatingI').html(data[0]);
+      var ctx = $('#testingCanvas');
+      var config2 = {
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [10,2,50,27],
+            backgroundColor: [
+              "#4B515D",
+              "#4285F4",
+              "#ff4444",
+              "#00C851"
+            ],
+            label: 'Type Vs. Count'
+          }],
+          labels: data.dates
+        },
+        options: {
+          responsive: true,
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      };
+      new Chart(ctx, config2);
+    },
+    error: function(data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        failSnackbar('Graph data not match');
       }
     }
   });

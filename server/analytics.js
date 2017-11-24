@@ -42,6 +42,8 @@ exports.getChart = function(query, callback) {
             return getClassPoints(query, callback);
         case 'classRating':
             return getClassRating(query, callback);
+        case 'correctAttemptsOverTime':
+            return getCorrectAttemptsOverTime(query, callback);
         default:
             return callback('notFound', null);
     }
@@ -294,4 +296,27 @@ var getClassRating = function(query, callback) {
         classRatingAverage = classRating ? Math.ceil(classRating / classCount) : 0;
         return callback(null, [classRatingAverage]);
     });
+}
+
+// get rating of the class
+var getCorrectAttemptsOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, data) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var correctAttempts = [];
+
+        for (var i = 0; i < data.dates.length; i++) {
+            dates.push(data.dates[i].date);
+            correctAttempts.push(data.dates[i].info.correctAttemptsCount);
+        }
+        logger.log(JSON.stringify({data:data,dates: dates, correctAttempts: correctAttempts}));
+        return callback(null, {dates: dates, correctAttempts: correctAttempts});
+    });
+}
+
+var getTimeBasedAnalytics = function (findQuery, callback) {
+    db.getTimeBasedAnalytics(findQuery, callback);
 }

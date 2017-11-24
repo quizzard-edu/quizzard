@@ -831,6 +831,20 @@ exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback)
     });
 }
 
+exports.getTimeBasedAnalytics = function (findQuery, callback) {
+    analyticsCollection.findOne(findQuery, function (err, data) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!data) {
+            return callback('invalid search query', null);
+        }
+
+        return callback(null, data);
+    });
+}
+
 /**
  * update settings object
  *

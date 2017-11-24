@@ -1499,10 +1499,13 @@ app.get('/studentAnalytics', function(req,res){
         if (!req.query.studentId) {
             return res.status(500).send('no student graphs for admins');
         }
-        query.userId = req.query.studentId;
+        query.userId = "94baf721-cd78-11e7-89b1-892190749e68";
     }
 
-    analytics.getChart(query, function(err, result){
+    analytics.getChart(query, function (err, result) {
+        if (err) {
+            return res.status(500).send(err);
+        }
         return res.status(200).send(result);
     });
 });
@@ -1519,7 +1522,10 @@ app.get('/adminAnalytics', function(req,res){
 
     var query = {user: req.session.user, type: req.query.type};
 
-    analytics.getChart(query, function(err, result){
+    analytics.getChart(query, function (err, result) {
+        if (err) {
+            return res.status(500).send(err);
+        }
         return res.status(200).send(result);
     });
 });
