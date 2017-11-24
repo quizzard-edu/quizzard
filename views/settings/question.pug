@@ -27,4 +27,4 @@ li
     .row
       .col.s12.m6
         .input-field
-          input.form-control#qtimeout(type='number', name='timeoutPeriod', placeholder='Enter timeout in minutes ex. 10', min='1', value=questionTimeoutPeriod)
+          input.form-control#qtimeout(type='number', name='timeoutPeriod', placeholder='Enter timeout in minutes ex. 10', min='1', value=parseInt(questionTimeoutPeriod)/60000)
