@@ -43,12 +43,12 @@ var displayTable = function(studentLeaderList) {
             prevRank = rank;
         } else {
             if (studentLeaderList[index - 1][boardType.name] === studentObject[boardType.name]) {
-                leaderboardRow.find('#rank').html(prevRank);
                 rank = prevRank;
+                leaderboardRow.find('#rank').html(rank);
             } else {
-                leaderboardRow.find('#rank').html(index + 1);
                 rank = index + 1;
                 prevRank = rank;
+                leaderboardRow.find('#rank').html(rank);
             }
         }       
         leaderboardRow.attr('class', `rank-${rank <= 3 ? rank : 'default'}`);

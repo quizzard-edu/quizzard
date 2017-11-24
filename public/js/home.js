@@ -4,6 +4,7 @@ var sortTypes;
 var leaderboardRow;
 var leaderboardTable;
 var studentLeaderList;
+var userRank;
 
 /* Fetch the list of valid question list sort types from the server.
 $.ajax({
@@ -101,14 +102,14 @@ var fetchLeaderboard = function() {
             leaderboardRow = $(data.leaderboardRowHTML);
             studentLeaderList = data.leader;
             $('.leaderboard-small').html(leaderboardTable);            
-            displayTable(studentLeaderList);
+            displayTable(studentLeaderList, data.userId);
         }
     });
 }
 
 fetchLeaderboard();
 
-var displayTable = function(studentLeaderList) {
+var displayTable = function(studentLeaderList, userId) {
     $('.podium').hide();
     topPoints = -1;
     bestIndex = 0;
@@ -120,18 +121,21 @@ var displayTable = function(studentLeaderList) {
             prevRank = rank;
         } else {
             if (studentLeaderList[index - 1].points === studentObject.points) {
-                leaderboardRow.find('#rank').html(prevRank);
                 rank = prevRank;
+                leaderboardRow.find('#rank').html(rank);
             } else {
-                leaderboardRow.find('#rank').html(index + 1);
                 rank = index + 1;
                 prevRank = rank;
+                leaderboardRow.find('#rank').html(rank);
             }
-        }    
+        } 
         leaderboardRow.attr('class', `rank-${rank <= 3 ? rank : 'default'}`);
         leaderboardRow.attr('class', `rank-${index + 1 <= 3 ? index + 1 : 'default'}`);
         leaderboardRow.find('#displayName').html(studentObject.displayName);
         leaderboardRow.find('#criteria').html(studentObject.points);       
         $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
+        if (userId === studentObject.id){
+            $('#userRank').html('Your rank is ' + rank);
+        }   
     });
 }

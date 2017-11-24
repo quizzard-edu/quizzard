@@ -446,14 +446,14 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
         }
 
         var leaderboardList = [];
-
         if (smallBoard) {
-            for (var i = 0; i < 3; ++i) {
+            for (var i = 0; i < studentlist.length; ++i) {
                 let currentStudent = studentlist[i];
     
                 var student = {
                     displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
-                    points:currentStudent.points
+                    points:currentStudent.points,
+                    id: currentStudent._id
                 }
                 leaderboardList.push(student);
             }

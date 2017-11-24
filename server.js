@@ -247,7 +247,8 @@ app.get('/leaderboard-table', function(req, res) {
         return res.status(200).send({
             leader: leader,
             leaderboardTableHTML: leaderboardTableHTML,
-            leaderboardRowHTML: leaderboardRowHTML
+            leaderboardRowHTML: leaderboardRowHTML,
+            userId: req.session.user._id
         });
     });
 });
