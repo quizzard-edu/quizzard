@@ -107,7 +107,7 @@ app.post('/login', function(req, res) {
     users.checkLogin(username, password, function(err, user) {
         if (err) {
             logger.error(common.formatString('User {0} failed logged in.', [username]));
-            return res.status(403).send(common.getError(1002));
+            return res.status(403).send(common.getError(2000));
         }
 
         if (user) {
@@ -159,12 +159,12 @@ app.get('/home', function(req, res) {
     var request = { user : req.session.user, questionsStatus : 'unanswered' };
     users.getQuestionsListByUser(request, function(err, results) {
         if (err) {
-            return res.status(500).send(common.getError(1005));
+            return res.status(500).send(common.getError(3000));
         }
 
         users.getStudentById(req.session.user._id, function(err, userFound) {
             if (err) {
-                return res.status(500).send(common.getError(1006));
+                return res.status(500).send(common.getError(2001));
             }
 
             return res.status(200).render('home', {
@@ -250,13 +250,13 @@ app.get('/studentlist', function(req, res) {
     }
 
     if (typeof req.query.active === 'undefined') {
-        return res.status(500).send(common.getError(1007));
+        return res.status(500).send(common.getError(2002));
     }
 
     /* only fetch student list once, then store it */
     users.getStudentsListWithStatus(req.query.active === 'true', function(err, studentlist) {
         if (err) {
-            return res.status(500).send(common.getError(1008));
+            return res.status(500).send(common.getError(2003));
         }
 
         var html = studentTablePug({
@@ -285,7 +285,7 @@ app.post('/sortaccountlist', function(req, res) {
         req.body.asc == 'true',
         function (err, result) {
             if (err) {
-                return res.status(500).send(common.getError(1009));
+                return res.status(500).send(common.getError(2004));
             }
 
             var html = studentTablePug( { students : result } );
@@ -314,7 +314,7 @@ app.get('/questionform', function(req, res) {
 
     settings.getAllSettings(function (err, allSettings) {
         if (err) {
-            logger.error(common.getError(1010));
+            logger.error(common.getError(2005));
         }
 
         var html = questionCreationPug({
@@ -356,7 +356,7 @@ app.get('/answerForm', function(req, res) {
                 common.questionTypes.ORDERING.template,{answerForm:true});
             break;
         default:
-            return res.status(400).send(common.getError(1011))
+            return res.status(400).send(common.getError(3001))
     }
 })
 
@@ -375,12 +375,12 @@ app.get('/accounteditform', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     users.getStudentById(req.query.userid, function(err, student) {
         if (err || !student) {
-            return res.status(500).send(common.getError(1006));
+            return res.status(500).send(common.getError(2001));
         }
 
         var html = accountEditPug({
@@ -401,7 +401,7 @@ app.get('/questionlist', function(req, res) {
     var userId = req.session.user._id;
     users.getUserById(userId, function(err, user) {
         if (err || !user) {
-            return res.status(400).send(common.getError(1013));
+            return res.status(400).send(common.getError(2006));
         }
 
         var request = {};
@@ -409,7 +409,7 @@ app.get('/questionlist', function(req, res) {
         request.user = user;
         users.getQuestionsListByUser(request, function(err, questionsList) {
             if (err) {
-                return res.status(500).send(common.getError(1005));
+                return res.status(500).send(common.getError(3000));
             }
 
             var html = null;
@@ -456,11 +456,11 @@ app.get('/questionedit', function(req, res) {
     questions.lookupQuestionById(qId, function(err, question) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1014));
+            return res.status(500).send(common.getError(3002));
         }
 
         if (!question) {
-            return res.status(400).send(common.getError(1015));
+            return res.status(400).send(common.getError(3003));
         }
 
         var html = questionEditPug({
@@ -508,17 +508,17 @@ app.get('/statistics', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        res.status(403).send(common.getError(1012));
+        res.status(403).send(common.getError(1002));
     }
 
     questions.getAllQuestionsList(function(err, questionslist) {
         if (err) {
-            res.status(500).send(common.getError(1016));
+            res.status(500).send(common.getError(3004));
         }
 
         users.getStudentsList(function(err, studentslist) {
             if (err) {
-                res.status(500).send(common.getError(1008));
+                res.status(500).send(common.getError(2003));
             }
 
             var html = statisticsPug({
@@ -574,7 +574,7 @@ app.get('/question', function(req, res) {
     questions.lookupQuestionById(req.query._id, function(err, questionFound) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1014));
+            return res.status(500).send(common.getError(3002));
         }
 
         if (!questionFound) {
@@ -582,7 +582,7 @@ app.get('/question', function(req, res) {
         }
 
         if (!questionFound.visible && req.session.user.type === common.userTypes.STUDENT) {
-            return res.status(400).send(common.getError(1017));
+            return res.status(400).send(common.getError(3005));
         }
 
         var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts, 'userId');
@@ -640,12 +640,12 @@ app.post('/submitanswer', function(req, res) {
     questions.lookupQuestionById(questionId,function(err, question) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1014));
+            return res.status(500).send(common.getError(3002));
         }
 
         if (!question) {
             logger.log(common.formatString('Could not find the question {0}', [questionId]));
-            return res.status(400).send(common.getError(1015));
+            return res.status(400).send(common.getError(3003));
         }
 
         logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
@@ -663,13 +663,13 @@ app.post('/submitanswer', function(req, res) {
         users.submitAnswer(userId, questionId, value, points, answer, function(err, result) {
             if (err) {
                 logger.error(err);
-                return res.status(500).send(common.getError(1018));
+                return res.status(500).send(common.getError(3006));
             }
 
             questions.submitAnswer(questionId, userId, value, points, answer, function(err, result) {
                 if (err) {
                     logger.error(err);
-                    return res.status(500).send(common.getError(1018));
+                    return res.status(500).send(common.getError(3006));
                 }
 
                 return res.status(status).send(response);
@@ -694,7 +694,7 @@ app.put('/useradd', function(req, res) {
     users.addStudent(req.body, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1019));
+            return res.status(500).send(common.getError(2007));
         }
 
         return res.status(201).send('User created');
@@ -712,13 +712,13 @@ app.post('/setUserStatus', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     users.setUserStatus(req.body.userid, req.body.active === 'true' , function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1020));
+            return res.status(500).send(common.getError(2008));
         }
 
         return res.status(200).send('Student account has been deactivcated');
@@ -735,30 +735,30 @@ app.post('/profilemod', function(req, res) {
 
     if (req.body.newpassword !== req.body.confirmpassword) {
         logger.log('Confirm password doesn\'t match');
-        return res.status(400).send(common.getError(1021));
+        return res.status(400).send(common.getError(1003));
     }
 
     var userId = req.session.user._id;
     users.getUserById(userId, function (err, userObj) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1013));
+            return res.status(500).send(common.getError(2006));
         }
 
         if (!userObj) {
-            return res.status(400).send(common.getError(1022));
+            return res.status(400).send(common.getError(2009));
         }
 
         users.checkLogin(userId, req.body.currentpasswd, function(err, user) {
             if (err || !user) {
                 logger.error(common.formatString('User {0} failed to authenticate.', [userId]));
-                return res.status(403).send(common.getError(1023));
+                return res.status(403).send(common.getError(2010));
             }
 
             if (user) {
                 users.updateProfile(userId, req.body, function (err, result) {
                     if (err) {
-                        return res.status(500).send(common.getError(1024));
+                        return res.status(500).send(common.getError(2011));
                     }
 
                     return res.status(200).send('ok');
@@ -778,20 +778,20 @@ app.post('/usermod', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     var userId = req.body._id;
     users.updateStudentById(userId, req.body, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1025));
+            return res.status(500).send(common.getError(2012));
         }
 
         users.getStudentById(userId, function(err, userFound) {
             if (err || !userFound) {
                 logger.error(err);
-                return res.status(500).send(common.getError(1006));
+                return res.status(500).send(common.getError(2001));
             }
 
             var html = accountEditPug({
@@ -819,7 +819,7 @@ app.put('/questionadd', function(req, res) {
     questions.addQuestion(req.body, function(err, qId) {
         if (err) {
             logger.error(err);
-            return res.status(err.status).send(common.getError(1026));
+            return res.status(err.status).send(common.getError(3007));
         }
 
         if (req.body.rating && parseInt(req.body.rating) > 0 && parseInt(req.body.rating) < 6) {
@@ -880,19 +880,19 @@ var submitQuestionRating = function (req, res) {
     var rating = parseInt(req.body.rating);
 
     if (!rating || rating < 1 || rating > 5) {
-        return res.status(400).send(common.getError(1027));
+        return res.status(400).send(common.getError(3008));
     }
 
     questions.submitRating(questionId, userId, rating, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1028));
+            return res.status(500).send(common.getError(3009));
         }
 
         users.submitRating(userId, questionId, rating, function(err, result) {
             if (err) {
                 logger.error(err);
-                return res.status(500).send(common.getError(1028));
+                return res.status(500).send(common.getError(3009));
             }
 
             return res.status(200).send('rating submitted');
@@ -908,12 +908,12 @@ app.get('/getDiscussionBoard', function(req, res) {
 
     settings.getDiscussionboardVisibilityEnabled(function (err, boardVisibility) {
         if (err) {
-            return res.status(500).send(common.getError(1029));
+            return res.status(500).send(common.getError(3010));
         }
 
         if (boardVisibility === common.discussionboardVisibility.NONE
             && req.session.user.type === common.userTypes.STUDENT) {
-            return res.status(500).send(common.getError(1030));
+            return res.status(500).send(common.getError(3011));
         }
 
         settings.getDiscussionboardDislikesEnabled(function (err, isDislikesEnabled) {
@@ -925,12 +925,12 @@ app.get('/getDiscussionBoard', function(req, res) {
             questions.lookupQuestionById(questionId, function (err, question) {
                 if (err) {
                     logger.error(err);
-                    return res.status(500).send(common.getError(1014));
+                    return res.status(500).send(common.getError(3002));
                 }
 
                 if (!question) {
                     logger.error(common.formatString('Could not find the question {0}', [questionId]));
-                    return res.status(400).send(common.getError(1015));
+                    return res.status(400).send(common.getError(3003));
                 }
 
                 if (boardVisibility === common.discussionboardVisibility.ANSWERED) {
@@ -938,13 +938,13 @@ app.get('/getDiscussionBoard', function(req, res) {
                     var answered = (answeredList.indexOf(req.session.user._id) !== -1);
 
                     if (req.session.user.type === common.userTypes.STUDENT && !answered) {
-                        return res.status(500).send(common.getError(1030));
+                        return res.status(500).send(common.getError(3011));
                     }
                 }
 
                 users.getUsersList((err, userObj) => {
                     if (err) {
-                        return res.status(500).send(common.getError(1031));
+                        return res.status(500).send(common.getError(2013));
                     }
 
                     var usersList = {};
@@ -1016,7 +1016,7 @@ app.post('/addCommentToQuestion', function (req, res) {
     questions.addComment(questionId, userId, comment, function (err, question) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1032));
+            return res.status(500).send(common.getError(3012));
         }
 
         return res.status(200).send('Ok');
@@ -1036,7 +1036,7 @@ app.post('/addReplyToComment', function (req, res) {
     questions.addReply(commentId, userId, reply, function (err, question) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1033));
+            return res.status(500).send(common.getError(3013));
         }
 
         return res.status(200).send('Ok');
@@ -1054,7 +1054,7 @@ app.post('/voteOnComment', function (req, res) {
     var userId = req.session.user._id;
 
     if (!vote || (vote !== 1 && vote !== -1)) {
-        return res.status(400).send(common.getError(1034));
+        return res.status(400).send(common.getError(3014));
     }
 
     logger.log(common.formatString('{0} {1} {2}', [commentId, vote, userId]));
@@ -1062,7 +1062,7 @@ app.post('/voteOnComment', function (req, res) {
     questions.voteComment(commentId, vote, userId, function (err, value) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1035));
+            return res.status(500).send(common.getError(3015));
         }
 
         return res.status(200).send(value);
@@ -1080,7 +1080,7 @@ app.post('/voteOnReply', function (req, res) {
     var userId = req.session.user._id;
 
     if (!vote || (vote !== 1 && vote !== -1)) {
-        return res.status(400).send(common.getError(1034));
+        return res.status(400).send(common.getError(3014));
     }
 
     logger.log(common.formatString('{0} {1} {2}', [replyId, vote, userId]));
@@ -1088,7 +1088,7 @@ app.post('/voteOnReply', function (req, res) {
     questions.voteReply(replyId, vote, userId, function (err, value) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1036));
+            return res.status(500).send(common.getError(3016));
         }
 
         return res.status(200).send(value);
@@ -1105,22 +1105,22 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
     questions.lookupQuestionById(questionId, function (err, question) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1014));
+            return res.status(500).send(common.getError(3002));
         }
 
         if (!question) {
-            return res.status(400).send(common.getError(1015));
+            return res.status(400).send(common.getError(3003));
         }
 
         users.getUsersList(function (err, usersList) {
             if (err) {
                 logger.error(err);
-                return res.status(500).send(common.getError(1031));
+                return res.status(500).send(common.getError(2013));
             }
 
             settings.getAllSettings(function (err, allSettings) {
                 if (err) {
-                    return res.status(500).send(common.getError(1010));
+                    return res.status(500).send(common.getError(2005));
                 }
 
                 var totalList = [];
@@ -1160,13 +1160,13 @@ app.get('/questionsListofTopics', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     questions.getAllQuestionsList(function(err, docs) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1037));
+            return res.status(500).send(common.getError(3017));
         }
 
         var topicsList = [];
@@ -1187,13 +1187,13 @@ app.get('/studentsListofIdsNames', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     users.getStudentsList(function(err, studentList) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1008));
+            return res.status(500).send(common.getError(2003));
         }
 
         var idsList = [];
@@ -1211,13 +1211,13 @@ app.get('/accountsExportForm', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     users.getStudentsList(function(err, studentsList) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1008));
+            return res.status(500).send(common.getError(2003));
         }
 
         return res.status(200).render('users/accounts-export-form', {
@@ -1234,7 +1234,7 @@ app.get('/accountsImportForm', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     return res.status(200).render('users/accounts-import-form', {
@@ -1249,12 +1249,12 @@ app.post('/accountsExportFile', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
         logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
-        return res.status(500).send(common.getError(1022));
+        return res.status(500).send(common.getError(2009));
     }
 
     var requestedList = req.body.studentsList;
@@ -1266,7 +1266,7 @@ app.post('/accountsExportFile', function(req, res) {
     for (var i in requestedList) {
         users.getStudentById(requestedList[i], function(err, studentFound) {
             if (err || !studentFound) {
-                logger.error(common.getError(1006));
+                logger.error(common.getError(2001));
                 errors++;
             }
 
@@ -1305,12 +1305,12 @@ app.post('/accountsImportFile', function (req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
         logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
-        return res.status(500).send(common.getError(1022));
+        return res.status(500).send(common.getError(2009));
     }
 
     var uploadedFile = req.files.usercsv;
@@ -1355,7 +1355,7 @@ app.post('/accountsImportList', function (req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     if (!req.body.selectedList) {
@@ -1415,7 +1415,7 @@ app.get('/download', function(req, res) {
 
     if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
         logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
-        return res.status(500).send(common.getError(1022));
+        return res.status(500).send(common.getError(2009));
     }
 
     var fileName = req.query.file;
@@ -1456,13 +1456,13 @@ app.get('/profile', function(req, res) {
     settings.getAllSettings(function (err, allSettings) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(1010));
+            return res.status(500).send(common.getError(2005));
         }
 
         users.getUserById(req.session.user._id, function(err, user) {
             if (err) {
                 logger.error(err);
-                return res.status(500).send(common.getError(1013));
+                return res.status(500).send(common.getError(2006));
             }
 
             if (!user) {
@@ -1492,12 +1492,12 @@ app.get('/settings', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     settings.getAllSettings(function (err, allSettings) {
         if (err) {
-            return res.status(500).send(common.getError(1010));
+            return res.status(500).send(common.getError(2005));
         }
 
         var html = settingsPug({
@@ -1528,7 +1528,7 @@ app.post('/resetSettings', function (req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     settings.resetAllSettings(function (err, result) {
@@ -1543,7 +1543,7 @@ app.post('/updateSettings', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     settings.updateSettings(req.body.settings, function (err, result) {
@@ -1582,7 +1582,7 @@ app.get('/adminAnalytics', function(req,res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send(common.getError(1012));
+        return res.status(403).send(common.getError(1002));
     }
 
     var query = {user: req.session.user, type: req.query.type};

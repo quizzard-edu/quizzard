@@ -103,7 +103,7 @@ var prepareQuestionData = function(question, callback) {
             break;
 
         default:
-            return callback(common.getError(1011), null)
+            return callback(common.getError(3001), null)
     }
 
     return callback(null, questionToAdd);
@@ -117,7 +117,7 @@ var prepareQuestionData = function(question, callback) {
 exports.addQuestion = function(question, callback) {
     prepareQuestionData(question, function(err, questionToAdd) {
         if (err) {
-            return callback(common.getError(1067), null)
+            return callback(common.getError(3021), null)
         }
 
         // validate constant question attributes
@@ -125,7 +125,7 @@ exports.addQuestion = function(question, callback) {
         if (result.success) {
             db.addQuestion(questionToAdd, function (err, questionId) {
                 if (err) {
-                    return callback(common.getError(1060), null);
+                    return callback(common.getError(3018), null);
                 }
 
                 common.mkdir(common.fsTree.QUESTIONS, questionToAdd._id, function (err, result) {
@@ -135,7 +135,7 @@ exports.addQuestion = function(question, callback) {
                 return callback(null, questionId);
             });
         } else{
-            return callback(common.getError(1068), null)
+            return callback(common.getError(3022), null)
         }
     })
 }
@@ -154,7 +154,7 @@ var updateQuestionById = function(qId, infoToUpdate, callback) {
     // Get Type of question and validate it
     lookupQuestionById(qId, function(err, question) {
         if (err) {
-            return callback(common.getError(1062), null);
+            return callback(common.getError(3019), null);
         }
         infoToUpdate = questionUpdateParser(infoToUpdate);
 
@@ -163,7 +163,7 @@ var updateQuestionById = function(qId, infoToUpdate, callback) {
         if (result.success) {
             db.updateQuestionById(qId, infoToUpdate, callback);
         } else {
-            return callback(common.getError(1068), null)
+            return callback(common.getError(3022), null)
         }
     });
 }
@@ -173,7 +173,7 @@ exports.deleteQuestion = function(questionId, callback) {
     questions.remove({_id: questionId}, function(err, res) {
         if (err) {
             logger.error(err);
-            return callback(common.getError(1069), null);
+            return callback(common.getError(3023), null);
         }
 
         logger.log(common.formatString('Question {0} deleted from database.', [questionId]));
@@ -377,11 +377,11 @@ exports.voteComment = function (commentId, vote, userId, callback) {
 
     db.lookupQuestion(query, function(err, question) {
         if (err) {
-            return callback(common.getError(1062), null);
+            return callback(common.getError(3019), null);
         }
 
         if (!question) {
-            return callback(common.getError(1015), null);
+            return callback(common.getError(3003), null);
         }
 
         var comments = question.comments;
@@ -451,7 +451,7 @@ exports.voteComment = function (commentId, vote, userId, callback) {
             }
         }
 
-        return callback(common.getError(1035), null);
+        return callback(common.getError(3015), null);
     });
 }
 
@@ -463,11 +463,11 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 
     db.lookupQuestion(query, function(err, question) {
         if (err) {
-            return callback(common.getError(1062), null);
+            return callback(common.getError(3019), null);
         }
 
         if (!question) {
-            return callback(common.getError(1015), null);
+            return callback(common.getError(3003), null);
         }
 
         // TODO: optimize this using mongodb projections
@@ -563,7 +563,7 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                 }
             }
 
-            return callback(common.getError(1036), null);
+            return callback(common.getError(3016), null);
         }
     });
 }
