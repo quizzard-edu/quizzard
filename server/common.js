@@ -150,6 +150,9 @@ const errors = Object.freeze({
     1008: 'failed to remove from database',
     1009: 'failed to hash password',
     1010: 'failed to remove rmrf',
+    1011: 'invalid input type',
+    1012: 'failed to remove directory',
+    1013: 'failed to write data to a file',
 
     //2000 user
     2000: 'user failed to log in',
@@ -157,7 +160,7 @@ const errors = Object.freeze({
     2002: 'failed to get student list',
     2003: 'failed to get student list with status',
     2004: 'failed to sort accounts',
-    2005: 'failed to get all settings',
+    2005: 'failed to add admin',
     2006: 'failed to get user by id',
     2007: 'failed to add student',
     2008: 'failed to deactivate student account',
@@ -221,6 +224,8 @@ const errors = Object.freeze({
     7002: 'failed to add setting',
     7003: 'failed to get settings object',
     7004: 'settings object not found',
+    7005: 'failed to get all settings',
+    
 
 
 
@@ -374,7 +379,7 @@ exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
 var mkdir = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     fs.mkdir(fullPath, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1007) : null, err ? null : 'ok');
     });
 }
 exports.mkdir = mkdir;
@@ -383,7 +388,7 @@ exports.mkdir = mkdir;
 var rmdir = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     fs.rmdir(fullPath, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1012) : null, err ? null : 'ok');
     });
 }
 exports.rmdir = rmdir;
@@ -392,7 +397,7 @@ exports.rmdir = rmdir;
 var rmrf = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     rimraf(fullPath, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1010) : null, err ? null : 'ok');
     });
 }
 exports.rmrf = rmrf;
@@ -409,7 +414,7 @@ exports.fileExists = existsSync;
 var writeFile = function (filePath, fileName, fileExtension, fileData, callback) {
     var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
     fs.writeFile(fullPath, fileData, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1013) : null, err ? null : 'ok');
     });
 }
 exports.saveFile = writeFile;

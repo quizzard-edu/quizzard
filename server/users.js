@@ -32,13 +32,13 @@ const common = require('./common.js');
 exports.addAdmin = function (user, callback) {
     if (!user.fname || !user.lname || !user.username || !user.password) {
         logger.error('Failed to create a new admin, missing requirements');
-        return callback('failure', null);
+        return callback(common.getError(2005), null);
     }
 
     bcrypt.hash(user.password, 11, function(err, hash) {
         if (err) {
             logger.error(err);
-            return callback(err, null);
+            return callback(common.getError(1009), null);
         }
 
         var currentDate = new Date().toString();
@@ -64,7 +64,7 @@ exports.addAdmin = function (user, callback) {
                 } else if (err === 'exists') {
                     logger.error(common.formatString('Admin {0} already exists', [userToAdd.username]));
                 }
-                return callback(err, null);
+                return callback(common.getError(2005), null);
             }
 
             common.mkdir(common.fsTree.USERS, userToAdd._id, function (err, result) {
@@ -86,13 +86,13 @@ exports.addAdmin = function (user, callback) {
 exports.addStudent = function (user, callback) {
     if (!user.fname || !user.lname || !user.username || !user.password) {
         logger.error('Failed to create a new student, missing requirements');
-        return callback('failure', null);
+        return callback(common.getError(2007), null);
     }
 
     bcrypt.hash(user.password, 11, function (err, hash) {
         if (err) {
             logger.error(err);
-            return callback(err, null);
+            return callback(common.getError(1009), null);
         }
 
         var currentDate = new Date().toString();
@@ -127,7 +127,7 @@ exports.addStudent = function (user, callback) {
                     logger.error(common.formatString('Student {0} already exists', [userToAdd.username]));
                 }
 
-                return callback(err, null);
+                return callback(common.getError(2007), null);
             }
 
             common.mkdir(common.fsTree.USERS, userToAdd._id, function (err, result) {
@@ -341,7 +341,7 @@ exports.getQuestionsListByUser = function (request, callback) {
     var questionsStatus = request.questionsStatus;
 
     if (!user) {
-        return callback('No user object', null);
+        return callback(common.getError(2009), null);
     }
 
     if (user.type === common.userTypes.ADMIN) {
@@ -355,7 +355,7 @@ exports.getQuestionsListByUser = function (request, callback) {
 
         db.getQuestionsList(questionsQuery, sortQuery, function (err, docs) {
             if (err) {
-                return callback(err, null);
+                return callback(common.getError(3017), null);
             }
 
             var compareList = common.getIdsListFromJSONList(user.correctAttempts, 'questionId');
@@ -443,7 +443,7 @@ exports.getLeaderboard = function (userid, shrt, callback) {
     getStudentsListSorted(0, function(err, studentlist) {
         if (err) {
             logger.error(err);
-            return (err, []);
+            return (common.getError(2015), []);
         }
 
         var rank = 0;
