@@ -12,8 +12,11 @@ $(function () {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['responseText'] !== 'hidden') {
-                failSnackbar('something went wrong');
+            } else {
+                data = data.responseJSON;   
+                if (data['code'] !== 3011) {             
+                    failSnackbar(getErrorFromResponse(data));
+                }
             }
         }
     });

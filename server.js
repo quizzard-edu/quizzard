@@ -694,7 +694,7 @@ app.put('/useradd', function(req, res) {
     users.addStudent(req.body, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(2007));
+            return res.status(500).send(err);
         }
 
         return res.status(201).send('User created');
@@ -847,7 +847,7 @@ app.post('/questionmod', function(req, res) {
     questions.updateQuestionById(qid, q, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(err.status).send(err.msg);
+            return res.status(err.status).send(common.getError(3020));
         }
         return res.status(200).send(result);
     });

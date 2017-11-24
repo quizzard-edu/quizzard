@@ -39,6 +39,9 @@ var fetchQList = function(which) {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -71,6 +74,9 @@ var sortRequest = function(type) {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -98,6 +104,9 @@ var fetchLeaderboard = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });

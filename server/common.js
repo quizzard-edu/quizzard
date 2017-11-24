@@ -174,6 +174,8 @@ const errors = Object.freeze({
     2016: 'failed to remove all users',
     2017: 'failed to find user',
     2018: 'failed to update user',
+    2019: 'user already exists',
+    2020: 'failed to get leaderboard',
 
     //3000 question
     3000: 'failed to get question list by user',
@@ -183,7 +185,7 @@ const errors = Object.freeze({
     3004: 'failed to get all questions list',
     3005: 'question is not available',
     3006: 'failed to submit answer',
-    3007: 'failed to add question',
+    3007: 'Failed to add question',
     3008: 'invalid rating',
     3009: 'failed to submit rating',
     3010: 'failed to get discussion board visibility enabled',
@@ -225,10 +227,6 @@ const errors = Object.freeze({
     7003: 'failed to get settings object',
     7004: 'settings object not found',
     7005: 'failed to get all settings',
-    
-
-
-
 });
 exports.errors = errors;
 // </Global Constants> ------------------------------------------

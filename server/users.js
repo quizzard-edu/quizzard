@@ -127,7 +127,7 @@ exports.addStudent = function (user, callback) {
                     logger.error(common.formatString('Student {0} already exists', [userToAdd.username]));
                 }
 
-                return callback(common.getError(2007), null);
+                return callback(err, null);
             }
 
             common.mkdir(common.fsTree.USERS, userToAdd._id, function (err, result) {
@@ -443,7 +443,7 @@ exports.getLeaderboard = function (userid, shrt, callback) {
     getStudentsListSorted(0, function(err, studentlist) {
         if (err) {
             logger.error(err);
-            return (common.getError(2015), []);
+            return (common.getError(2020), []);
         }
 
         var rank = 0;

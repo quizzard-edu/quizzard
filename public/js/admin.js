@@ -47,7 +47,8 @@ var displayAccountsTable = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -69,7 +70,8 @@ var displayExportAccountsForm = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -121,7 +123,8 @@ var submitExportForm = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -157,7 +160,8 @@ var submitImportForm = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Upload failed');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -203,7 +207,8 @@ var submitImportList = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Importing failed');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
                 displayAccountsTable();                
             }
         }
@@ -282,7 +287,8 @@ var displayQuestionTable = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -359,7 +365,8 @@ var getQuestionFormAnswer = function(form) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                $('#result').html('Server is down cannot pull Answer form');
+                data = data.responseJSON;                
+                $('#result').html(getErrorFromResponse(data));               
             }
         }
     });
@@ -382,7 +389,8 @@ var displayStatistics = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -404,7 +412,8 @@ var displaySettings = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -453,7 +462,8 @@ var deactivateUser = function(id, username) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Failed to deactivate ' + username + '\'s account');
+                    data = data.responseJSON;                
+                    failSnackbar(getErrorFromResponse(data));
                 }
             }
         });
@@ -486,7 +496,8 @@ var activateUser = function(id, username) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Failed to activate ' + username + '\'s account');
+                    data = data.responseJSON;                
+                    failSnackbar(getErrorFromResponse(data));
                 }
             }
         });
@@ -513,7 +524,8 @@ var editUser = function(id) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -539,12 +551,9 @@ var submitUserForm = function() {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['responseText'] === 'failure') {
-                failSnackbar('User could not be added');
-            } else if (data['responseText'] === 'exists') {
-                failSnackbar('User ' + user.username + ' already exists');
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -579,12 +588,9 @@ var submitEditForm = function(id) {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data.result === 'failure') {
-                failSnackbar('User could not be updated. Please try again');
-            } else if (data.result === 'dupid') {
-                failSnackbar('Username ' + user.username + ' is taken');
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -713,10 +719,9 @@ var submitQuestionForm = function() {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['status'] === 400) {
-                warningSnackbar(data['responseText']);
             } else {
-                failSnackbar('Question could not be added.');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -744,7 +749,7 @@ var deleteQuestion = function(qid, questionNumber) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Coud not remove question ' + questionNumber + ' from the database');
+                    failSnackbar('Coud not remove question from the database');
                 }
             }
         });
@@ -776,7 +781,8 @@ var editQuestion = function(qid, questionNumber) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -808,10 +814,9 @@ var submitQEditForm = function(qid, questionNumber) {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['status'] === 400){
-                warningSnackbar(data['responseText']);
             } else {
-                failSnackbar('Question could not be edited.');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -832,7 +837,7 @@ var submitQuestionRating = function (rating, qid) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Question could not be updated.');
+                failSnackbar('Rating could not be updated.');
             }
         }
     });
@@ -873,7 +878,8 @@ var sortAccountsTable = function(type) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -912,7 +918,8 @@ var getQuestionsTopicsList = function () {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Sorry, something went wrong, please try again');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });

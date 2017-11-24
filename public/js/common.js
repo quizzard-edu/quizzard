@@ -68,3 +68,109 @@ function failSnackbar(msg) {
 $(document).on('click', '#closeSnack', function() {
     $(this).parent().fadeOut();
 });
+
+/*
+1000 -> system
+2000 -> user
+3000 -> question
+4000 -> class
+5000 -> analytics
+6000 -> import/export
+7000 -> settings
+*/
+
+const errors = Object.freeze({
+    //1000 system
+    1000: 'Invalid Request',
+    1001: 'Missing Requirement',
+    1002: 'Permission Denied',
+    1003: 'Confirm password doesn\'t match',
+    1004: 'Database connection failed',
+    1005: 'Database Error',
+    1006: 'Invalid username or password',
+    1007: 'A system error has occured',
+    1008: 'A system error has occured',
+    1009: 'A system error has occured',
+    1010: 'A system error has occured',
+    1011: 'A system error has occured',
+    1012: 'A system error has occured',
+    1013: 'A system error has occured',
+
+    //2000 user
+    2000: 'Invalid username or password',
+    2001: 'Failed to get student',
+    2002: 'Failed to get student list, please try again later!',
+    2003: 'Failed to get student list, please try again later!',
+    2004: 'failed to sort accounts',
+    2005: 'failed to add admin',
+    2006: 'Failed to get user',
+    2007: 'Failed to add student',
+    2008: 'Failed to change student account status',
+    2009: 'User cannot be found',
+    2010: 'Password is incorrect',
+    2011: 'Failed to update profile',
+    2012: 'Failed to update',
+    2013: 'Failed to get users list',
+    2014: 'Failed to check if user exists',
+    2015: 'Failed to get student list, please try again later!',
+    2016: 'failed to remove all users',
+    2017: 'failed to find user',
+    2018: 'failed to update user',
+    2019: 'User already exists',
+    2020: 'Failed to get leaderboard',
+
+    //3000 question
+    3000: 'Failed to get question list',
+    3001: 'Failed to get question',
+    3002: 'failed to look up question by id',
+    3003: 'Question not found',
+    3004: 'Failed to get questions list',
+    3005: 'question is not available',
+    3006: 'failed to submit answer',
+    3007: 'failed to add question',
+    3008: 'invalid rating',
+    3009: 'failed to submit rating',
+    3010: 'Failed to get discussion board visibility',
+    3011: 'Discussion board is not available',
+    3012: 'failed to add comment',
+    3013: 'failed to add reply',
+    3014: 'Invalid vote',
+    3015: 'Failed to vote on comment',
+    3016: 'Failed to vote on reply',
+    3017: 'Failed to get question list',
+    3018: 'failed to add question',
+    3019: 'failed to find question',
+    3020: 'Failed to update question',
+    3021: 'failed to prepare question data',
+    3022: 'Invalid question attributes',
+    3023: 'failed to remove question',
+
+    //4000 class
+    4000: 'failed to check if the class is active',
+    4001: 'class is not active',
+
+    //5000 analytics
+    5000: 'graphs not available',
+
+    //6000 import/export
+    6000: 'Failed to find student from export list',
+    6001: 'Export job failed',
+    6002: 'Invalid file format',
+    6003: 'Failed to upload file',
+    6004: 'Failed to parse file',
+    6005: 'Invalid student list',
+    6006: 'file cannot be found',
+    6007: 'failed to download',
+
+    //7000 setting
+    7000: 'Failed to reset settings',
+    7001: 'Failed to update settings',
+    7002: 'failed to add setting',
+    7003: 'failed to get settings object',
+    7004: 'settings object not found',
+    7005: 'Failed to get settings',
+});
+
+function getErrorFromResponse(data) {
+    return errors[data['code']]
+}

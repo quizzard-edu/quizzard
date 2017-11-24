@@ -29,7 +29,8 @@ var getQuestionsTopicsList = function () {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Sorry, something went wrong, please try again');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -79,7 +80,8 @@ var resetDefault = function() {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Could not apply default settings, please try again!');
+                    data = data.responseJSON;                
+                    failSnackbar(getErrorFromResponse(data));
                 }
             }
         });
@@ -127,7 +129,8 @@ var save = function() {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Could not save, please try again!');
+                    data = data.responseJSON;                
+                    failSnackbar(getErrorFromResponse(data));
                 }
             }
         });

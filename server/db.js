@@ -71,12 +71,12 @@ exports.addAdmin = function(admin, callback) {
 var addUser = function(user, callback) {
     usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function(err, obj) {
         if (err) {
-            logger.error(common.getError(2014));
-            return callback(err, null);
+            logger.error(err);
+            return callback(common.getError(2014), null);
         }
 
         if (obj) {
-            return callback('exists', null);
+            return callback(common.getError(2019), null);
         }
 
         usersCollection.insert(user, function(err, res) {

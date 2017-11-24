@@ -33,7 +33,8 @@ var voteClickComment = function(icon, vote) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
@@ -74,7 +75,8 @@ var voteClickReply = function(icon, vote) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong');
+                data = data.responseJSON;                
+                failSnackbar(getErrorFromResponse(data));
             }
         }
     });
