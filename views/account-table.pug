@@ -28,17 +28,17 @@
         table.bordered
           thead
             tr
+              th Username
               th First Name
               th Last Name
-              th Username
               th Email
               th Action
           tbody
             each s in students
               tr
+                td #{s.username}
                 td #{s.fname}
                 td #{s.lname}
-                td #{s.username}
                 td #{s.email}
                 td
                   button.btn.btn-default.edit-button(id='edit-' + s._id type='button' aria-label='Edit', name=s.username)

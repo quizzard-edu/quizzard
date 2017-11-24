@@ -17,6 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 const uuidv1 = require('uuid/v1');
 const fs = require('fs');
 const date = require('moment');
@@ -39,6 +40,14 @@ const userTypes = Object.freeze({
     STUDENT   : 1
 });
 exports.userTypes = userTypes;
+
+// all types of visibility status for the dicussionboard
+const discussionboardVisibility = Object.freeze({
+    NONE      : 'NONE',
+    ANSWERED  : 'ANSWERED',
+    ALL       : 'ALL'
+});
+exports.discussionboardVisibility = discussionboardVisibility;
 
 // all question types
 const questionTypes = Object.freeze({
@@ -70,7 +79,8 @@ const questionAttributes = Object.freeze({
         title                   : {type:'[object String]'},
         text                    : {type:'[object String]'},
         hint                    : {type:'[object String]'},
-        points                  : {type:'[object Number]'},
+        minpoints               : {type:'[object Number]'},
+        maxpoints               : {type:'[object Number]'},
         visible                 : {type:'[object Boolean]'},
         type                    : {type:'[object String]'}
     },
@@ -198,6 +208,16 @@ var getUUID = function () {
 exports.getUUID = getUUID;
 
 /**
+ * get variable type
+ *
+ * @param {*} variable
+ */
+var getVariableType = function (variable) {
+    return Object.prototype.toString.call(variable);
+}
+exports.getVariableType = getVariableType;
+
+/**
 * formating a string based on an array of parts of the string
 *
 * @return {string}
@@ -220,6 +240,25 @@ var formatString = function (text, args) {
     });
 };
 exports.formatString = formatString;
+
+/**
+* Returns a JSON from a list of JSONs given a key, value to search for
+*
+* @param {list} list
+* @param {string} field
+* @param {string} value
+* @return {boolean}
+*/
+var isKeyValuePairInJsonList = function(list, field, value) {
+    for (var i = 0; i < list.length; i++) {
+        if (list[i][field] === value) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
+
 // </Global Function> -----------------------------------------------
 
 // <File System functions> ------------------------------------------

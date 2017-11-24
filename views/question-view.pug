@@ -35,7 +35,6 @@ block content
           .card-content
             h4.sidebar-item#topic #{question.topic}
           .card-action
-            h5.sidebar-item#points #{question.points} Points
             span.sidebar-item This question has been attempted&nbsp
             if answered || isAdmin()
               span.sidebar-item #{question.totalAttemptsCount}
@@ -55,8 +54,8 @@ block content
 
       .row
         .col.s12
-          if answered || isAdmin()
             #discussion
+            
   include alert
 
 block scripts

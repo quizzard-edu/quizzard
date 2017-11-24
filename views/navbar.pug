@@ -5,7 +5,7 @@
       a.navbarLink.button-collapse(href='#', data-activates='mobile')
         i.material-icons menu
       ul.left.hide-on-med-and-down
-        if user.type == 0
+        if user.type === 0
           li#nav-home
             a.navbarLink(href='/admin') Administration
         else
@@ -25,7 +25,7 @@
         li#nav-logout
           a.navbarLink(href='/logout') Logout
 ul#mobile.side-nav
-  if user.type == 0
+  if user.type === 0
     li#nav-home
       a.navbarLinkHidden(href='/admin') Administration
   else

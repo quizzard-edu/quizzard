@@ -1,0 +1,30 @@
+li
+  .collapsible-header(onclick="$(this).parent().toggleClass('active'); $('#questionB')[0].style.display = ($('#questionB')[0].style.display === 'block') ? 'none' : 'block'")
+    i.material-icons library_books
+    | Question Settings
+  .collapsible-body#questionB
+    .row
+      label(for='qtopic') Default Topic (optional)
+      .input-field
+        input.form-control#qtopic.autocomplete(type='text', name='topic', placeholder='Enter Topic', autocomplete='off')
+    .row
+      .col.sm6
+        label(for='qMinPoints') Default Minimum Points (optional)
+        .input-field
+          input.form-control#qMinPoints(type='number', name='minPoints', placeholder='Minimum Points', min='10', value=questionDefaultMinPoints)
+      .col.sm6
+        label(for='qMaxPoints') Default Maximum Points (optional)
+        .input-field
+          input.form-control#qMaxPoints(type='number', name='maxPoints', placeholder='Maximum Points', min='100', value=questionDefaultMaxPoints)
+    .row
+      span Timeout if the question is not answered correctly
+      .switch
+        label
+          | Disable
+          input#allowTimeout(type='checkbox', name='allowTimeout', checked=questionTimeoutEnabled, onclick="$(this)[0].checked ? $('#qtimeout').removeClass('hidden') : $('#qtimeout').addClass('hidden')")
+          span.lever
+          | Enable
+    .row
+      .col.s12.m6
+        .input-field
+          input.form-control#qtimeout(type='number', name='timeoutPeriod', placeholder='Enter timeout in minutes ex. 10', min='1', value=parseInt(questionTimeoutPeriod)/60000)

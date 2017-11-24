@@ -18,23 +18,25 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var Db = require('mongodb').Db;
-var Server = require('mongodb').Server;
-var logger = require('./log.js');
-var common = require('./common.js');
-var bcrypt = require('bcryptjs');
+const Db = require('mongodb').Db;
+const Server = require('mongodb').Server;
+const logger = require('./log.js');
+const common = require('./common.js');
+const bcrypt = require('bcryptjs');
+const settings = require('./settings.js')
+const DB_HOST = process.env.DB_HOST || 'localhost';
+const DB_PORT = process.env.DB_PORT || 27017;
+const DB_NAME = process.env.DB_NAME || 'quizzard';
 
-var DB_HOST = process.env.DB_HOST || 'localhost';
-var DB_PORT = process.env.DB_PORT || 27017;
-var DB_NAME = process.env.DB_NAME || 'quizzard';
+const db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 
-var db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
-
-var nextQuestionNumber = 0;
 var usersCollection;
 var questionsCollection;
 var analyticsCollection;
 var feedbackCollection;
+var settingsCollection;
+
+var nextQuestionNumber = 0;
 
 /* Open a connection to the database. */
 exports.initialize = function(callback) {
@@ -49,7 +51,13 @@ exports.initialize = function(callback) {
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
         feedbackCollection = db.collection('feedback');
-
+        settingsCollection = db.collection('settings');
+        settings.initialize(function(err){
+            if (err){
+                logger.error(err);
+                process.exit(1);
+            }
+        });
         getNextQuestionNumber(function() {
             logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
             return callback();
@@ -68,7 +76,7 @@ exports.addAdmin = function(admin, callback){
 }
 
 var addUser = function(user, callback) {
-    usersCollection.findOne({_id: user._id}, function(err, obj) {
+    usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
@@ -86,19 +94,19 @@ var addUser = function(user, callback) {
 
 /* Return an array of users in the database. */
 exports.getAdminsList = function(callback) {
-    getUsersList({type: common.userTypes.ADMIN}, {id: 1}, callback);
+    getUsersList({type: common.userTypes.ADMIN}, {username: 1}, callback);
 }
 
 exports.getStudentsList = function(callback) {
-    getUsersList({type: common.userTypes.STUDENT}, {id: 1}, callback);
+    getUsersList({type: common.userTypes.STUDENT}, {username: 1}, callback);
 }
 
 exports.getUsersList = function(callback) {
-    getUsersList({}, {id: 1}, callback);
+    getUsersList({}, {username: 1}, callback);
 }
 
 exports.getStudentsListWithStatus = function(status, callback) {
-    getUsersList({type: common.userTypes.STUDENT, active: status}, {id: 1}, callback);
+    getUsersList({type: common.userTypes.STUDENT, active: status}, {username: 1}, callback);
 }
 
 /* Return an array of users in the database, sorted by rank. */
@@ -141,11 +149,11 @@ exports.checkLogin = function(userId, pass, callback) {
         }
 
         if (!obj) {
-            return callback('notExist', null);
+            return callback('userNotExist', null);
         }
 
         if (!obj.active) {
-            return callback('notActive', null);
+            return callback('userNotActive', null);
         }
 
         validatePassword(obj, pass, function(err, valid) {
@@ -512,8 +520,12 @@ exports.updateQuestionById = function(questionId, request, callback) {
       update.$set.hint = request.hint;
     }
 
-    if ('points' in request) {
-      update.$set.points = request.points;
+    if ('minpoints' in request) {
+      update.$set.minpoints = request.minpoints;
+    }
+
+    if ('maxpoints' in request) {
+      update.$set.maxpoints = request.maxpoints;
     }
 
     if ('choices' in request) {
@@ -587,4 +599,95 @@ exports.getFeedback = function(callback) {
         
         return callback(null, 'success');
     });
+}
+
+/**
+ * reset all settings to default
+ * 
+ * @param {function} callback 
+ */
+exports.resetAllSettings = function (callback) {
+    resetAllSettings(callback);
+}
+
+/**
+ * reset all settings to default
+ * 
+ * @param {function} callback 
+ */
+var resetAllSettings = function (callback) {
+    settingsCollection.remove({}, function (err, result) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var defaultSettings = {};
+        defaultSettings['general'] = {};
+        defaultSettings['student'] = {};
+        defaultSettings['question'] = {};
+        defaultSettings['discussionboard'] = {};
+
+        defaultSettings.general['active'] = true;
+        defaultSettings.general['leaderboardLimit'] = 3;
+
+        defaultSettings.student['editNames'] = true;
+        defaultSettings.student['editEmail'] = true;
+        defaultSettings.student['editPassword'] = true;
+
+        defaultSettings.question['defaultTopic'] = null;
+        defaultSettings.question['defaultMinPoints'] = 10;
+        defaultSettings.question['defaultMaxPoints'] = 100;
+        defaultSettings.question['timeoutEnabled'] = true;
+        defaultSettings.question['timeoutPeriod'] = 1;
+
+        defaultSettings.discussionboard['visibility'] = common.discussionboardVisibility.ALL;
+        defaultSettings.discussionboard['dislikesEnabled'] = true;
+
+        settingsCollection.insert(defaultSettings, function (err, obj) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            return callback(null, 'ok');
+        });
+    });
+}
+
+/**
+ * get all settings objects from the collection
+ * 
+ * @param {function} callback 
+ */
+exports.getAllSettings = function (callback) {
+    getAllSettings(callback);
+}
+
+/**
+ * get all settings objects from the collection
+ * 
+ * @param {function} callback 
+ */
+var getAllSettings = function (callback) {
+    settingsCollection.findOne({}, function (err, obj) {
+        if (err) {
+            return callback (err, null);
+        }
+
+        if (!obj) {
+            return callback ('No settings object found', null);
+        }
+
+        return callback (null, obj);
+    });
+}
+
+/**
+ * update settings object
+ * 
+ * @param {object} findQuery 
+ * @param {object} updateQuery 
+ * @param {function} callback 
+ */
+exports.updateSettings = function (findQuery, updateQuery, callback) {
+    settingsCollection.update(findQuery, updateQuery, callback);
 }
