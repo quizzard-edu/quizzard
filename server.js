@@ -1165,7 +1165,7 @@ app.get('/studentsListofIdsNames', function(req, res) {
 
         var idsList = [];
         for (s in studentList) {
-            idsList.push(studentList[s].id + ' - ' + studentList[s].fname + ' ' + studentList[s].lname);
+            idsList.push(studentList[s].username + ' - ' + studentList[s].fname + ' ' + studentList[s].lname);
         }
         return res.status(200).send(idsList);
     });

@@ -264,7 +264,7 @@ exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
  * 
  * @param {list} arr 
  */
-var shuffle = function(arr) {
+var shuffleList = function(arr) {
     var curr, tmp, rnd;
 
     curr = arr.length;
