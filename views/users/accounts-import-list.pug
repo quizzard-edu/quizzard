@@ -13,20 +13,20 @@
               thead
                 tr
                   th Included
+                  th Username
                   th First Name
                   th Last Name
-                  th User ID
                   th Email
               tbody
                 each s in students
                   tr
                     td
                       p
-                        input.checked(id='cb-' + s.id type='checkbox' checked=true)
-                        label.visbox(for='cb-' + s.id)
+                        input.checked(id='cb-' + s.username type='checkbox' checked=true)
+                        label.visbox(for='cb-' + s.username)
+                    td #{s.username}
                     td #{s.fname}
                     td #{s.lname}
-                    td #{s.id}
                     td #{s.email}
           br
           a.waves-effect.waves-light.btn(onClick='submitImportList()')

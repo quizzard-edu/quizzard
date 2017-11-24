@@ -2,7 +2,7 @@ table.bordered
   thead
     tr
       th Rank
-      th User ID
+      th Username
       th Points
       if fullTable
         th Attempts
@@ -10,7 +10,7 @@ table.bordered
         th Success Rate
   tbody
     each s in leaderboard
-      if s.rank == 0
+      if s.rank === 0
         tr.col-default
           td ...
           td ...
@@ -20,20 +20,20 @@ table.bordered
             td ...
             td ...
       else
-        if s.points != 0 && s.rank <= 3
-          if s.rank == 1
+        if s.points !== 0 && s.rank <= 3
+          if s.rank === 1
             - rowclass = 'col-gold';
-          if s.rank == 2
+          if s.rank === 2
             - rowclass = 'col-silver';
-          if s.rank == 3
+          if s.rank === 3
             - rowclass = 'col-bronze';
         else
           - rowclass = 'col-default';
-        if s.id == userid
+        if s._id === userid
           - rowclass += ' col-isuser';
         tr(class=rowclass)
           td #{s.rank}
-          td #{s.id}
+          td #{s.username}
           td #{s.points}
           if fullTable
             td #{s.totalAttemptsCount}

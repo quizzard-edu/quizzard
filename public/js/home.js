@@ -76,6 +76,11 @@ var sortRequest = function(type) {
     });
 };
 
+// chenge the href to point to the questoin page with the given id
+var goToQuestion = function (questionId) {
+    window.location.href = '/question?_id=' + questionId;
+}
+
 /*
  * Fetch the mini leaderboard table and display it in the sidebar.
  */
