@@ -100,8 +100,14 @@ var sendAnswerRequest = function(ans) {
                 failSnackbar('Something went wrong!');
             } else if (data['status'] === 405) {            
                 $('#hint').removeClass('hidden');
-                lockQuestionByDefault();
-                swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
+                swal({ 
+                    title: "Incorrect",
+                    text: "Sorry, that\'s the wrong answer",
+                    type: "error" 
+                },
+                function(){
+                    location.reload();
+                });
             }
         },
         complete: function(data) {
