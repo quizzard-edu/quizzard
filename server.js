@@ -613,7 +613,8 @@ app.get('/question', function(req, res) {
                     }
                 },
                 isLocked: isLocked,
-                waitTime: waitTimeinMiliSeconds
+                waitTime: waitTimeinMiliSeconds,
+                defaultWaitTime: settings.getQuestionTimeoutPeriod()
             });
         });
     });

@@ -1,12 +1,23 @@
 var waitTime;
+var defaultWaitTime;
+var isQuestionLocked;
 
 $(function () {
-    //hide submit button since question is locked
+    if(isQuestionLocked){
+        // hide submit button and start lock
+        $(':submit').hide();
+        $('#lockQuestion').show();
+        initializeClock('clockdiv', new Date(Date.parse(new Date()) +  parseInt(waitTime)));
+    }
+});
+
+var lockQuestionByDefault = function(){
+    console.log(defaultWaitTime);
     $(':submit').hide();
     // place count down timer
-    initializeClock('clockdiv', new Date(Date.parse(new Date()) +  parseInt(waitTime)))
-    // start timer
-});
+    $('#lockQuestion').show();
+    initializeClock('clockdiv', new Date(Date.parse(new Date()) +  parseInt(defaultWaitTime)));
+}
 
 function getTimeRemaining(endtime) {
     var t = Date.parse(endtime) - Date.parse(new Date());
@@ -39,8 +50,8 @@ function initializeClock(id, endtime) {
         secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
 
         if (t.total <= 0) {
-            $(':submit').show();
             $('#lockQuestion').hide();
+            $(':submit').show();
         }
     }
 

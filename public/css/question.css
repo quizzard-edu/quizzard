@@ -27,6 +27,9 @@
 }
 
 /*css for question lock*/
+#lockQuestion{
+  display: none;
+}
 
 #clockdiv{
   font-family: sans-serif;
