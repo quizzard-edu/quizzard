@@ -646,7 +646,7 @@ var getAllSettings = function (callback) {
         }
 
         if (!obj) {
-            return callback ('No settings object found', null);
+            resetAllSettings(callback);
         }
 
         return callback (null, obj);

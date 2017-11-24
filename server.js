@@ -76,7 +76,11 @@ app.listen(port, function() {
     logger.log('//------------------------');
     logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
     db.initialize(function() {
-        settings.initialize(function() {});
+        settings.initialize(function(err, result) {
+            if (err) {
+                process.exit(1);
+            }
+        });
     });
 });
 
