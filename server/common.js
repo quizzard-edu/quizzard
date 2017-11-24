@@ -128,8 +128,7 @@ const questionAttributes = Object.freeze({
 });
 exports.questionAttributes = questionAttributes;
 // </Global Constants> ------------------------------------------
-const waiting_time = 90*60000;
-exports.waiting_time = waiting_time;
+
 // <Global Function> --------------------------------------------
 /**
 * shuffle the given list and return the result as a new list

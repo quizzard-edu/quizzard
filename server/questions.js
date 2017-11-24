@@ -570,7 +570,7 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 }
 
 exports.isUserLocked = function(userId, question, callback){
-    //var waiting_time = settings.getQuestionTimeoutPeriod();
+    var waiting_time = settings.getQuestionTimeoutPeriod();
     var lastSubmissionTime;
     var currentDate = common.getDateObject();
 
@@ -590,8 +590,8 @@ exports.isUserLocked = function(userId, question, callback){
 
     if(lastSubmissionTime){
         const diff = Math.abs(currentDate - lastSubmissionTime);
-        const timeLeftToWait = common.waiting_time - diff;
-        if (diff < common.waiting_time){
+        const timeLeftToWait = waiting_time - diff;
+        if (diff < waiting_time){
             return callback(true,common.getTime(timeLeftToWait), timeLeftToWait);
         }
     }
