@@ -47,7 +47,7 @@ var displayAccountsTable = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -70,7 +70,7 @@ var displayExportAccountsForm = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -123,7 +123,7 @@ var submitExportForm = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -160,7 +160,7 @@ var submitImportForm = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -178,7 +178,7 @@ var submitImportList = function() {
         var $tds = $(this).find('td');
         var isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked');
         var userObj = {
-            username: $tds.eq(1).text(),            
+            username: $tds.eq(1).text(),
             fname: $tds.eq(2).text(),
             lname: $tds.eq(3).text(),
             email: $tds.eq(4).text()
@@ -207,9 +207,9 @@ var submitImportList = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
-                displayAccountsTable();                
+                displayAccountsTable();
             }
         }
     });
@@ -287,7 +287,7 @@ var displayQuestionTable = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -365,8 +365,8 @@ var getQuestionFormAnswer = function(form) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
-                $('#result').html(getErrorFromResponse(data));               
+                data = data.responseJSON;
+                $('#result').html(getErrorFromResponse(data));
             }
         }
     });
@@ -389,7 +389,7 @@ var displayStatistics = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -412,7 +412,7 @@ var displaySettings = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -462,7 +462,7 @@ var deactivateUser = function(id, username) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    data = data.responseJSON;                
+                    data = data.responseJSON;
                     failSnackbar(getErrorFromResponse(data));
                 }
             }
@@ -496,7 +496,7 @@ var activateUser = function(id, username) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    data = data.responseJSON;                
+                    data = data.responseJSON;
                     failSnackbar(getErrorFromResponse(data));
                 }
             }
@@ -524,7 +524,7 @@ var editUser = function(id) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -552,7 +552,7 @@ var submitUserForm = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -589,7 +589,7 @@ var submitEditForm = function(id) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -720,7 +720,7 @@ var submitQuestionForm = function() {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -781,7 +781,7 @@ var editQuestion = function(qid, questionNumber) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -815,7 +815,7 @@ var submitQEditForm = function(qid, questionNumber) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -878,7 +878,7 @@ var sortAccountsTable = function(type) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }
@@ -918,7 +918,7 @@ var getQuestionsTopicsList = function () {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
+                data = data.responseJSON;
                 failSnackbar(getErrorFromResponse(data));
             }
         }

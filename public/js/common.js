@@ -69,7 +69,11 @@ $(document).on('click', '#closeSnack', function() {
     $(this).parent().fadeOut();
 });
 
+
 /*
+These errors are only for UI use
+Error codes and their corresponding message. Error codes are under different
+categories:
 1000 -> system
 2000 -> user
 3000 -> question
