@@ -18,11 +18,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var bcrypt = require('bcryptjs');
-var fs = require('fs');
-var csv = require('csv');
-var db = require('./db.js');
-var logger = require('./log.js').logger;
+const bcrypt = require('bcryptjs');
+const fs = require('fs');
+const csv = require('csv');
+const db = require('./db.js');
+const logger = require('./log.js').logger;
 
 /* Sort the list of accounts as by the given criteria. */
 exports.sortAccounts = function(as, type, asc, callback) {

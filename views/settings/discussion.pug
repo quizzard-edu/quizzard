@@ -1,0 +1,25 @@
+li
+  .collapsible-header(onclick="$(this).parent().toggleClass('active'); $('#discussionB')[0].style.display = ($('#discussionB')[0].style.display === 'block') ? 'none' : 'block'")
+    i.material-icons question_answer
+    | Discussion Board Settings
+  .collapsible-body#discussionB
+    h5 Discussion Board Status:
+    form
+      input(type='radio', name='discussionView', value='NONE', id='none', checked=checkDiscussionboardVisibility('NONE'))
+      label(for='none') Don't use discussion board
+      br
+      input(type='radio', name='discussionView', value='ANSWERED', id='answered', checked=checkDiscussionboardVisibility('ANSWERED'))
+      label(for='answered') Available only for students who have answered the question
+      br
+      input(type='radio', name='discussionView', value='ALL', id='all', checked=checkDiscussionboardVisibility('ALL'))
+      label(for='all') Available for all students
+    h6 *Discussionboard will always be visible to admins
+    br
+    br
+    span Dislikes on comments and replies
+    .switch
+      label
+        | Don't allow
+        input(type='checkbox', id='allowDislikes', name='allowDislikes', checked=discussionboardDislikesEnabled)
+        span.lever
+        | Allow

@@ -1,0 +1,30 @@
+li
+  .collapsible-header(onclick="$(this).parent().toggleClass('active'); $('#studentB')[0].style.display = ($('#studentB')[0].style.display === 'block') ? 'none' : 'block'")
+    i.material-icons person
+    | Student Settings
+  .collapsible-body#studentB
+    h5 Allow Students to Change:
+    span First and last name:
+    .switch
+      label
+        | Don't allow
+        input(type='checkbox', id='allowEditName', name='allowEditName', checked=studentEditNames)
+        span.lever
+        | Allow
+    br
+    span Email:
+    .switch
+      label
+        | Don't allow
+        input(type='checkbox', id='allowEditEmail', name='allowEditEmail', checked=studentEditEmail)
+        span.lever
+        | Allow
+    br
+    span Password:
+    .switch
+      label
+        | Don't allow
+        input(type='checkbox', id='allowEditPassword', name='allowEditPassword', checked=studentEditPassword)
+        span.lever
+        | Allow
+    br

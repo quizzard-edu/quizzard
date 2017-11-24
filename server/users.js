@@ -18,10 +18,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var bcrypt = require('bcryptjs');
-var db = require('./db.js');
-var logger = require('./log.js');
-var common = require('./common.js');
+const bcrypt = require('bcryptjs');
+const db = require('./db.js');
+const logger = require('./log.js');
+const common = require('./common.js');
 
 /**
  * Create a student USER, if the USER object is valid

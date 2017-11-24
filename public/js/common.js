@@ -21,7 +21,9 @@ const snack = Object.freeze({
     warning     :   '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
     fail        :   '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
     close       :   '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
-})
+});
+
+const loadingAnimation = '<div class="progress"><div class="indeterminate"></div></div>';
 
 const leaderboardTypes = Object.freeze({
     OVERALL  : {name: 'overall', displayName: 'Overall'},
@@ -47,7 +49,7 @@ String.prototype.format = function (args) {
         }
         return replace;
     });
-};
+}
 
 String.prototype.format.regex = new RegExp('{-?[0-9]+}', 'g');
 

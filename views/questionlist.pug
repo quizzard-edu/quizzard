@@ -5,8 +5,6 @@ ul.collection
       span.title #{q.title}
       p
         | #{q.topic}
-        br
-        | #{q.points}
-      a.secondary-content.question-block.noLineLink
+      a.secondary-content.question-block.noLineLink(href='/question?_id='+q._id, style='cursor: pointer;')
         i.material-icons launch
         p.text-center.title
