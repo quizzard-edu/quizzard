@@ -3,9 +3,8 @@ var waitTime;
 $(function () {
     //hide submit button since question is locked
     $(':submit').hide();
-    // place count down timer
+    // Start Clock
     initializeClock('clockdiv', new Date(Date.parse(new Date()) +  parseInt(waitTime)))
-    // start timer
 });
 
 function getTimeRemaining(endtime) {

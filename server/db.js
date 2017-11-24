@@ -615,7 +615,7 @@ var resetAllSettings = function (callback) {
         defaultSettings.question['defaultMinPoints'] = 10;
         defaultSettings.question['defaultMaxPoints'] = 100;
         defaultSettings.question['timeoutEnabled'] = true;
-        defaultSettings.question['timeoutPeriod'] = 30000;
+        defaultSettings.question['timeoutPeriod'] = 30*60000;
 
         defaultSettings.discussionboard['visibility'] = common.discussionboardVisibility.ALL;
         defaultSettings.discussionboard['dislikesEnabled'] = true;
