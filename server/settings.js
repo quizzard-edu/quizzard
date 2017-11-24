@@ -36,10 +36,8 @@ exports.resetAllSettings = function (callback) {
  *
  * @param {funtion} callback
  */
-exports.getClassActive = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.general.active);
-    });
+exports.getClassActive = function () {
+    return allSettings.general.active;
 }
 
 /**
@@ -61,10 +59,8 @@ exports.setClassActive = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getLeaderboardLimit = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.general.leaderboardLimit);
-    });
+exports.getLeaderboardLimit = function () {
+    return allSettings.general.leaderboardLimit;
 }
 
 /**
@@ -86,10 +82,8 @@ exports.setLeaderboardLimit = function (limit, callback) {
  *
  * @param {funtion} callback
  */
-exports.getStudentEditNameEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.student.editNames);
-    });
+exports.getStudentEditNameEnabled = function () {
+    return allSettings.student.editNames;
 }
 
 /**
@@ -111,10 +105,8 @@ exports.setStudentEditNameEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getStudentEditEmailEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.student.editEmail);
-    });
+exports.getStudentEditEmailEnabled = function () {
+    return allSettings.student.editEmail;
 }
 
 /**
@@ -136,10 +128,8 @@ exports.setStudentEditEmailEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getStudentEditPasswordEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.student.editPassword);
-    });
+exports.getStudentEditPasswordEnabled = function () {
+    return allSettings.student.editPassword;
 }
 
 /**
@@ -161,10 +151,8 @@ exports.setStudentEditPasswordEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getQuestionDefaultTopic = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.defaultTopic);
-    });
+exports.getQuestionDefaultTopic = function () {
+    return allSettings.question.defaultTopic;
 }
 
 /**
@@ -186,10 +174,8 @@ exports.setQuestionDefaultTopic = function (topic, callback) {
  *
  * @param {funtion} callback
  */
-exports.getQuestionDefaultMinPoints = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.defaultMinPoints);
-    });
+exports.getQuestionDefaultMinPoints = function () {
+    return allSettings.question.defaultMinPoints;
 }
 
 /**
@@ -211,10 +197,8 @@ exports.setQuestionDefaultMinPoints = function (points, callback) {
  *
  * @param {funtion} callback
  */
-exports.getQuestionDefaultMaxPoints = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.defaultMaxPoints);
-    });
+exports.getQuestionDefaultMaxPoints = function () {
+    return allSettings.question.defaultMaxPoints;
 }
 
 /**
@@ -236,10 +220,8 @@ exports.setQuestionDefaultMinPoints = function (points, callback) {
  *
  * @param {funtion} callback
  */
-exports.getQuestionTimeoutEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.timeoutEnabled);
-    });
+exports.getQuestionTimeoutEnabled = function () {
+    return allSettings.question.timeoutEnabled;
 }
 
 /**
@@ -261,10 +243,8 @@ exports.setQuestionTimeoutEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getQuestionTimeoutPeriod = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.question.timeoutPeriod);
-    });
+exports.getQuestionTimeoutPeriod = function () {
+    return allSettings.question.timeoutPeriod;
 }
 
 /**
@@ -286,10 +266,8 @@ exports.setQuestionTimeoutPeriod = function (timeout, callback) {
  *
  * @param {funtion} callback
  */
-exports.getDiscussionboardVisibilityEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.discussionboard.visibility);
-    });
+exports.getDiscussionboardVisibilityEnabled = function () {
+    return allSettings.discussionboard.visibility;
 }
 
 /**
@@ -311,10 +289,8 @@ exports.setDiscussionboardVisibilityEnabled = function (isActive, callback) {
  *
  * @param {funtion} callback
  */
-exports.getDiscussionboardDislikesEnabled = function (callback) {
-    getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings.discussionboard.dislikesEnabled);
-    });
+exports.getDiscussionboardDislikesEnabled = function () {
+    return allSettings.discussionboard.dislikesEnabled;
 }
 
 /**
@@ -337,11 +313,11 @@ exports.setDiscussionboardDislikesEnabled = function (isActive, callback) {
  * @param {function} callback
  */
 exports.getAllSettings = function (callback) {
-    getAllSettings(callback);
+    return allSettings;
 }
 
 /**
- * get all settings object
+ * get all settings object from database
  *
  * @param {function} callback
  */
@@ -363,74 +339,73 @@ exports.updateSettings = function (updateObject, callback) {
     if ('classActive' in updateObject
         && (updateObject.classActive === 'false'
             || updateObject.classActive === 'true')) {
-        updateQuery.$set['general.active'] = (updateObject.classActive === 'true');
+        updateQuery.$set['general.active'] = allSettings.general.active = (updateObject.classActive === 'true');
     }
 
     if ('studentsOnLeaderboard' in updateObject 
         && parseInt(updateObject.studentsOnLeaderboard)
         && parseInt(updateObject.studentsOnLeaderboard) >= 3) {
-        updateQuery.$set['general.leaderboardLimit'] = parseInt(updateObject.studentsOnLeaderboard);
+        updateQuery.$set['general.leaderboardLimit'] = allSettings.general.leaderboardLimit = parseInt(updateObject.studentsOnLeaderboard);
     }
 
     if ('allowEditName' in updateObject
         && (updateObject.allowEditName === 'false'
             || updateObject.allowEditName === 'true')) {
-        updateQuery.$set['student.editNames'] = (updateObject.allowEditName === 'true');
+        updateQuery.$set['student.editNames'] = allSettings.student.editNames = (updateObject.allowEditName === 'true');
     }
 
     if ('allowEditEmail' in updateObject
         && (updateObject.allowEditEmail === 'false'
             || updateObject.allowEditEmail === 'true')) {
-        updateQuery.$set['student.editEmail'] = (updateObject.allowEditEmail === 'true');
+        updateQuery.$set['student.editEmail'] = allSettings.student.editEmail = (updateObject.allowEditEmail === 'true');
     }
 
     if ('allowEditPassword' in updateObject
         && (updateObject.allowEditPassword === 'false'
             || updateObject.allowEditPassword === 'true')) {
-        updateQuery.$set['student.editPassword'] = (updateObject.allowEditPassword === 'true');
+        updateQuery.$set['student.editPassword'] = allSettings.student.editPassword = (updateObject.allowEditPassword === 'true');
     }
 
     if ('topic' in updateObject && common.getVariableType(updateObject.topic) === '[object String]') {
-        updateQuery.$set['question.defaultTopic'] = updateObject.topic;
+        updateQuery.$set['question.defaultTopic'] = allSettings.question.defaultTopic = updateObject.topic;
     }
 
     if ('minPoints' in updateObject 
         && parseInt(updateObject.minPoints)
         && parseInt(updateObject.minPoints) >= 10) {
-        updateQuery.$set['question.defaultMinPoints'] = parseInt(updateObject.minPoints);
+        updateQuery.$set['question.defaultMinPoints'] = allSettings.question.defaultMinPoints = parseInt(updateObject.minPoints);
     }
 
     if ('maxPoints' in updateObject 
         && parseInt(updateObject.maxPoints)
         && parseInt(updateObject.maxPoints) >= 100) {
-        updateQuery.$set['question.defaultMaxPoints'] = parseInt(updateObject.maxPoints);
+        updateQuery.$set['question.defaultMaxPoints'] = allSettings.question.defaultMaxPoints = parseInt(updateObject.maxPoints);
     }
 
     if ('allowTimeout' in updateObject
         && (updateObject.allowTimeout === 'false'
             || updateObject.allowTimeout === 'true')) {
-        updateQuery.$set['question.timeoutEnabled'] = (updateObject.allowTimeout === 'true');
+        updateQuery.$set['question.timeoutEnabled'] = allSettings.question.timeoutEnabled = (updateObject.allowTimeout === 'true');
     }
 
     if ('timeoutPeriod' in updateObject 
         && parseInt(updateObject.timeoutPeriod)
         && parseInt(updateObject.timeoutPeriod) >= 1) {
-        updateQuery.$set['question.timeoutPeriod'] = parseInt(updateObject.timeoutPeriod);
+        updateQuery.$set['question.timeoutPeriod'] = allSettings.question.timeoutPeriod = parseInt(updateObject.timeoutPeriod)*60000;
     }
 
     if ('discussionView' in updateObject
         && (updateObject.discussionView === common.discussionboardVisibility.NONE
             || updateObject.discussionView === common.discussionboardVisibility.ANSWERED
             || updateObject.discussionView === common.discussionboardVisibility.ALL)) {
-        updateQuery.$set['discussionboard.visibility'] = updateObject.discussionView;
+        updateQuery.$set['discussionboard.visibility'] = allSettings.discussionboard.visibility = updateObject.discussionView;
     }
 
     if ('allowDislikes' in updateObject
         && (updateObject.allowDislikes === 'false'
             || updateObject.allowDislikes === 'true')) {
-        updateQuery.$set['discussionboard.dislikesEnabled'] = (updateObject.allowDislikes === 'true');
+        updateQuery.$set['discussionboard.dislikesEnabled'] = allSettings.discussionboard.dislikesEnabled = (updateObject.allowDislikes === 'true');
     }
-
     updateSettings(updateQuery, callback);
 }
 
@@ -442,4 +417,23 @@ exports.updateSettings = function (updateObject, callback) {
  */
 var updateSettings = function (updateQuery, callback) {
     db.updateSettings({}, updateQuery, callback);
+}
+
+/**
+ * Stores the setting data
+ */
+var allSettings = {};
+
+/**
+ * Initialize allSettings object
+ *
+ */
+exports.initialize = function(callback){
+    getAllSettings(function(err, allSettingsObj){
+        if(err){
+            return callback(err, null);
+        }
+        allSettings = allSettingsObj;
+        return callback(null,'success');
+    });
 }
