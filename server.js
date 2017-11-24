@@ -33,7 +33,6 @@ const settings = require('./server/settings.js');
 const json2csv = require('json2csv');
 const fs = require('fs');
 const csv2json = require('csvtojson');
-const eml = require('sendmail')();
 
 const app = express();
 const port = process.env.QUIZZARD_PORT || 8000;
