@@ -201,25 +201,15 @@ app.get('/leaderboard-table', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
-
-    var shortTable = false;
-
-    if (req.query.longTable === 'false') {
-        shortTable = true;
+    var smallBoard = false;
+    if (req.query.smallBoard === 'true'){
+        smallBoard = true;
     }
-
-    users.getLeaderboard(req.session.user._id, shortTable, function(leader) {
+    users.getLeaderboard(req.session.user._id, smallBoard, function(leader) {
         
         const leaderboardTableHTML = leaderboardTable();
         const leaderboardRowHTML = leaderboardRow();
-
-        // var html = leaderboardTable({
-        //     fullTable: fullTable,
-        //     shortTable: shortTable,
-        //     leaderboard: leader,
-        //     userid: req.session.user._id
-        // });
-
+        
         return res.status(200).send({
             leader: leader,
             leaderboardTableHTML: leaderboardTableHTML,

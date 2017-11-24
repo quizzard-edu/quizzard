@@ -1,4 +1,9 @@
+var rank;
+var prevRank;
 var sortTypes;
+var leaderboardRow;
+var leaderboardTable;
+var studentLeaderList;
 
 /* Fetch the list of valid question list sort types from the server.
 $.ajax({
@@ -84,24 +89,49 @@ var goToQuestion = function (questionId) {
 /*
  * Fetch the mini leaderboard table and display it in the sidebar.
  */
-var fetchLeaderboard = function(t) {
+var fetchLeaderboard = function() {
     $.ajax({
         type: 'GET',
         url: '/leaderboard-table',
         data: {
-            fullTable: false,
-            longTable: false,
-            type: t
+            smallBoard: true
         },
         success: function(data) {
-            $('.leaderboard-small').html(data);
-        },
-        error: function(data){
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            }
-        },
+            leaderboardTable = $(data.leaderboardTableHTML);
+            leaderboardRow = $(data.leaderboardRowHTML);
+            studentLeaderList = data.leader;
+            $('.leaderboard-small').html(leaderboardTable);            
+            displayTable(studentLeaderList);
+        }
     });
 }
 
-fetchLeaderboard('overall');
+fetchLeaderboard();
+
+var displayTable = function(studentLeaderList) {
+    $('.podium').hide();
+    topPoints = -1;
+    bestIndex = 0;
+    $('#criteriaName').html('Points');
+    studentLeaderList.forEach((studentObject, index) => {
+        if (index === 0) {
+            leaderboardRow.find('#rank').html(index + 1);
+            rank = 1;
+            prevRank = rank;
+        } else {
+            if (studentLeaderList[index - 1].points === studentObject.points) {
+                leaderboardRow.find('#rank').html(prevRank);
+                rank = prevRank;
+            } else {
+                leaderboardRow.find('#rank').html(index + 1);
+                rank = index + 1;
+                prevRank = rank;
+            }
+        }    
+        leaderboardRow.attr('class', `rank-${rank <= 3 ? rank : 'default'}`);
+        leaderboardRow.attr('class', `rank-${index + 1 <= 3 ? index + 1 : 'default'}`);
+        leaderboardRow.find('#displayName').html(studentObject.displayName);
+        leaderboardRow.find('#criteria').html(studentObject.points);       
+        $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
+    });
+}

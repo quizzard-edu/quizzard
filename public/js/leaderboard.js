@@ -5,7 +5,9 @@ var boardType = leaderboardTypes.OVERALL;
 var leaderboardRow;
 var leaderboardTable;
 var studentLeaderList;
-var topScore;
+var prevRank;
+var rank;
+var podiumScore;
 
 /* Get HTML for the complete leaderboard table from the server and display it. */
 var fetchLeaderboard = function() {
@@ -14,7 +16,7 @@ var fetchLeaderboard = function() {
         type: 'GET',
         url: '/leaderboard-table',
         data: {
-            longTable: true
+            smallBoard: false
         },
         success: function(data) {
             leaderboardTable = $(data.leaderboardTableHTML);
@@ -29,23 +31,27 @@ var fetchLeaderboard = function() {
 fetchLeaderboard();
 
 var displayTable = function(studentLeaderList) {
-    var bestScore = -1;
-    var bestIndex = 0;
     $('#leaderboardBody').html('');
     $('#criteriaName').html(boardType.displayName);
-    topScore = studentLeaderList[0][boardType.name];
-    leaderboardTable.find('#topScore').html(topScore);
+    podiumScore = studentLeaderList[0][boardType.name];
+    setPodiumImages();
+    leaderboardTable.find('#topScore').html(podiumScore);
     studentLeaderList.forEach((studentObject, index) => {
-        
-        if (studentObject[boardType.name] !== bestScore) {
-            bestIndex = index;
-            bestScore = studentObject[boardType.name];            
-            leaderboardRow.find('#rank').html(bestIndex + 1);
-        }
-        else {
-            leaderboardRow.find('#rank').html(bestIndex + 1);            
-        }
-        leaderboardRow.attr('class', topThree(bestIndex));
+        if (index === 0) {
+            leaderboardRow.find('#rank').html(index + 1);
+            rank = 1;
+            prevRank = rank;
+        } else {
+            if (studentLeaderList[index - 1][boardType.name] === studentObject[boardType.name]) {
+                leaderboardRow.find('#rank').html(prevRank);
+                rank = prevRank;
+            } else {
+                leaderboardRow.find('#rank').html(index + 1);
+                rank = index + 1;
+                prevRank = rank;
+            }
+        }       
+        leaderboardRow.attr('class', `rank-${rank <= 3 ? rank : 'default'}`);
         leaderboardRow.find('#displayName').html(studentObject.displayName);
         leaderboardRow.find('#criteria').html(studentObject[boardType.name] + 
             ((boardType === leaderboardTypes.ACCURACY) ? '%' : ''));        
@@ -81,14 +87,8 @@ var displayNewLeaderboard = function(type) {
     displayTable(studentLeaderList);
 }
 
-var topThree = function(rank){
-    if (rank === 0) {
-        return 'col-gold';
-    } else if (rank === 1) {
-        return 'col-silver';
-    } else if (rank === 2) {
-        return 'col-bronze';
-    } else {
-        return 'col-default';
-    }
+var setPodiumImages = function() {
+    $('#first').attr('src','img/logo.png');
+    $('#second').attr('src','img/logo.png');
+    $('#third').attr('src','img/logo.png');
 }
