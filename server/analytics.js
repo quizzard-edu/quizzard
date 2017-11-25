@@ -380,7 +380,6 @@ var getCorrectAttemptsOverTime = function(query, callback) {
             dates.push(data.dates[i].date);
             correctAttempts.push(data.dates[i].info.correctAttemptsCount);
         }
-        logger.log(JSON.stringify({data:data,dates: dates, correctAttempts: correctAttempts}));
         return callback(null, {dates: dates, correctAttempts: correctAttempts});
     });
 }

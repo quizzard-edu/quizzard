@@ -306,23 +306,17 @@ var getCorrectAttemptsOverTime = function(path) {
         data: {
           datasets: [
             {
-              data: [10,2,50,27],
-              backgroundColor: [
-                'rgba(151,187,205,0.5)'
-              ],
-              borderColor: [
-                'rgba(151,187,205,1)'
-              ],
+              data: [10,40,50,27],
+              pointBackgroundColor: 'rgba(151,187,205,1)',
+              backgroundColor: 'rgba(151,187,205,0.5)',
+              borderColor: 'rgba(151,187,205,1)',
               label: 'Me'
             },
             {
-              data: [27,50,2,10],
-              backgroundColor: [
-                'rgba(151,205,187,0.5)'
-              ],
-              borderColor: [
-                'rgba(151,205,187,1)'
-              ],
+              data: [27,50,25,10],
+              pointBackgroundColor: 'rgba(151,205,187,1)',
+              backgroundColor: 'rgba(151,205,187,0.5)',
+              borderColor: 'rgba(151,205,187,1)',
               label: 'Class'
             }
           ],

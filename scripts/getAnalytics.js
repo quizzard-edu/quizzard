@@ -29,7 +29,7 @@ var studentsCount = 0;
 /* get analytics for a admins */
 var getAnalytics = function() {
     var currentDate = common.getDate();
-    users.getStudentsList(function(err, studentsList){
+    users.getStudentsList(function (err, studentsList) {
         if (err) {
             return logger.error(err);
         }
@@ -41,17 +41,20 @@ var getAnalytics = function() {
             row.correctAttemptsCount = student.correctAttemptsCount;
             row.wrongAttemptsCount = student.wrongAttemptsCount;
             row.totalAttemptsCount = student.totalAttemptsCount;
+            row.points = student.points;
+            row.accuracy = ((student.correctAttemptsCount / student.totalAttemptsCount) * 100).toFixed(2);
 
             analytics.addStudentAnalyticsWithDate(
                 student._id,
                 currentDate,
                 row,
-                function(err, result){
+                function (err, result) {
                     if (err) {
                         return logger.info(err);
                     }
+
                     studentsCount++;
-                    if(studentsCount === studentsList.length-1) {
+                    if (studentsCount === studentsList.length-1) {
                         logger.log('Done, everything looks fine.');
                         process.exit(0);
                     }
@@ -61,6 +64,6 @@ var getAnalytics = function() {
     });
 }
 
-db.initialize(function() {
+db.initialize(function () {
     getAnalytics();
 });
