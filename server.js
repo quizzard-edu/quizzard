@@ -1505,7 +1505,7 @@ app.get('/studentAnalytics', function(req,res){
         if (!req.query.studentId) {
             return res.status(500).send('no student graphs for admins');
         }
-        query.userId = "94baf721-cd78-11e7-89b1-892190749e68";
+        query.userId = "59f7b724-d207-11e7-b35f-0f126796b0c5";
     }
 
     analytics.getChart(query, function (err, result) {

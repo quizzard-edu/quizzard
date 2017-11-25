@@ -23,7 +23,12 @@ const logger = require('./log.js');
 const common = require('./common.js');
 const db = require('./db.js');
 
-// get charts
+/**
+ * get the charts based on type 
+ *
+ * @param {object} query 
+ * @param {function} callback 
+ */
 exports.getChart = function(query, callback) {
     switch(query.type) {
         case 'QuestionsAnsweredVsClass':
@@ -49,7 +54,36 @@ exports.getChart = function(query, callback) {
     }
 }
 
-// get questions answered vs class
+/**
+ * add student analytics
+ * if there are no records of the student, create a new record
+ * if there are recards of the student, get the last recard and compute the deltas
+ * 
+ * @param {string} studentId 
+ * @param {string} date 
+ * @param {object} info 
+ * @param {function} callback 
+ */
+exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
+    db.addStudentAnalyticsWithDate(studentId, date, info, callback);
+}
+
+/**
+ * get the list of data on the user by date
+ * 
+ * @param {object} findQuery 
+ * @param {function} callback 
+ */
+var getTimeBasedAnalytics = function (findQuery, callback) {
+    db.getTimeBasedAnalytics(findQuery, callback);
+}
+
+/**
+ * get questions answered vs class
+ * 
+ * @param {object} query 
+ * @param {function} callback 
+ */
 var getQuestionsAnsweredVsClass = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
@@ -80,7 +114,12 @@ var getQuestionsAnsweredVsClass = function(query, callback) {
     });
 }
 
-// get questions answered vs class
+/**
+ * get questions answered vs class
+ * 
+ * @param {object} query 
+ * @param {function} callback 
+ */
 var getAccuracyVsClass = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
@@ -111,7 +150,12 @@ var getAccuracyVsClass = function(query, callback) {
     });
 }
 
-// get points vs class
+/**
+ * get points vs class
+ * 
+ * @param {object} query 
+ * @param {function} callback 
+ */
 var getPointsVsClass = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
@@ -142,7 +186,12 @@ var getPointsVsClass = function(query, callback) {
     });
 }
 
-// get rating vs class
+/**
+ * get rating vs class
+ * 
+ * @param {object} query 
+ * @param {function} callback 
+ */
 var getRatingVsClass = function(query, callback) {
     users.getUsersList(function(err, students) {
         if (err) {
@@ -175,7 +224,11 @@ var getRatingVsClass = function(query, callback) {
     });
 }
 
-// get average rating
+/**
+ * get average rating
+ * 
+ * @param {list} ratingsList 
+ */
 var getAverageRating = function(ratingsList) {
     var totalRate = 0;
 
@@ -186,17 +239,12 @@ var getAverageRating = function(ratingsList) {
     return Math.ceil(totalRate / ratingsList.length);
 }
 
-/*
-add student analytics
-if there are no records of the student, create a new record
-if there are recards of the student, get the last recard and compute the deltas
-*/
-exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
-    db.addStudentAnalyticsWithDate(studentId, date, info, callback);
-}
-
-// Class statistics
-// get questions answered of the class
+/**
+ * get questions answered of the class
+ * 
+ * @param {object} query 
+ * @param {function} callback 
+ */
 var getClassAnswered = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
@@ -221,7 +269,12 @@ var getClassAnswered = function(query, callback) {
     });
 }
 
-// get questions answered of the class
+/**
+ * get accuracy of the class
+ * 
+ * @param {object} query 
+ * @param {function} callback 
+ */
 var getClassAccuracy = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
@@ -246,7 +299,12 @@ var getClassAccuracy = function(query, callback) {
     });
 }
 
-// get points of the class
+/**
+ * get points of the class
+ * 
+ * @param {object} query 
+ * @param {function} callback 
+ */
 var getClassPoints = function(query, callback) {
     users.getStudentsList(function(err, students) {
         if (err) {
@@ -271,7 +329,12 @@ var getClassPoints = function(query, callback) {
     });
 }
 
-// get rating of the class
+/**
+ * get rating of the class
+ * 
+ * @param {object} query 
+ * @param {function} callback 
+ */
 var getClassRating = function(query, callback) {
     users.getUsersList(function(err, students) {
         if (err) {
@@ -298,7 +361,12 @@ var getClassRating = function(query, callback) {
     });
 }
 
-// get rating of the class
+/**
+ * get correct attempts of the class over time
+ * 
+ * @param {object} query 
+ * @param {function} callback 
+ */
 var getCorrectAttemptsOverTime = function(query, callback) {
     getTimeBasedAnalytics({_id:query.userId}, function(err, data) {
         if (err) {
@@ -315,8 +383,4 @@ var getCorrectAttemptsOverTime = function(query, callback) {
         logger.log(JSON.stringify({data:data,dates: dates, correctAttempts: correctAttempts}));
         return callback(null, {dates: dates, correctAttempts: correctAttempts});
     });
-}
-
-var getTimeBasedAnalytics = function (findQuery, callback) {
-    db.getTimeBasedAnalytics(findQuery, callback);
 }

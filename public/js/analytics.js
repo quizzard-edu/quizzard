@@ -300,21 +300,32 @@ var getCorrectAttemptsOverTime = function(path) {
       type: 'correctAttemptsOverTime'
     },
     success: function(data) {
-      $('#classRatingI').html(data[0]);
       var ctx = $('#testingCanvas');
       var config2 = {
         type: 'line',
         data: {
-          datasets: [{
-            data: [10,2,50,27],
-            backgroundColor: [
-              "#4B515D",
-              "#4285F4",
-              "#ff4444",
-              "#00C851"
-            ],
-            label: 'Type Vs. Count'
-          }],
+          datasets: [
+            {
+              data: [10,2,50,27],
+              backgroundColor: [
+                'rgba(151,187,205,0.5)'
+              ],
+              borderColor: [
+                'rgba(151,187,205,1)'
+              ],
+              label: 'Me'
+            },
+            {
+              data: [27,50,2,10],
+              backgroundColor: [
+                'rgba(151,205,187,0.5)'
+              ],
+              borderColor: [
+                'rgba(151,205,187,1)'
+              ],
+              label: 'Class'
+            }
+          ],
           labels: data.dates
         },
         options: {
