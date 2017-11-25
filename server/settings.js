@@ -22,6 +22,8 @@ const db = require('./db.js');
 const logger = require('./log.js');
 const common = require('./common.js');
 
+var allSettings = {};
+
 /**
  * reset the global settings to their default values
  *
@@ -418,11 +420,6 @@ exports.updateSettings = function (updateObject, callback) {
 var updateSettings = function (updateQuery, callback) {
     db.updateSettings({}, updateQuery, callback);
 }
-
-/**
- * Stores the setting data
- */
-var allSettings = {};
 
 /**
  * Initialize allSettings object
