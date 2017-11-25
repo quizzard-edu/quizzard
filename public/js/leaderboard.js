@@ -35,7 +35,7 @@ var displayLeaderboard = function(studentLeaderList) {
     $('#leaderboardBody').html('');
     $('#criteriaName').html(boardType.displayName);
     podiumScore = studentLeaderList[0][boardType.name];
-    leaderboardTable.find('#topScore').html(podiumScore);
+    $('#topScore').html(podiumScore + ((boardType === leaderboardTypes.ACCURACY) ? '%' : ''));
     studentLeaderList.forEach((studentObject, index) => {
         // Students with the same number of points get the same rank
         if (index === 0) {

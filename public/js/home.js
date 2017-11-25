@@ -109,7 +109,6 @@ fetchLeaderboard();
 
 // Adds the students information to the leaderboard
 var displayLeaderboard = function(studentLeaderList, userId) {
-    $('.podium').hide();
     $('#criteriaName').html('Points');
     studentLeaderList.forEach((studentObject, index) => {
         // This give colour to rows where the student's rank is in the top 3

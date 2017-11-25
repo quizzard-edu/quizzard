@@ -33,7 +33,7 @@ li.silver {
 }
 
 .silver, .bronze {
-    transform: scale(0.50);
+    transform: scale(0.60);
 }
 
 li img {
@@ -41,12 +41,10 @@ li img {
     max-width: 60%;
 }
 
-li span.score {
+li img#trophy {
+    top: -1px;
     position: relative;
-    top: 15px;
-    border: 1px solid black;
     padding: 12.5px;
-    font-size: 25px;
 }
 
 li.gold .score {
