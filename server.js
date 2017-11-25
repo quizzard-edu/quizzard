@@ -580,7 +580,12 @@ app.get('/question', function(req, res) {
                 hasQrating = true;
             }
         }
-        questions.isUserLocked(userId, questionFound, function(isLocked, waitTimeMessage, waitTimeinMiliSeconds){
+        questions.isUserLocked(userId, questionFound, function(err, isLocked, waitTimeMessage, waitTimeinMiliSeconds){
+            if(err){
+                logger.error(err);
+                return res.status(500).send(err);
+            }
+            
             return res.status(200).render('question-view', {
                 user: req.session.user,
                 question: questionFound,
@@ -641,7 +646,12 @@ app.post('/submitanswer', function(req, res) {
         }
 
         // check if question is locked for the student
-        questions.isUserLocked(userId, question, function(isLocked, waitTimeMessage, waitTimeinMiliSeconds){
+        questions.isUserLocked(userId, question, function(err, isLocked, waitTimeMessage, waitTimeinMiliSeconds){
+            if(err){
+                logger.error(err);
+                return res.status(500).send(err);
+            }
+
             if (isLocked){
                 return res.status(423).send(waitTimeMessage);
             }

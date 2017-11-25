@@ -577,7 +577,7 @@ exports.isUserLocked = function(userId, question, callback){
     // check if user already got the question correct
     for (var obj = 0; obj < question.correctAttempts.length; obj ++){
         if(question.correctAttempts[obj]['userId'] === userId){
-            return callback(false,null);
+            return callback(null,false,null);
         }
     }
     // find the lastSubmissionTime for this user
@@ -592,10 +592,10 @@ exports.isUserLocked = function(userId, question, callback){
         const diff = Math.abs(currentDate - lastSubmissionTime);
         const timeLeftToWait = waiting_time - diff;
         if (diff < waiting_time){
-            return callback(true,common.getTime(timeLeftToWait), timeLeftToWait);
+            return callback(null,true,common.getTime(timeLeftToWait), timeLeftToWait);
         }
     }
-    return callback(false,null);
+    return callback(null,false,null);
 }
 
 /*Updates the Users Submission time for a Question*/
