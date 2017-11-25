@@ -717,6 +717,8 @@ var resetAllSettings = function (callback) {
         }
 
         var defaultSettings = {};
+        defaultSettings._id = common.getUUID();
+
         defaultSettings['general'] = {};
         defaultSettings['student'] = {};
         defaultSettings['question'] = {};
