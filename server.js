@@ -69,7 +69,6 @@ const tfFormPug = pug.compileFile('views/question_types/tf-answer.pug');
 const chooseAllFormPug = pug.compileFile('views/question_types/chooseAll-answer.pug');
 const matchingFormPug = pug.compileFile('views/question_types/matching-answer.pug');
 const orderingFormPug = pug.compileFile('views/question_types/ordering-answer.pug');
-const leaderboardTablePug = pug.compileFile('views/leaderboard-table.pug');
 const discussionBoardPug = pug.compileFile('views/discussion.pug');
 const settingsPug = pug.compileFile('views/settings.pug');
 
@@ -230,7 +229,7 @@ app.get('/about', function(req,res) {
     return res.render('about', { user: req.session.user });
 });
 
-/* Fetch and render the leaderboard table. Send HTML as response. */
+/* Fetch and render the leaderboard table.*/
 app.get('/leaderboard-table', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
@@ -239,13 +238,14 @@ app.get('/leaderboard-table', function(req, res) {
     if (req.query.smallBoard === 'true'){
         smallBoard = true;
     }
-    users.getLeaderboard(req.session.user._id, smallBoard, function(leader) {
+    users.getLeaderboard(req.session.user._id, smallBoard, function(leader, displayRank) {
         
         const leaderboardTableHTML = leaderboardTable();
         const leaderboardRowHTML = leaderboardRow();
         
         return res.status(200).send({
             leader: leader,
+            displayRank : displayRank,
             leaderboardTableHTML: leaderboardTableHTML,
             leaderboardRowHTML: leaderboardRowHTML,
             userId: req.session.user._id

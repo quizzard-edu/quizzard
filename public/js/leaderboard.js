@@ -19,6 +19,7 @@ var fetchLeaderboard = function() {
             smallBoard: false
         },
         success: function(data) {
+            setPodiumImages();
             leaderboardTable = $(data.leaderboardTableHTML);
             leaderboardRow = $(data.leaderboardRowHTML);
             studentLeaderList = data.leader;
@@ -30,13 +31,13 @@ var fetchLeaderboard = function() {
 
 fetchLeaderboard();
 
-var displayTable = function(studentLeaderList) {
+var displayLeaderboard = function(studentLeaderList) {
     $('#leaderboardBody').html('');
     $('#criteriaName').html(boardType.displayName);
     podiumScore = studentLeaderList[0][boardType.name];
-    setPodiumImages();
     leaderboardTable.find('#topScore').html(podiumScore);
     studentLeaderList.forEach((studentObject, index) => {
+        // Students with the same number of points get the same rank
         if (index === 0) {
             leaderboardRow.find('#rank').html(index + 1);
             rank = 1;
@@ -50,7 +51,8 @@ var displayTable = function(studentLeaderList) {
                 prevRank = rank;
                 leaderboardRow.find('#rank').html(rank);
             }
-        }       
+        }
+        // This give colour to rows where the student's rank is in the top 3       
         leaderboardRow.attr('class', `rank-${rank <= 3 ? rank : 'default'}`);
         leaderboardRow.find('#displayName').html(studentObject.displayName);
         leaderboardRow.find('#criteria').html(studentObject[boardType.name] + 
@@ -59,6 +61,7 @@ var displayTable = function(studentLeaderList) {
     });
 }
 
+// Sort the list of students based on the citeria (Overall, Points, Accuracy, or Attempts)
 var sortLeaderBoard = function(citeria) {
     studentLeaderList = studentLeaderList.sort(function(student1,student2){
         return student2[citeria] - student1[citeria];
@@ -84,7 +87,7 @@ $('#option-attempt').click(function(evt) {
 var displayNewLeaderboard = function(type) {
     boardType = type;
     sortLeaderBoard(type.name);
-    displayTable(studentLeaderList);
+    displayLeaderboard(studentLeaderList);
 }
 
 var setPodiumImages = function() {

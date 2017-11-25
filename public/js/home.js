@@ -1,10 +1,7 @@
-var rank;
-var prevRank;
 var sortTypes;
 var leaderboardRow;
 var leaderboardTable;
 var studentLeaderList;
-var userRank;
 
 /* Fetch the list of valid question list sort types from the server.
 $.ajax({
@@ -101,41 +98,28 @@ var fetchLeaderboard = function() {
             leaderboardTable = $(data.leaderboardTableHTML);
             leaderboardRow = $(data.leaderboardRowHTML);
             studentLeaderList = data.leader;
-            $('.leaderboard-small').html(leaderboardTable);            
-            displayTable(studentLeaderList, data.userId);
+            $('.leaderboard-small').html(leaderboardTable);
+            $('#userRank').html('Current Rank: ' + data.displayRank);            
+            displayLeaderboard(studentLeaderList, data.userId);
         }
     });
 }
 
 fetchLeaderboard();
 
-var displayTable = function(studentLeaderList, userId) {
+// Adds the students information to the leaderboard
+var displayLeaderboard = function(studentLeaderList, userId) {
     $('.podium').hide();
-    topPoints = -1;
-    bestIndex = 0;
     $('#criteriaName').html('Points');
     studentLeaderList.forEach((studentObject, index) => {
-        if (index === 0) {
-            leaderboardRow.find('#rank').html(index + 1);
-            rank = 1;
-            prevRank = rank;
-        } else {
-            if (studentLeaderList[index - 1].points === studentObject.points) {
-                rank = prevRank;
-                leaderboardRow.find('#rank').html(rank);
-            } else {
-                rank = index + 1;
-                prevRank = rank;
-                leaderboardRow.find('#rank').html(rank);
-            }
-        } 
-        leaderboardRow.attr('class', `rank-${rank <= 3 ? rank : 'default'}`);
-        leaderboardRow.attr('class', `rank-${index + 1 <= 3 ? index + 1 : 'default'}`);
+        // This give colour to rows where the student's rank is in the top 3
+        leaderboardRow.attr('class', `rank-${studentObject.userRank <= 3 ? studentObject.userRank : 'default'}`);
+        leaderboardRow.find('#rank').html(studentObject.userRank);
         leaderboardRow.find('#displayName').html(studentObject.displayName);
         leaderboardRow.find('#criteria').html(studentObject.points);       
         $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
-        if (userId === studentObject.id){
-            $('#userRank').html('Your rank is ' + rank);
-        }   
+        // if (userId === studentObject.id){
+        //     $('#userRank').html('Your rank is ' + rank);
+        // }   
     });
 }

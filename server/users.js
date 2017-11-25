@@ -430,32 +430,58 @@ exports.updateProfile = function (userId, request, callback) {
 
 /**
  * Fetch a list of students to display in the leaderboard.
- * The list is sorted by decreasing points.
- * Add rank to each student entry.
  *
- * If shrt is true, return leaderboard with max eight entries.
+ * If smallBoard is true, return leaderboard with top 3 entries.
  *
  * @param {string} userid
+ * @param {boolean} smallBoard
  * @param {function} callback
  */
 exports.getLeaderboard = function (userid, smallBoard, callback) {
     getStudentsListSorted(0, function(err, studentlist) {
+        var displayRank = 0;
         if (err) {
             logger.error(err);
             return (err, []);
         }
-
+        
         var leaderboardList = [];
+
         if (smallBoard) {
+            var rank;
+            var prevRank;
+
             for (var i = 0; i < studentlist.length; ++i) {
                 let currentStudent = studentlist[i];
-    
+
+                // Students with the same number of points have the same rank
+                if (i === 0) {
+                    rank = 1;
+                    prevRank = rank;
+                } else {
+                    if (studentlist[i - 1].points === currentStudent.points) {
+                        rank = prevRank;
+                    } else {
+                        rank = i + 1;
+                        prevRank = rank;
+                    }
+                }
+
+                // This is the rank of the user that will be displayed on the mini leaderboard
+                if (currentStudent._id === userid) {
+                    displayRank = rank;
+                }
+
                 var student = {
                     displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
                     points:currentStudent.points,
-                    id: currentStudent._id
+                    userRank: rank
                 }
-                leaderboardList.push(student);
+
+                // Push only students with the top 3 number of poitns to mini leaderboard
+                if (i < 3) {
+                    leaderboardList.push(student);
+                }
             }
         }
 
@@ -482,6 +508,6 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
                 leaderboardList.push(student);
             }
         }
-        callback(leaderboardList);
+        callback(leaderboardList, displayRank);
     });
 }
