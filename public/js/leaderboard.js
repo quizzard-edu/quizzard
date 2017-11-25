@@ -5,8 +5,6 @@ var boardType = leaderboardTypes.OVERALL;
 var leaderboardRow;
 var leaderboardTable;
 var studentLeaderList;
-var prevRank;
-var rank;
 var podiumScore;
 
 /* Get HTML for the complete leaderboard table from the server and display it. */
@@ -32,6 +30,9 @@ var fetchLeaderboard = function() {
 fetchLeaderboard();
 
 var displayLeaderboard = function(studentLeaderList) {
+    var prevRank;
+    var rank;
+
     $('#leaderboardBody').html('');
     $('#criteriaName').html(boardType.displayName);
     podiumScore = studentLeaderList[0][boardType.name];
@@ -84,6 +85,7 @@ $('#option-attempt').click(function(evt) {
     displayNewLeaderboard(leaderboardTypes.ATTEMPT);
 });
 
+// Change leaderboard based on type (Overall, Points, Accuracy, Attemtps)
 var displayNewLeaderboard = function(type) {
     boardType = type;
     sortLeaderBoard(type.name);

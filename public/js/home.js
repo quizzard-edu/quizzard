@@ -117,8 +117,5 @@ var displayLeaderboard = function(studentLeaderList, userId) {
         leaderboardRow.find('#displayName').html(studentObject.displayName);
         leaderboardRow.find('#criteria').html(studentObject.points);       
         $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
-        // if (userId === studentObject.id){
-        //     $('#userRank').html('Your rank is ' + rank);
-        // }   
     });
 }

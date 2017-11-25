@@ -431,7 +431,7 @@ exports.updateProfile = function (userId, request, callback) {
 /**
  * Fetch a list of students to display in the leaderboard.
  *
- * If smallBoard is true, return leaderboard with top 3 entries.
+ * If smallBoard is true, return points leaderboard with top 3 entries.
  *
  * @param {string} userid
  * @param {boolean} smallBoard
