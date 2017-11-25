@@ -24,10 +24,10 @@ const common = require('./common.js');
 const db = require('./db.js');
 
 /**
- * get the charts based on type 
+ * get the charts based on type
  *
- * @param {object} query 
- * @param {function} callback 
+ * @param {object} query
+ * @param {function} callback
  */
 exports.getChart = function(query, callback) {
     switch(query.type) {
@@ -49,6 +49,10 @@ exports.getChart = function(query, callback) {
             return getClassRating(query, callback);
         case 'correctAttemptsOverTime':
             return getCorrectAttemptsOverTime(query, callback);
+        case 'accuracyOverTime':
+            return getAccuracyOverTime(query, callback);
+        case 'pointsOverTime':
+            return getPointsOverTime(query, callback);
         default:
             return callback('notFound', null);
     }
@@ -58,11 +62,11 @@ exports.getChart = function(query, callback) {
  * add student analytics
  * if there are no records of the student, create a new record
  * if there are recards of the student, get the last recard and compute the deltas
- * 
- * @param {string} studentId 
- * @param {string} date 
- * @param {object} info 
- * @param {function} callback 
+ *
+ * @param {string} studentId
+ * @param {string} date
+ * @param {object} info
+ * @param {function} callback
  */
 exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
     db.addStudentAnalyticsWithDate(studentId, date, info, callback);
@@ -70,9 +74,9 @@ exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback)
 
 /**
  * get the list of data on the user by date
- * 
- * @param {object} findQuery 
- * @param {function} callback 
+ *
+ * @param {object} findQuery
+ * @param {function} callback
  */
 var getTimeBasedAnalytics = function (findQuery, callback) {
     db.getTimeBasedAnalytics(findQuery, callback);
@@ -80,9 +84,9 @@ var getTimeBasedAnalytics = function (findQuery, callback) {
 
 /**
  * get questions answered vs class
- * 
- * @param {object} query 
- * @param {function} callback 
+ *
+ * @param {object} query
+ * @param {function} callback
  */
 var getQuestionsAnsweredVsClass = function(query, callback) {
     users.getStudentsList(function(err, students) {
@@ -116,9 +120,9 @@ var getQuestionsAnsweredVsClass = function(query, callback) {
 
 /**
  * get questions answered vs class
- * 
- * @param {object} query 
- * @param {function} callback 
+ *
+ * @param {object} query
+ * @param {function} callback
  */
 var getAccuracyVsClass = function(query, callback) {
     users.getStudentsList(function(err, students) {
@@ -152,9 +156,9 @@ var getAccuracyVsClass = function(query, callback) {
 
 /**
  * get points vs class
- * 
- * @param {object} query 
- * @param {function} callback 
+ *
+ * @param {object} query
+ * @param {function} callback
  */
 var getPointsVsClass = function(query, callback) {
     users.getStudentsList(function(err, students) {
@@ -188,9 +192,9 @@ var getPointsVsClass = function(query, callback) {
 
 /**
  * get rating vs class
- * 
- * @param {object} query 
- * @param {function} callback 
+ *
+ * @param {object} query
+ * @param {function} callback
  */
 var getRatingVsClass = function(query, callback) {
     users.getUsersList(function(err, students) {
@@ -226,8 +230,8 @@ var getRatingVsClass = function(query, callback) {
 
 /**
  * get average rating
- * 
- * @param {list} ratingsList 
+ *
+ * @param {list} ratingsList
  */
 var getAverageRating = function(ratingsList) {
     var totalRate = 0;
@@ -241,9 +245,9 @@ var getAverageRating = function(ratingsList) {
 
 /**
  * get questions answered of the class
- * 
- * @param {object} query 
- * @param {function} callback 
+ *
+ * @param {object} query
+ * @param {function} callback
  */
 var getClassAnswered = function(query, callback) {
     users.getStudentsList(function(err, students) {
@@ -271,9 +275,9 @@ var getClassAnswered = function(query, callback) {
 
 /**
  * get accuracy of the class
- * 
- * @param {object} query 
- * @param {function} callback 
+ *
+ * @param {object} query
+ * @param {function} callback
  */
 var getClassAccuracy = function(query, callback) {
     users.getStudentsList(function(err, students) {
@@ -301,9 +305,9 @@ var getClassAccuracy = function(query, callback) {
 
 /**
  * get points of the class
- * 
- * @param {object} query 
- * @param {function} callback 
+ *
+ * @param {object} query
+ * @param {function} callback
  */
 var getClassPoints = function(query, callback) {
     users.getStudentsList(function(err, students) {
@@ -331,9 +335,9 @@ var getClassPoints = function(query, callback) {
 
 /**
  * get rating of the class
- * 
- * @param {object} query 
- * @param {function} callback 
+ *
+ * @param {object} query
+ * @param {function} callback
  */
 var getClassRating = function(query, callback) {
     users.getUsersList(function(err, students) {
@@ -362,10 +366,10 @@ var getClassRating = function(query, callback) {
 }
 
 /**
- * get correct attempts of the class over time
- * 
- * @param {object} query 
- * @param {function} callback 
+ * get number correct attempts of user over time
+ *
+ * @param {object} query
+ * @param {function} callback
  */
 var getCorrectAttemptsOverTime = function(query, callback) {
     getTimeBasedAnalytics({_id:query.userId}, function(err, data) {
@@ -381,5 +385,51 @@ var getCorrectAttemptsOverTime = function(query, callback) {
             correctAttempts.push(data.dates[i].info.correctAttemptsCount);
         }
         return callback(null, {dates: dates, correctAttempts: correctAttempts});
+    });
+}
+
+/**
+ * get accuracy of user over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getAccuracyOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, data) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var accuracy = [];
+
+        for (var i = 0; i < data.dates.length; i++) {
+            dates.push(data.dates[i].date);
+            accuracy.push(data.dates[i].info.accuracy);
+        }
+        return callback(null, {dates: dates, accuracy: accuracy});
+    });
+}
+
+/**
+ * get points of user over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getPointsOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, data) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var points = [];
+
+        for (var i = 0; i < data.dates.length; i++) {
+            dates.push(data.dates[i].date);
+            points.push(data.dates[i].info.points);
+        }
+        return callback(null, {dates: dates, points: points});
     });
 }
