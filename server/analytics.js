@@ -23,6 +23,8 @@ const logger = require('./log.js');
 const common = require('./common.js');
 const db = require('./db.js');
 
+const classId = 'class';
+
 /**
  * get the charts based on type
  *
@@ -372,19 +374,38 @@ var getClassRating = function(query, callback) {
  * @param {function} callback
  */
 var getCorrectAttemptsOverTime = function(query, callback) {
-    getTimeBasedAnalytics({_id:query.userId}, function(err, data) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, studentObject) {
         if (err) {
             return callback(err, null);
         }
+        getTimeBasedAnalytics({_id:classId}, function(err, classObject) {
+            if (err) {
+                return callback(err, null);
+            }
 
-        var dates = [];
-        var correctAttempts = [];
+            var dates = [];
+            var studentData = [];
+            var classData = [];
 
-        for (var i = 0; i < data.dates.length; i++) {
-            dates.push(data.dates[i].date);
-            correctAttempts.push(data.dates[i].info.correctAttemptsCount);
-        }
-        return callback(null, {dates: dates, studentData: correctAttempts});
+            for (var i = 0; i < classObject.dates.length - studentObject.dates.length; i++) {
+                studentData.push(0);
+            }
+
+            for (var i = 0; i < studentObject.dates.length; i++) {
+                studentData.push(studentObject.dates[i].info.correctAttemptsCount);
+            }
+
+            for (var i = 0; i < classObject.dates.length; i++) {
+                dates.push(classObject.dates[i].date);
+                classData.push(classObject.dates[i].info.correctAttemptsCount);
+            }
+
+            return callback(null, {
+                dates: dates,
+                studentData: studentData,
+                classData: classData
+            });
+        });
     });
 }
 
@@ -395,19 +416,38 @@ var getCorrectAttemptsOverTime = function(query, callback) {
  * @param {function} callback
  */
 var getAccuracyOverTime = function(query, callback) {
-    getTimeBasedAnalytics({_id:query.userId}, function(err, data) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, studentObject) {
         if (err) {
             return callback(err, null);
         }
+        getTimeBasedAnalytics({_id:classId}, function(err, classObject) {
+            if (err) {
+                return callback(err, null);
+            }
 
-        var dates = [];
-        var accuracy = [];
+            var dates = [];
+            var studentData = [];
+            var classData = [];
 
-        for (var i = 0; i < data.dates.length; i++) {
-            dates.push(data.dates[i].date);
-            accuracy.push(data.dates[i].info.accuracy);
-        }
-        return callback(null, {dates: dates, studentData: accuracy});
+            for (var i = 0; i < classObject.dates.length - studentObject.dates.length; i++) {
+                studentData.push(0);
+            }
+
+            for (var i = 0; i < studentObject.dates.length; i++) {
+                studentData.push(studentObject.dates[i].info.accuracy);
+            }
+
+            for (var i = 0; i < classObject.dates.length; i++) {
+                dates.push(classObject.dates[i].date);
+                classData.push(classObject.dates[i].info.accuracy);
+            }
+
+            return callback(null, {
+                dates: dates,
+                studentData: studentData,
+                classData: classData
+            });
+        });
     });
 }
 
@@ -418,18 +458,37 @@ var getAccuracyOverTime = function(query, callback) {
  * @param {function} callback
  */
 var getPointsOverTime = function(query, callback) {
-    getTimeBasedAnalytics({_id:query.userId}, function(err, data) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, studentObject) {
         if (err) {
             return callback(err, null);
         }
+        getTimeBasedAnalytics({_id:classId}, function(err, classObject) {
+            if (err) {
+                return callback(err, null);
+            }
 
-        var dates = [];
-        var points = [];
+            var dates = [];
+            var studentData = [];
+            var classData = [];
 
-        for (var i = 0; i < data.dates.length; i++) {
-            dates.push(data.dates[i].date);
-            points.push(data.dates[i].info.points);
-        }
-        return callback(null, {dates: dates, studentData: points});
+            for (var i = 0; i < classObject.dates.length - studentObject.dates.length; i++) {
+                studentData.push(0);
+            }
+
+            for (var i = 0; i < studentObject.dates.length; i++) {
+                studentData.push(studentObject.dates[i].info.points);
+            }
+
+            for (var i = 0; i < classObject.dates.length; i++) {
+                dates.push(classObject.dates[i].date);
+                classData.push(classObject.dates[i].info.points);
+            }
+
+            return callback(null, {
+                dates: dates,
+                studentData: studentData,
+                classData: classData
+            });
+        });
     });
 }

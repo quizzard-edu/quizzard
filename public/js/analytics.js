@@ -371,7 +371,7 @@ var createLineChart = function (data) {
           label: 'Me'
         },
         {
-          data: [27,50,25,10],
+          data: data.classData,
           pointBackgroundColor: 'rgba(151,205,187,1)',
           backgroundColor: 'rgba(151,205,187,0.5)',
           borderColor: 'rgba(151,205,187,1)',

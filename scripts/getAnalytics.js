@@ -24,7 +24,16 @@ const users = require('../server/users.js');
 const analytics = require('../server/analytics.js');
 const common = require('../server/common.js');
 
+const classId = 'class';
+
 var studentsCount = 0;
+var classObject = {
+    correctAttemptsCount: 0,
+    wrongAttemptsCount: 0,
+    totalAttemptsCount: 0,
+    points: 0,
+    accuracy: 0
+};
 
 /* get analytics for a admins */
 var getAnalytics = function() {
@@ -44,6 +53,11 @@ var getAnalytics = function() {
             row.points = student.points;
             row.accuracy = ((student.correctAttemptsCount / student.totalAttemptsCount) * 100).toFixed(2);
 
+            classObject.correctAttemptsCount += student.correctAttemptsCount;
+            classObject.wrongAttemptsCount += student.wrongAttemptsCount;
+            classObject.totalAttemptsCount += student.totalAttemptsCount;
+            classObject.points += student.points;
+
             analytics.addStudentAnalyticsWithDate(
                 student._id,
                 currentDate,
@@ -55,8 +69,21 @@ var getAnalytics = function() {
 
                     studentsCount++;
                     if (studentsCount === studentsList.length-1) {
-                        logger.log('Done, everything looks fine.');
-                        process.exit(0);
+                        classObject.accuracy = ((classObject.correctAttemptsCount / classObject.totalAttemptsCount) * 100).toFixed(2);
+
+                        analytics.addStudentAnalyticsWithDate(
+                            classId,
+                            currentDate,
+                            classObject,
+                            function (err, result) {
+                                if (err) {
+                                    return logger.info(err);
+                                }
+
+                                logger.log('Done, everything looks fine.');
+                                process.exit(0);
+                            }
+                        );
                     }
                 }
             );
