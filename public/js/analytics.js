@@ -364,7 +364,7 @@ var createLineChart = function (data) {
     data: {
       datasets: [
         {
-          data: [10,40,50,27],
+          data: data.studentData,
           pointBackgroundColor: 'rgba(151,187,205,1)',
           backgroundColor: 'rgba(151,187,205,0.5)',
           borderColor: 'rgba(151,187,205,1)',

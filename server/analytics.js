@@ -384,7 +384,7 @@ var getCorrectAttemptsOverTime = function(query, callback) {
             dates.push(data.dates[i].date);
             correctAttempts.push(data.dates[i].info.correctAttemptsCount);
         }
-        return callback(null, {dates: dates, correctAttempts: correctAttempts});
+        return callback(null, {dates: dates, studentData: correctAttempts});
     });
 }
 
@@ -407,7 +407,7 @@ var getAccuracyOverTime = function(query, callback) {
             dates.push(data.dates[i].date);
             accuracy.push(data.dates[i].info.accuracy);
         }
-        return callback(null, {dates: dates, accuracy: accuracy});
+        return callback(null, {dates: dates, studentData: accuracy});
     });
 }
 
@@ -430,6 +430,6 @@ var getPointsOverTime = function(query, callback) {
             dates.push(data.dates[i].date);
             points.push(data.dates[i].info.points);
         }
-        return callback(null, {dates: dates, points: points});
+        return callback(null, {dates: dates, studentData: points});
     });
 }
