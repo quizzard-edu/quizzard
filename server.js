@@ -1568,6 +1568,10 @@ app.post('/submitFeedback', function(req, res){
         return res.redirect('/');
     }
 
+    if (req.session.user.type === common.userTypes.ADMIN) {
+        return res.status(403).send('Permission Denied');
+    }
+
     logger.log(common.formatString('Feedback from {0} regarding {1}', [req.session.user._id, req.body.subject]));
 
     users.addFeedback(req.session.user._id, req.body.subject, req.body.message, function(err, result) {
