@@ -570,6 +570,9 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 }
 
 exports.isUserLocked = function(userId, question, callback){
+    if (!settings.getQuestionTimeoutEnabled()){
+        return callback(null,false,null);
+    }
     var waiting_time = settings.getQuestionTimeoutPeriod();
     var lastSubmissionTime;
     var currentDate = common.getDateObject();
