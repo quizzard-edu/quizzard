@@ -39,7 +39,6 @@ const port = process.env.QUIZZARD_PORT || 8000;
 
 // https
 var forceSSL = require('express-force-ssl');
-var fs = require('fs');
 var http = require('http');
 var https = require('https');
  
