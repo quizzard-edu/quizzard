@@ -37,6 +37,29 @@ const csv2json = require('csvtojson');
 const app = express();
 const port = process.env.QUIZZARD_PORT || 8000;
 
+// https
+var forceSSL = require('express-force-ssl');
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
+ 
+var ssl_options = {
+  key: fs.readFileSync('./keys/private.key'),
+  cert: fs.readFileSync('./keys/cert.crt'),
+  ca: fs.readFileSync('./keys/intermediate.crt')
+};
+ 
+var app = express();
+var server = http.createServer(app);
+var secureServer = https.createServer(ssl_options, app);
+ 
+app.use(express.bodyParser());
+app.use(forceSSL);
+app.use(app.router);
+ 
+secureServer.listen(443)
+server.listen(80)
+
 /* Pre-compiled Pug views */
 const studentTablePug = pug.compileFile('views/account-table.pug');
 const accountCreationPug = pug.compileFile('views/account-creation.pug');
