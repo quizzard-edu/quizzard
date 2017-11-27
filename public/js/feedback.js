@@ -42,9 +42,13 @@ function userFeedback() {
 
                 $('#subject').val('');
                 $('#feedbackArea').val('');
+                $('#email').val('');
+                $('#subject2').val('');
+                $('#feedbackArea2').val('');
                 $('#feedbackArea').trigger('autoresize');
                 $('#modal-content').scrollTop(0);
                 $('.collapsible').collapsible('close', 0);
+                $('.collapsible').collapsible('close', 1);
 
             } else { // if their content was empty, do nothing and notify them
                 $('#subject').val(subject);
