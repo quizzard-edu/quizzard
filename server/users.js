@@ -22,6 +22,7 @@ const bcrypt = require('bcryptjs');
 const db = require('./db.js');
 const logger = require('./log.js');
 const common = require('./common.js');
+const settings = require('./settings.js');
 
 /**
  * Create a student USER, if the USER object is valid
@@ -439,10 +440,9 @@ exports.updateProfile = function (userId, request, callback) {
  */
 exports.getLeaderboard = function (userid, smallBoard, callback) {
     getStudentsListSorted(0, function(err, studentlist) {
-        var displayRank = 0;
         if (err) {
-            logger.error(err);
-            return (err, []);
+            logger.error('Leaderboard broke: ' + err);
+            callback(err, []);
         }
         
         var leaderboardList = [];
@@ -466,27 +466,30 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
                         prevRank = rank;
                     }
                 }
-
-                // This is the rank of the user that will be displayed on the mini leaderboard
-                if (currentStudent._id === userid) {
-                    displayRank = rank;
-                }
-
+                
                 var student = {
                     displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
                     points:currentStudent.points,
                     userRank: rank
                 }
 
+                // Adds the current student to the mini leaderboard
+                if (currentStudent._id === userid) {
+                    leaderboardList.push(student);
+                }
+
                 // Push only students with the top 3 number of poitns to mini leaderboard
-                if (i < 3) {
+                if (i < 3 && currentStudent._id !== userid) {
                     leaderboardList.push(student);
                 }
             }
         }
 
         else {
-            for (var i = 0; i < studentlist.length; ++i) {
+            // This is the number of people that will be shown on the leaderboard
+            leaderboardLimit = settings.getLeaderboardLimit();
+
+            for (var i = 0; i < leaderboardLimit; ++i) {
                 let currentStudent = studentlist[i];
 
                 var student = {
@@ -508,6 +511,6 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
                 leaderboardList.push(student);
             }
         }
-        callback(leaderboardList, displayRank);
+        callback(err, leaderboardList);
     });
 }

@@ -1,7 +1,7 @@
 /* set home as the active navbar element */
 $('#nav-leaderboard').addClass('active');
 
-var boardType = leaderboardTypes.OVERALL;
+var boardType = leaderboardTypes.OVERALLBOARD;
 var leaderboardRow;
 var leaderboardTable;
 var studentLeaderList;
@@ -20,9 +20,12 @@ var fetchLeaderboard = function() {
             setPodiumImages();
             leaderboardTable = $(data.leaderboardTableHTML);
             leaderboardRow = $(data.leaderboardRowHTML);
-            studentLeaderList = data.leader;
+            studentLeaderList = data.leaderboardList;
             $('.leaderboard-content').html(leaderboardTable);
             displayNewLeaderboard(boardType);
+        },
+        error: function(data){
+            failSnackbar('Something went wrong the leaderboard, please try again later!');
         }
     });
 }
@@ -36,13 +39,13 @@ var displayLeaderboard = function(studentLeaderList) {
     $('#leaderboardBody').html('');
     $('#criteriaName').html(boardType.displayName);
     podiumScore = studentLeaderList[0][boardType.name];
-    $('#topScore').html(podiumScore + ((boardType === leaderboardTypes.ACCURACY) ? '%' : ''));
+    $('#topScore').html(podiumScore + ((boardType === leaderboardTypes.ACCURACYBOARD) ? '%' : ''));
     studentLeaderList.forEach((studentObject, index) => {
         // Students with the same number of points get the same rank
         if (index === 0) {
-            leaderboardRow.find('#rank').html(index + 1);
             rank = 1;
             prevRank = rank;
+            leaderboardRow.find('#rank').html(rank);
         } else {
             if (studentLeaderList[index - 1][boardType.name] === studentObject[boardType.name]) {
                 rank = prevRank;
@@ -56,8 +59,11 @@ var displayLeaderboard = function(studentLeaderList) {
         // This give colour to rows where the student's rank is in the top 3       
         leaderboardRow.attr('class', `rank-${rank <= 3 ? rank : 'default'}`);
         leaderboardRow.find('#displayName').html(studentObject.displayName);
+
+        // If the accuracy leaderboard is being displayed, add a % sign
         leaderboardRow.find('#criteria').html(studentObject[boardType.name] + 
-            ((boardType === leaderboardTypes.ACCURACY) ? '%' : ''));        
+            ((boardType === leaderboardTypes.ACCURACYBOARD) ? '%' : ''));
+                    
         $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
     });
 }
@@ -70,19 +76,19 @@ var sortLeaderBoard = function(citeria) {
 }
 
 $('#option-overall').click(function(evt) {
-    displayNewLeaderboard(leaderboardTypes.OVERALL);
+    displayNewLeaderboard(leaderboardTypes.OVERALLBOARD);
 });
 
 $('#option-points').click(function(evt) {
-    displayNewLeaderboard(leaderboardTypes.POINTS);
+    displayNewLeaderboard(leaderboardTypes.POINTSBOARD);
 });
 
 $('#option-accuracy').click(function(evt) {
-    displayNewLeaderboard(leaderboardTypes.ACCURACY);
+    displayNewLeaderboard(leaderboardTypes.ACCURACYBOARD);
 });
 
 $('#option-attempt').click(function(evt) {
-    displayNewLeaderboard(leaderboardTypes.ATTEMPT);
+    displayNewLeaderboard(leaderboardTypes.ATTEMPTBOARD);
 });
 
 // Change leaderboard based on type (Overall, Points, Accuracy, Attemtps)

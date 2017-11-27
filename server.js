@@ -38,23 +38,6 @@ const app = express();
 const port = process.env.QUIZZARD_PORT || 8000;
 
 /* Pre-compiled Pug views */
-const studentTable = pug.compileFile('views/account-table.pug');
-const accountForm = pug.compileFile('views/account-creation.pug');
-const accountEdit = pug.compileFile('views/account-edit.pug');
-const questionTable = pug.compileFile('views/question-table.pug');
-const questionForm = pug.compileFile('views/question-creation.pug');
-const questionEdit = pug.compileFile('views/question-edit.pug');
-const statistics = pug.compileFile('views/statistics.pug');
-const regexForm = pug.compileFile('views/question_types/regex-answer.pug');
-const mcForm = pug.compileFile('views/question_types/mc-answer.pug');
-const tfForm = pug.compileFile('views/question_types/tf-answer.pug');
-const chooseAllForm = pug.compileFile('views/question_types/chooseAll-answer.pug');
-const matchingForm = pug.compileFile('views/question_types/matching-answer.pug');
-const orderingForm = pug.compileFile('views/question_types/ordering-answer.pug');
-const leaderboardTable = pug.compileFile('views/leaderboard-table.pug');
-const leaderboardRow = pug.compileFile('views/leaderboard-row.pug');
-const questionList = pug.compileFile('views/questionlist.pug');
-const discussionBoard = pug.compileFile('views/discussion.pug');
 const studentTablePug = pug.compileFile('views/account-table.pug');
 const accountCreationPug = pug.compileFile('views/account-creation.pug');
 const accountEditPug = pug.compileFile('views/account-edit.pug');
@@ -71,6 +54,8 @@ const matchingFormPug = pug.compileFile('views/question_types/matching-answer.pu
 const orderingFormPug = pug.compileFile('views/question_types/ordering-answer.pug');
 const discussionBoardPug = pug.compileFile('views/discussion.pug');
 const settingsPug = pug.compileFile('views/settings.pug');
+const leaderboardTablePug = pug.compileFile('views/leaderboard-table.pug');
+const leaderboardRowPug = pug.compileFile('views/leaderboard-row.pug');
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -238,18 +223,20 @@ app.get('/leaderboard-table', function(req, res) {
     if (req.query.smallBoard === 'true'){
         smallBoard = true;
     }
-    users.getLeaderboard(req.session.user._id, smallBoard, function(leader, displayRank) {
-        
-        const leaderboardTableHTML = leaderboardTable();
-        const leaderboardRowHTML = leaderboardRow();
-        
-        return res.status(200).send({
-            leader: leader,
-            displayRank : displayRank,
-            leaderboardTableHTML: leaderboardTableHTML,
-            leaderboardRowHTML: leaderboardRowHTML,
-            userId: req.session.user._id
-        });
+    users.getLeaderboard(req.session.user._id, smallBoard, function(err, leaderboardList) {
+    
+        if (err) {
+            return res.status(500).send('Could not fetch leaderboard');
+        } else {
+            const leaderboardTableHTML = leaderboardTablePug();
+            const leaderboardRowHTML = leaderboardRowPug(); 
+            return res.status(200).send({
+                leaderboardList: leaderboardList,
+                leaderboardTableHTML: leaderboardTableHTML,
+                leaderboardRowHTML: leaderboardRowHTML,
+                userId: req.session.user._id
+            });
+        }
     });
 });
 

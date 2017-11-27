@@ -26,10 +26,10 @@ const snack = Object.freeze({
 const loadingAnimation = '<div class="progress"><div class="indeterminate"></div></div>';
 
 const leaderboardTypes = Object.freeze({
-    OVERALL  : {name: 'overall', displayName: 'Overall'},
-    POINTS   : {name: 'points', displayName: 'Points'},
-    ACCURACY : {name: 'accuracy', displayName: 'Accuracy'},
-    ATTEMPT  : {name: 'attempt', displayName: 'Points Per Attempt'}
+    OVERALLBOARD  : {name: 'overall', displayName: 'Overall'},
+    POINTSBOARD   : {name: 'points', displayName: 'Points'},
+    ACCURACYBOARD : {name: 'accuracy', displayName: 'Accuracy'},
+    ATTEMPTBOARD  : {name: 'attempt', displayName: 'Points Per Attempt'}
 })
 
 // This is the function.

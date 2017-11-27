@@ -1,27 +1,32 @@
 .rank-default:hover {
-  background-color: rgba(238, 110, 115,0.7);
+    background-color: rgba(238, 110, 115,0.7);
 }
 
 .rank-1 {
-  background-color: rgba(255,215,0,0.7);
+    background-color: rgba(255,215,0,0.7);
 }
 
 .rank-1:hover {
-  background-color: #ceb004;
+    background-color: #ceb004;
 }
 
 .rank-2 {
-  background-color: rgba(192,192,192,0.7);
+    background-color: rgba(192,192,192,0.7);
 }
 
 .rank-2:hover {
-  background-color: #aaaaaa;
+    background-color: #aaaaaa;
 }
 
 .rank-3 {
-  background-color: rgba(140,120,83,0.7);
+    background-color: rgba(140,120,83,0.7);
 }
 
 .rank-3:hover {
-  background-color: #77623b;
+    background-color: #77623b;
+}
+
+.rank-user {
+    background-color: rgba(238, 110, 115,0.7);
+    font-weight: bold;
 }
