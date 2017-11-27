@@ -645,12 +645,14 @@ var updateVisibility = function(qid, questionNumber) {
                         }
                     },
                     error: function(data) {
+                        var jsonResponse = data.responseJSON;
+
                         if (data['status'] === 401) {
                             window.location.href = '/';
                         } else {
                             // Toast notification
                             $('#checked-' + qid).prop('checked', !question['visible']);
-                            failSnackbar('Could not change visibility of question');
+                            failSnackbar(getErrorFromResponse(jsonResponse));
                         }
                     }
                 });
@@ -855,6 +857,8 @@ var submitQuestionRating = function (rating, qid) {
         async: false,
         success: function(data) { },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -937,12 +941,8 @@ var getQuestionsTopicsList = function () {
             });
         },
         error: function(data) {
-            var jsonResponse = data.responseJSON;
-
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else {
-                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });

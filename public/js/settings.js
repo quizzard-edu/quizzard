@@ -26,12 +26,8 @@ var getQuestionsTopicsList = function () {
             });
         },
         error: function(data) {
-            var jsonResponse = data.responseJSON;
-
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else {
-                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });

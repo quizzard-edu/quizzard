@@ -85,7 +85,7 @@ categories:
 
 const errors = Object.freeze({
     //1000 system
-    1000: 'Invalid Request',
+    1000: 'A system error has occured',
     1001: 'Missing Requirement',
     1002: 'Permission Denied',
     1003: 'Confirm password doesn\'t match',
@@ -103,8 +103,8 @@ const errors = Object.freeze({
     //2000 user
     2000: 'Invalid username or password',
     2001: 'Failed to get student',
-    2002: 'Failed to get student list, please try again later!',
-    2003: 'Failed to get student list, please try again later!',
+    2002: 'Failed to get student list',
+    2003: 'Failed to get student list',
     2004: 'Failed to get data',
     2005: 'Failed to add admin',
     2006: 'Failed to get user',
@@ -116,7 +116,7 @@ const errors = Object.freeze({
     2012: 'Failed to update',
     2013: 'Failed to get users list',
     2014: 'Failed to check if user exists',
-    2015: 'Failed to get student list, please try again later!',
+    2015: 'Failed to get student list',
     2016: 'Failed to remove users',
     2017: 'Failed to find user',
     2018: 'Failed to update user',
@@ -126,7 +126,7 @@ const errors = Object.freeze({
     //3000 question
     3000: 'Failed to get question list',
     3001: 'Failed to get question',
-    3002: 'failed to look up question by id',
+    3002: 'Failed to find question',
     3003: 'Question not found',
     3004: 'Failed to get questions list',
     3005: 'question is not available',

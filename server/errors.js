@@ -79,7 +79,6 @@ const errors = Object.freeze({
 
     //4000 class
     4000: 'failed to check if the class is active',
-    7006: 'class is not active',
 
     //5000 analytics
     5000: 'graphs not available',
@@ -101,5 +100,6 @@ const errors = Object.freeze({
     7003: 'failed to get settings object',
     7004: 'settings object not found',
     7005: 'failed to get all settings',
+    7006: 'class is not active',
 });
 exports.errors = errors;
