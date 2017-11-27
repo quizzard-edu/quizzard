@@ -99,7 +99,10 @@ secureServer.listen(443,function(){
         });
     });
 });
-server.listen(80);
+server.listen(80, function(req, res){
+    res.writeHead(301, {"Location": "https://" + req.headers['host'] + req.url});
+    res.end();
+});
 
 /*
 app.listen(port, function() {
