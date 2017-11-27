@@ -37,28 +37,6 @@ const csv2json = require('csvtojson');
 const app = express();
 const port = process.env.QUIZZARD_PORT || 8000;
 
-// https
-var forceSSL = require('express-force-ssl');
-var http = require('http');
-var https = require('https');
- 
-var ssl_options = {
-  key: fs.readFileSync('./keys/private.key'),
-  cert: fs.readFileSync('./keys/cert.crt'),
-  ca: fs.readFileSync('./keys/intermediate.crt')
-};
- 
-var app = express();
-var server = http.createServer(app);
-var secureServer = https.createServer(ssl_options, app);
- 
-app.use(express.bodyParser());
-app.use(forceSSL);
-app.use(app.router);
- 
-secureServer.listen(443)
-server.listen(80)
-
 /* Pre-compiled Pug views */
 const studentTablePug = pug.compileFile('views/account-table.pug');
 const accountCreationPug = pug.compileFile('views/account-creation.pug');
@@ -94,7 +72,23 @@ app.use(session({
     saveUninitialized: false
 }));
 
-app.listen(port, function() {
+// https
+var forceSSL = require('express-force-ssl');
+var http = require('http');
+var https = require('https');
+ 
+var ssl_options = {
+  key: fs.readFileSync('./keys/private.key'),
+  cert: fs.readFileSync('./keys/cert.crt')
+  //ca: fs.readFileSync('./keys/intermediate.crt')
+};
+ 
+var server = http.createServer(app);
+var secureServer = https.createServer(ssl_options, app);
+ 
+app.use(forceSSL);
+ 
+secureServer.listen(443,function(){
     logger.log('//------------------------');
     logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
     db.initialize(function() {
@@ -105,6 +99,20 @@ app.listen(port, function() {
         });
     });
 });
+server.listen(80);
+
+/*
+app.listen(port, function() {
+    logger.log('//------------------------');
+    logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
+    db.initialize(function() {
+        settings.initialize(function(err, result) {
+            if (err) {
+                process.exit(1);
+            }
+        });
+    });
+});*/
 
 /* main page */
 app.get('/', function(req, res) {

@@ -2,3 +2,6 @@ node_modules/
 FileSystem/*
 logs/*
 *.swp
+*.crt
+*.csr
+*.key
