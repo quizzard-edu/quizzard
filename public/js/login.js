@@ -11,8 +11,8 @@ $('#login').submit(function(evt) {
             window.location.href = '/home';
         },
         error: function(data) {
-            data = data.responseJSON;
-            $('#invalid').html(failedLoginTemplate.format([getErrorFromResponse(data)]));
+            var jsonResponse = data.responseJSON;
+            $('#invalid').html(failedLoginTemplate.format([getErrorFromResponse(jsonResponse)]));
         },
         complete: function(data) {
             $('#passwd').val('').focus();

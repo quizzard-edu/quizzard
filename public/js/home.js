@@ -37,11 +37,12 @@ var fetchQList = function(which) {
             $('.question-list').html(data);
         },
         error: function(data){
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -72,11 +73,12 @@ var sortRequest = function(type) {
             $('#sort').html(s + '<span class="caret"></span>');
         },
         error: function(data){
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -102,11 +104,12 @@ var fetchLeaderboard = function() {
             $('.leaderboard-small').html(data);
         },
         error: function(data){
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });

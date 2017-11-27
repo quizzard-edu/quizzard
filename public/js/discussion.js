@@ -30,11 +30,12 @@ var voteClickComment = function(icon, vote) {
             $('#numDislikes_' + commentId).html(data.dislikesCount);
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -72,11 +73,12 @@ var voteClickReply = function(icon, vote) {
             $('#numDislikes_' + replyId).html(data.dislikesCount);
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });

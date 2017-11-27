@@ -44,11 +44,12 @@ var displayAccountsTable = function() {
             $('#usersSwitch').prop('checked', usersTableActive);
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -67,11 +68,12 @@ var displayExportAccountsForm = function() {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -120,11 +122,12 @@ var submitExportForm = function() {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -157,11 +160,12 @@ var submitImportForm = function() {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -204,11 +208,12 @@ var submitImportList = function() {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
                 displayAccountsTable();
             }
         }
@@ -284,11 +289,12 @@ var displayQuestionTable = function() {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -362,11 +368,12 @@ var getQuestionFormAnswer = function(form) {
             $('#qAnswer').html(data);
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                $('#result').html(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -386,11 +393,12 @@ var displayStatistics = function() {
             $('#option-settings').removeClass('active');
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -409,11 +417,12 @@ var displaySettings = function() {
             $('#option-questions').removeClass('active');
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -459,11 +468,12 @@ var deactivateUser = function(id, username) {
                 warningSnackbar(username + ' account has been&nbsp;<u><b>deactivated</b></u>&nbsp;');
             },
             error: function(data) {
+                var jsonResponse = data.responseJSON;
+
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    data = data.responseJSON;
-                    failSnackbar(getErrorFromResponse(data));
+                    failSnackbar(getErrorFromResponse(jsonResponse));
                 }
             }
         });
@@ -493,11 +503,12 @@ var activateUser = function(id, username) {
                 successSnackbar(username + '\'s account has been activated');
             },
             error: function(data) {
+                var jsonResponse = data.responseJSON;
+
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    data = data.responseJSON;
-                    failSnackbar(getErrorFromResponse(data));
+                    failSnackbar(getErrorFromResponse(jsonResponse));
                 }
             }
         });
@@ -521,11 +532,12 @@ var editUser = function(id) {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -549,11 +561,12 @@ var submitUserForm = function() {
             successSnackbar('User ' + user.username + ' added to database');
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -586,11 +599,12 @@ var submitEditForm = function(id) {
             successSnackbar('User ' + user.username + ' has been updated');
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -717,11 +731,14 @@ var submitQuestionForm = function() {
             displayQuestionTable();
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (jsonResponse['code'] === 3022) {
+                warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -778,11 +795,12 @@ var editQuestion = function(qid, questionNumber) {
             getQuestionsTopicsList();
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -812,12 +830,15 @@ var submitQEditForm = function(qid, questionNumber) {
             displayQuestionTable();
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
-            }
+              } else if (jsonResponse['code'] === 3022) {
+                  warningSnackbar(getErrorFromResponse(jsonResponse));
+              } else {
+                  failSnackbar(getErrorFromResponse(jsonResponse));
+              }
         }
     });
 }
@@ -837,7 +858,7 @@ var submitQuestionRating = function (rating, qid) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Rating could not be updated.');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -875,11 +896,12 @@ var sortAccountsTable = function(type) {
             addAccountsTableEvents();
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -915,11 +937,12 @@ var getQuestionsTopicsList = function () {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });

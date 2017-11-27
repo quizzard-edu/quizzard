@@ -79,7 +79,7 @@ const errors = Object.freeze({
 
     //4000 class
     4000: 'failed to check if the class is active',
-    4001: 'class is not active',
+    7006: 'class is not active',
 
     //5000 analytics
     5000: 'graphs not available',

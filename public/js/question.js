@@ -10,12 +10,13 @@ $(function () {
             $('#discussion').html(data);
         },
         error: function(data){
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;   
-                if (data['code'] !== 3011) {             
-                    failSnackbar(getErrorFromResponse(data));
+                if (data['code'] !== 3011) {
+                    failSnackbar(getErrorFromResponse(jsonResponse));
                 }
             }
         }

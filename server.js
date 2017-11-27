@@ -106,7 +106,7 @@ app.post('/login', function(req, res) {
 
     users.checkLogin(username, password, function(err, user) {
         if (err) {
-            logger.error(common.formatString('User {0} failed logged in.', [username]));
+            logger.error(err);
             return res.status(403).send(common.getError(2000));
         }
 
@@ -120,7 +120,7 @@ app.post('/login', function(req, res) {
 
             if (user.type === common.userTypes.STUDENT) {
                 if (!settings.getClassActive()) {
-                    return res.status(403).send(common.getError(4001));
+                    return res.status(403).send(common.getError(7006));
                 }
                 return res.status(200).send('success');
             }
@@ -152,11 +152,13 @@ app.get('/home', function(req, res) {
     var request = { user : req.session.user, questionsStatus : 'unanswered' };
     users.getQuestionsListByUser(request, function(err, results) {
         if (err) {
+            logger.error(err);
             return res.status(500).send(common.getError(3000));
         }
 
         users.getStudentById(req.session.user._id, function(err, userFound) {
             if (err) {
+                logger.error(err);
                 return res.status(500).send(common.getError(2001));
             }
 
@@ -501,11 +503,13 @@ app.get('/statistics', function(req, res) {
 
     questions.getAllQuestionsList(function(err, questionslist) {
         if (err) {
+            logger.error(err);
             res.status(500).send(common.getError(3004));
         }
 
         users.getStudentsList(function(err, studentslist) {
             if (err) {
+                logger.error(err);
                 res.status(500).send(common.getError(2003));
             }
 
@@ -746,6 +750,7 @@ app.post('/profilemod', function(req, res) {
             if (user) {
                 users.updateProfile(userId, req.body, function (err, result) {
                     if (err) {
+                        logger.error(err);
                         return res.status(500).send(common.getError(2011));
                     }
 
@@ -807,7 +812,7 @@ app.put('/questionadd', function(req, res) {
     questions.addQuestion(req.body, function(err, qId) {
         if (err) {
             logger.error(err);
-            return res.status(err.status).send(common.getError(3007));
+            return res.status(500).send(common.getError(3007));
         }
 
         if (req.body.rating && parseInt(req.body.rating) > 0 && parseInt(req.body.rating) < 6) {
@@ -835,7 +840,7 @@ app.post('/questionmod', function(req, res) {
     questions.updateQuestionById(qid, q, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(err.status).send(common.getError(3020));
+            return res.status(500).send(common.getError(3020));
         }
         return res.status(200).send(result);
     });
@@ -925,6 +930,7 @@ app.get('/getDiscussionBoard', function(req, res) {
 
         users.getUsersList((err, userObj) => {
             if (err) {
+                logger.error(err);
                 return res.status(500).send(common.getError(2002));
             }
 
@@ -1313,6 +1319,7 @@ app.post('/accountsImportFile', function (req, res) {
             importedList.push(userObj);
         }).on('done', function(err) {
             if (err) {
+                logger.error(err);
                 return res.status(500).send(common.getError(6004));
             }
 
@@ -1403,7 +1410,7 @@ app.get('/download', function(req, res) {
     var filePath = common.joinPath(common.fsTree.USERS, req.session.user._id, fileName);
     return res.download(filePath, fileName, function (err) {
         if (err) {
-            logger.error(common.getError(6007));
+            logger.error(err); //handle using common.getError(6007)
         }
     });
 });
@@ -1513,6 +1520,7 @@ app.post('/updateSettings', function(req, res) {
 
     settings.updateSettings(req.body.settings, function (err, result) {
         if (err) {
+            logger.error(err);
             return res.status(500).send(common.getError(7001));
         }
 

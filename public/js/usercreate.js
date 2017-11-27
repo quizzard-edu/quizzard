@@ -16,11 +16,12 @@ $('#userform').submit(function(evt) {
             $('#result').html('User ' + user.id + ' added to database');
         },
         error: function(data){
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });

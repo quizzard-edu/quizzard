@@ -26,11 +26,12 @@ var getQuestionsTopicsList = function () {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                data = data.responseJSON;                
-                failSnackbar(getErrorFromResponse(data));
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -77,11 +78,12 @@ var resetDefault = function() {
                 successSnackbar('Default settings have been applied');
             },
             error: function(data) {
+                var jsonResponse = data.responseJSON;
+
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    data = data.responseJSON;                
-                    failSnackbar(getErrorFromResponse(data));
+                    failSnackbar(getErrorFromResponse(jsonResponse));
                 }
             }
         });
@@ -126,11 +128,12 @@ var save = function() {
                 successSnackbar('Changes have been updated');
             },
             error: function(data) {
+                var jsonResponse = data.responseJSON;
+
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    data = data.responseJSON;                
-                    failSnackbar(getErrorFromResponse(data));
+                    failSnackbar(getErrorFromResponse(jsonResponse));
                 }
             }
         });

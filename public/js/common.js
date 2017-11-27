@@ -151,7 +151,6 @@ const errors = Object.freeze({
 
     //4000 class
     4000: 'A system error has occured',
-    4001: 'Class is not active',
 
     //5000 analytics
     5000: 'Graphs not available',
@@ -173,6 +172,7 @@ const errors = Object.freeze({
     7003: 'Failed to get settings',
     7004: 'Settings not found',
     7005: 'Failed to get settings',
+    7006: 'Class is not active',
 });
 
 function getErrorFromResponse(data) {
