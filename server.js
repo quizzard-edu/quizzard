@@ -686,7 +686,7 @@ app.put('/useradd', function(req, res) {
     users.addStudent(req.body, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(2007));
         }
 
         return res.status(201).send('User created');
@@ -904,14 +904,14 @@ app.get('/getDiscussionBoard', function(req, res) {
 
     if (boardVisibility === common.discussionboardVisibility.NONE
         && req.session.user.type === common.userTypes.STUDENT) {
-        return res.status(500).send('hidden');
+        return res.status(500).send(common.getError(3011));
     }
 
     var questionId = req.query.questionId;
     questions.lookupQuestionById(questionId, function (err, question) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(3010));
+            return res.status(500).send(common.getError(3019));
         }
 
         if (!question) {
@@ -924,7 +924,7 @@ app.get('/getDiscussionBoard', function(req, res) {
             var answered = (answeredList.indexOf(req.session.user._id) !== -1);
 
             if (req.session.user.type === common.userTypes.STUDENT && !answered) {
-                return res.status(500).send(common.getError(3002));
+                return res.status(500).send(common.getError(3011));
             }
         }
 
