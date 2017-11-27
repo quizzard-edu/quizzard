@@ -21,13 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var rls = require('readline-sync');
 var db = require('./../server/db.js');
 var users = require('./../server/users.js');
+var common = require('./../server/common.js');
 
 var setupAdminAccount = function(accid, pass) {
     var acc = {
-        id: accid,
+        username: accid,
         password: pass,
         fname: 'Root',
-        lname: 'User'
+        lname: 'User',
+        email: common.formatString('{0}@mail.utoronto.ca', [accid])
     };
 
     db.initialize(function() {
