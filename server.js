@@ -84,11 +84,12 @@ var ssl_options = {
 };
  
 var server = http.createServer(app);
+
 var secureServer = https.createServer(ssl_options, app);
  
 app.use(forceSSL);
  
-secureServer.listen(443,function(){
+secureServer.listen(8000,function(){
     logger.log('//------------------------');
     logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
     db.initialize(function() {
@@ -99,10 +100,15 @@ secureServer.listen(443,function(){
         });
     });
 });
-server.listen(80, function(req, res){
+http.createServer(function(req, res) {   
+        res.writeHead(301, {"Location": "https://localhost" + req.headers['host'] + req.url});
+        res.end();
+        console.log('redirect')
+}).listen(8001);
+/*server.listen(8000, function(req, res){
     res.writeHead(301, {"Location": "https://" + req.headers['host'] + req.url});
     res.end();
-});
+});*/
 
 /*
 app.listen(port, function() {
