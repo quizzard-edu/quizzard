@@ -70,6 +70,7 @@ var getAnalytics = function() {
                     studentsCount++;
                     if (studentsCount === studentsList.length-1) {
                         classObject.accuracy = ((classObject.correctAttemptsCount / classObject.totalAttemptsCount) * 100).toFixed(2);
+                        classObject.points = (classObject.points / studentsCount).toFixed(0);
 
                         analytics.addStudentAnalyticsWithDate(
                             classId,
