@@ -564,7 +564,7 @@ app.get('/question', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
-
+    const userId = req.session.user._id;
     questions.lookupQuestionById(req.query._id, function(err, questionFound) {
         if (err) {
             logger.error(err);
@@ -582,41 +582,50 @@ app.get('/question', function(req, res) {
         var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts, 'userId');
         var hasQrating = false;
         for (var i in questionFound.ratings) {
-            if (questionFound.ratings[i].userId === req.session.user._id) {
+            if (questionFound.ratings[i].userId === userId) {
                 hasQrating = true;
             }
         }
-        return res.status(200).render('question-view', {
-            user: req.session.user,
-            question: questionFound,
-            answered: (answeredList.indexOf(req.session.user._id) !== -1),
-            isAdmin : function() {
-                return req.session.user.type === common.userTypes.ADMIN;
-            },
-            hasQrating: hasQrating,
-            getQuestionForm: function(){
-                switch (questionFound.type){
-                    case common.questionTypes.REGULAR.value:
-                        return regexFormPug({studentQuestionForm:true})
-                    case common.questionTypes.MULTIPLECHOICE.value:
-                        return mcFormPug({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.TRUEFALSE.value:
-                        return tfFormPug({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.CHOOSEALL.value:
-                        return chooseAllFormPug({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.MATCHING.value:
-                        // randomize the order of the matching
-                        questionFound.leftSide = common.randomizeList(questionFound.leftSide);
-                        questionFound.rightSide = common.randomizeList(questionFound.rightSide);
-                        return matchingFormPug({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.ORDERING.value:
-                        // randomize the order of ordering question
-                        questionFound.answer = common.randomizeList(questionFound.answer);
-                        return orderingFormPug({studentQuestionForm:true, question:questionFound})
-                    default:
-                        break;
-                }
+        questions.isUserLocked(userId, questionFound, function(err, isLocked, waitTimeMessage, waitTimeinMiliSeconds){
+            if(err){
+                logger.error(err);
+                return res.status(500).send(err);
             }
+            
+            return res.status(200).render('question-view', {
+                user: req.session.user,
+                question: questionFound,
+                answered: (answeredList.indexOf(userId) !== -1),
+                isAdmin : function() {
+                    return req.session.user.type === common.userTypes.ADMIN;
+                },
+                hasQrating: hasQrating,
+                getQuestionForm: function(){
+                    switch (questionFound.type){
+                        case common.questionTypes.REGULAR.value:
+                            return regexFormPug({studentQuestionForm:true})
+                        case common.questionTypes.MULTIPLECHOICE.value:
+                            return mcFormPug({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.TRUEFALSE.value:
+                            return tfFormPug({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.CHOOSEALL.value:
+                            return chooseAllFormPug({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.MATCHING.value:
+                            // randomize the order of the matching
+                            questionFound.leftSide = common.randomizeList(questionFound.leftSide);
+                            questionFound.rightSide = common.randomizeList(questionFound.rightSide);
+                            return matchingFormPug({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.ORDERING.value:
+                            // randomize the order of ordering question
+                            questionFound.answer = common.randomizeList(questionFound.answer);
+                            return orderingFormPug({studentQuestionForm:true, question:questionFound})
+                        default:
+                            break;
+                    }
+                },
+                isLocked: isLocked,
+                waitTime: waitTimeinMiliSeconds
+            });
         });
     });
 });
@@ -642,31 +651,57 @@ app.post('/submitanswer', function(req, res) {
             return res.status(400).send('Could not find the question');
         }
 
-        logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
-
-        var value = questions.verifyAnswer(question, answer);
-        var points = Math.floor(Math.max(question.minpoints, question.maxpoints/Math.cbrt(question.correctAttemptsCount + 1)));
-        var text = value ? 'correct' : 'incorrect';
-        var status = value ? 200 : 500;
-        var response = {text: text, points: points};
-
-        if (req.session.user.type === common.userTypes.ADMIN) {
-            return res.status(status).send(response);
-        }
-
-        users.submitAnswer(userId, questionId, value, points, answer, function(err, result){
+        // check if question is locked for the student
+        questions.isUserLocked(userId, question, function(err, isLocked, waitTimeMessage, waitTimeinMiliSeconds){
             if(err){
                 logger.error(err);
                 return res.status(500).send(err);
             }
 
-            questions.submitAnswer(questionId, userId, value, points, answer, function(err, result) {
+            if (isLocked){
+                return res.status(423).send(waitTimeMessage);
+            }
+
+            logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
+
+            var isCorrect = questions.verifyAnswer(question, answer);
+            var points = 0;
+            var text = 'incorrect';
+            var status = 405;
+
+            if (isCorrect){
+                text = 'correct';
+                status = 200;
+                points = Math.floor(Math.max(question.minpoints, question.maxpoints/Math.cbrt(question.correctAttemptsCount + 1)));
+            }
+
+            var response = {text: text, points: points};
+
+            if (req.session.user.type === common.userTypes.ADMIN) {
+                return res.status(status).send(response);
+            }
+
+            users.submitAnswer(userId, questionId, isCorrect, points, answer, function(err, result){
                 if(err){
                     logger.error(err);
                     return res.status(500).send(err);
                 }
 
-                return res.status(status).send(response);
+                questions.submitAnswer(questionId, userId, isCorrect, points, answer, function(err, result) {
+                    if(err){
+                        logger.error(err);
+                        return res.status(500).send(err);
+                    }
+
+                    questions.updateUserSubmissionTime(userId, question, function(err, result){
+                        if(err){
+                            logger.error(err);
+                            return res.status(500).send(err);
+                        }
+
+                        return res.status(status).send(response);
+                    });
+                });
             });
         });
     });
