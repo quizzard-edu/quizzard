@@ -17,7 +17,6 @@ var fetchLeaderboard = function() {
             smallBoard: false
         },
         success: function(data) {
-            setPodiumImages();
             leaderboardTable = $(data.leaderboardTableHTML);
             leaderboardRow = $(data.leaderboardRowHTML);
             studentLeaderList = data.leaderboardList;
@@ -63,7 +62,7 @@ var displayLeaderboard = function(studentLeaderList) {
         // If the accuracy leaderboard is being displayed, add a % sign
         leaderboardRow.find('#criteria').html(studentObject[boardType.name] + 
             ((boardType === leaderboardTypes.ACCURACYBOARD) ? '%' : ''));
-                    
+
         $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
     });
 }
@@ -94,6 +93,7 @@ $('#option-attempt').click(function(evt) {
 // Change leaderboard based on type (Overall, Points, Accuracy, Attemtps)
 var displayNewLeaderboard = function(type) {
     boardType = type;
+    setPodiumImages();
     sortLeaderBoard(type.name);
     displayLeaderboard(studentLeaderList);
 }
