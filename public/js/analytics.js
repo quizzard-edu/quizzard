@@ -358,6 +358,20 @@ var getPointsOverTime = function (path) {
 }
 
 var createLineChart = function (data) {
+  var canvas = document.getElementById('testingCanvas1');
+  var ctxx = canvas.getContext('2d');
+
+  gradient = ctxx.createLinearGradient(0, 0, 0, 450)
+  gradient2 = ctxx.createLinearGradient(0, 0, 0, 450)
+
+  gradient.addColorStop(0, 'rgba(255, 0,0, 0.5)')
+  gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)');
+  gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
+
+  gradient2.addColorStop(0, 'rgba(0, 231, 255, 0.9)')
+  gradient2.addColorStop(0.5, 'rgba(0, 231, 255, 0.25)');
+  gradient2.addColorStop(1, 'rgba(0, 231, 255, 0)');
+
   var ctx = $(data.id);
   var config2 = {
     type: 'line',
@@ -365,29 +379,43 @@ var createLineChart = function (data) {
       datasets: [
         {
           data: data.studentData,
-          pointBackgroundColor: 'rgba(151,187,205,1)',
-          backgroundColor: 'rgba(151,187,205,0.5)',
-          borderColor: 'rgba(151,187,205,1)',
-          label: 'Me'
+          backgroundColor: gradient,
+          borderColor: '#FC2525',
+          label: 'Me',
+          pointBackgroundColor: 'white',
+          borderWidth: 2,
+          pointBorderColor: 'white',
         },
         {
           data: data.classData,
-          pointBackgroundColor: 'rgba(151,205,187,1)',
-          backgroundColor: 'rgba(151,205,187,0.5)',
-          borderColor: 'rgba(151,205,187,1)',
-          label: 'Class'
+          backgroundColor: gradient2,
+          borderColor: '#05CBE1',
+          label: 'Class',
+          pointBackgroundColor: 'white',
+          borderWidth: 2,
+          pointBorderColor: 'white',
         }
       ],
       labels: data.dates
     },
     options: {
+      maintainAspectRatio: false,      
       responsive: true,
       scales: {
         yAxes: [{
           ticks: {
             beginAtZero: true
           }
+        }],
+        xAxes: [{
+            display : false
         }]
+      },
+      layout: {
+        padding: {
+          right: 10,
+          bottom: 10
+        }
       }
     }
   };

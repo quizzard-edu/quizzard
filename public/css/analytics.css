@@ -44,3 +44,19 @@
     padding: 5px;
     color: white;
 }
+
+.Chart {
+    background: #212733;
+    border-radius: 5px;
+    box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27);
+    height: 250px;
+}
+
+.Charth {
+    background: #212733;
+    border-radius: 5px;
+    margin-top: 0;
+    padding: 15px 0;
+    color:  rgba(255, 0,0, 0.5);
+    border-bottom: 1px solid #323d54;
+}
