@@ -717,6 +717,8 @@ var resetAllSettings = function (callback) {
         }
 
         var defaultSettings = {};
+        defaultSettings._id = common.getUUID();
+
         defaultSettings['general'] = {};
         defaultSettings['student'] = {};
         defaultSettings['question'] = {};
@@ -799,6 +801,8 @@ exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback)
             info.correctAttemptsDelta = 0;
             info.wrongAttemptsDelta = 0;
             info.totalAttemptsDelta = 0;
+            info.pointsDelta = 0;
+            info.accuracyDelta = 0;
             update._id = studentId;
             update.dates = [{date: date, info: info}];
 
@@ -814,6 +818,8 @@ exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback)
             info.correctAttemptsDelta = info.correctAttemptsCount - student.dates[student.dates.length-1].info.correctAttemptsCount;
             info.wrongAttemptsDelta = info.wrongAttemptsCount - student.dates[student.dates.length-1].info.wrongAttemptsCount;
             info.totalAttemptsDelta = info.totalAttemptsCount - student.dates[student.dates.length-1].info.totalAttemptsCount;
+            info.pointsDelta = info.points - student.dates[student.dates.length-1].info.points;
+            info.accuracyDelta = (info.accuracy - student.dates[student.dates.length-1].info.accuracy).toFixed(2);
             update.$push = {dates: {date: date, info: info}};
 
             analyticsCollection.update(query, update, function(err, info) {

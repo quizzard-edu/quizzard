@@ -1,14 +1,14 @@
 var students;
 var studentList;
 
-$(function() {
+$(function () {
   $('#nav-analytics').addClass('active');
 
   // Loads the Student statistics by default
   displayStudentStatistics(null);
 
   // Loads the list of students so that the instructor can select one
-  getStudentList();
+  getStudentList ();
   studentList = {};
   for (var s in students) {
     studentList[students[s]] = null;
@@ -18,21 +18,21 @@ $(function() {
   $('#autocomplete-input').autocomplete({
     data: studentList,
     limit: 20,
-    onAutocomplete: function(val) {
+    onAutocomplete: function (val) {
       $('#student-analytics-card-content').removeClass('hidden');
-      displayStudentStatistics(val.split(' ')[0]);
+      displayStudentStatistics(val.split (' ')[0]);
     },
     minLength: 1,
   });
 
   // Showing the analytics automatically
-  $('#autocomplete-input').keyup(function() {
+  $('#autocomplete-input').keyup(function () {
     const autocompleteValue = $('#autocomplete-input').val();
 
     for (var s in studentList) {
       if (s === autocompleteValue) {
         $('#student-analytics-card-content').removeClass('hidden');
-        displayStudentStatistics(autocompleteValue.split(' ')[0]);
+        displayStudentStatistics(autocompleteValue.split (' ')[0]);
         return;
       }
     }
@@ -44,15 +44,15 @@ $(function() {
 /**
 * Gets the list of student IDs
 */
-var getStudentList = function() {
+var getStudentList = function () {
   $.ajax({
     type: 'GET',
     async: false,
     url: '/studentsListofIdsNames',
-    success: function(data) {
+    success: function (data) {
       students = data;
     },
-    error: function(data){
+    error: function (data) {
       students = ['Error'];
     }
   });
@@ -61,14 +61,14 @@ var getStudentList = function() {
 /**
 * Switching to class statistics tab
 */
-$('#option-class').click(function(evt) {
+$('#option-class').click(function (evt) {
     displayClassStatistics();
 });
 
 /**
 * Switching to student statistics tab
 */
-$('#option-student').click(function(evt) {
+$('#option-student').click(function (evt) {
     displayStudentStatistics(null);
 });
 
@@ -77,7 +77,7 @@ $('#option-student').click(function(evt) {
 * Sets up the card visibility
 * Calls requested charts to update
 */
-var displayClassStatistics = function() {
+var displayClassStatistics = function () {
     // Card visibilty
     $('#student-analytics-card').addClass('hidden');
     $('#studentSelector').addClass('hidden');
@@ -99,7 +99,7 @@ var displayClassStatistics = function() {
 * Sets up the card visibility
 * Calls requested charts to update
 */
-var displayStudentStatistics = function(studentId) {
+var displayStudentStatistics = function (studentId) {
     // Card visibilty
     $('#student-analytics-card').removeClass('hidden');
     $('#studentSelector').removeClass('hidden');
@@ -117,22 +117,24 @@ var displayStudentStatistics = function(studentId) {
     getPointsStudentAndClass(path);
     getRatingStudentAndClass(path);
     getCorrectAttemptsOverTime(path);
+    getAccuracyOverTime(path);
+    getPointsOverTime(path);
 }
 
 // Student statistics
 
-var getQuestionsAnsweredStudentAndClass = function(path) {
+var getQuestionsAnsweredStudentAndClass = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
       type: 'QuestionsAnsweredVsClass'
     },
-    success: function(data) {
+    success: function (data) {
       $('#studentAnswered').html(data[0]);
       $('#classAnswered').html(data[1]);
     },
-    error: function(data) {
+    error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
@@ -143,18 +145,18 @@ var getQuestionsAnsweredStudentAndClass = function(path) {
   });
 }
 
-var getAccuracyStudentAndClass = function(path) {
+var getAccuracyStudentAndClass = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
       type: 'AccuracyVsClass'
     },
-    success: function(data) {
+    success: function (data) {
       $('#studentAccuracy').html(data[0]);
       $('#classAccuracy').html(data[1]);
     },
-    error: function(data) {
+    error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
@@ -165,18 +167,18 @@ var getAccuracyStudentAndClass = function(path) {
   });
 }
 
-var getPointsStudentAndClass = function(path) {
+var getPointsStudentAndClass = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
       type: 'PointsVsClass'
     },
-    success: function(data) {
+    success: function (data) {
       $('#studentPoints').html(data[0]);
       $('#classPoints').html(data[1]);
     },
-    error: function(data) {
+    error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
@@ -187,18 +189,18 @@ var getPointsStudentAndClass = function(path) {
   });
 }
 
-var getRatingStudentAndClass = function(path) {
+var getRatingStudentAndClass = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
       type: 'RatingVsClass'
     },
-    success: function(data) {
+    success: function (data) {
       $('#studentRating').html(data[0]);
       $('#classRating').html(data[1]);
     },
-    error: function(data) {
+    error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
@@ -211,17 +213,17 @@ var getRatingStudentAndClass = function(path) {
 
 // Class statistics
 
-var getClassAnswered = function(path) {
+var getClassAnswered = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
       type: 'classAnswered'
     },
-    success: function(data) {
+    success: function (data) {
       $('#classAnsweredI').html(data[0]);
     },
-    error: function(data) {
+    error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
@@ -232,17 +234,17 @@ var getClassAnswered = function(path) {
 }
 
 
-var getClassAccuracy = function(path) {
+var getClassAccuracy = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
       type: 'classAccuracy'
     },
-    success: function(data) {
+    success: function (data) {
       $('#classAccuracyI').html(data[0]);
     },
-    error: function(data) {
+    error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
@@ -252,17 +254,17 @@ var getClassAccuracy = function(path) {
   });
 }
 
-var getClassPoints = function(path) {
+var getClassPoints = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
       type: 'classPoints'
     },
-    success: function(data) {
+    success: function (data) {
       $('#classPointsI').html(data[0]);
     },
-    error: function(data) {
+    error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
@@ -272,17 +274,17 @@ var getClassPoints = function(path) {
   });
 }
 
-var getClassRating = function(path) {
+var getClassRating = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
       type: 'classRating'
     },
-    success: function(data) {
+    success: function (data) {
       $('#classRatingI').html(data[0]);
     },
-    error: function(data) {
+    error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
@@ -292,45 +294,18 @@ var getClassRating = function(path) {
   });
 }
 
-var getCorrectAttemptsOverTime = function(path) {
+var getCorrectAttemptsOverTime = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
       type: 'correctAttemptsOverTime'
     },
-    success: function(data) {
-      $('#classRatingI').html(data[0]);
-      var ctx = $('#testingCanvas');
-      var config2 = {
-        type: 'line',
-        data: {
-          datasets: [{
-            data: [10,2,50,27],
-            backgroundColor: [
-              "#4B515D",
-              "#4285F4",
-              "#ff4444",
-              "#00C851"
-            ],
-            label: 'Type Vs. Count'
-          }],
-          labels: data.dates
-        },
-        options: {
-          responsive: true,
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              }
-            }]
-          }
-        }
-      };
-      new Chart(ctx, config2);
+    success: function (data) {
+      data.id = '#testingCanvas1';
+      createLineChart (data);
     },
-    error: function(data) {
+    error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
@@ -338,4 +313,83 @@ var getCorrectAttemptsOverTime = function(path) {
       }
     }
   });
+}
+
+var getAccuracyOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'accuracyOverTime'
+    },
+    success: function (data) {
+      data.id = '#testingCanvas2';
+      createLineChart (data);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getPointsOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsOverTime'
+    },
+    success: function (data) {
+      data.id = '#testingCanvas3';
+      createLineChart (data);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var createLineChart = function (data) {
+  var ctx = $(data.id);
+  var config2 = {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          data: data.studentData,
+          pointBackgroundColor: 'rgba(151,187,205,1)',
+          backgroundColor: 'rgba(151,187,205,0.5)',
+          borderColor: 'rgba(151,187,205,1)',
+          label: 'Me'
+        },
+        {
+          data: data.classData,
+          pointBackgroundColor: 'rgba(151,205,187,1)',
+          backgroundColor: 'rgba(151,205,187,0.5)',
+          borderColor: 'rgba(151,205,187,1)',
+          label: 'Class'
+        }
+      ],
+      labels: data.dates
+    },
+    options: {
+      responsive: true,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  };
+  new Chart (ctx, config2);
 }
