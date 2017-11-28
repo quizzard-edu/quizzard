@@ -37,9 +37,9 @@ const csv2json = require('csvtojson');
 const app = express();
 
 //Change to 443 in production
-const httpsPort = process.env.QUIZZARD_PORT || 443;
+const httpsPort = process.env.QUIZZARD_PORT || 8080;
 // change to port 80
-const httpPort = 80;
+const httpPort = 8000;
 const hostName = '127.0.0.1';
 
 /* Pre-compiled Pug views */
@@ -83,7 +83,7 @@ app.use(session({
 var forceSSL = require('express-force-ssl');
 var http = require('http');
 var https = require('https');
- 
+
 var ssl_options = {
   key: fs.readFileSync('./keys/private.key'),
   cert: fs.readFileSync('./keys/cert.crt')
@@ -115,16 +115,6 @@ httpServer.listen(httpPort, function(){
     logger.log('//------------------------');
     logger.log(common.formatString('Unsafe Server listening on http://'+hostName+':{0}.', [httpPort]));
 })
-
-// http.createServer(function(req, res) {   
-//         res.writeHead(301, {"Location": "https://" + hostName + ':' + httpsPort});
-//         res.end();
-// }).listen(httpPort);
-
-/*server.listen(8000, function(req, res){
-    res.writeHead(301, {"Location": "https://" + req.headers['host'] + req.url});
-    res.end();
-});*/
 
 /* main page */
 app.get('/', function(req, res) {
