@@ -38,7 +38,7 @@ const app = express();
 
 //Change to 443 in production
 const httpsPort = process.env.QUIZZARD_PORT || 8080;
-// change to port 80
+// change to port 80 in production
 const httpPort = 8000;
 const hostName = '127.0.0.1';
 
@@ -78,7 +78,7 @@ app.use(session({
 }));
 
 /*
-    Enabling https protocol
+    HTTPS protocol
 */
 var forceSSL = require('express-force-ssl');
 var http = require('http');
@@ -113,7 +113,7 @@ secureServer.listen(httpsPort,function(){
 
 httpServer.listen(httpPort, function(){
     logger.log('//------------------------');
-    logger.log(common.formatString('Unsafe Server listening on http://'+hostName+':{0}.', [httpPort]));
+    logger.log(common.formatString('HTTP Server listening on http://'+hostName+':{0}.', [httpPort]));
 })
 
 /* main page */
