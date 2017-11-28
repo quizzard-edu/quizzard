@@ -89,9 +89,9 @@ var secureServer = https.createServer(ssl_options, app);
  
 app.use(forceSSL);
  
-secureServer.listen(8000,function(){
+secureServer.listen(443,function(){
     logger.log('//------------------------');
-    logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
+    logger.log(common.formatString('Server listening on https://localhost:{0}.', [port]));
     db.initialize(function() {
         settings.initialize(function(err, result) {
             if (err) {
@@ -101,10 +101,10 @@ secureServer.listen(8000,function(){
     });
 });
 http.createServer(function(req, res) {   
-        res.writeHead(301, {"Location": "https://localhost" + req.headers['host'] + req.url});
+        res.writeHead(301, {"Location": "https://localhost"});
         res.end();
         console.log('redirect')
-}).listen(8001);
+}).listen(80);
 /*server.listen(8000, function(req, res){
     res.writeHead(301, {"Location": "https://" + req.headers['host'] + req.url});
     res.end();
