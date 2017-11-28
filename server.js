@@ -35,7 +35,12 @@ const fs = require('fs');
 const csv2json = require('csvtojson');
 
 const app = express();
-const port = process.env.QUIZZARD_PORT || 8000;
+
+//Change to 443 in production
+const httpsPort = process.env.QUIZZARD_PORT || 443;
+// change to port 80
+const httpPort = 80;
+const hostName = '127.0.0.1';
 
 /* Pre-compiled Pug views */
 const studentTablePug = pug.compileFile('views/account-table.pug');
@@ -72,7 +77,9 @@ app.use(session({
     saveUninitialized: false
 }));
 
-// https
+/*
+    Enabling https protocol
+*/
 var forceSSL = require('express-force-ssl');
 var http = require('http');
 var https = require('https');
@@ -82,16 +89,19 @@ var ssl_options = {
   cert: fs.readFileSync('./keys/cert.crt')
   //ca: fs.readFileSync('./keys/intermediate.crt')
 };
- 
-var server = http.createServer(app);
 
 var secureServer = https.createServer(ssl_options, app);
- 
+
+var httpServer = http.createServer(function(req, res) {   
+    res.writeHead(301, {"Location": "https://" + hostName + ':' + httpsPort});
+    res.end();
+});
+
 app.use(forceSSL);
  
-secureServer.listen(443,function(){
+secureServer.listen(httpsPort,function(){
     logger.log('//------------------------');
-    logger.log(common.formatString('Server listening on https://localhost:{0}.', [port]));
+    logger.log(common.formatString('Secure Server listening on https://'+hostName+':{0}.', [httpsPort]));
     db.initialize(function() {
         settings.initialize(function(err, result) {
             if (err) {
@@ -100,27 +110,20 @@ secureServer.listen(443,function(){
         });
     });
 });
-http.createServer(function(req, res) {   
-        res.writeHead(301, {"Location": "https://localhost"});
-        res.end();
-        console.log('redirect')
-}).listen(80);
+
+httpServer.listen(httpPort, function(){
+    logger.log('//------------------------');
+    logger.log(common.formatString('Unsafe Server listening on http://'+hostName+':{0}.', [httpPort]));
+})
+
+// http.createServer(function(req, res) {   
+//         res.writeHead(301, {"Location": "https://" + hostName + ':' + httpsPort});
+//         res.end();
+// }).listen(httpPort);
+
 /*server.listen(8000, function(req, res){
     res.writeHead(301, {"Location": "https://" + req.headers['host'] + req.url});
     res.end();
-});*/
-
-/*
-app.listen(port, function() {
-    logger.log('//------------------------');
-    logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
-    db.initialize(function() {
-        settings.initialize(function(err, result) {
-            if (err) {
-                process.exit(1);
-            }
-        });
-    });
 });*/
 
 /* main page */
