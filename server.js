@@ -1540,15 +1540,32 @@ app.get('/studentAnalytics', function(req,res){
         if (!req.query.studentId) {
             return res.status(500).send('no student graphs for admins');
         }
-        query.userId = "e8074ec1-d227-11e7-a176-136daa95b856";
-    }
+        users.getUserByUsername(req.query.studentId, function (err, userObj) {
+            if (err) {
+                return res.status(500).send(err);
+            }
 
-    analytics.getChart(query, function (err, result) {
-        if (err) {
-            return res.status(500).send(err);
-        }
-        return res.status(200).send(result);
-    });
+            if (!userObj) {
+                return res.status(400).send('user not found');
+            }
+
+            analytics.getChart({userId: userObj._id, type: req.query.type},
+                function (err, result) {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+                    return res.status(200).send(result);
+                }
+            );
+        });
+    } else {
+        analytics.getChart(query, function (err, result) {
+            if (err) {
+                return res.status(500).send(err);
+            }
+            return res.status(200).send(result);
+        });
+    }
 });
 
 /* get analytics for a admins*/

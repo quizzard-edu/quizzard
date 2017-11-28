@@ -295,7 +295,17 @@ exports.getAdminById = function(adminId, callback) {
  * @param {function} callback
  */
 var getUserById = function(userId, callback){
-    usersCollection.findOne({_id : userId}, function(err, obj) {
+    getUserObject({_id : userId}, callback);
+}
+
+/**
+ * get user by search query
+ *
+ * @param {object} findQuery
+ * @param {function} callback
+ */
+var getUserObject = function(findQuery, callback){
+    usersCollection.findOne(findQuery, function(err, obj) {
         if (err) {
             logger.error(err);
             return callback(err, null);
@@ -304,6 +314,7 @@ var getUserById = function(userId, callback){
         return callback(null, obj);
     });
 }
+exports.getUserObject = getUserObject;
 
 /**
  * update user by id

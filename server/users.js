@@ -267,6 +267,16 @@ exports.getAdminById = function (adminId, callback) {
 }
 
 /**
+ * get the user object by username if exists
+ *
+ * @param {string} adminId
+ * @param {function} callback
+ */
+exports.getUserByUsername = function (username, callback) {
+    db.getUserObject({username: username}, callback);
+}
+
+/**
  * submit user's answer on a question by updating the collections
  *
  * @param {string} userId
