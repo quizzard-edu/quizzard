@@ -440,8 +440,8 @@ exports.updateProfile = function (userId, request, callback) {
 exports.getLeaderboard = function (userid, smallBoard, callback) {
     getStudentsListSorted(0, function(err, studentlist) {
         if (err) {
-            logger.error('Leaderboard broke: ' + err);
-            callback(err, []);
+            logger.error('Leaderboard error: ' + err);
+            return callback(err, []);
         }
         
         var leaderboardList = [];
@@ -510,6 +510,6 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
                 leaderboardList.push(student);
             }
         }
-        callback(err, leaderboardList);
+        return callback(err, leaderboardList);
     });
 }
