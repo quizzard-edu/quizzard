@@ -785,7 +785,7 @@ app.post('/profilemod', function(req, res) {
             }
             
             if (!user) {
-                logger.error(common.formatString('User {0} failed to authenticate.', [userId]));
+                logger.error(common.formatString('User {0} failed to authenticate.', [userObj.username]));
                 return res.status(403).send(err);
             }
 
