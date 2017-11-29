@@ -22,6 +22,7 @@ const bcrypt = require('bcryptjs');
 const db = require('./db.js');
 const logger = require('./log.js');
 const common = require('./common.js');
+const settings = require('./settings.js');
 
 /**
  * Create a student USER, if the USER object is valid
@@ -285,7 +286,6 @@ exports.submitAnswer = function (userId, questionId, correct, points, answer, ca
     update.$set = { mtime : currentDate };
     update.$push = {};
 
-
     query['correctAttempts.questionId'] = { $ne : questionId };
     if (correct) {
         update.$inc.points = points;
@@ -430,89 +430,86 @@ exports.updateProfile = function (userId, request, callback) {
 
 /**
  * Fetch a list of students to display in the leaderboard.
- * The list is sorted by decreasing points.
- * Add rank to each student entry.
  *
- * If shrt is true, return leaderboard with max eight entries.
+ * If smallBoard is true, return points leaderboard with top 3 entries.
  *
  * @param {string} userid
- * @param {boolean} shrt
+ * @param {boolean} smallBoard
  * @param {function} callback
  */
-exports.getLeaderboard = function (userid, shrt, callback) {
+exports.getLeaderboard = function (userid, smallBoard, callback) {
     getStudentsListSorted(0, function(err, studentlist) {
         if (err) {
-            logger.error(err);
-            return (common.getError(2020), []);
+            logger.error('Leaderboard error: ' + err);
+            return callback(common.getError(2020), []);
         }
 
-        var rank = 0;
-        var last = -1;
-        var userind;
+        var leaderboardList = [];
 
-        /* assign ranks to each student */
-        for (var i = 0; i < studentlist.length; ++i) {
-            /* subsequent users with same amount of points have same rank */
-            if (studentlist[i].points !== last) {
-                rank = i + 1;
-                last = studentlist[i].points;
-            }
-            studentlist[i].rank = rank;
+        if (smallBoard) {
+            var rank;
+            var prevRank;
 
-            if (studentlist[i]._id === userid) {
-                userind = i;
-            }
-        }
+            for (var i = 0; i < studentlist.length; ++i) {
+                let currentStudent = studentlist[i];
 
-        if (shrt) {
-            if (studentlist.length < 8) {
-                callback(studentlist);
-                return;
-            }
-
-            var lb = [];
-            /* represents a '...' entry in the leaderboard table */
-            var dots = { rank: 0 };
-
-            /*
-             * If the user is in the top 6, display the top seven
-             * students, followed by "...".
-             */
-            if (userind < 6) {
-                for (var i = 0; i < 7; ++i) {
-                    lb.push(studentlist[i]);
-                }
-                lb.push(dots);
-            } else {
-                /* The top 3 students are always displayed. */
-                lb.push(studentlist[0]);
-                lb.push(studentlist[1]);
-                lb.push(studentlist[2]);
-
-                /*
-                 * If the user is in the bottom four,
-                 * display the whole bottom four.
-                 */
-                if (userind >= studentlist.length - 4) {
-                    lb.push(dots);
-                    for (var i = studentlist.length - 4; i < studentlist.length; ++i) {
-                        lb.push(studentlist[i]);
-                    }
+                // Students with the same number of points have the same rank
+                if (i === 0) {
+                    rank = 1;
+                    prevRank = rank;
                 } else {
-                    /*
-                     * Otherwise, display the user with the
-                     * students directly above and below them.
-                     */
-                    lb.push(dots);
-                    lb.push(studentlist[userind - 1]);
-                    lb.push(studentlist[userind]);
-                    lb.push(studentlist[userind + 1]);
-                    lb.push(dots);
+                    if (studentlist[i - 1].points === currentStudent.points) {
+                        rank = prevRank;
+                    } else {
+                        rank = i + 1;
+                        prevRank = rank;
+                    }
+                }
+
+                var student = {
+                    displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
+                    points:currentStudent.points,
+                    userRank: rank
+                }
+
+                // Adds the current student to the mini leaderboard
+                if (currentStudent._id === userid) {
+                    leaderboardList.push(student);
+                }
+
+                // Push only students with the top 3 number of poitns to mini leaderboard
+                if (i < 3 && currentStudent._id !== userid) {
+                    leaderboardList.push(student);
                 }
             }
-            callback(lb);
-        } else {
-            callback(studentlist);
         }
+
+        else {
+            // This is the number of people that will be shown on the leaderboard
+            leaderboardLimit = settings.getLeaderboardLimit();
+
+            for (var i = 0; i < leaderboardLimit; ++i) {
+                let currentStudent = studentlist[i];
+
+                var student = {
+                    displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
+                    points:currentStudent.points,
+                    accuracy:(currentStudent.totalAttemptsCount === 0)
+                        ? 0
+                        : ((currentStudent.correctAttemptsCount / currentStudent.totalAttemptsCount) * 100).toFixed(2),
+                    attempt:(currentStudent.totalAttemptsCount === 0)
+                        ? 0
+                        : (currentStudent.points / currentStudent.totalAttemptsCount).toFixed(2),
+                    overall:(currentStudent.totalAttemptsCount === 0)
+                        ? 0
+                        : (currentStudent.points *
+                        ((currentStudent.correctAttemptsCount/currentStudent.totalAttemptsCount) +
+                        (currentStudent.points/currentStudent.totalAttemptsCount))).toFixed(2)
+                }
+
+                leaderboardList.push(student);
+            }
+        }
+        return callback(err, leaderboardList);
     });
 }

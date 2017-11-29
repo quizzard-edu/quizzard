@@ -52,9 +52,10 @@ const tfFormPug = pug.compileFile('views/question_types/tf-answer.pug');
 const chooseAllFormPug = pug.compileFile('views/question_types/chooseAll-answer.pug');
 const matchingFormPug = pug.compileFile('views/question_types/matching-answer.pug');
 const orderingFormPug = pug.compileFile('views/question_types/ordering-answer.pug');
-const leaderboardTablePug = pug.compileFile('views/leaderboard-table.pug');
 const discussionBoardPug = pug.compileFile('views/discussion.pug');
 const settingsPug = pug.compileFile('views/settings.pug');
+const leaderboardTablePug = pug.compileFile('views/leaderboard-table.pug');
+const leaderboardRowPug = pug.compileFile('views/leaderboard-row.pug');
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -75,7 +76,13 @@ app.use(session({
 app.listen(port, function() {
     logger.log('//------------------------');
     logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
-    db.initialize(function() {});
+    db.initialize(function() {
+        settings.initialize(function(err, result) {
+            if (err) {
+                process.exit(1);
+            }
+        });
+    });
 });
 
 /* main page */
@@ -209,32 +216,29 @@ app.get('/about', function(req,res) {
     return res.render('about', { user: req.session.user });
 });
 
-/* Fetch and render the leaderboard table. Send HTML as response. */
+/* Fetch and render the leaderboard table.*/
 app.get('/leaderboard-table', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
-
-    var fullTable = true;
-    var shortTable = false;
-
-    if (req.query.fullTable === 'false') {
-        fullTable = false;
+    var smallBoard = false;
+    if (req.query.smallBoard === 'true'){
+        smallBoard = true;
     }
+    users.getLeaderboard(req.session.user._id, smallBoard, function(err, leaderboardList) {
 
-    if (req.query.longTable === 'false') {
-        shortTable = true;
-    }
-
-    users.getLeaderboard(req.session.user._id, shortTable, function(leader) {
-        var html = leaderboardTablePug({
-            fullTable: fullTable,
-            shortTable: shortTable,
-            leaderboard: leader,
-            userid: req.session.user._id
-        });
-
-        return res.status(200).send(html);
+        if (err) {
+            return res.status(500).send(common.getError(2020));
+        } else {
+            const leaderboardTableHTML = leaderboardTablePug();
+            const leaderboardRowHTML = leaderboardRowPug();
+            return res.status(200).send({
+                leaderboardList: leaderboardList,
+                leaderboardTableHTML: leaderboardTableHTML,
+                leaderboardRowHTML: leaderboardRowHTML,
+                userId: req.session.user._id
+            });
+        }
     });
 });
 
@@ -562,7 +566,7 @@ app.get('/question', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
-
+    const userId = req.session.user._id;
     questions.lookupQuestionById(req.query._id, function(err, questionFound) {
         if (err) {
             logger.error(err);
@@ -580,41 +584,50 @@ app.get('/question', function(req, res) {
         var answeredList = common.getIdsListFromJSONList(questionFound.correctAttempts, 'userId');
         var hasQrating = false;
         for (var i in questionFound.ratings) {
-            if (questionFound.ratings[i].userId === req.session.user._id) {
+            if (questionFound.ratings[i].userId === userId) {
                 hasQrating = true;
             }
         }
-        return res.status(200).render('question-view', {
-            user: req.session.user,
-            question: questionFound,
-            answered: (answeredList.indexOf(req.session.user._id) !== -1),
-            isAdmin : function() {
-                return req.session.user.type === common.userTypes.ADMIN;
-            },
-            hasQrating: hasQrating,
-            getQuestionForm: function() {
-                switch (questionFound.type) {
-                    case common.questionTypes.REGULAR.value:
-                        return regexFormPug({studentQuestionForm:true})
-                    case common.questionTypes.MULTIPLECHOICE.value:
-                        return mcFormPug({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.TRUEFALSE.value:
-                        return tfFormPug({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.CHOOSEALL.value:
-                        return chooseAllFormPug({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.MATCHING.value:
-                        // randomize the order of the matching
-                        questionFound.leftSide = common.randomizeList(questionFound.leftSide);
-                        questionFound.rightSide = common.randomizeList(questionFound.rightSide);
-                        return matchingFormPug({studentQuestionForm:true, question:questionFound})
-                    case common.questionTypes.ORDERING.value:
-                        // randomize the order of ordering question
-                        questionFound.answer = common.randomizeList(questionFound.answer);
-                        return orderingFormPug({studentQuestionForm:true, question:questionFound})
-                    default:
-                        break;
-                }
+        questions.isUserLocked(userId, questionFound, function(err, isLocked, waitTimeMessage, waitTimeinMiliSeconds){
+            if(err){
+                logger.error(err);
+                return res.status(500).send(err);
             }
+
+            return res.status(200).render('question-view', {
+                user: req.session.user,
+                question: questionFound,
+                answered: (answeredList.indexOf(userId) !== -1),
+                isAdmin : function() {
+                    return req.session.user.type === common.userTypes.ADMIN;
+                },
+                hasQrating: hasQrating,
+                getQuestionForm: function(){
+                    switch (questionFound.type){
+                        case common.questionTypes.REGULAR.value:
+                            return regexFormPug({studentQuestionForm:true})
+                        case common.questionTypes.MULTIPLECHOICE.value:
+                            return mcFormPug({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.TRUEFALSE.value:
+                            return tfFormPug({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.CHOOSEALL.value:
+                            return chooseAllFormPug({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.MATCHING.value:
+                            // randomize the order of the matching
+                            questionFound.leftSide = common.randomizeList(questionFound.leftSide);
+                            questionFound.rightSide = common.randomizeList(questionFound.rightSide);
+                            return matchingFormPug({studentQuestionForm:true, question:questionFound})
+                        case common.questionTypes.ORDERING.value:
+                            // randomize the order of ordering question
+                            questionFound.answer = common.randomizeList(questionFound.answer);
+                            return orderingFormPug({studentQuestionForm:true, question:questionFound})
+                        default:
+                            break;
+                    }
+                },
+                isLocked: isLocked,
+                waitTime: waitTimeinMiliSeconds
+            });
         });
     });
 });
@@ -640,31 +653,57 @@ app.post('/submitanswer', function(req, res) {
             return res.status(400).send(common.getError(3003));
         }
 
-        logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
-
-        var value = questions.verifyAnswer(question, answer);
-        var points = Math.floor(Math.max(question.minpoints, question.maxpoints/Math.cbrt(question.correctAttemptsCount + 1)));
-        var text = value ? 'correct' : 'incorrect';
-        var status = value ? 200 : 500;
-        var response = {text: text, points: points};
-
-        if (req.session.user.type === common.userTypes.ADMIN) {
-            return res.status(status).send(response);
-        }
-
-        users.submitAnswer(userId, questionId, value, points, answer, function(err, result) {
-            if (err) {
+        // check if question is locked for the student
+        questions.isUserLocked(userId, question, function(err, isLocked, waitTimeMessage, waitTimeinMiliSeconds){
+            if(err){
                 logger.error(err);
                 return res.status(500).send(common.getError(3006));
             }
 
-            questions.submitAnswer(questionId, userId, value, points, answer, function(err, result) {
-                if (err) {
+            if (isLocked){
+                return res.status(423).send(waitTimeMessage);
+            }
+
+            logger.log(common.formatString('User {0} attempted to answer question {1} with "{2}"', [userId, questionId, answer]));
+
+            var isCorrect = questions.verifyAnswer(question, answer);
+            var points = 0;
+            var text = 'incorrect';
+            var status = 405;
+
+            if (isCorrect){
+                text = 'correct';
+                status = 200;
+                points = Math.floor(Math.max(question.minpoints, question.maxpoints/Math.cbrt(question.correctAttemptsCount + 1)));
+            }
+
+            var response = {text: text, points: points};
+
+            if (req.session.user.type === common.userTypes.ADMIN) {
+                return res.status(status).send(response);
+            }
+
+            users.submitAnswer(userId, questionId, isCorrect, points, answer, function(err, result){
+                if(err){
                     logger.error(err);
                     return res.status(500).send(common.getError(3006));
                 }
 
-                return res.status(status).send(response);
+                questions.submitAnswer(questionId, userId, isCorrect, points, answer, function(err, result) {
+                    if(err){
+                        logger.error(err);
+                        return res.status(500).send(err);
+                    }
+
+                    questions.updateUserSubmissionTime(userId, question, function(err, result){
+                        if(err){
+                            logger.error(err);
+                            return res.status(500).send(err);
+                        }
+
+                        return res.status(status).send(response);
+                    });
+                });
             });
         });
     });
@@ -741,9 +780,14 @@ app.post('/profilemod', function(req, res) {
             return res.status(400).send(common.getError(2009));
         }
 
-        users.checkLogin(userId, req.body.currentpasswd, function(err, user) {
-            if (err || !user) {
-                logger.error(common.formatString('User {0} failed to authenticate.', [userId]));
+        users.checkLogin(userObj.username, req.body.currentpasswd, function(err, user) {
+            if (err) {
+                logger.error(err);
+                return res.status(500).send(common.getError(2010));
+            }
+
+            if (!user) {
+                logger.error(common.formatString('User {0} failed to authenticate.', [userObj.username]));
                 return res.status(403).send(common.getError(2010));
             }
 

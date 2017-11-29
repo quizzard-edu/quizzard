@@ -22,6 +22,7 @@ const db = require('./db.js');
 const logger = require('./log.js');
 const common = require('./common.js');
 const questionValidator = require('./questionValidator.js');
+const settings = require('./settings.js')
 
 /*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question) {
@@ -66,7 +67,7 @@ var prepareQuestionData = function(question, callback) {
     questionToAdd.mtime = currentDate;
     questionToAdd.ratings = [];
     questionToAdd.comments = [];
-
+    questionToAdd.userSubmissionTime = [];
     //Add specific attributes by Type
     switch (question.type) {
         case common.questionTypes.REGULAR.value:
@@ -566,4 +567,71 @@ exports.voteReply = function (replyId, vote, userId, callback) {
             return callback(common.getError(3016), null);
         }
     });
+}
+
+exports.isUserLocked = function(userId, question, callback){
+    if (!settings.getQuestionTimeoutEnabled()){
+        return callback(null,false,null);
+    }
+    var waiting_time = settings.getQuestionTimeoutPeriod();
+    var lastSubmissionTime;
+    var currentDate = common.getDateObject();
+
+    // check if user already got the question correct
+    for (var obj = 0; obj < question.correctAttempts.length; obj ++){
+        if(question.correctAttempts[obj]['userId'] === userId){
+            return callback(null,false,null);
+        }
+    }
+    // find the lastSubmissionTime for this user
+    for (var obj = 0; obj < question.userSubmissionTime.length; obj++){
+        if(question.userSubmissionTime[obj]['userId'] === userId){
+            lastSubmissionTime = question.userSubmissionTime[obj]['submissionTime'];
+            break;
+        }
+    }
+
+    if(lastSubmissionTime){
+        const diff = Math.abs(currentDate - lastSubmissionTime);
+        const timeLeftToWait = waiting_time - diff;
+        if (diff < waiting_time){
+            return callback(null,true,common.getTime(timeLeftToWait), timeLeftToWait);
+        }
+    }
+    return callback(null,false,null);
+}
+
+/*Updates the Users Submission time for a Question*/
+exports.updateUserSubmissionTime = function(userId, question, callback){
+    var query = {_id:question._id};
+    var update = {};
+    var currentDate = common.getDateObject();
+    var userInList = false;
+    // find the user in the submission list
+    for (var obj = 0; obj < question.userSubmissionTime.length; obj++){
+        if(question.userSubmissionTime[obj]['userId'] === userId){
+            userInList = true;
+            break;
+        }
+    }
+
+    if(userInList){
+        query['userSubmissionTime.userId'] = userId;
+        update.$set = {"userSubmissionTime.$.submissionTime":currentDate};
+        db.updateQuestionByQuery(query, update, function (err, result){
+            if(err){
+                return callback(err,null);
+            }
+            return callback(null,'success');
+        });
+        
+    } else {
+        update.$push = {'userSubmissionTime': {'userId':userId, submissionTime: currentDate}};
+        db.updateQuestionByQuery(query, update, function (err, result){
+            if(err){
+                return callback(err,null);
+            }
+            return callback(null,'success');
+        });
+    }
 }

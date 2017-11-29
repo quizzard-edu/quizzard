@@ -1,4 +1,7 @@
 var sortTypes;
+var leaderboardRow;
+var leaderboardTable;
+var studentLeaderList;
 
 /* Fetch the list of valid question list sort types from the server.
 $.ajax({
@@ -97,11 +100,14 @@ var fetchLeaderboard = function() {
         type: 'GET',
         url: '/leaderboard-table',
         data: {
-            fullTable: false,
-            longTable: false
+            smallBoard: true
         },
         success: function(data) {
-            $('.leaderboard-small').html(data);
+            leaderboardTable = $(data.leaderboardTableHTML);
+            leaderboardRow = $(data.leaderboardRowHTML);
+            studentLeaderList = data.leaderboardList;
+            $('.leaderboard-small').html(leaderboardTable);
+            displayLeaderboard(studentLeaderList, data.userId);
         },
         error: function(data){
             var jsonResponse = data.responseJSON;
@@ -116,3 +122,16 @@ var fetchLeaderboard = function() {
 }
 
 fetchLeaderboard();
+
+// Adds the students information to the leaderboard
+var displayLeaderboard = function(studentLeaderList, userId) {
+    $('#criteriaName').html('Points');
+    studentLeaderList.forEach((studentObject, index) => {
+        // This give colour to rows where the student's rank is in the top 3 and the current student.
+        leaderboardRow.attr('class', `rank-${studentObject.userRank <= 3 ? studentObject.userRank : 'user'}`);
+        leaderboardRow.find('#rank').html(studentObject.userRank);
+        leaderboardRow.find('#displayName').html(studentObject.displayName);
+        leaderboardRow.find('#criteria').html(studentObject.points);
+        $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
+    });
+}

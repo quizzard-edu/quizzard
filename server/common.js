@@ -99,7 +99,8 @@ const questionAttributes = Object.freeze({
         totalAttemptsCount      : {type:'[object Number]'},
         ctime                   : {type:'[object String]'},
         mtime                   : {type:'[object String]'},
-        ratings                 : {type:'[object Array]'}
+        ratings                 : {type:'[object Array]'},
+        userSubmissionTime      : {type:'[object Array]'}
     },
     REGULAR:        {
         answer                  : {type:'[object String]'}
@@ -199,6 +200,44 @@ var getDate = function () {
     return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
 }
 exports.getDate = getDate;
+
+/**
+* return the current date
+*
+* @return {date}
+*/
+var getDateObject = function(){
+    return new Date();
+}
+exports.getDateObject = getDateObject;
+
+/**
+* return the time in "<0> days, <0> hours, <0> minutes, <0> seconds" format
+*
+* @return {string}
+*/
+var getTime = function(time){
+    const date = new Date(time);
+    var timeString = '';
+    const days = date.getUTCDate()-1;
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
+    if (days){
+        timeString += date.getUTCDate()-1 + " days, ";
+    }
+    if (hours){
+        timeString += date.getUTCHours() + " hours, ";
+    }
+    if (minutes){
+        timeString += date.getUTCMinutes() + " minutes, ";
+    }
+    if (seconds){
+        timeString += date.getUTCSeconds() + " seconds";
+    }
+    return timeString;
+}
+exports.getTime = getTime;
 
 /**
 * return the current date with format
