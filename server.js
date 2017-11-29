@@ -1584,7 +1584,7 @@ app.post('/submitFeedback', function(req, res){
     });
 });
 
-app.get('/getFeedback', function(req, res){
+app.get('/feedback', function(req, res){
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1601,7 +1601,7 @@ app.get('/getFeedback', function(req, res){
             return res.status(500).send(err);
         }
 
-        return res.status(201).send('Got user feedback');
+        return res.status(201).send(result);
     })
 });
 
