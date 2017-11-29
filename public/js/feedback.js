@@ -43,8 +43,6 @@ function userFeedback() {
                 $('#subject').val('');
                 $('#feedbackArea').val('');
                 $('#email').val('');
-                $('#subject2').val('');
-                $('#feedbackArea2').val('');
                 $('#feedbackArea').trigger('autoresize');
                 $('#modal-content').scrollTop(0);
                 $('.collapsible').collapsible('close', 0);

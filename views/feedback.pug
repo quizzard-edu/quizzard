@@ -33,11 +33,8 @@ block content
             i.material-icons place
             | Website Feedback
           .collapsible-body
-            form(method='POST', action='http://formspree.io/mohammed.khan@hotmail.com')
-              input#email(name='email', placeholder='Your email', type='email')  
-              input#subject2(name='subject', placeholder='Subject', type='text')
-              textarea#feedbackArea2.materialize-textarea(name='message', placeholder='Your message')
-              button.btn.btn-info(type='submit') Send
+            p Please visit the following page to submit your feedback:
+            a(href='https://quizzard-edu.github.io/quizzard/feedback.html', target='_blank') Quizzard Feedback
 
 block scripts
   script(src='/js/feedback.js')
