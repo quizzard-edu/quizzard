@@ -778,9 +778,14 @@ app.post('/profilemod', function(req, res) {
             return res.status(400).send('User can not be found');
         }
 
-        users.checkLogin(userId, req.body.currentpasswd, function(err, user) {
-            if (err || !user) {
-                logger.error(common.formatString('User {0} failed to authenticate.', [userId]));
+        users.checkLogin(userObj.username, req.body.currentpasswd, function(err, user) {
+            if (err) {
+                logger.error(err);
+                return res.status(500).send(err);
+            }
+            
+            if (!user) {
+                logger.error(common.formatString('User {0} failed to authenticate.', [userObj.username]));
                 return res.status(403).send(err);
             }
 
