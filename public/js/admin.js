@@ -836,11 +836,11 @@ var submitQEditForm = function(qid, questionNumber) {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
-              } else if (jsonResponse['code'] === 3022) {
-                  warningSnackbar(getErrorFromResponse(jsonResponse));
-              } else {
-                  failSnackbar(getErrorFromResponse(jsonResponse));
-              }
+            } else if (jsonResponse['code'] === 3022) {
+                warningSnackbar(getErrorFromResponse(jsonResponse));
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
+            }
         }
     });
 }
