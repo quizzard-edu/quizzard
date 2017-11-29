@@ -15,11 +15,13 @@
           a.navbarLink(href='/leaderboard') Leaderboard
         li#nav-analytics
           a.navbarLink(href='/analytics') Analytics
+        li#nav-feedback-view
+          a.navbarLink(href='/feedback') View Feedback
+      ul.right.hide-on-med-and-down
         li#nav-about
           a.navbarLink(href='/about') About
-      ul.right.hide-on-med-and-down
-        li#nav-profile
-          a.navbarLink(onclick='userFeedback();') Feedback
+        li#nav-feedback
+          a.navbarLink(onclick='userFeedback();') Submit Feedback
         li#nav-profile
           a.navbarLink(href='/profile') Profile
         li#nav-logout
@@ -35,10 +37,12 @@ ul#mobile.side-nav
     a.navbarLinkHidden(href='/leaderboard') Leaderboard
   li#nav-analytics
     a.navbarLinkHidden(href='/analytics') Analytics
+  li#nav-feedback-view
+    a.navbarLinkHidden(href='/feedback') View Feedback
   li#nav-about
     a.navbarLinkHidden(href='/about') About
   li#nav-profile
-    a.navbarLinkHidden(href='#' onclick='userFeedback();') Feedback
+    a.navbarLinkHidden(href='#' onclick='userFeedback();') Submit Feedback
   li#nav-profile
     a.navbarLinkHidden(href='/profile') Profile
   li#nav-logout

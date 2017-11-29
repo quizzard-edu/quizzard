@@ -25,6 +25,22 @@ block content
           .card-action
             h5.qtext !{question.text}
             | !{getQuestionForm()}
+            if isLocked
+              #lockQuestion
+                div.h3 Question is Locked Please try again in 
+                  #clockdiv
+                    div
+                      span.days
+                      .smalltext Days
+                    div
+                      span.hours
+                      .smalltext Hours
+                    div
+                      span.minutes
+                      .smalltext Minutes
+                    div
+                      span.seconds
+                      .smalltext Seconds
         if answered
           .success
             h4.text-center#success-header Learn more
@@ -55,8 +71,15 @@ block content
       .row
         .col.s12
             #discussion
-            
+
   include alert
+  
+  if isLocked
+    block scripts
+      script(src='/js/questionLock.js')
+    script.
+      waitTime = "#{waitTime}";
+
 
 block scripts
   script(src='/js/common.js')
