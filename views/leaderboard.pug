@@ -15,12 +15,43 @@ block content
   .container
     .row
       .col.s12
+        .row
+          ul.tabs
+            li.tab.col.s3
+              a.noLineLink.active#option-overall(href='#') Overall
+            li.tab.col.s3
+              a.noLineLink#option-points(href='#') Total Points
+            li.tab.col.s3
+              a.noLineLink#option-accuracy(href='#') Accuracy
+            li.tab.col.s3
+              a.noLineLink#option-attempt(href='#') Points Per Attempt
+  .container
+    .row
+      .col.s12
         .card.center
+          .card-image
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right(onclick='fetchLeaderboard()')
+              i.material-icons autorenew
           .card-content
             h4.center Leaderboard
           .card-action
+            .podium
+              p
+                | Top Score : 
+                span.score#topScore
+              ol
+                li.gold
+                  img#first(alt='First Place', src='')
+                  img#trophy(src='img/first_trophy.png')
+                li.silver
+                  img#second(alt='Second Place', src='')
+                  img#trophy(src='img/second_trophy.png')
+                li.bronze
+                  img#third(alt='Third Place', src='')
+                  img#trophy(src='img/third_trophy.png')
             .leaderboard-content
 
 block scripts
+  script(src='/js/common.js')
   script(src='/js/leaderboard.js')
   script(src='/js/navbar.js')

@@ -52,9 +52,10 @@ const tfFormPug = pug.compileFile('views/question_types/tf-answer.pug');
 const chooseAllFormPug = pug.compileFile('views/question_types/chooseAll-answer.pug');
 const matchingFormPug = pug.compileFile('views/question_types/matching-answer.pug');
 const orderingFormPug = pug.compileFile('views/question_types/ordering-answer.pug');
-const leaderboardTablePug = pug.compileFile('views/leaderboard-table.pug');
 const discussionBoardPug = pug.compileFile('views/discussion.pug');
 const settingsPug = pug.compileFile('views/settings.pug');
+const leaderboardTablePug = pug.compileFile('views/leaderboard-table.pug');
+const leaderboardRowPug = pug.compileFile('views/leaderboard-row.pug');
 
 /* print urls of all incoming requests to stdout */
 app.use(function(req, res, next) {
@@ -213,32 +214,29 @@ app.get('/about', function(req,res) {
     return res.render('about', { user: req.session.user });
 });
 
-/* Fetch and render the leaderboard table. Send HTML as response. */
+/* Fetch and render the leaderboard table.*/
 app.get('/leaderboard-table', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
-
-    var fullTable = true;
-    var shortTable = false;
-
-    if (req.query.fullTable === 'false') {
-        fullTable = false;
+    var smallBoard = false;
+    if (req.query.smallBoard === 'true'){
+        smallBoard = true;
     }
-
-    if (req.query.longTable === 'false') {
-        shortTable = true;
-    }
-
-    users.getLeaderboard(req.session.user._id, shortTable, function(leader) {
-        var html = leaderboardTablePug({
-            fullTable: fullTable,
-            shortTable: shortTable,
-            leaderboard: leader,
-            userid: req.session.user._id
-        });
-
-        return res.status(200).send(html);
+    users.getLeaderboard(req.session.user._id, smallBoard, function(err, leaderboardList) {
+    
+        if (err) {
+            return res.status(500).send('Could not fetch leaderboard');
+        } else {
+            const leaderboardTableHTML = leaderboardTablePug();
+            const leaderboardRowHTML = leaderboardRowPug(); 
+            return res.status(200).send({
+                leaderboardList: leaderboardList,
+                leaderboardTableHTML: leaderboardTableHTML,
+                leaderboardRowHTML: leaderboardRowHTML,
+                userId: req.session.user._id
+            });
+        }
     });
 });
 
