@@ -36,12 +36,6 @@ const csv2json = require('csvtojson');
 
 const app = express();
 
-//Change to 443 in production
-const httpsPort = process.env.QUIZZARD_PORT || 8080;
-// change to port 80 in production
-const httpPort = 8000;
-const hostName = '127.0.0.1';
-
 /* Pre-compiled Pug views */
 const studentTablePug = pug.compileFile('views/account-table.pug');
 const accountCreationPug = pug.compileFile('views/account-creation.pug');
@@ -80,6 +74,14 @@ app.use(session({
 /*
     HTTPS protocol
 */
+
+// Change to 443 in production
+const httpsPort = 8080;
+// Change to port 80 in production
+const httpPort = 8000;
+// Change to production website name
+const hostName = '127.0.0.1';
+
 var forceSSL = require('express-force-ssl');
 var http = require('http');
 var https = require('https');
@@ -87,18 +89,19 @@ var https = require('https');
 var ssl_options = {
   key: fs.readFileSync('./keys/private.key'),
   cert: fs.readFileSync('./keys/cert.crt')
-  //ca: fs.readFileSync('./keys/intermediate.crt')
 };
 
 var secureServer = https.createServer(ssl_options, app);
 
-var httpServer = http.createServer(function(req, res) {   
+var httpServer = http.createServer(function(req, res) {
+    // Redirects to https location
     res.writeHead(301, {"Location": "https://" + hostName + ':' + httpsPort});
     res.end();
 });
 
 app.use(forceSSL);
- 
+
+//HTTPS server
 secureServer.listen(httpsPort,function(){
     logger.log('//------------------------');
     logger.log(common.formatString('Secure Server listening on https://'+hostName+':{0}.', [httpsPort]));
@@ -111,6 +114,7 @@ secureServer.listen(httpsPort,function(){
     });
 });
 
+//HTTP server
 httpServer.listen(httpPort, function(){
     logger.log('//------------------------');
     logger.log(common.formatString('HTTP Server listening on http://'+hostName+':{0}.', [httpPort]));
