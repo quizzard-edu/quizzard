@@ -28,8 +28,6 @@ var getQuestionsTopicsList = function () {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else {
-                failSnackbar('Sorry, something went wrong, please try again');
             }
         }
     });
@@ -76,10 +74,12 @@ var resetDefault = function() {
                 successSnackbar('Default settings have been applied');
             },
             error: function(data) {
+                var jsonResponse = data.responseJSON;
+
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Could not apply default settings, please try again!');
+                    failSnackbar(getErrorFromResponse(jsonResponse));
                 }
             }
         });
@@ -124,10 +124,12 @@ var save = function() {
                 successSnackbar('Changes have been updated');
             },
             error: function(data) {
+                var jsonResponse = data.responseJSON;
+
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Could not save, please try again!');
+                    failSnackbar(getErrorFromResponse(jsonResponse));
                 }
             }
         });

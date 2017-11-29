@@ -1,31 +1,32 @@
-.col-default:hover {
-  background-color: #d3d3d3;
+.rank-default:hover {
+    background-color: rgba(238, 110, 115,0.7);
 }
 
-.col-gold {
-  background-color: #ffd700;
+.rank-1 {
+    background-color: rgba(255,215,0,0.7);
 }
 
-.col-gold:hover {
-  background-color: #ceb004;
+.rank-1:hover {
+    background-color: #ceb004;
 }
 
-.col-silver {
-  background-color: #c0c0c0;
+.rank-2 {
+    background-color: rgba(192,192,192,0.7);
 }
 
-.col-silver:hover {
-  background-color: #aaaaaa;
+.rank-2:hover {
+    background-color: #aaaaaa;
 }
 
-.col-bronze {
-  background-color: #8c7853;
+.rank-3 {
+    background-color: rgba(140,120,83,0.7);
 }
 
-.col-bronze:hover {
-  background-color: #77623b;
+.rank-3:hover {
+    background-color: #77623b;
 }
 
-.col-isuser {
-  font-weight: bold;
+.rank-user {
+    background-color: rgba(238, 110, 115,0.7);
+    font-weight: bold;
 }

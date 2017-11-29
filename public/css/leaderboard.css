@@ -1,0 +1,59 @@
+div.podium {
+    display: inline-block;
+    width: auto;
+    text-align: center;
+    padding: 35px;    
+}
+div.podium p {
+    margin-top: 0;
+    color: #000000;
+    font-size: 20px;
+}
+div.podium p span.score {
+    font-weight: bold;
+}
+
+ol, li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ol {
+    display: flex;
+}
+
+li {
+    display: inline-block;
+}
+
+li.silver {
+    order: -1;
+}
+
+.silver, .bronze {
+    transform: scale(0.60);
+}
+
+li img {
+    display: inline-flex;
+    max-width: 60%;
+}
+
+li img#trophy {
+    top: -1px;
+    position: relative;
+    padding: 12.5px;
+}
+
+li.gold .score {
+    background-color: rgba(255,215,0,0.7);
+}
+
+li.silver .score {
+    background-color: rgba(192,192,192,0.7);
+}
+
+li.bronze .score {
+    background-color: rgba(140,120,83,0.7);
+}

@@ -104,7 +104,7 @@ var prepareQuestionData = function(question, callback) {
             break;
 
         default:
-            return callback({status:400, msg:'Type of Question is Undefined'}, null)
+            return callback(common.getError(3001), null)
     }
 
     return callback(null, questionToAdd);
@@ -117,8 +117,8 @@ var prepareQuestionData = function(question, callback) {
 */
 exports.addQuestion = function(question, callback) {
     prepareQuestionData(question, function(err, questionToAdd) {
-        if(err) {
-            return callback(err, null)
+        if (err) {
+            return callback(common.getError(3021), null)
         }
 
         // validate constant question attributes
@@ -126,7 +126,7 @@ exports.addQuestion = function(question, callback) {
         if (result.success) {
             db.addQuestion(questionToAdd, function (err, questionId) {
                 if (err) {
-                    return callback(err, null);
+                    return callback(common.getError(3018), null);
                 }
 
                 common.mkdir(common.fsTree.QUESTIONS, questionToAdd._id, function (err, result) {
@@ -136,7 +136,7 @@ exports.addQuestion = function(question, callback) {
                 return callback(null, questionId);
             });
         } else{
-            return callback({status:400,msg:result.msg}, null)
+            return callback(common.getError(3022), null)
         }
     })
 }
@@ -149,8 +149,8 @@ exports.updateQuestionById = function(questionId, info, callback) {
 var updateQuestionById = function(qId, infoToUpdate, callback) {
     // Get Type of question and validate it
     lookupQuestionById(qId, function(err, question) {
-        if(err) {
-            return callback({status:500, msg:err},null);
+        if (err) {
+            return callback(common.getError(3019), null);
         }
         infoToUpdate = questionUpdateParser(infoToUpdate);
 
@@ -159,7 +159,7 @@ var updateQuestionById = function(qId, infoToUpdate, callback) {
         if (result.success) {
             db.updateQuestionById(qId, infoToUpdate, callback);
         } else {
-            return callback({status:400, msg:result.msg}, null)
+            return callback(common.getError(3022), null)
         }
     });
 }
@@ -169,7 +169,7 @@ exports.deleteQuestion = function(questionId, callback) {
     questions.remove({_id: questionId}, function(err, res) {
         if (err) {
             logger.error(err);
-            return callback(err, null);
+            return callback(common.getError(3023), null);
         }
 
         logger.log(common.formatString('Question {0} deleted from database.', [questionId]));
@@ -373,11 +373,11 @@ exports.voteComment = function (commentId, vote, userId, callback) {
 
     db.lookupQuestion(query, function(err, question) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(3019), null);
         }
 
         if (!question) {
-            return callback('Question not found based on commentId', null);
+            return callback(common.getError(3003), null);
         }
 
         var comments = question.comments;
@@ -447,7 +447,7 @@ exports.voteComment = function (commentId, vote, userId, callback) {
             }
         }
 
-        return callback('Could not submit the vote on the comment', null);
+        return callback(common.getError(3015), null);
     });
 }
 
@@ -459,11 +459,11 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 
     db.lookupQuestion(query, function(err, question) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(3019), null);
         }
 
         if (!question) {
-            return callback('Question not found based on replyId', null);
+            return callback(common.getError(3003), null);
         }
 
         // TODO: optimize this using mongodb projections
@@ -559,7 +559,7 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                 }
             }
 
-            return callback('Could not submit the vote on the reply', null);
+            return callback(common.getError(3016), null);
         }
     });
 }

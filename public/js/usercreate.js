@@ -13,16 +13,15 @@ $('#userform').submit(function(evt) {
         url: '/useradd',
         data: user,
         success: function(data) {
-            if (data == 'failure')
-                $('#result').html('User could not be added');
-            else if (data == 'exists')
-                $('#result').html('User ' + user.id + ' already exists');
-            else if (data == 'success')
-                $('#result').html('User ' + user.id + ' added to database');
+            $('#result').html('User ' + user.id + ' added to database');
         },
         error: function(data){
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
