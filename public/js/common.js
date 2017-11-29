@@ -136,7 +136,7 @@ const errors = Object.freeze({
     3002: 'Failed to find question',
     3003: 'Question not found',
     3004: 'Failed to get questions list',
-    3005: 'question is not available',
+    3005: 'Question is not available',
     3006: 'Failed to submit answer',
     3007: 'Failed to add question',
     3008: 'Invalid rating',
