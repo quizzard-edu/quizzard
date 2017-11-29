@@ -41,7 +41,7 @@ var nextQuestionNumber = 0;
 exports.initialize = function(callback) {
     db.open(function(err, db) {
         if (err) {
-            logger.error(err);
+            logger.error(common.getError(1004));
             process.exit(1);
         }
 
@@ -60,11 +60,11 @@ exports.initialize = function(callback) {
 
 // Users functions
 // Add USER to usersCollection in the database
-exports.addStudent = function(student, callback){
+exports.addStudent = function(student, callback) {
     addUser(student, callback);
 }
 
-exports.addAdmin = function(admin, callback){
+exports.addAdmin = function(admin, callback) {
     addUser(admin, callback);
 }
 
@@ -72,11 +72,11 @@ var addUser = function(user, callback) {
     usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function(err, obj) {
         if (err) {
             logger.error(err);
-            return callback(err, null);
+            return callback(common.getError(2014), null);
         }
 
         if (obj) {
-            return callback('exists', null);
+            return callback(common.getError(2019), null);
         }
 
         usersCollection.insert(user, function(err, res) {
@@ -103,23 +103,23 @@ exports.getStudentsListWithStatus = function(status, callback) {
 }
 
 /* Return an array of users in the database, sorted by rank. */
-var getUsersList = function(findQuery, sortQuery, callback){
+var getUsersList = function(findQuery, sortQuery, callback) {
     usersCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
-            return callback(err, []);
+            return callback(common.getError(2013), []);
         }
 
         return callback(null, docs);
     });
 }
 
-exports.getStudentsListSorted = function(lim, callback){
+exports.getStudentsListSorted = function(lim, callback) {
     usersCollection.find({type: common.userTypes.STUDENT})
             .sort({points: -1})
             .limit(lim)
             .toArray(function(err, docs) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(2015), null);
         }
 
         return callback(null, docs);
@@ -138,7 +138,7 @@ exports.checkLogin = function(userId, pass, callback) {
     usersCollection.findOne({username : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
-            return callback(err, null);
+            return callback(common.getError(2014), null);
         }
 
         if (!obj) {
@@ -151,13 +151,15 @@ exports.checkLogin = function(userId, pass, callback) {
 
         validatePassword(obj, pass, function(err, valid) {
             if (err) {
-                return callback(err, null);
+                return callback(common.getError(1005), null);
             }
+
             if (valid) {
                 delete obj.password;
                 return callback(null, obj);
             }
-            return callback('invalid', null);
+
+            return callback(common.getError(1006), null);
         });
     });
 }
@@ -172,23 +174,23 @@ var validatePassword = function(userobj, pass, callback) {
 }
 
 // cleanup the users collection
-exports.removeAllUsers = function(callback){
+exports.removeAllUsers = function(callback) {
     common.rmrf(common.fsTree.HOME, 'Users', function (err, result) {
-        if(err){
+        if (err) {
             logger.error(err);
-            return callback(err, null);
+            return callback(common.getError(2016), null);
         }
 
         common.mkdir(common.fsTree.HOME, 'Users', function (err, result) {
-            if(err){
+            if (err) {
                 logger.error(err);
-                return callback(err, null);
+                return callback(common.getError(1007), null);
             }
 
             usersCollection.remove({}, function(err, obj) {
                 if (err) {
                     logger.error(err);
-                    return callback(err, null);
+                    return callback(common.getError(1008), null);
                 }
 
                 logger.log('All users have been removed');
@@ -209,11 +211,11 @@ exports.getAdminById = function(adminId, callback) {
     getUserById(adminId, callback);
 }
 
-var getUserById = function(userId, callback){
+var getUserById = function(userId, callback) {
     usersCollection.findOne({_id : userId}, function(err, obj) {
         if (err) {
             logger.error(err);
-            return callback(err, null);
+            return callback(common.getError(2017), null);
         }
 
         return callback(null, obj);
@@ -221,19 +223,19 @@ var getUserById = function(userId, callback){
 }
 
 // Update a student record using its Id
-exports.updateUserById = function(userId, info, callback){
+exports.updateUserById = function(userId, info, callback) {
     updateUserById(userId, info, callback);
 }
 
-exports.updateStudentById = function(userId, info, callback){
+exports.updateStudentById = function(userId, info, callback) {
     updateUserById(userId, info, callback);
 }
 
-exports.updateAdminById = function(userId, info, callback){
+exports.updateAdminById = function(userId, info, callback) {
     updateUserById(userId, info, callback);
 }
 
-var updateUserById = function(userId, info, callback){
+var updateUserById = function(userId, info, callback) {
     var currentDate = new Date().toString();
     var query = { _id : userId };
     var update = {};
@@ -300,7 +302,7 @@ var updateUserById = function(userId, info, callback){
         usersCollection.update(query, update, function(err, obj) {
             if (err) {
                 logger.error(err);
-                return callback(err, null);
+                return callback(common.getError(2018), null);
             }
 
             return callback(null, 'success');
@@ -319,7 +321,7 @@ var updateUserPassword = function(query, update, password, callback) {
     bcrypt.hash(password, 11, function(err, hash) {
         if (err) {
             logger.error(err);
-            return callback(err, null);
+            return callback(common.getError(1009), null);
         }
 
         if (update.$set && !isEmptyObject(update.$set)) {
@@ -331,7 +333,7 @@ var updateUserPassword = function(query, update, password, callback) {
         usersCollection.update(query, update, function(err, obj) {
             if (err) {
                 logger.error(err);
-                return callback(err, null);
+                return callback(common.getError(2018), null);
             }
 
             return callback(null, 'success');
@@ -361,9 +363,9 @@ var isEmptyObject = function(obj) {
 exports.addQuestion = function(question, callback) {
     question.number = ++nextQuestionNumber;
     questionsCollection.insert(question, function(err, res) {
-        if(err) {
+        if (err) {
             logger.error(err);
-            return callback({status:500, msg:err}, null);
+            return callback(common.getError(3018), null);
         }
 
         return callback(null, question.number);
@@ -373,21 +375,21 @@ exports.addQuestion = function(question, callback) {
 // cleanup the users collection
 exports.removeAllQuestions = function(callback) {
     common.rmrf(common.fsTree.HOME, 'Questions', function (err, result) {
-        if(err){
+        if (err) {
             logger.error(err);
-            return callback(err, null);
+            return callback(common.getError(1010), null);
         }
 
         common.mkdir(common.fsTree.HOME, 'Questions', function (err, result) {
-            if(err){
+            if (err) {
                 logger.error(err);
-                return callback(err, null);
+                return callback(common.getError(1007), null);
             }
 
             questionsCollection.remove({}, function(err, res) {
-                if(err){
+                if (err) {
                     logger.error(err);
-                    return callback(err, null);
+                    return callback(common.getError(1008), null);
                 }
 
                 nextQuestionNumber = 0;
@@ -415,7 +417,7 @@ var getNextQuestionNumber = function(callback) {
 exports.getQuestionsList = function(findQuery, sortQuery, callback) {
     questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(3017), null);
         }
 
         for (q in docs) {
@@ -468,11 +470,11 @@ exports.sortQuestions = function(questions, type, callback) {
 exports.lookupQuestion = function(findQuery, callback) {
     questionsCollection.findOne(findQuery, function(err, question) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(3019), null);
         }
 
         if (!question) {
-            return callback('No question found', null);
+            return callback(common.getError(3003), null);
         }
 
         /* necessary for later database update */
@@ -559,7 +561,7 @@ exports.updateQuestionById = function(questionId, request, callback) {
 
     questionsCollection.update(query, update, function(err, info) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(3020), null);
         }
 
         return callback(null, 'success');
@@ -575,8 +577,8 @@ exports.updateQuestionByQuery = function (query, update, callback) {
 
 /**
  * reset all settings to default
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 exports.resetAllSettings = function (callback) {
     resetAllSettings(callback);
@@ -584,13 +586,13 @@ exports.resetAllSettings = function (callback) {
 
 /**
  * reset all settings to default
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 var resetAllSettings = function (callback) {
     settingsCollection.remove({}, function (err, result) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(7000), null);
         }
 
         var defaultSettings = {};
@@ -617,7 +619,7 @@ var resetAllSettings = function (callback) {
 
         settingsCollection.insert(defaultSettings, function (err, obj) {
             if (err) {
-                return callback(err, null);
+                return callback(common.getError(7002), null);
             }
 
             return callback(null, 'ok');
@@ -627,8 +629,8 @@ var resetAllSettings = function (callback) {
 
 /**
  * get all settings objects from the collection
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 exports.getAllSettings = function (callback) {
     getAllSettings(callback);
@@ -636,17 +638,17 @@ exports.getAllSettings = function (callback) {
 
 /**
  * get all settings objects from the collection
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 var getAllSettings = function (callback) {
     settingsCollection.findOne({}, function (err, obj) {
         if (err) {
-            return callback (err, null);
+            return callback (common.getError(7003), null);
         }
 
         if (!obj) {
-            resetAllSettings(callback);
+            return callback (common.getError(7004), null);
         }
 
         return callback (null, obj);
@@ -655,10 +657,10 @@ var getAllSettings = function (callback) {
 
 /**
  * update settings object
- * 
- * @param {object} findQuery 
- * @param {object} updateQuery 
- * @param {function} callback 
+ *
+ * @param {object} findQuery
+ * @param {object} updateQuery
+ * @param {function} callback
  */
 exports.updateSettings = function (findQuery, updateQuery, callback) {
     settingsCollection.update(findQuery, updateQuery, callback);

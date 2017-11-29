@@ -40,8 +40,12 @@ var fetchQList = function(which) {
             $('.question-list').html(data);
         },
         error: function(data){
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -72,8 +76,12 @@ var sortRequest = function(type) {
             $('#sort').html(s + '<span class="caret"></span>');
         },
         error: function(data){
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -98,11 +106,17 @@ var fetchLeaderboard = function() {
             leaderboardTable = $(data.leaderboardTableHTML);
             leaderboardRow = $(data.leaderboardRowHTML);
             studentLeaderList = data.leaderboardList;
-            $('.leaderboard-small').html(leaderboardTable);          
+            $('.leaderboard-small').html(leaderboardTable);
             displayLeaderboard(studentLeaderList, data.userId);
         },
         error: function(data){
-            failSnackbar('Something went wrong with the leaderboard, please try again later!');
+            var jsonResponse = data.responseJSON;
+
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
+            }
         }
     });
 }
@@ -117,7 +131,7 @@ var displayLeaderboard = function(studentLeaderList, userId) {
         leaderboardRow.attr('class', `rank-${studentObject.userRank <= 3 ? studentObject.userRank : 'user'}`);
         leaderboardRow.find('#rank').html(studentObject.userRank);
         leaderboardRow.find('#displayName').html(studentObject.displayName);
-        leaderboardRow.find('#criteria').html(studentObject.points);       
+        leaderboardRow.find('#criteria').html(studentObject.points);
         $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
     });
 }

@@ -50,14 +50,12 @@ var editProfile = function(id) {
             location.reload();
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['status'] === 403) {
-                failSnackbar('Current Password is Incorrect');
-            } else if (data['status'] === 400) {
-                failSnackbar('Passwords do not match');
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });

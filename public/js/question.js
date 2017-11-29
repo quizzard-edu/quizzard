@@ -10,10 +10,14 @@ $(function () {
             $('#discussion').html(data);
         },
         error: function(data){
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['responseText'] !== 'hidden') {
-                failSnackbar('something went wrong');
+            } else {
+                if (data['code'] !== 3011) {
+                    failSnackbar(getErrorFromResponse(jsonResponse));
+                }
             }
         }
     });
