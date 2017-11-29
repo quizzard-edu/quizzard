@@ -589,9 +589,9 @@ app.get('/question', function(req, res) {
             }
         }
         questions.isUserLocked(userId, questionFound, function(err, isLocked, waitTimeMessage, waitTimeinMiliSeconds){
-            if(err){
+            if(err) {
                 logger.error(err);
-                return res.status(500).send(err);
+                return res.status(500).send(common.getError(3006));
             }
 
             return res.status(200).render('question-view', {
