@@ -15,8 +15,9 @@
           a.navbarLink(href='/leaderboard') Leaderboard
         li#nav-analytics
           a.navbarLink(href='/analytics') Analytics
-        li#nav-feedback-view
-          a.navbarLink(href='/feedback') View Feedback
+        if user.type === 0
+          li#nav-feedback-view
+            a.navbarLink(href='/feedback') View Feedback
       ul.right.hide-on-med-and-down
         li#nav-about
           a.navbarLink(href='/about') About
@@ -37,8 +38,9 @@ ul#mobile.side-nav
     a.navbarLinkHidden(href='/leaderboard') Leaderboard
   li#nav-analytics
     a.navbarLinkHidden(href='/analytics') Analytics
-  li#nav-feedback-view
-    a.navbarLinkHidden(href='/feedback') View Feedback
+  if user.type === 0
+    li#nav-feedback-view
+      a.navbarLinkHidden(href='/feedback') View Feedback
   li#nav-about
     a.navbarLinkHidden(href='/about') About
   li#nav-profile
