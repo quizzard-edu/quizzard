@@ -19,7 +19,7 @@ $(function () {
     data: studentList,
     limit: 20,
     onAutocomplete: function (val) {
-      $('#student-analytics-card-content').removeClass('hidden');
+      $('#student-analytics-card').removeClass('hidden');
       displayStudentStatistics(val.split (' ')[0]);
     },
     minLength: 1,
@@ -31,13 +31,13 @@ $(function () {
 
     for (var s in studentList) {
       if (s === autocompleteValue) {
-        $('#student-analytics-card-content').removeClass('hidden');
+        $('#student-analytics-card').removeClass('hidden');
         displayStudentStatistics(autocompleteValue.split (' ')[0]);
         return;
       }
     }
 
-    $('#student-analytics-card-content').addClass('hidden');
+    $('#student-analytics-card').addClass('hidden');
   });
 });
 
