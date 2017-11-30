@@ -900,7 +900,7 @@ app.post('/questiondel', function(req, res) {
 // submit question rating from both students and admins
 app.post('/submitQuestionRating', function(req, res) {
     if (!req.session.user) {
-        return res.redirect('/');
+        return res.redirect('/');    
     }
     return submitQuestionRating(req, res);
 });
@@ -1631,7 +1631,7 @@ app.get('/feedback', function(req, res){
         return res.status(403).send('Permission Denied');
     }
 
-    logger.log(common.formatString('Getting feedback for {0}', [req.session.user._id]));
+    logger.log(common.formatString('Getting feedback for {0}', [req.session.user.username]));
 
     users.getFeedback(function(err, result) {
         if (err) {

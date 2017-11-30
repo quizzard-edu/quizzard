@@ -587,12 +587,12 @@ exports.addFeedback = function(feedback, callback) {
 }
 
 exports.getFeedback = function(callback) {
-    feedbackCollection.find(function(err, res) {
+    feedbackCollection.find().sort({time: -1}).toArray(function(err, res) {
         if (err) {
             return callback(err, null);
         }
         
-        return callback(null, 'success');
+        return callback(null, res);
     });
 }
 
