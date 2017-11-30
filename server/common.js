@@ -23,8 +23,13 @@ const fs = require('fs');
 const date = require('moment');
 const path = require('path');
 const rimraf = require('rimraf');
+const errorFile = require('./errors');
 
 // <Global Constants> ------------------------------------------
+// Common errors
+const errors = errorFile.errors;
+exports.errors = errors;
+
 // common path shared across the backend
 const fsTree = Object.freeze({
     ROOT: __dirname + '/..',
@@ -130,6 +135,14 @@ exports.questionAttributes = questionAttributes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
+var getError = function(errorCode) {
+    return {
+       code: errorCode,
+       message: errors[errorCode]
+    }
+}
+exports.getError = getError;
+
 /**
 * shuffle the given list and return the result as a new list
 *
@@ -305,7 +318,7 @@ exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
 var mkdir = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     fs.mkdir(fullPath, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1007) : null, err ? null : 'ok');
     });
 }
 exports.mkdir = mkdir;
@@ -314,7 +327,7 @@ exports.mkdir = mkdir;
 var rmdir = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     fs.rmdir(fullPath, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1012) : null, err ? null : 'ok');
     });
 }
 exports.rmdir = rmdir;
@@ -323,7 +336,7 @@ exports.rmdir = rmdir;
 var rmrf = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     rimraf(fullPath, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1010) : null, err ? null : 'ok');
     });
 }
 exports.rmrf = rmrf;
@@ -340,7 +353,7 @@ exports.fileExists = existsSync;
 var writeFile = function (filePath, fileName, fileExtension, fileData, callback) {
     var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
     fs.writeFile(fullPath, fileData, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1013) : null, err ? null : 'ok');
     });
 }
 exports.saveFile = writeFile;
