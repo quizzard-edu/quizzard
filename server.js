@@ -31,8 +31,8 @@ const common = require('./server/common.js');
 const analytics = require('./server/analytics.js');
 const settings = require('./server/settings.js');
 const json2csv = require('json2csv');
-const fs = require('fs');
 const csv2json = require('csvtojson');
+const config = require('./server/config.js')
 
 const app = express();
 
@@ -75,36 +75,24 @@ app.use(session({
     HTTPS protocol
 */
 
-// Change to 443 in production
-const httpsPort = 8080;
-// Change to port 80 in production
-const httpPort = 8000;
-// Change to production website name
-const hostName = '127.0.0.1';
-
 var forceSSL = require('express-force-ssl');
 var http = require('http');
 var https = require('https');
 
-var ssl_options = {
-  key: fs.readFileSync('./keys/private.key'),
-  cert: fs.readFileSync('./keys/cert.crt')
-};
-
-var secureServer = https.createServer(ssl_options, app);
+var secureServer = https.createServer(config.ssl_options, app);
 
 var httpServer = http.createServer(function(req, res) {
     // Redirects to https location
-    res.writeHead(301, {"Location": "https://" + hostName + ':' + httpsPort});
+    res.writeHead(301, {'Location': common.formatString('https://{0}:{1}',[config.hostName, config.httpsPort])});
     res.end();
 });
 
 app.use(forceSSL);
 
 //HTTPS server
-secureServer.listen(httpsPort,function(){
+secureServer.listen(config.httpsPort,function(){
     logger.log('//------------------------');
-    logger.log(common.formatString('Secure Server listening on https://'+hostName+':{0}.', [httpsPort]));
+    logger.log(common.formatString('Secure Server listening on https://{0}:{1}.', [config.hostName, config.httpsPort]));
     db.initialize(function() {
         settings.initialize(function(err, result) {
             if (err) {
@@ -115,9 +103,9 @@ secureServer.listen(httpsPort,function(){
 });
 
 //HTTP server
-httpServer.listen(httpPort, function(){
+httpServer.listen(config.httpPort, function(){
     logger.log('//------------------------');
-    logger.log(common.formatString('HTTP Server listening on http://'+hostName+':{0}.', [httpPort]));
+    logger.log(common.formatString('HTTP Server listening on http://{0}:{1}.', [config.hostName, config.httpPort]));
 })
 
 /* main page */
