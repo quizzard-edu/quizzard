@@ -43,3 +43,7 @@
 .alignTextLeft {
     text-align: left;
 }
+
+.hiddenEye {
+    color: rgba(238, 110, 115, 1);;
+}

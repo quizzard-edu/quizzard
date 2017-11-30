@@ -29,8 +29,12 @@ block styles
           tbody
             each q in questions
               tr
-                td
+                td.center
                   p
+                    if q.visible
+                      i.material-icons.hiddenEye visibility
+                    else
+                      i.material-icons.hiddenEye visibility_off
                     input.checked(id='checked-' + q._id, name=q.number, type='checkbox', checked=q.visible)
                     label.visbox(for='checked-' + q._id, name=q.number)
                 td #{q.number}

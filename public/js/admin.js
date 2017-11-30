@@ -620,8 +620,10 @@ var updateVisibility = function(qid, questionNumber) {
 
                         if (question['visible']) {
                             successSnackbar('Question ' + questionNumber + msg);
+                            $('.hiddenEye').html('visible');
                         } else {
                             warningSnackbar('Question ' + questionNumber + msg);
+                            $('.hiddenEye').html('visible_off');
                         }
                     },
                     error: function(data) {
@@ -883,8 +885,10 @@ var sortAccountsTable = function(type) {
 var toggleButtonVisibility = function() {
     if ($('#sw').is(':checked')) {
         $('.visbox').show();
+        $('.hiddenEye').hide();
     } else {
         $('.visbox').hide();
+        $('.hiddenEye').show();
     }
 }
 
