@@ -22,6 +22,7 @@ const db = require('./db.js');
 const logger = require('./log.js');
 const common = require('./common.js');
 const questionValidator = require('./questionValidator.js');
+const settings = require('./settings.js')
 
 /*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question) {
@@ -66,7 +67,7 @@ var prepareQuestionData = function(question, callback) {
     questionToAdd.mtime = currentDate;
     questionToAdd.ratings = [];
     questionToAdd.comments = [];
-
+    questionToAdd.userSubmissionTime = [];
     //Add specific attributes by Type
     switch (question.type) {
         case common.questionTypes.REGULAR.value:
@@ -103,7 +104,7 @@ var prepareQuestionData = function(question, callback) {
             break;
 
         default:
-            return callback({status:400, msg:'Type of Question is Undefined'}, null)
+            return callback(common.getError(3001), null)
     }
 
     return callback(null, questionToAdd);
@@ -116,8 +117,8 @@ var prepareQuestionData = function(question, callback) {
 */
 exports.addQuestion = function(question, callback) {
     prepareQuestionData(question, function(err, questionToAdd) {
-        if(err) {
-            return callback(err, null)
+        if (err) {
+            return callback(common.getError(3021), null)
         }
 
         // validate constant question attributes
@@ -125,7 +126,7 @@ exports.addQuestion = function(question, callback) {
         if (result.success) {
             db.addQuestion(questionToAdd, function (err, questionId) {
                 if (err) {
-                    return callback(err, null);
+                    return callback(common.getError(3018), null);
                 }
 
                 common.mkdir(common.fsTree.QUESTIONS, questionToAdd._id, function (err, result) {
@@ -135,7 +136,7 @@ exports.addQuestion = function(question, callback) {
                 return callback(null, questionId);
             });
         } else{
-            return callback({status:400,msg:result.msg}, null)
+            return callback(common.getError(3022), null)
         }
     })
 }
@@ -153,8 +154,8 @@ exports.updateQuestionById = function(questionId, info, callback) {
 var updateQuestionById = function(qId, infoToUpdate, callback) {
     // Get Type of question and validate it
     lookupQuestionById(qId, function(err, question) {
-        if(err) {
-            return callback({status:500, msg:err},null);
+        if (err) {
+            return callback(common.getError(3019), null);
         }
         infoToUpdate = questionUpdateParser(infoToUpdate);
 
@@ -163,7 +164,7 @@ var updateQuestionById = function(qId, infoToUpdate, callback) {
         if (result.success) {
             db.updateQuestionById(qId, infoToUpdate, callback);
         } else {
-            return callback({status:400, msg:result.msg}, null)
+            return callback(common.getError(3022), null)
         }
     });
 }
@@ -173,7 +174,7 @@ exports.deleteQuestion = function(questionId, callback) {
     questions.remove({_id: questionId}, function(err, res) {
         if (err) {
             logger.error(err);
-            return callback(err, null);
+            return callback(common.getError(3023), null);
         }
 
         logger.log(common.formatString('Question {0} deleted from database.', [questionId]));
@@ -377,11 +378,11 @@ exports.voteComment = function (commentId, vote, userId, callback) {
 
     db.lookupQuestion(query, function(err, question) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(3019), null);
         }
 
         if (!question) {
-            return callback('Question not found based on commentId', null);
+            return callback(common.getError(3003), null);
         }
 
         var comments = question.comments;
@@ -451,7 +452,7 @@ exports.voteComment = function (commentId, vote, userId, callback) {
             }
         }
 
-        return callback('Could not submit the vote on the comment', null);
+        return callback(common.getError(3015), null);
     });
 }
 
@@ -463,11 +464,11 @@ exports.voteReply = function (replyId, vote, userId, callback) {
 
     db.lookupQuestion(query, function(err, question) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(3019), null);
         }
 
         if (!question) {
-            return callback('Question not found based on replyId', null);
+            return callback(common.getError(3003), null);
         }
 
         // TODO: optimize this using mongodb projections
@@ -563,7 +564,74 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                 }
             }
 
-            return callback('Could not submit the vote on the reply', null);
+            return callback(common.getError(3016), null);
         }
     });
+}
+
+exports.isUserLocked = function(userId, question, callback){
+    if (!settings.getQuestionTimeoutEnabled()){
+        return callback(null,false,null);
+    }
+    var waiting_time = settings.getQuestionTimeoutPeriod();
+    var lastSubmissionTime;
+    var currentDate = common.getDateObject();
+
+    // check if user already got the question correct
+    for (var obj = 0; obj < question.correctAttempts.length; obj ++){
+        if(question.correctAttempts[obj]['userId'] === userId){
+            return callback(null,false,null);
+        }
+    }
+    // find the lastSubmissionTime for this user
+    for (var obj = 0; obj < question.userSubmissionTime.length; obj++){
+        if(question.userSubmissionTime[obj]['userId'] === userId){
+            lastSubmissionTime = question.userSubmissionTime[obj]['submissionTime'];
+            break;
+        }
+    }
+
+    if(lastSubmissionTime){
+        const diff = Math.abs(currentDate - lastSubmissionTime);
+        const timeLeftToWait = waiting_time - diff;
+        if (diff < waiting_time){
+            return callback(null,true,common.getTime(timeLeftToWait), timeLeftToWait);
+        }
+    }
+    return callback(null,false,null);
+}
+
+/*Updates the Users Submission time for a Question*/
+exports.updateUserSubmissionTime = function(userId, question, callback){
+    var query = {_id:question._id};
+    var update = {};
+    var currentDate = common.getDateObject();
+    var userInList = false;
+    // find the user in the submission list
+    for (var obj = 0; obj < question.userSubmissionTime.length; obj++){
+        if(question.userSubmissionTime[obj]['userId'] === userId){
+            userInList = true;
+            break;
+        }
+    }
+
+    if(userInList){
+        query['userSubmissionTime.userId'] = userId;
+        update.$set = {"userSubmissionTime.$.submissionTime":currentDate};
+        db.updateQuestionByQuery(query, update, function (err, result){
+            if(err){
+                return callback(err,null);
+            }
+            return callback(null,'success');
+        });
+        
+    } else {
+        update.$push = {'userSubmissionTime': {'userId':userId, submissionTime: currentDate}};
+        db.updateQuestionByQuery(query, update, function (err, result){
+            if(err){
+                return callback(err,null);
+            }
+            return callback(null,'success');
+        });
+    }
 }

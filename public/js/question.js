@@ -10,10 +10,14 @@ $(function () {
             $('#discussion').html(data);
         },
         error: function(data){
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['responseText'] !== 'hidden') {
-                failSnackbar('something went wrong');
+            } else {
+                if (data['code'] !== 3011) {
+                    failSnackbar(getErrorFromResponse(jsonResponse));
+                }
             }
         }
     });
@@ -90,8 +94,25 @@ var sendAnswerRequest = function(ans) {
             $('#modalAlert').modal('open');
         },
         error: function(data) {
-            $('#hint').removeClass('hidden');
-            swal('Incorrect', 'Sorry, that\'s the wrong answer', 'error');
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 400){
+                failSnackbar(data['responseText']);
+            } else if (data['status'] === 423){
+                swal('Question is Locked', 'Please try again in ' + data['responseText'], 'warning');
+            } else if (data['status'] === 500) {
+                failSnackbar('Something went wrong!');
+            } else if (data['status'] === 405) {            
+                $('#hint').removeClass('hidden');
+                swal({ 
+                    title: "Incorrect",
+                    text: "Sorry, that\'s the wrong answer",
+                    type: "error" 
+                },
+                function(){
+                    location.reload();
+                });
+            }
         },
         complete: function(data) {
             const numberOfAttempts = $('#attempts');

@@ -23,8 +23,13 @@ const fs = require('fs');
 const date = require('moment');
 const path = require('path');
 const rimraf = require('rimraf');
+const errorFile = require('./errors');
 
 // <Global Constants> ------------------------------------------
+// Common errors
+const errors = errorFile.errors;
+exports.errors = errors;
+
 // common path shared across the backend
 const fsTree = Object.freeze({
     ROOT: __dirname + '/..',
@@ -94,7 +99,8 @@ const questionAttributes = Object.freeze({
         totalAttemptsCount      : {type:'[object Number]'},
         ctime                   : {type:'[object String]'},
         mtime                   : {type:'[object String]'},
-        ratings                 : {type:'[object Array]'}
+        ratings                 : {type:'[object Array]'},
+        userSubmissionTime      : {type:'[object Array]'}
     },
     REGULAR:        {
         answer                  : {type:'[object String]'}
@@ -129,6 +135,14 @@ exports.questionAttributes = questionAttributes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
+var getError = function(errorCode) {
+    return {
+       code: errorCode,
+       message: errors[errorCode]
+    }
+}
+exports.getError = getError;
+
 /**
 * shuffle the given list and return the result as a new list
 *
@@ -186,6 +200,44 @@ var getDate = function () {
     return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
 }
 exports.getDate = getDate;
+
+/**
+* return the current date
+*
+* @return {date}
+*/
+var getDateObject = function(){
+    return new Date();
+}
+exports.getDateObject = getDateObject;
+
+/**
+* return the time in "<0> days, <0> hours, <0> minutes, <0> seconds" format
+*
+* @return {string}
+*/
+var getTime = function(time){
+    const date = new Date(time);
+    var timeString = '';
+    const days = date.getUTCDate()-1;
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
+    if (days){
+        timeString += date.getUTCDate()-1 + " days, ";
+    }
+    if (hours){
+        timeString += date.getUTCHours() + " hours, ";
+    }
+    if (minutes){
+        timeString += date.getUTCMinutes() + " minutes, ";
+    }
+    if (seconds){
+        timeString += date.getUTCSeconds() + " seconds";
+    }
+    return timeString;
+}
+exports.getTime = getTime;
 
 /**
 * return the current date with format
@@ -266,7 +318,7 @@ exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
 var mkdir = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     fs.mkdir(fullPath, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1007) : null, err ? null : 'ok');
     });
 }
 exports.mkdir = mkdir;
@@ -275,7 +327,7 @@ exports.mkdir = mkdir;
 var rmdir = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     fs.rmdir(fullPath, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1012) : null, err ? null : 'ok');
     });
 }
 exports.rmdir = rmdir;
@@ -284,7 +336,7 @@ exports.rmdir = rmdir;
 var rmrf = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     rimraf(fullPath, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1010) : null, err ? null : 'ok');
     });
 }
 exports.rmrf = rmrf;
@@ -301,7 +353,7 @@ exports.fileExists = existsSync;
 var writeFile = function (filePath, fileName, fileExtension, fileData, callback) {
     var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
     fs.writeFile(fullPath, fileData, function (err) {
-        return callback(err, err ? null : 'ok');
+        return callback(err ? getError(1013) : null, err ? null : 'ok');
     });
 }
 exports.saveFile = writeFile;

@@ -44,10 +44,12 @@ var displayAccountsTable = function() {
             $('#usersSwitch').prop('checked', usersTableActive);
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -66,10 +68,12 @@ var displayExportAccountsForm = function() {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -118,10 +122,12 @@ var submitExportForm = function() {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -154,10 +160,12 @@ var submitImportForm = function() {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Upload failed');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -174,7 +182,7 @@ var submitImportList = function() {
         var $tds = $(this).find('td');
         var isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked');
         var userObj = {
-            username: $tds.eq(1).text(),            
+            username: $tds.eq(1).text(),
             fname: $tds.eq(2).text(),
             lname: $tds.eq(3).text(),
             email: $tds.eq(4).text()
@@ -200,11 +208,13 @@ var submitImportList = function() {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Importing failed');
-                displayAccountsTable();                
+                failSnackbar(getErrorFromResponse(jsonResponse));
+                displayAccountsTable();
             }
         }
     });
@@ -279,10 +289,12 @@ var displayQuestionTable = function() {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -356,10 +368,12 @@ var getQuestionFormAnswer = function(form) {
             $('#qAnswer').html(data);
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                $('#result').html('Server is down cannot pull Answer form');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -379,10 +393,12 @@ var displayStatistics = function() {
             $('#option-settings').removeClass('active');
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -401,10 +417,12 @@ var displaySettings = function() {
             $('#option-questions').removeClass('active');
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -450,10 +468,12 @@ var deactivateUser = function(id, username) {
                 warningSnackbar(username + ' account has been&nbsp;<u><b>deactivated</b></u>&nbsp;');
             },
             error: function(data) {
+                var jsonResponse = data.responseJSON;
+
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Failed to deactivate ' + username + '\'s account');
+                    failSnackbar(getErrorFromResponse(jsonResponse));
                 }
             }
         });
@@ -483,10 +503,12 @@ var activateUser = function(id, username) {
                 successSnackbar(username + '\'s account has been activated');
             },
             error: function(data) {
+                var jsonResponse = data.responseJSON;
+
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Failed to activate ' + username + '\'s account');
+                    failSnackbar(getErrorFromResponse(jsonResponse));
                 }
             }
         });
@@ -510,10 +532,12 @@ var editUser = function(id) {
             });
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -537,14 +561,12 @@ var submitUserForm = function() {
             successSnackbar('User ' + user.username + ' added to database');
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['responseText'] === 'failure') {
-                failSnackbar('User could not be added');
-            } else if (data['responseText'] === 'exists') {
-                failSnackbar('User ' + user.username + ' already exists');
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -577,14 +599,12 @@ var submitEditForm = function(id) {
             successSnackbar('User ' + user.username + ' has been updated');
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data.result === 'failure') {
-                failSnackbar('User could not be updated. Please try again');
-            } else if (data.result === 'dupid') {
-                failSnackbar('Username ' + user.username + ' is taken');
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -627,12 +647,14 @@ var updateVisibility = function(qid, questionNumber) {
                         }
                     },
                     error: function(data) {
+                        var jsonResponse = data.responseJSON;
+
                         if (data['status'] === 401) {
                             window.location.href = '/';
                         } else {
                             // Toast notification
                             $('#checked-' + qid).prop('checked', !question['visible']);
-                            failSnackbar('Could not change visibility of question');
+                            failSnackbar(getErrorFromResponse(jsonResponse));
                         }
                     }
                 });
@@ -713,12 +735,14 @@ var submitQuestionForm = function() {
             displayQuestionTable();
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['status'] === 400) {
-                warningSnackbar(data['responseText']);
+            } else if (jsonResponse['code'] === 3022) {
+                warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
-                failSnackbar('Question could not be added.');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -746,7 +770,7 @@ var deleteQuestion = function(qid, questionNumber) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
-                    failSnackbar('Coud not remove question ' + questionNumber + ' from the database');
+                    failSnackbar('Coud not remove question from the database');
                 }
             }
         });
@@ -775,10 +799,12 @@ var editQuestion = function(qid, questionNumber) {
             getQuestionsTopicsList();
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -808,12 +834,14 @@ var submitQEditForm = function(qid, questionNumber) {
             displayQuestionTable();
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['status'] === 400){
-                warningSnackbar(data['responseText']);
+            } else if (jsonResponse['code'] === 3022) {
+                warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
-                failSnackbar('Question could not be edited.');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -831,10 +859,12 @@ var submitQuestionRating = function (rating, qid) {
         async: false,
         success: function(data) { },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Question could not be updated.');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -872,10 +902,12 @@ var sortAccountsTable = function(type) {
             addAccountsTableEvents();
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -915,8 +947,6 @@ var getQuestionsTopicsList = function () {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else {
-                failSnackbar('Sorry, something went wrong, please try again');
             }
         }
     });
