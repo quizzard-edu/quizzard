@@ -451,7 +451,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
             var prevRank;
 
             for (var i = 0; i < studentlist.length; ++i) {
-                let currentStudent = studentlist[i];
+                var currentStudent = studentlist[i];
 
                 // Students with the same number of points have the same rank
                 if (i === 0) {
@@ -489,7 +489,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
             leaderboardLimit = settings.getLeaderboardLimit();
 
             for (var i = 0; i < leaderboardLimit; ++i) {
-                let currentStudent = studentlist[i];
+                var currentStudent = studentlist[i];
 
                 var student = {
                     displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
