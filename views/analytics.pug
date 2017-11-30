@@ -34,9 +34,8 @@ block content
                       label(for='autocomplete-input') Select a student by ID
     .row
       .col.s12
-        .card.white.padding-left-10.padding-right-10
-          include student-analytics
-          include class-analytics
+        include student-analytics
+        include class-analytics
 
 block scripts
   script(src='/lib/charts/Chart.min.js')
