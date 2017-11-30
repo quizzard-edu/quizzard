@@ -50,7 +50,7 @@ exports.getClassActive = function () {
  */
 exports.setClassActive = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'general.active': isActive}}, callback);
@@ -73,7 +73,7 @@ exports.getLeaderboardLimit = function () {
  */
 exports.setLeaderboardLimit = function (limit, callback) {
     if (common.getVariableType(limit) !== '[object Number]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'general.leaderboardLimit': limit}}, callback);
@@ -96,7 +96,7 @@ exports.getStudentEditNameEnabled = function () {
  */
 exports.setStudentEditNameEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'student.editNames': isActive}}, callback);
@@ -119,7 +119,7 @@ exports.getStudentEditEmailEnabled = function () {
  */
 exports.setStudentEditEmailEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'student.editEmail': isActive}}, callback);
@@ -142,7 +142,7 @@ exports.getStudentEditPasswordEnabled = function () {
  */
 exports.setStudentEditPasswordEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'student.editPassword': isActive}}, callback);
@@ -165,7 +165,7 @@ exports.getQuestionDefaultTopic = function () {
  */
 exports.setQuestionDefaultTopic = function (topic, callback) {
     if (common.getVariableType(topic) !== '[object String]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'question.defaultTopic': topic}}, callback);
@@ -188,7 +188,7 @@ exports.getQuestionDefaultMinPoints = function () {
  */
 exports.setQuestionDefaultMinPoints = function (points, callback) {
     if (common.getVariableType(points) !== '[object Number]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'question.defaultMinPoints': points}}, callback);
@@ -211,7 +211,7 @@ exports.getQuestionDefaultMaxPoints = function () {
  */
 exports.setQuestionDefaultMinPoints = function (points, callback) {
     if (common.getVariableType(points) !== '[object Number]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'question.defaultMaxPoints': points}}, callback);
@@ -234,7 +234,7 @@ exports.getQuestionTimeoutEnabled = function () {
  */
 exports.setQuestionTimeoutEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'question.timeoutEnabled': isActive}}, callback);
@@ -257,7 +257,7 @@ exports.getQuestionTimeoutPeriod = function () {
  */
 exports.setQuestionTimeoutPeriod = function (timeout, callback) {
     if (common.getVariableType(timeout) !== '[object Number]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'question.timeoutPeriod': timeout}}, callback);
@@ -280,7 +280,7 @@ exports.getDiscussionboardVisibilityEnabled = function () {
  */
 exports.setDiscussionboardVisibilityEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'discussionboard.visibility': isActive}}, callback);
@@ -303,7 +303,7 @@ exports.getDiscussionboardDislikesEnabled = function () {
  */
 exports.setDiscussionboardDislikesEnabled = function (isActive, callback) {
     if (common.getVariableType(isActive) !== '[object Boolean]') {
-        return callback('Invalid input', null);
+        return callback(common.getError(1011), null);
     }
 
     updateSettings({$set: {'discussionboard.dislikesEnabled': isActive}}, callback);
@@ -325,7 +325,7 @@ exports.getAllSettings = function (callback) {
  */
 var getAllSettings = function (callback) {
     db.getAllSettings(function (err, allSettings) {
-        return callback(err ? err : null, err ? null : allSettings);
+        return callback(err ? common.getError(7005) : null, err ? null : allSettings);
     });
 }
 
@@ -344,7 +344,7 @@ exports.updateSettings = function (updateObject, callback) {
         updateQuery.$set['general.active'] = allSettings.general.active = (updateObject.classActive === 'true');
     }
 
-    if ('studentsOnLeaderboard' in updateObject 
+    if ('studentsOnLeaderboard' in updateObject
         && parseInt(updateObject.studentsOnLeaderboard)
         && parseInt(updateObject.studentsOnLeaderboard) >= 3) {
         updateQuery.$set['general.leaderboardLimit'] = allSettings.general.leaderboardLimit = parseInt(updateObject.studentsOnLeaderboard);
@@ -372,13 +372,13 @@ exports.updateSettings = function (updateObject, callback) {
         updateQuery.$set['question.defaultTopic'] = allSettings.question.defaultTopic = updateObject.topic;
     }
 
-    if ('minPoints' in updateObject 
+    if ('minPoints' in updateObject
         && parseInt(updateObject.minPoints)
         && parseInt(updateObject.minPoints) >= 10) {
         updateQuery.$set['question.defaultMinPoints'] = allSettings.question.defaultMinPoints = parseInt(updateObject.minPoints);
     }
 
-    if ('maxPoints' in updateObject 
+    if ('maxPoints' in updateObject
         && parseInt(updateObject.maxPoints)
         && parseInt(updateObject.maxPoints) >= 100) {
         updateQuery.$set['question.defaultMaxPoints'] = allSettings.question.defaultMaxPoints = parseInt(updateObject.maxPoints);
@@ -390,7 +390,7 @@ exports.updateSettings = function (updateObject, callback) {
         updateQuery.$set['question.timeoutEnabled'] = allSettings.question.timeoutEnabled = (updateObject.allowTimeout === 'true');
     }
 
-    if ('timeoutPeriod' in updateObject 
+    if ('timeoutPeriod' in updateObject
         && parseInt(updateObject.timeoutPeriod)
         && parseInt(updateObject.timeoutPeriod) >= 1) {
         updateQuery.$set['question.timeoutPeriod'] = allSettings.question.timeoutPeriod = parseInt(updateObject.timeoutPeriod)*60000;

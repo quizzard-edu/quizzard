@@ -11,14 +11,8 @@ $('#login').submit(function(evt) {
             window.location.href = '/home';
         },
         error: function(data) {
-            var msg = 'Invalid username or password';
-            if (data['responseText'] === 'userNotActive') {
-                msg = 'Account has been deactivated'
-            }
-            if (data['responseText'] === 'classNotActive') {
-                msg = 'Class has been deactivated'
-            }
-            $('#invalid').html(failedLoginTemplate.format([msg]));
+            var jsonResponse = data.responseJSON;
+            $('#invalid').html(failedLoginTemplate.format([getErrorFromResponse(jsonResponse)]));
         },
         complete: function(data) {
             $('#passwd').val('').focus();

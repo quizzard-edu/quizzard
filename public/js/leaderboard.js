@@ -9,7 +9,7 @@ var podiumScore;
 
 /* Get HTML for the complete leaderboard table from the server and display it. */
 var fetchLeaderboard = function() {
-    
+
     $.ajax({
         type: 'GET',
         url: '/leaderboard-table',
@@ -24,7 +24,13 @@ var fetchLeaderboard = function() {
             displayNewLeaderboard(boardType);
         },
         error: function(data){
-            failSnackbar('Something went wrong the leaderboard, please try again later!');
+            var jsonResponse = data.responseJSON;
+
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
+            }
         }
     });
 }
@@ -55,12 +61,12 @@ var displayLeaderboard = function(studentLeaderList) {
                 leaderboardRow.find('#rank').html(rank);
             }
         }
-        // This give colour to rows where the student's rank is in the top 3       
+        // This give colour to rows where the student's rank is in the top 3
         leaderboardRow.attr('class', `rank-${rank <= 3 ? rank : 'default'}`);
         leaderboardRow.find('#displayName').html(studentObject.displayName);
 
         // If the accuracy leaderboard is being displayed, add a % sign
-        leaderboardRow.find('#criteria').html(studentObject[boardType.name] + 
+        leaderboardRow.find('#criteria').html(studentObject[boardType.name] +
             ((boardType === leaderboardTypes.ACCURACYBOARD) ? '%' : ''));
 
         $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
