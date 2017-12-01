@@ -25,16 +25,16 @@ function userFeedback() {
                         message: message,
                     },
                     success: function(data) {
-                        
-                        // wait for snackbar to finish, then reload page
-                        setTimeout(function(){location.reload(); }, 5500);
                         successSnackbar("Successfully submitted feedback");
                     },
-                    error: function(data) {
-
-                        // wait for snackbar to finish, then reload the page
-                        setTimeout(function(){location.reload(); }, 5500);
-                        failSnackbar("Something went wrong");
+                    error: function(data){
+                        var jsonResponse = data.responseJSON;
+            
+                        if (data['status'] === 401) {
+                            window.location.href = '/';
+                        } else {
+                            failSnackbar(getErrorFromResponse(jsonResponse));
+                        }
                     }
                 });
             } else if(cancelling) { // if they hit the cancel button, clear stuff, dont go anywhere
@@ -45,8 +45,8 @@ function userFeedback() {
                 $('#email').val('');
                 $('#feedbackArea').trigger('autoresize');
                 $('#modal-content').scrollTop(0);
-                $('.collapsible').collapsible('close', 0);
-                $('.collapsible').collapsible('close', 1);
+                //$('.collapsible').collapsible('close', 0);
+                //$('.collapsible').collapsible('close', 1);
 
             } else { // if their content was empty, do nothing and notify them
                 $('#subject').val(subject);

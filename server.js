@@ -1615,7 +1615,7 @@ app.post('/submitFeedback', function(req, res){
     }
 
     if (req.session.user.type === common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1002));
     }
 
     logger.log(common.formatString('Feedback from {0} regarding {1}', [req.session.user._id, req.body.subject]));
@@ -1623,7 +1623,7 @@ app.post('/submitFeedback', function(req, res){
     users.addFeedback(req.session.user._id, req.body.subject, req.body.message, function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(8000));
         }
 
         return res.status(201).send('User feedback submitted');
@@ -1636,7 +1636,7 @@ app.get('/feedback', function(req, res){
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        return res.status(403).send('Permission Denied');
+        return res.status(403).send(common.getError(1002));
     }
 
     logger.log(common.formatString('Getting feedback for {0}', [req.session.user.username]));
@@ -1644,10 +1644,44 @@ app.get('/feedback', function(req, res){
     users.getFeedback(function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(8001));
         }
 
-        return res.status(201).send(result);
+        users.getUsersList((err, userObj) => {
+            if (err) {
+                logger.error(err);
+                //TODO: proper error pls
+                return res.status(500).send(common.getError(2002));
+            }
+
+            var usersList = {};
+            for (i in userObj) {
+                var user = userObj[i];
+                usersList[user._id] = [user.fname + ' ' + user.lname, user.username];
+            }
+
+            var data = [];
+            for(i in result) {
+                var tempData = {};
+
+                logger.log("res - " + result[i].uuid);
+
+                logger.log("res2 - " + usersList[result[i].uuid][0]);
+
+                tempData.fullname = usersList[result[i].uuid][0];
+                tempData.username = usersList[result[i].uuid][1];
+                tempData.subject = result[i].subject;
+                tempData.message = result[i].message;
+                tempData.time = result[i].time;
+
+                data.push(tempData);
+            }
+
+            return res.status(201).render('feedback-view', {
+                content: data,
+                user: req.session.user
+            });
+        });
     })
 });
 

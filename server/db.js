@@ -581,7 +581,8 @@ exports.updateQuestionByQuery = function (query, update, callback) {
 exports.addFeedback = function(feedback, callback) {
     feedbackCollection.insert(feedback, function(err, res) {
         if (err) {
-            return callback(err, null);
+            logger.error('Failed to add feedback');
+            return callback(common.getError(8000), null);
         }
         
         return callback(null, 'success');
@@ -590,11 +591,18 @@ exports.addFeedback = function(feedback, callback) {
 
 exports.getFeedback = function(callback) {
     feedbackCollection.find().sort({time: -1}).toArray(function(err, res) {
+        logger.error('Failed to get feedback');
+        callback(common.getError(8001), res);
+    });
+}
+
+exports.removeAllFeedback = function(callback) {
+    feedbackCollection.remove({}, function(err, result) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(8002), null);
         }
-        
-        return callback(null, res);
+
+        return callback(null, 'ok');
     });
 }
 

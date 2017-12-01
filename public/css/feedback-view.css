@@ -1,0 +1,28 @@
+.identification-section {
+  margin-bottom: 0 !important;
+  padding: 10px 10px 0 10px;
+
+}
+
+.comment {
+  text-align: left;
+  background-color: white;
+  border: solid;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: lightgray;
+}
+
+.comment-text {
+  padding: 10px 10px 0 20px;
+  text-align: left;
+}
+
+.divider {
+  margin: 0 !important;
+}
+
+span, p {
+  word-wrap:break-word;
+}

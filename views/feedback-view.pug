@@ -1,0 +1,36 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/feedback-view.css')
+
+block title
+  title Quizzard - Feedback
+
+block content
+  include navbar
+
+  br
+  h3.center Class Feedback
+
+  .container
+    .row
+      .col.s12
+        each feedbackItem in content
+          .row.comment
+            .col.s12
+              .row.identification-section
+                span Student: #{feedbackItem.fullname}
+                br
+                span User ID: #{feedbackItem.username}
+                br
+                span Date: #{feedbackItem.time}
+                br
+                span Subject: #{feedbackItem.subject}
+
+              hr.divider
+
+              .row
+                p.comment-text #{feedbackItem.message}
+
+block scripts
+  script(src='/js/navbar.js')

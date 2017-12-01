@@ -1,5 +1,5 @@
 block style
-  link(rel='stylesheet' href='/css/feedback.css')
+  link(rel='stylesheet' href='/css/feedback-popup.css')
 
 block content
   #feedback.modal
@@ -8,8 +8,8 @@ block content
       
       i.modal-action.modal-close.material-icons#closeFeedback(onclick='cancelling=true;') close
 
-      ul.collapsible(data-collapsible="accordion")
-        if user.type !== 0
+      if user.type !== 0
+        ul.collapsible(data-collapsible="accordion")
           li
             .collapsible-header
               i.material-icons filter_drama
@@ -28,13 +28,17 @@ block content
                       textarea#feedbackArea.materialize-textarea(placeholder='Message', type='text')
                       label(for='feedbackArea') Message
                     button.modal-action.modal-close.btn.btn-info Submit
-        li
-          .collapsible-header
-            i.material-icons place
-            | Website Feedback
-          .collapsible-body
-            p Please visit the following page to submit your feedback:
-            a(href='https://quizzard-edu.github.io/quizzard/feedback.html', target='_blank') Quizzard Feedback
+          li
+            .collapsible-header
+              i.material-icons place
+              | Website Feedback
+            .collapsible-body
+              p Please visit the following page to submit your feedback:
+              a(href='https://quizzard-edu.github.io/quizzard/feedback.html', target='_blank') Quizzard Feedback
+        
+      else
+        p Please visit the following page to submit your feedback:
+        a(href='https://quizzard-edu.github.io/quizzard/feedback.html', target='_blank') Quizzard Feedback
 
 block scripts
   script(src='/js/feedback.js')

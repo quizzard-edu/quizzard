@@ -526,7 +526,7 @@ exports.addFeedback = function(uuid, subject, message, callback) {
 
     if (!uuid || !subject || !message) {
         logger.error('Failed to add user feedback, missing requirements');
-        return callback('failed', null);
+        return callback(common.getError(8000), null);
     }
 
     var feedback = {};
@@ -534,11 +534,11 @@ exports.addFeedback = function(uuid, subject, message, callback) {
     feedback.uuid = uuid;
     feedback.subject = subject;
     feedback.message = message;
-    feedback.time = new Date().toString();
+    feedback.time = common.getDate();
 
     db.addFeedback(feedback, function(err, result) {
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(8000), null);
         }
         
         return callback(null, 'success');
