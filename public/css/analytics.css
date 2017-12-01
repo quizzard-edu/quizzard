@@ -7,7 +7,8 @@
   min-height: 125px !important;
 }
 
-.blue-card {
+
+.cyan-card {
     background: #00bcd4;
     min-height: 125px !important;
 }
@@ -85,15 +86,4 @@
     height: 225px;
 }
 
-.Charth {
-    background: #212733;
-    border-radius: 5px;
-    margin-top: 0;
-    padding: 15px 0;
-    color:  rgba(255, 0,0, 0.5);
-    border-bottom: 1px solid #323d54;
-}
 
-.card-cyan {
-    background: #00bcd4;
-}

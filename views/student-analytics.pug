@@ -12,14 +12,14 @@
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentAnsweredCard
-            .card-content.blue-card.white-text
+            .card-content.cyan-card.white-text
               .col.s7.m7
                 i.material-icons.background-round.mt-5 playlist_add_check
                 p Your Questions Answered
               .col.s5.m5.right-align.padding-right-10
                 h5#studentAnswered
           .card#classAnsweredCard
-            .card-content.blue-card.white-text
+            .card-content.cyan-card.white-text
               .col.s7.m7
                 i.material-icons.background-round.mt-5 playlist_add_check
                 p Class Average Questions Answered
@@ -153,53 +153,3 @@
           h5 Your Overall Score Ranking
           .card.chart.padding-top-10.padding-left-10
             //-canvas#testingCanvas1
-
-
-  .card.white.padding-left-10.padding-right-10
-    .row
-      .row
-        .col.s12
-          h5.header-style#studentAnalyticsHeader &nbsp Your Analytics
-
-
-
-
-      .col.s6.m3
-        .card#studentRatingCard
-          .card-content.blue-card.white-text
-            .col.s7.m7
-              i.material-icons.background-round star
-              p Average Rating
-            .col.s5.m5.right-align.padding-right-10
-              h5#studentRating
-    .row
-      .col.s12
-        h5.header-style#classAnalyticsHeader &nbsp Class Analytics
-
-
-
-      .col.s6.m3
-        .card#classRatingCard
-          .card-content.gradient-45deg-green-teal.white-text
-            .col.s7.m7
-              i.material-icons.background-round star
-              p Average Rating
-            .col.s5.m5.right-align.padding-right-10
-              h5#classRating
-      .row
-        .col.s12
-          h5.header-style#classAnalyticsHeader &nbsp Time-Based Analytics
-      .row
-        .padding-left-10.padding-right-10
-          .col.s12
-            h5.Charth.center Accuracy
-        .padding-left-10.padding-right-10
-          .col.s12
-            canvas.Chart#testingCanvas2
-      .row
-        .padding-left-10.padding-right-10
-          .col.s12
-            h5.Charth.center Points
-        .padding-left-10.padding-right-10
-          .col.s12
-            canvas.Chart#testingCanvas3
