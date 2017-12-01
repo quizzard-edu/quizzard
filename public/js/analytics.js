@@ -153,8 +153,8 @@ var getAccuracyStudentAndClass = function (path) {
       type: 'AccuracyVsClass'
     },
     success: function (data) {
-      $('#studentAccuracy').html(data[0]);
-      $('#classAccuracy').html(data[1]);
+      $('#studentAccuracy').html(`${data[0]}%`);
+      $('#classAccuracy').html(`${data[1]}%`);
     },
     error: function (data) {
       if (data['status'] === 401) {
