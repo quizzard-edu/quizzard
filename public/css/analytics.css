@@ -12,6 +12,11 @@
     min-height: 125px !important;
 }
 
+.teal-card {
+    background: #00bfa5;
+    min-height: 125px !important;
+}
+
 .gradient-45deg-red-pink {
     background: #FF5252;
     /*background: #FF5252;

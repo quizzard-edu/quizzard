@@ -234,7 +234,7 @@ var getAccuracyVsClass = function(query, callback) {
         var classAverageAccuracy = 0;
 
         for (i in students) {
-            if (students[i].id === studentId) {
+            if (students[i]._id === studentId) {
                 studentAccuracy = parseFloat(students[i].totalAttemptsCount ? ((students[i].correctAttemptsCount / students[i].totalAttemptsCount)*100).toFixed(2) : 0);
             } else {
                 classAccuracy += parseFloat(students[i].totalAttemptsCount ? ((students[i].correctAttemptsCount / students[i].totalAttemptsCount)*100).toFixed(2) : 0);
@@ -270,7 +270,7 @@ var getPointsVsClass = function(query, callback) {
         var classPointsAverage = 0;
 
         for (i in students) {
-            if (students[i].id === studentId) {
+            if (students[i]._id === studentId) {
                 studentPoints = students[i].points;
             } else {
                 classPoints += students[i].points;
@@ -307,7 +307,7 @@ var getRatingVsClass = function(query, callback) {
 
         for (i in students) {
             if (students[i].ratings.length !== 0) {
-                if (students[i].id === studentId) {
+                if (students[i]._id === studentId) {
                     studentRating = getAverageRating(students[i].ratings);
                 } else {
                     classRating += getAverageRating(students[i].ratings);

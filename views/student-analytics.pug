@@ -8,7 +8,7 @@
         .col.s12.m12
           h5 Your Questions Answered VS. Class Questions Answered
           .card.chart
-            canvas#testingCanvas2
+            //-canvas#testingCanvas2
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentAnsweredCard
@@ -28,7 +28,40 @@
         .col.s12.m9
           h5 Your Questions Answered Ranking
           .card.chart.padding-top-10.padding-left-10
+            //-canvas#testingCanvas1
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#studentAnalyticsHeader &nbsp Accuracy Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m12
+          h5 Your Accuracy VS. Class Accuracy
+          .card.chart
+            canvas#testingCanvas2
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#studentAccuracyCard
+            .card-content.teal-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 gps_fixed
+                p Your Accuracy
+              .col.s5.m5.right-align.padding-right-10
+                h5#studentAccuracy
+          .card#classAccuracyCard
+            .card-content.teal-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 gps_fixed
+                p Class Accuracy
+              .col.s5.m5.right-align.padding-right-10
+                h5#classAccuracy
+        .col.s12.m9
+          h5 Your Accuracy Ranking
+          .card.chart.padding-top-10.padding-left-10
             canvas#testingCanvas1
+
+            
 
 
 
@@ -37,14 +70,9 @@
       .row
         .col.s12
           h5.header-style#studentAnalyticsHeader &nbsp Your Analytics
-      .col.s6.m3
-        .card#studentAccuracyCard
-          .card-content.blue-card.white-text
-            .col.s7.m7
-              i.material-icons.background-round.mt-5 gps_fixed
-              p Accuracy
-            .col.s5.m5.right-align.padding-right-10
-              h5#studentAccuracy
+
+
+
       .col.s6.m3
         .card#studentPointsCard
           .card-content.blue-card.white-text
@@ -65,14 +93,7 @@
       .col.s12
         h5.header-style#classAnalyticsHeader &nbsp Class Analytics
 
-      .col.s6.m3
-        .card#classAccuracyCard
-          .card-content.gradient-45deg-red-pink.white-text
-            .col.s7.m7
-              i.material-icons.background-round.mt-5 gps_fixed
-              p Accuracy
-            .col.s5.m5.right-align.padding-right-10
-              h5#classAccuracy
+
       .col.s6.m3
         .card#classPointsCard
           .card-content.gradient-45deg-amber-amber.white-text
