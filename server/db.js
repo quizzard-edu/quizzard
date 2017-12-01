@@ -792,6 +792,23 @@ var getAllSettings = function (callback) {
 }
 
 /**
+ * remove all previous analytics
+ * 
+ * @param {function} callback 
+ */
+exports.removeAnalytics = function (callback) {
+    analyticsCollection.remove({}, function(err, obj) {
+        if (err) {
+            logger.error(err);
+            return callback(common.getError(1008), null);
+        }
+
+        logger.log('All analytics have been removed');
+        return callback(null, obj);
+    });
+}
+
+/**
  * add student analytics
  * if there are no records of the student, create a new record
  * if there are recards of the student, get the last recard and compute the deltas

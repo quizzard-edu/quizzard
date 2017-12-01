@@ -26,6 +26,15 @@ const db = require('./db.js');
 const classId = 'class';
 
 /**
+ * start the analytics daily process
+ *
+ * @param {function} callback
+ */
+exports.initialize = function(callback) {
+    getAnalytics(callback);
+}
+
+/**
  * get the charts based on type
  *
  * @param {object} query
@@ -61,6 +70,88 @@ exports.getChart = function(query, callback) {
 }
 
 /**
+ * get analytics for a admins
+ * 
+ * @param {function} callback 
+ */
+var getAnalytics = function(callback) {
+    var studentsCount = 0;
+    var classObject = {
+        correctAttemptsCount: 0,
+        wrongAttemptsCount: 0,
+        totalAttemptsCount: 0,
+        points: 0,
+        accuracy: 0
+    };    
+    var currentDate = common.getDate();
+
+    users.getStudentsList(function (err, studentsList) {
+        if (err) {
+            logger.error(err);
+            return callback(err, null);
+        }
+
+        for (var i in studentsList) {
+            var student = studentsList[i];
+            var row = {};
+
+            row.correctAttemptsCount = student.correctAttemptsCount;
+            row.wrongAttemptsCount = student.wrongAttemptsCount;
+            row.totalAttemptsCount = student.totalAttemptsCount;
+            row.points = student.points;
+            row.accuracy = ((student.correctAttemptsCount / student.totalAttemptsCount) * 100).toFixed(2);
+
+            classObject.correctAttemptsCount += student.correctAttemptsCount;
+            classObject.wrongAttemptsCount += student.wrongAttemptsCount;
+            classObject.totalAttemptsCount += student.totalAttemptsCount;
+            classObject.points += student.points;
+
+            addStudentAnalyticsWithDate(
+                student._id,
+                currentDate,
+                row,
+                function (err, result) {
+                    if (err) {
+                        logger.error(err);
+                        return callback(err, null);
+                    }
+
+                    studentsCount++;
+                    if (studentsCount === studentsList.length-1) {
+                        classObject.accuracy = ((classObject.correctAttemptsCount / classObject.totalAttemptsCount) * 100).toFixed(2);
+                        classObject.points = (classObject.points / studentsCount).toFixed(0);
+
+                        addStudentAnalyticsWithDate(
+                            classId,
+                            currentDate,
+                            classObject,
+                            function (err, result) {
+                                if (err) {
+                                    logger.error(err);
+                                    return callback(err, null);
+                                }
+
+                                logger.log('Finished updating analytics, everything looks fine.');
+                                return callback(null, 'ok');
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    });
+}
+
+/**
+ * clean all previous analytics data
+ * 
+ * @param {function} callback 
+ */
+exports.removeAnalytics = function (callback) {
+    db.removeAnalytics(callback);
+}
+
+/**
  * add student analytics
  * if there are no records of the student, create a new record
  * if there are recards of the student, get the last recard and compute the deltas
@@ -70,7 +161,7 @@ exports.getChart = function(query, callback) {
  * @param {object} info
  * @param {function} callback
  */
-exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
+var addStudentAnalyticsWithDate = function (studentId, date, info, callback) {
     db.addStudentAnalyticsWithDate(studentId, date, info, callback);
 }
 

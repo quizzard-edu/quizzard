@@ -81,6 +81,11 @@ app.listen(port, function() {
             if (err) {
                 process.exit(1);
             }
+            analytics.initialize(function(err, result) {
+                if (err) {
+                    process.exit(1);
+                }
+            });
         });
     });
 });
