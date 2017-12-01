@@ -7,7 +7,7 @@
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#classAnsweredCardI
-            .card-content.gradient-45deg-light-blue-cyan.white-text
+            .card-content.cyan-card.white-text
               .col.s7.m7
                 i.material-icons.background-round.mt-5 playlist_add_check
                 p Average Questions Answered
@@ -26,7 +26,7 @@
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#classAccuracyCardI
-            .card-content.gradient-45deg-red-pink.white-text
+            .card-content.teal-card.white-text
               .col.s7.m7
                 i.material-icons.background-round.mt-5 gps_fixed
                 p Average Accuracy
@@ -37,24 +37,59 @@
           .card.chart.padding-top-10.padding-left-10
             //-canvas#testingCanvas1
 
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#classAnalyticsHeader &nbsp Points Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#classPointsCardI
+            .card-content.orange-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Average Points
+              .col.s5.m5.right-align.padding-right-10
+                  h5#classPointsI
+        .col.s12.m9
+          h5 Class Points
+          .card.chart.padding-top-10.padding-left-10
+            //-canvas#testingCanvas1
 
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#classAnalyticsHeader &nbsp Points Per Attempt Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#classPointsCardI
+            .card-content.purple-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Average Points Per Attempt
+              .col.s5.m5.right-align.padding-right-10
+                  h5#classPointsI
+        .col.s12.m9
+          h5 Class Points Per Attempt
+          .card.chart.padding-top-10.padding-left-10
+            //-canvas#testingCanvas1
 
-
-  .col.s6.m3
-
-  .col.s6.m3
-    .card#classPointsCardI
-      .card-content.gradient-45deg-amber-amber.white-text
-        .col.s7.m7
-          i.material-icons.background-round.mt-5 bubble_chart
-          p Total Points
-        .col.s5.m5.right-align.padding-right-10
-            h5#classPointsI
-  .col.s6.m3
-    .card#classRatingCardI
-      .card-content.gradient-45deg-green-teal.white-text
-        .col.s7.m7
-          i.material-icons.background-round star
-          p Average Rating
-        .col.s5.m5.right-align.padding-right-10
-          h5#classRatingI
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#classAnalyticsHeader &nbsp Overall Score Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#classPointsCardI
+            .card-content.lime-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Average Overall Score
+              .col.s5.m5.right-align.padding-right-10
+                  h5#classPointsI
+        .col.s12.m9
+          h5 Class Overall Score
+          .card.chart.padding-top-10.padding-left-10
+            //-canvas#testingCanvas1
