@@ -1650,7 +1650,6 @@ app.get('/feedback', function(req, res){
         users.getUsersList((err, userObj) => {
             if (err) {
                 logger.error(err);
-                //TODO: proper error pls
                 return res.status(500).send(common.getError(2002));
             }
 
