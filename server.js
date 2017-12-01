@@ -526,19 +526,19 @@ app.get('/statistics', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        res.status(403).send(common.getError(1002));
+        return res.status(403).send(common.getError(1002));
     }
 
     questions.getAllQuestionsList(function(err, questionslist) {
         if (err) {
             logger.error(err);
-            res.status(500).send(common.getError(3004));
+            return res.status(500).send(common.getError(3004));
         }
 
         users.getStudentsList(function(err, studentslist) {
             if (err) {
                 logger.error(err);
-                res.status(500).send(common.getError(2003));
+                return res.status(500).send(common.getError(2003));
             }
 
             var html = statisticsPug({
