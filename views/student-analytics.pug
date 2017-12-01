@@ -6,7 +6,7 @@
           h5.header-style#studentAnalyticsHeader &nbsp Questions Answered Analytics
       .row.padding-left-10.padding-right-10
         .col.s12.m12
-          h5 Your Questions Answered VS. Class Questions Answered
+          h5 Your Questions Answered VS. Class Average Questions Answered
           .card.chart
             //-canvas#testingCanvas2
       .row.padding-left-10.padding-right-10
@@ -22,7 +22,7 @@
             .card-content.blue-card.white-text
               .col.s7.m7
                 i.material-icons.background-round.mt-5 playlist_add_check
-                p Class Questions Answered
+                p Class Average Questions Answered
               .col.s5.m5.right-align.padding-right-10
                 h5#classAnswered
         .col.s12.m9
@@ -37,9 +37,9 @@
           h5.header-style#studentAnalyticsHeader &nbsp Accuracy Analytics
       .row.padding-left-10.padding-right-10
         .col.s12.m12
-          h5 Your Accuracy VS. Class Accuracy
+          h5 Your Accuracy VS. Class Average Accuracy
           .card.chart
-            canvas#testingCanvas2
+            //-canvas#testingCanvas2
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentAccuracyCard
@@ -53,11 +53,42 @@
             .card-content.teal-card.white-text
               .col.s7.m7
                 i.material-icons.background-round.mt-5 gps_fixed
-                p Class Accuracy
+                p Class Average Accuracy
               .col.s5.m5.right-align.padding-right-10
                 h5#classAccuracy
         .col.s12.m9
           h5 Your Accuracy Ranking
+          .card.chart.padding-top-10.padding-left-10
+            //-canvas#testingCanvas1
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#studentAnalyticsHeader &nbsp Points Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m12
+          h5 Your Points VS. Class Average Points
+          .card.chart
+            canvas#testingCanvas2
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#studentPointsCard
+            .card-content.orange-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Your Points
+              .col.s5.m5.right-align.padding-right-10
+                  h5#studentPoints
+          .card#classPointsCard
+            .card-content.orange-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Class Average Points
+              .col.s5.m5.right-align.padding-right-10
+                  h5#classPoints
+        .col.s12.m9
+          h5 Your Points Ranking
           .card.chart.padding-top-10.padding-left-10
             canvas#testingCanvas1
 
@@ -73,14 +104,7 @@
 
 
 
-      .col.s6.m3
-        .card#studentPointsCard
-          .card-content.blue-card.white-text
-            .col.s7.m7
-              i.material-icons.background-round.mt-5 bubble_chart
-              p Total Points
-            .col.s5.m5.right-align.padding-right-10
-                h5#studentPoints
+
       .col.s6.m3
         .card#studentRatingCard
           .card-content.blue-card.white-text
@@ -94,14 +118,7 @@
         h5.header-style#classAnalyticsHeader &nbsp Class Analytics
 
 
-      .col.s6.m3
-        .card#classPointsCard
-          .card-content.gradient-45deg-amber-amber.white-text
-            .col.s7.m7
-              i.material-icons.background-round.mt-5 bubble_chart
-              p Total Points
-            .col.s5.m5.right-align.padding-right-10
-                h5#classPoints
+
       .col.s6.m3
         .card#classRatingCard
           .card-content.gradient-45deg-green-teal.white-text
