@@ -358,20 +358,6 @@ var getPointsOverTime = function (path) {
 }
 
 var createLineChart = function (data) {
-  var canvas = document.getElementById('testingCanvas1');
-  var ctxx = canvas.getContext('2d');
-
-  gradient = ctxx.createLinearGradient(0, 0, 0, 450)
-  gradient2 = ctxx.createLinearGradient(0, 0, 0, 450)
-
-  gradient.addColorStop(0, 'rgba(255, 0,0, 0.5)')
-  gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)');
-  gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
-
-  gradient2.addColorStop(0, 'rgba(0, 231, 255, 0.9)')
-  gradient2.addColorStop(0.5, 'rgba(0, 231, 255, 0.25)');
-  gradient2.addColorStop(1, 'rgba(0, 231, 255, 0)');
-
   var ctx = $(data.id);
   var config2 = {
     type: 'line',
@@ -379,23 +365,23 @@ var createLineChart = function (data) {
       datasets: [
         {
           data: data.studentData,
-          backgroundColor: 'rgba(255, 255, 255, 0.3)',
-          borderColor: 'rgba(255, 255, 255, 0.5)',
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          borderColor: '#00bcd4',
           label: 'Me',
-          pointBackgroundColor: '#00bcd4',
-          borderWidth: 2,
-          pointBorderWidth: 4,
-          pointBorderColor: 'rgba(255, 255, 255, 0.5)',
+          borderWidth: 4,
+          pointHoverBackgroundColor: 'white',
+          pointHoverBorderColor: '#00bcd4',
+          pointRadius: 2,
         },
         {
           data: data.classData,
-          backgroundColor: 'rgba(255, 255, 255, 0.4)',
-          borderColor: 'rgba(255, 255, 255, 0.4)',
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          borderColor: '#d1d1d1',
           label: 'Class',
-          pointBackgroundColor: '#00bcd4',
-          borderWidth: 2,
-          pointBorderWidth: 4,
-          pointBorderColor: 'rgba(255, 255, 255, 0.4)',
+          borderWidth: 4,
+          pointHoverBackgroundColor: 'white',
+          pointHoverBorderColor: '#d1d1d1',
+          pointRadius: 2,
         }
       ],
       labels: data.dates
@@ -406,7 +392,8 @@ var createLineChart = function (data) {
       scales: {
         yAxes: [{
           ticks: {
-            beginAtZero: true
+            beginAt: 0,
+            max: maximum(data)
           }
         }],
         xAxes: [{
@@ -415,11 +402,25 @@ var createLineChart = function (data) {
       },
       layout: {
         padding: {
-          right: 10,
-          bottom: 10
+          left: 10,
+          right: 20,
+          bottom: 20
         }
       }
     }
   };
   new Chart (ctx, config2);
+}
+
+
+var maximum = function(data) {
+  const studentD = data.studentData.reduce(function(a, b) {
+    return Math.max(a, b);
+  });
+
+  const classD = data.classData.reduce(function(a, b) {
+    return Math.max(a, b);
+  });
+
+  return Math.max(studentD, classD) + 10;
 }
