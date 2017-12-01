@@ -5,28 +5,29 @@
         .col.s12
           h5.header-style#studentAnalyticsHeader &nbsp Questions Answered Analytics
       .row.padding-left-10.padding-right-10
+        .col.s12.m12
+          .card.card-cyan.chart
+            canvas#testingCanvas2
+      .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentAnsweredCard
-            .card-content.gradient-45deg-light-blue-cyan.white-text
+            .card-content.blue-card.white-text
               .col.s7.m7
                 i.material-icons.background-round.mt-5 playlist_add_check
                 p Your Questions answered
               .col.s5.m5.right-align.padding-right-10
                 h5#studentAnswered
           .card#classAnsweredCard
-            .card-content.gradient-45deg-light-blue-cyan.white-text
+            .card-content.blue-card.white-text
               .col.s7.m7
                 i.material-icons.background-round.mt-5 playlist_add_check
                 p Class Questions Answered
               .col.s5.m5.right-align.padding-right-10
                 h5#classAnswered
         .col.s12.m9
-          .card
-            canvas.Chart#testingCanvas1
-      .row.padding-left-10.padding-right-10
-        .col.s12.m12
-          .card
-            canvas.Chart#testingCanvas2
+          .card.card-cyan.chart
+            canvas#testingCanvas1
+
 
 
   .card.white.padding-left-10.padding-right-10
@@ -36,7 +37,7 @@
           h5.header-style#studentAnalyticsHeader &nbsp Your Analytics
       .col.s6.m3
         .card#studentAccuracyCard
-          .card-content.gradient-45deg-red-pink.white-text
+          .card-content.blue-card.white-text
             .col.s7.m7
               i.material-icons.background-round.mt-5 gps_fixed
               p Accuracy
@@ -44,7 +45,7 @@
               h5#studentAccuracy
       .col.s6.m3
         .card#studentPointsCard
-          .card-content.gradient-45deg-amber-amber.white-text
+          .card-content.blue-card.white-text
             .col.s7.m7
               i.material-icons.background-round.mt-5 bubble_chart
               p Total Points
@@ -52,7 +53,7 @@
                 h5#studentPoints
       .col.s6.m3
         .card#studentRatingCard
-          .card-content.gradient-45deg-green-teal.white-text
+          .card-content.blue-card.white-text
             .col.s7.m7
               i.material-icons.background-round star
               p Average Rating

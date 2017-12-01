@@ -379,27 +379,29 @@ var createLineChart = function (data) {
       datasets: [
         {
           data: data.studentData,
-          backgroundColor: gradient,
-          borderColor: '#FC2525',
+          backgroundColor: 'rgba(255, 255, 255, 0.3)',
+          borderColor: 'rgba(255, 255, 255, 0.5)',
           label: 'Me',
-          pointBackgroundColor: 'white',
+          pointBackgroundColor: '#00bcd4',
           borderWidth: 2,
-          pointBorderColor: 'white',
+          pointBorderWidth: 4,
+          pointBorderColor: 'rgba(255, 255, 255, 0.5)',
         },
         {
           data: data.classData,
-          backgroundColor: gradient2,
-          borderColor: '#05CBE1',
+          backgroundColor: 'rgba(255, 255, 255, 0.4)',
+          borderColor: 'rgba(255, 255, 255, 0.4)',
           label: 'Class',
-          pointBackgroundColor: 'white',
+          pointBackgroundColor: '#00bcd4',
           borderWidth: 2,
-          pointBorderColor: 'white',
+          pointBorderWidth: 4,
+          pointBorderColor: 'rgba(255, 255, 255, 0.4)',
         }
       ],
       labels: data.dates
     },
     options: {
-      maintainAspectRatio: false,      
+      maintainAspectRatio: false,
       responsive: true,
       scales: {
         yAxes: [{

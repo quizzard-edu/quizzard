@@ -198,7 +198,7 @@ var getQuestionsAnsweredVsClass = function(query, callback) {
         var classAnsweredAverage = 0;
 
         for (i in students) {
-            if (students[i].id === studentId) {
+            if (students[i]._id === studentId) {
                 studentAnswered = students[i].correctAttemptsCount;
             } else {
                 classAnswered += students[i].correctAttemptsCount;
