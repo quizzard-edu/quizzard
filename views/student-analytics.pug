@@ -101,7 +101,7 @@
         .col.s12.m12
           h5 Your Points Per Attempt VS. Class Average Points Per Attempt
           .card.chart
-            canvas#testingCanvas2
+            //-canvas#testingCanvas2
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentPointsCard
@@ -121,8 +121,38 @@
         .col.s12.m9
           h5 Your Points Per Attempt Ranking
           .card.chart.padding-top-10.padding-left-10
-            canvas#testingCanvas1
+            //-canvas#testingCanvas1
 
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#studentAnalyticsHeader &nbsp Overall Score Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m12
+          h5 Your Overall Score VS. Class Average Overall Score
+          .card.chart
+            //-canvas#testingCanvas2
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#studentPointsCard
+            .card-content.lime-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Your Overall Score
+              .col.s5.m5.right-align.padding-right-10
+                  //-h5#studentPoints
+          .card#classPointsCard
+            .card-content.lime-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Class Average Overall Score
+              .col.s5.m5.right-align.padding-right-10
+                  //-h5#classPoints
+        .col.s12.m9
+          h5 Your Overall Score Ranking
+          .card.chart.padding-top-10.padding-left-10
+            //-canvas#testingCanvas1
 
 
   .card.white.padding-left-10.padding-right-10

@@ -27,6 +27,12 @@
     min-height: 125px !important;
 }
 
+
+.lime-card {
+    background: #CDDC39;
+    min-height: 125px !important;
+}
+
 .gradient-45deg-red-pink {
     background: #FF5252;
     /*background: #FF5252;
