@@ -640,10 +640,10 @@ var updateVisibility = function(qid, questionNumber) {
 
                         if (question['visible']) {
                             successSnackbar('Question ' + questionNumber + msg);
-                            $('.hiddenEye').html('visibility');
+                            $('#hiddenEye' + qid).html('visibility');
                         } else {
                             warningSnackbar('Question ' + questionNumber + msg);
-                            $('.hiddenEye').html('visibility_off');
+                            $('#hiddenEye' + qid).html('visibility_off');
                         }
                     },
                     error: function(data) {

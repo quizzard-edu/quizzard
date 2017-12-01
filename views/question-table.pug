@@ -32,9 +32,9 @@ block styles
                 td.center
                   p
                     if q.visible
-                      i.material-icons.hiddenEye visibility
+                      i.material-icons.hiddenEye(id='hiddenEye' + q._id) visibility
                     else
-                      i.material-icons.hiddenEye visibility_off
+                      i.material-icons.hiddenEye(id='hiddenEye' + q._id) visibility_off
                     input.checked(id='checked-' + q._id, name=q.number, type='checkbox', checked=q.visible)
                     label.visbox(for='checked-' + q._id, name=q.number)
                 td #{q.number}
