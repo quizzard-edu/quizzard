@@ -22,6 +22,11 @@
     min-height: 125px !important;
 }
 
+.purple-card {
+    background: #673AB7;
+    min-height: 125px !important;
+}
+
 .gradient-45deg-red-pink {
     background: #FF5252;
     /*background: #FF5252;

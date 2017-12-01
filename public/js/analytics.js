@@ -366,11 +366,11 @@ var createLineChart = function (data) {
         {
           data: data.studentData,
           backgroundColor: 'rgba(0, 0, 0, 0)',
-          borderColor: '#ff6e40',
+          borderColor: '#673AB7',
           label: 'Me',
           borderWidth: 4,
           pointHoverBackgroundColor: 'white',
-          pointHoverBorderColor: '#ff6e40',
+          pointHoverBorderColor: '#673AB7',
           pointRadius: 2,
         },
         {
