@@ -793,8 +793,8 @@ var getAllSettings = function (callback) {
 
 /**
  * remove all previous analytics
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 exports.removeAnalytics = function (callback) {
     analyticsCollection.remove({}, function(err, obj) {

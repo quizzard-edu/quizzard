@@ -523,3 +523,40 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
         return callback(err, leaderboardList);
     });
 }
+
+/**
+ * Fetch a list of students to display in the leaderboard.
+ *
+ * @param {function} callback
+ */
+exports.getFullLeaderboard = function (callback) {
+    getStudentsListSorted(0, function(err, studentlist) {
+        if (err) {
+            logger.error('Leaderboard error: ' + err);
+            return callback(common.getError(2020), []);
+        }
+
+        var leaderboardList = [];
+        for (var i = 0; i < studentlist.length; ++i) {
+            var currentStudent = studentlist[i];
+            var student = {
+                _id:currentStudent._id,
+                points:currentStudent.points,
+                accuracy:(currentStudent.totalAttemptsCount === 0)
+                    ? 0
+                    : ((currentStudent.correctAttemptsCount / currentStudent.totalAttemptsCount) * 100).toFixed(2),
+                attempt:(currentStudent.totalAttemptsCount === 0)
+                    ? 0
+                    : (currentStudent.points / currentStudent.totalAttemptsCount).toFixed(2),
+                overall:(currentStudent.totalAttemptsCount === 0)
+                    ? 0
+                    : (currentStudent.points *
+                    ((currentStudent.correctAttemptsCount/currentStudent.totalAttemptsCount) +
+                    (currentStudent.points/currentStudent.totalAttemptsCount))).toFixed(2)
+            }
+            leaderboardList.push(student);
+        }
+        return callback(err, leaderboardList);
+    });
+}
+

@@ -71,8 +71,8 @@ exports.getChart = function(query, callback) {
 
 /**
  * get analytics for a admins
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 var getAnalytics = function(callback) {
     var studentsCount = 0;
@@ -82,70 +82,101 @@ var getAnalytics = function(callback) {
         totalAttemptsCount: 0,
         points: 0,
         accuracy: 0
-    };    
+    };
     var currentDate = common.getDate();
 
-    users.getStudentsList(function (err, studentsList) {
+    users.getFullLeaderboard(function (err, leaderboardList) {
         if (err) {
             logger.error(err);
             return callback(err, null);
         }
 
-        for (var i in studentsList) {
-            var student = studentsList[i];
-            var row = {};
+        var overallList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'overall'), '_id');
+        var attemptList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'attempt'), '_id');
+        var accuracyList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'accuracy'), '_id');
+        var pointsList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'points'), '_id');
+        users.getStudentsList(function (err, studentsList) {
+            if (err) {
+                logger.error(err);
+                return callback(err, null);
+            }
 
-            row.correctAttemptsCount = student.correctAttemptsCount;
-            row.wrongAttemptsCount = student.wrongAttemptsCount;
-            row.totalAttemptsCount = student.totalAttemptsCount;
-            row.points = student.points;
-            row.accuracy = ((student.correctAttemptsCount / student.totalAttemptsCount) * 100).toFixed(2);
+            for (var i in studentsList) {
+                var student = studentsList[i];
+                var row = {};
 
-            classObject.correctAttemptsCount += student.correctAttemptsCount;
-            classObject.wrongAttemptsCount += student.wrongAttemptsCount;
-            classObject.totalAttemptsCount += student.totalAttemptsCount;
-            classObject.points += student.points;
+                row.correctAttemptsCount = student.correctAttemptsCount;
+                row.wrongAttemptsCount = student.wrongAttemptsCount;
+                row.totalAttemptsCount = student.totalAttemptsCount;
+                row.points = student.points;
+                row.accuracy = student.totalAttemptsCount === 0 ? 0 : ((student.correctAttemptsCount / student.totalAttemptsCount) * 100).toFixed(2);
+                row.overallRank = overallList.indexOf(student._id);
+                row.attemptRank = attemptList.indexOf(student._id);
+                row.accuracyRank = accuracyList.indexOf(student._id);
+                row.pointsRank = pointsList.indexOf(student._id);
 
-            addStudentAnalyticsWithDate(
-                student._id,
-                currentDate,
-                row,
-                function (err, result) {
-                    if (err) {
-                        logger.error(err);
-                        return callback(err, null);
-                    }
+                classObject.correctAttemptsCount += student.correctAttemptsCount;
+                classObject.wrongAttemptsCount += student.wrongAttemptsCount;
+                classObject.totalAttemptsCount += student.totalAttemptsCount;
+                classObject.points += student.points;
 
-                    studentsCount++;
-                    if (studentsCount === studentsList.length-1) {
-                        classObject.accuracy = ((classObject.correctAttemptsCount / classObject.totalAttemptsCount) * 100).toFixed(2);
-                        classObject.points = (classObject.points / studentsCount).toFixed(0);
+                addStudentAnalyticsWithDate(
+                    student._id,
+                    currentDate,
+                    row,
+                    function (err, result) {
+                        if (err) {
+                            logger.error(err);
+                            return callback(err, null);
+                        }
 
-                        addStudentAnalyticsWithDate(
-                            classId,
-                            currentDate,
-                            classObject,
-                            function (err, result) {
-                                if (err) {
-                                    logger.error(err);
-                                    return callback(err, null);
+                        studentsCount++;
+                        if (studentsCount === studentsList.length-1) {
+                            classObject.correctAttemptsCount += studentsCount === 0 ? 0 :  (classObject.correctAttemptsCount / studentsCount).toFixed(0);
+                            classObject.wrongAttemptsCount += studentsCount === 0 ? 0 :  (classObject.wrongAttemptsCount / studentsCount).toFixed(0);
+                            classObject.totalAttemptsCount += studentsCount === 0 ? 0 :  (classObject.totalAttemptsCount / studentsCount).toFixed(0);
+                            classObject.accuracy = classObject.totalAttemptsCount === 0 ? 0 :  ((classObject.correctAttemptsCount / classObject.totalAttemptsCount) * 100).toFixed(2);
+                            classObject.points = studentsCount === 0 ? 0 :  (classObject.points / studentsCount).toFixed(0);
+
+                            addStudentAnalyticsWithDate(
+                                classId,
+                                currentDate,
+                                classObject,
+                                function (err, result) {
+                                    if (err) {
+                                        logger.error(err);
+                                        return callback(err, null);
+                                    }
+
+                                    logger.log('Finished updating analytics, everything looks fine.');
+                                    return callback(null, 'ok');
                                 }
-
-                                logger.log('Finished updating analytics, everything looks fine.');
-                                return callback(null, 'ok');
-                            }
-                        );
+                            );
+                        }
                     }
-                }
-            );
-        }
+                );
+            }
+        });
+    });
+}
+
+
+/**
+ * sort leaderboard based on criteria
+ *
+ * @param {list} list
+ * @param {string} criteria
+ */
+var sortLeaderBoard = function(list, criteria) {
+    return list.sort(function(student1,student2){
+        return student2[criteria] - student1[criteria];
     });
 }
 
 /**
  * clean all previous analytics data
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 exports.removeAnalytics = function (callback) {
     db.removeAnalytics(callback);

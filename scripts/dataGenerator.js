@@ -1089,7 +1089,7 @@ db.initialize(function () {
                     if (err) {
                         process.exit(1);
                     }
-    
+
                     calculateTotalNumberOfQuestions();
                     createAdmins();
                 });
