@@ -31,11 +31,10 @@ const common = require('./server/common.js');
 const analytics = require('./server/analytics.js');
 const settings = require('./server/settings.js');
 const json2csv = require('json2csv');
-const fs = require('fs');
 const csv2json = require('csvtojson');
+const config = require('./server/config.js')
 
 const app = express();
-const port = process.env.QUIZZARD_PORT || 8000;
 
 /* Pre-compiled Pug views */
 const studentTablePug = pug.compileFile('views/account-table.pug');
@@ -73,9 +72,28 @@ app.use(session({
     saveUninitialized: false
 }));
 
-app.listen(port, function() {
+/*
+    HTTPS protocol
+*/
+
+var forceSSL = require('express-force-ssl');
+var http = require('http');
+var https = require('https');
+
+var secureServer = https.createServer(config.ssl_options, app);
+
+var httpServer = http.createServer(function(req, res) {
+    // Redirects to https location
+    res.writeHead(301, {'Location': common.formatString('https://{0}:{1}',[config.hostName, config.httpsPort])});
+    res.end();
+});
+
+app.use(forceSSL);
+
+//HTTPS server
+secureServer.listen(config.httpsPort,function(){
     logger.log('//------------------------');
-    logger.log(common.formatString('Server listening on http://localhost:{0}.', [port]));
+    logger.log(common.formatString('Secure Server listening on https://{0}:{1}.', [config.hostName, config.httpsPort]));
     db.initialize(function() {
         settings.initialize(function(err, result) {
             if (err) {
@@ -84,6 +102,12 @@ app.listen(port, function() {
         });
     });
 });
+
+//HTTP server
+httpServer.listen(config.httpPort, function(){
+    logger.log('//------------------------');
+    logger.log(common.formatString('HTTP Server listening on http://{0}:{1}.', [config.hostName, config.httpPort]));
+})
 
 /* main page */
 app.get('/', function(req, res) {
@@ -502,19 +526,19 @@ app.get('/statistics', function(req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        res.status(403).send(common.getError(1002));
+        return res.status(403).send(common.getError(1002));
     }
 
     questions.getAllQuestionsList(function(err, questionslist) {
         if (err) {
             logger.error(err);
-            res.status(500).send(common.getError(3004));
+            return res.status(500).send(common.getError(3004));
         }
 
         users.getStudentsList(function(err, studentslist) {
             if (err) {
                 logger.error(err);
-                res.status(500).send(common.getError(2003));
+                return res.status(500).send(common.getError(2003));
             }
 
             var html = statisticsPug({
