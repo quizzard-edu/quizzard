@@ -1624,7 +1624,6 @@ app.post('/changeAllVisibility', function(req, res) {
             logger.error(err);
             res.status(500).send(common.getError(3020));
         }
-
         return res.status(200).send(result);
     });
 });

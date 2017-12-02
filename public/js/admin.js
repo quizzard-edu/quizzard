@@ -913,10 +913,11 @@ var sortAccountsTable = function(type) {
 }
 
 // Toggles the view of the Visibility Checkboxes in the Question-Table View
-var toggleButtonVisibility = function() {
-    if ($('#sw').is(':checked')) {
+var toggleButtonVisibility = function(toggle) {
+    if ($('#sw').is(':checked') || toggle) {
         $('.visbox').show();
         $('.hiddenEye').hide();
+        $('#sw').prop('checked', true);
     } else {
         $('.visbox').hide();
         $('.hiddenEye').show();

@@ -20,6 +20,7 @@ const snack = Object.freeze({
     success     :   '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
     warning     :   '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
     fail        :   '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
+    visibility  :   '<i class="material-icons" onclick="toggleButtonVisibility(true)">edit</i>&nbsp&nbsp&nbsp',
     close       :   '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
 });
 
@@ -69,6 +70,12 @@ function warningSnackbar(msg) {
 function failSnackbar(msg) {
     // runs the toast function for 5s with given msg and colour
     Materialize.toast(snack.fail + msg + snack.close, 5000, 'rounded ' + colours.redDark);
+}
+
+/* This function slides down a visibility snakbar */
+function visibilitySnackbar() {
+    // runs the toast function for 5s with given msg and colour
+    Materialize.toast(snack.visibility + 'You are currently in display mode, please enable edit mode or click the icon on the left.' + snack.close, 5000, 'rounded ' + colours.orange);
 }
 
 /* Listener for the `x` on the snackbar/toasts */

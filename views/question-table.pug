@@ -22,7 +22,7 @@ block styles
                 .switch
                   label
                     | Display
-                    input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility()')
+                    input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
                     span.lever
                     | Edit
               th ID
@@ -36,9 +36,9 @@ block styles
                 td.center
                   p
                     if q.visible
-                      i.material-icons.hiddenEye(id='hiddenEye' + q._id) visibility
+                      i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()') visibility
                     else
-                      i.material-icons.hiddenEye(id='hiddenEye' + q._id) visibility_off
+                      i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()') visibility_off
                     input.checked(id='checked-' + q._id, name=q.number, type='checkbox', checked=q.visible)
                     label.visbox(for='checked-' + q._id, name=q.number)
                 td #{q.number}
