@@ -542,6 +542,7 @@ exports.getFullLeaderboard = function (callback) {
             var student = {
                 _id:currentStudent._id,
                 points:currentStudent.points,
+                correctAttemptsCount:currentStudent.correctAttemptsCount,
                 accuracy:(currentStudent.totalAttemptsCount === 0)
                     ? 0
                     : ((currentStudent.correctAttemptsCount / currentStudent.totalAttemptsCount) * 100).toFixed(2),
