@@ -85,6 +85,8 @@ exports.getChart = function(query, callback) {
             return getAccuracyRankOverTime(query, callback);
         case 'pointsPerAttemptsOverTime':
             return getPointsPerAttemptsOverTime(query, callback);
+        case 'overallOverTime':
+            return getOverallOverTime(query, callback);
         case 'pointsPerTopicVsClass':
             return getPointsPerTopicVsClass(query, callback);
         case 'accuracyPerTopicVsClass':
@@ -616,6 +618,48 @@ var getPointsPerAttemptsOverTime = function(query, callback) {
             for (var i = 0; i < classObject.dates.length; i++) {
                 dates.push(classObject.dates[i].date);
                 classData.push(classObject.dates[i].info.pointsPerAttemptAverage);
+            }
+
+            return callback(null, {
+                dates: dates,
+                studentData: studentData,
+                classData: classData
+            });
+        });
+    });
+}
+
+/**
+ * get points per attempts of user and class over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getOverallOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, studentObject) {
+        if (err) {
+            return callback(err, null);
+        }
+        getTimeBasedAnalytics({_id:classId}, function(err, classObject) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            var dates = [];
+            var studentData = [];
+            var classData = [];
+
+            for (var i = 0; i < classObject.dates.length - studentObject.dates.length; i++) {
+                studentData.push(0);
+            }
+
+            for (var i = 0; i < studentObject.dates.length; i++) {
+                studentData.push(studentObject.dates[i].info.overallValue);
+            }
+
+            for (var i = 0; i < classObject.dates.length; i++) {
+                dates.push(classObject.dates[i].date);
+                classData.push(classObject.dates[i].info.overallAverage);
             }
 
             return callback(null, {

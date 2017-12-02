@@ -131,7 +131,7 @@ var displayStudentStatistics = function (studentId) {
 
     // overall score analytics
     // TODO: CARD MISSING
-    // TODO: OVER TIME MISSING
+    getOverallOverTime(path);
     getOverallRankOverTime(path);
     
     // points per attempt analytics
@@ -354,6 +354,28 @@ var getPointsPerAttemptsOverTime = function (path) {
     url: path,
     data: {
       type: 'pointsPerAttemptsOverTime'
+    },
+    success: function (data) {
+      //data.id = '#accuracyOverTime';
+      //data.col = colours.teal;
+      createLineChart (data);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getOverallOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'overallOverTime'
     },
     success: function (data) {
       //data.id = '#accuracyOverTime';
