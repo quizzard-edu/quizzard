@@ -101,7 +101,7 @@
         .col.s12.m12
           h5 Your Points Per Attempt VS. Class Average Points Per Attempt
           .card.chart
-            //-canvas#testingCanvas2
+            canvas#pointsPerAttemptsOverTime
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentPointsCard
@@ -132,7 +132,7 @@
         .col.s12.m12
           h5 Your Overall Score VS. Class Average Overall Score
           .card.chart
-            //-canvas#testingCanvas2
+            canvas#overallOverTime
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentPointsCard
@@ -162,11 +162,11 @@
       .col.s12.m6
         h5 Your Question Type Points VS Class Question Type Points
         .card.radar.padding-top-10.padding-left-10
-          //-canvas#testingCanvas4
+          canvas#pointsPerTypeVsClass
       .col.s12.m6
         h5 Your Question Type Accuracy VS Class Question Type Accuracy
         .card.radar.padding-top-10.padding-left-10
-          //-canvas#testingCanvas5
+          canvas#accuracyPerTypeVsClass
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -176,8 +176,8 @@
       .col.s12.m6
         h5 Your Question Topic Points VS Class Question Topic Points
         .card.radar.padding-top-10.padding-left-10
-          //-canvas#testingCanvas4
+          canvas#pointsPerTopicVsClass
       .col.s12.m6
         h5 Your Question Topic Accuracy VS Class Question Topic Accuracy
         .card.radar.padding-top-10.padding-left-10
-          //-canvas#testingCanvas5
+          canvas#accuracyPerTopicVsClass
