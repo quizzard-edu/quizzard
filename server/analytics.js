@@ -24,6 +24,7 @@ const common = require('./common.js');
 const db = require('./db.js');
 
 const classId = 'class';
+var totalStudentsCount = 0;
 
 /**
  * start the analytics daily process
@@ -32,6 +33,13 @@ const classId = 'class';
  */
 exports.initialize = function(callback) {
     getAnalytics(callback);
+
+    users.getStudentsList(function (err, studentsList) {
+        if (err) {
+            logger.error(err);
+        }
+        totalStudentsCount = studentsList.length;
+    });
 }
 
 /**
@@ -64,6 +72,14 @@ exports.getChart = function(query, callback) {
             return getAccuracyOverTime(query, callback);
         case 'pointsOverTime':
             return getPointsOverTime(query, callback);
+        case 'overallRankOverTime':
+            return getOverallRankOverTime(query, callback);
+        case 'pointsRankOverTime':
+            return getPointsRankOverTime(query, callback);
+        case 'attemptRankOverTime':
+            return getAttemptRankOverTime(query, callback);
+        case 'accuracyRankOverTime':
+            return getAccuracyRankOverTime(query, callback);
         default:
             return callback('notFound', null);
     }
@@ -611,6 +627,114 @@ var getPointsOverTime = function(query, callback) {
                 studentData: studentData,
                 classData: classData
             });
+        });
+    });
+}
+
+/**
+ * get overall rank over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getOverallRankOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, studentObject) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var studentData = [];
+
+        for (var i = 0; i < studentObject.dates.length; i++) {
+            studentData.push(studentObject.dates[i].info.overallRank);
+        }
+
+        return callback(null, {
+            dates: dates,
+            studentData: studentData,
+            totalStudentsCount: totalStudentsCount
+        });
+    });
+}
+
+/**
+ * get points rank over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getPointsRankOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, studentObject) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var studentData = [];
+
+        for (var i = 0; i < studentObject.dates.length; i++) {
+            studentData.push(studentObject.dates[i].info.pointsRank);
+        }
+
+        return callback(null, {
+            dates: dates,
+            studentData: studentData,
+            totalStudentsCount: totalStudentsCount
+        });
+    });
+}
+
+/**
+ * get attempt rank over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getAttemptRankOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, studentObject) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var studentData = [];
+
+        for (var i = 0; i < studentObject.dates.length; i++) {
+            studentData.push(studentObject.dates[i].info.attemptRank);
+        }
+
+        return callback(null, {
+            dates: dates,
+            studentData: studentData,
+            totalStudentsCount: totalStudentsCount
+        });
+    });
+}
+
+/**
+ * get accuracy rank over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getAccuracyRankOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, studentObject) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var studentData = [];
+
+        for (var i = 0; i < studentObject.dates.length; i++) {
+            studentData.push(studentObject.dates[i].info.accuracyRank);
+        }
+
+        return callback(null, {
+            dates: dates,
+            studentData: studentData,
+            totalStudentsCount: totalStudentsCount
         });
     });
 }

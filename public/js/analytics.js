@@ -415,7 +415,6 @@ var createLineChart = function (data) {
   new Chart (ctx, config2);
 }
 
-
 var maximum = function(data) {
   const studentD = data.studentData.reduce(function(a, b) {
     return Math.max(a, b);
@@ -428,62 +427,56 @@ var maximum = function(data) {
   return Math.max(studentD, classD) + 10;
 }
 
-
-
-
 var testRadar = function (id) {
-
-
-      var ctx = $(id);
-      var config2 = {
-        type: 'radar',
-        data: {
-          datasets: [
-            {
-              data: [12,4,2,34,67,43,12],
-              backgroundColor: 'rgba(0, 0, 0, 0)',
-              borderColor: '#CDDC39',
-              label: 'Me',
-              borderWidth: 4,
-              pointHoverBackgroundColor: 'white',
-              pointHoverBorderColor: '#CDDC39',
-              pointRadius: 2,
-            },
-            {
-              data: [33,54,7,2,3,44,14],
-              backgroundColor: 'rgba(0, 0, 0, 0)',
-              borderColor: '#d1d1d1',
-              label: 'Class',
-              borderWidth: 4,
-              pointHoverBackgroundColor: 'white',
-              pointHoverBorderColor: '#d1d1d1',
-              pointRadius: 2,
-            }
-          ],
-          labels: ['a','b','c','d','e','f','g']
+  var ctx = $(id);
+  var config2 = {
+    type: 'radar',
+    data: {
+      datasets: [
+        {
+          data: [12,4,2,34,67,43,12],
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          borderColor: '#CDDC39',
+          label: 'Me',
+          borderWidth: 4,
+          pointHoverBackgroundColor: 'white',
+          pointHoverBorderColor: '#CDDC39',
+          pointRadius: 2,
         },
-        options: {
-          maintainAspectRatio: false,
-          responsive: true,
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAt: 0
-              }
-            }],
-            xAxes: [{
-                display : false
-            }]
-          },
-          layout: {
-            padding: {
-              left: 10,
-              right: 20,
-              bottom: 20
-            }
-          }
+        {
+          data: [33,54,7,2,3,44,14],
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          borderColor: '#d1d1d1',
+          label: 'Class',
+          borderWidth: 4,
+          pointHoverBackgroundColor: 'white',
+          pointHoverBorderColor: '#d1d1d1',
+          pointRadius: 2,
         }
-      };
-      new Chart (ctx, config2);
-
+      ],
+      labels: ['a','b','c','d','e','f','g']
+    },
+    options: {
+      maintainAspectRatio: false,
+      responsive: true,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAt: 0
+          }
+        }],
+        xAxes: [{
+            display : false
+        }]
+      },
+      layout: {
+        padding: {
+          left: 10,
+          right: 20,
+          bottom: 20
+        }
+      }
+    }
+  };
+  new Chart (ctx, config2);
 }
