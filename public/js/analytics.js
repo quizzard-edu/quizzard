@@ -289,6 +289,7 @@ var getCorrectAttemptsOverTime = function (path) {
     },
     success: function (data) {
       data.id = '#correctAttemptsOverTime';
+      data.col = colours.cyan;
       createLineChart (data);
     },
     error: function (data) {
@@ -309,8 +310,9 @@ var getCorrectAttemptRankOverTime = function (path) {
       type: 'correctAttemptRankOverTime'
     },
     success: function (data) {
-      //data.id = '#correctAttemptsOverTime';
-      createLineChart (data);
+      data.id = '#correctAttemptRankOverTime';
+      data.col = colours.cyan;
+      createRankChart (data);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -331,6 +333,7 @@ var getAccuracyOverTime = function (path) {
     },
     success: function (data) {
       data.id = '#accuracyOverTime';
+      data.col = colours.teal;
       createLineChart (data);
     },
     error: function (data) {
@@ -352,6 +355,7 @@ var getPointsOverTime = function (path) {
     },
     success: function (data) {
       data.id = '#pointsOverTime';
+      data.col = colours.orangeLight;
       createLineChart (data);
     },
     error: function (data) {
@@ -373,6 +377,7 @@ var getOverallRankOverTime = function (path) {
     },
     success: function (data) {
       data.id = '#overallRankOverTime';
+      data.col = colours.lime;
       createRankChart(data)
     },
     error: function (data) {
@@ -394,6 +399,7 @@ var getPointsRankOverTime = function (path) {
     },
     success: function (data) {
       data.id = '#pointsRankOverTime';
+      data.col = colours.orangeLight;
       createRankChart(data)
     },
     error: function (data) {
@@ -415,6 +421,7 @@ var getPointsPerAttemptRankOverTime = function (path) {
     },
     success: function (data) {
       data.id = '#pointsPerAttemptRankOverTime';
+      data.col = colours.purple;
       createRankChart(data)
     },
     error: function (data) {
@@ -436,6 +443,7 @@ var getAccuracyRankOverTime = function (path) {
     },
     success: function (data) {
       data.id = '#accuracyRankOverTime';
+      data.col = colours.teal;
       createRankChart(data)
     },
     error: function (data) {
@@ -533,11 +541,11 @@ var createLineChart = function (data) {
         {
           data: data.studentData,
           backgroundColor: 'rgba(0, 0, 0, 0)',
-          borderColor: '#CDDC39',
+          borderColor: data.col,
           label: 'Me',
           borderWidth: 4,
           pointHoverBackgroundColor: 'white',
-          pointHoverBorderColor: '#CDDC39',
+          pointHoverBorderColor: data.col,
           pointRadius: 2,
         },
         {
@@ -589,21 +597,10 @@ var createRankChart = function (data) {
         {
           data: data.studentData,
           backgroundColor: 'rgba(0, 0, 0, 0)',
-          borderColor: '#CDDC39',
-          label: 'Me',
+          borderColor: data.col,
           borderWidth: 4,
           pointHoverBackgroundColor: 'white',
-          pointHoverBorderColor: '#CDDC39',
-          pointRadius: 2,
-        },
-        {
-          data: data.classData,
-          backgroundColor: 'rgba(0, 0, 0, 0)',
-          borderColor: '#d1d1d1',
-          label: 'Class',
-          borderWidth: 4,
-          pointHoverBackgroundColor: 'white',
-          pointHoverBorderColor: '#d1d1d1',
+          pointHoverBorderColor: data.col,
           pointRadius: 2,
         }
       ],
@@ -626,10 +623,12 @@ var createRankChart = function (data) {
       },
       layout: {
         padding: {
-          left: 10,
           right: 20,
           bottom: 20
         }
+      },
+      legend: {
+        display: false
       }
     }
   };

@@ -4,15 +4,20 @@ const colours = Object.freeze({
     blue           : 'rgb(54, 162, 235)',
     blueLight      : 'rgb(51, 102, 255)',
     blueLightExtra : 'rgb(51, 102, 155)',
+    cyan           : '#00bcd4',
     grayLight      : 'rgb(115, 124, 140)',
     green          : 'green',
     greenBorder    : 'rgba(43, 163, 0, 1)',
     greenLight     : 'rgba(43, 244, 33, 0.5)',
+    lime           : '#CDDC39',
     orange         : 'orange accent-4',
+    orangeLight    : '#ff6e40',
     pink           : 'rgb(255, 99, 132)',
+    purple         : '#673AB7',
     redBorder      : 'rgb(243, 13, 20)',
     redDark        : 'red darken-4',
     redLight       : 'rgba(243, 13, 20, 0.5)',
+    teal           : '#00bfa5',
     white          : 'white'
 });
 
