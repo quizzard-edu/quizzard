@@ -65,12 +65,6 @@ app.use(function(req, res, next) {
 
 app.set('view engine', 'pug');
 app.use(helmet());
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    defaultSrc: ["'self'"],
-    styleSrc: ["'self'"]
-  }
-}));
 
 app.use(fileUpload());
 app.use(express.static(__dirname + '/public'));
