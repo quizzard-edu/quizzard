@@ -146,9 +146,6 @@ var displayStudentStatistics = function (studentId) {
     // by type analytics
     getPointsPerTypeVsClass(path);
     getAccuracyPerTypeVsClass(path);
-
-    testRadar('#testingCanvas4');
-    testRadar('#testingCanvas5');
 }
 
 // Student statistics
@@ -356,8 +353,8 @@ var getPointsPerAttemptsOverTime = function (path) {
       type: 'pointsPerAttemptsOverTime'
     },
     success: function (data) {
-      //data.id = '#accuracyOverTime';
-      //data.col = colours.teal;
+      data.id = '#pointsPerAttemptsOverTime';
+      data.col = colours.purple;
       createLineChart (data);
     },
     error: function (data) {
@@ -378,8 +375,8 @@ var getOverallOverTime = function (path) {
       type: 'overallOverTime'
     },
     success: function (data) {
-      //data.id = '#accuracyOverTime';
-      //data.col = colours.teal;
+      data.id = '#overallOverTime';
+      data.col = colours.lime;
       createLineChart (data);
     },
     error: function (data) {
@@ -510,6 +507,8 @@ var getPointsPerTopicVsClass = function (path) {
       type: 'pointsPerTopicVsClass'
     },
     success: function (data) {
+      data.id = '#pointsPerTopicVsClass';
+      createRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -529,6 +528,8 @@ var getAccuracyPerTopicVsClass = function (path) {
       type: 'accuracyPerTopicVsClass'
     },
     success: function (data) {
+      data.id = '#accuracyPerTopicVsClass';
+      createRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -548,6 +549,8 @@ var getPointsPerTypeVsClass = function (path) {
       type: 'pointsPerTypeVsClass'
     },
     success: function (data) {
+      data.id = '#pointsPerTypeVsClass';
+      createRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -567,6 +570,8 @@ var getAccuracyPerTypeVsClass = function (path) {
       type: 'accuracyPerTypeVsClass'
     },
     success: function (data) {
+      data.id = '#accuracyPerTypeVsClass';
+      createRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -694,43 +699,45 @@ var maximum = function(data) {
   return Math.max(studentD, classD) + 10;
 }
 
-var testRadar = function (id) {
-  var ctx = $(id);
+var createRadarChart = function (data) {
+  var ctx = $(data.id);
   var config2 = {
     type: 'radar',
     data: {
       datasets: [
         {
-          data: [12,4,2,34,67,43,12],
+          data: data.studentData,
           backgroundColor: 'rgba(0, 0, 0, 0)',
-          borderColor: '#CDDC39',
+          borderColor: '#42A5F5',
+          pointBorderColor: '#42A5F5',
           label: 'Me',
           borderWidth: 4,
           pointHoverBackgroundColor: 'white',
-          pointHoverBorderColor: '#CDDC39',
-          pointRadius: 2,
+          pointBackgroundColor: '#90CAF9',
+          pointHoverBorderColor: '#42A5F5',
+          pointRadius: 4,
         },
         {
-          data: [33,54,7,2,3,44,14],
+          data: data.classData,
           backgroundColor: 'rgba(0, 0, 0, 0)',
-          borderColor: '#d1d1d1',
+          borderColor: '#F06292',
+          pointBorderColor: '#F06292',
           label: 'Class',
           borderWidth: 4,
           pointHoverBackgroundColor: 'white',
-          pointHoverBorderColor: '#d1d1d1',
-          pointRadius: 2,
+          pointBackgroundColor: '#F8BBD0',
+          pointHoverBorderColor: '#F06292',
+          pointRadius: 4,
         }
       ],
-      labels: ['a','b','c','d','e','f','g']
+      labels: data.labels
     },
     options: {
       maintainAspectRatio: false,
       responsive: true,
       scales: {
         yAxes: [{
-          ticks: {
-            beginAt: 0
-          }
+          display: false
         }],
         xAxes: [{
             display : false
@@ -738,8 +745,6 @@ var testRadar = function (id) {
       },
       layout: {
         padding: {
-          left: 10,
-          right: 20,
           bottom: 20
         }
       }
