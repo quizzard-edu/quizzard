@@ -635,3 +635,26 @@ exports.updateUserSubmissionTime = function(userId, question, callback){
         });
     }
 }
+
+exports.changeAllVisibility = function(callback) {
+    db.getQuestionsList({}, {number: 1}, function(err, questionList){
+        if (err) {
+            return callback(err, null);
+        }
+        //logger.log(JSON.stringify(questionList));
+        for (var i in questionList){
+            var question = questionList[i];
+            if (!question.visible){
+                logger.log('Question ' + question.number + ' visibility: ' + question.visible);
+                var newQuestion = {};
+                newQuestion['visible'] = 'true';
+                updateQuestionById(question._id, newQuestion, function(err, result){
+                    if (err) {
+                        return callback(err, result);
+                    }
+                });
+            }
+        }
+        return callback(null, 'success');
+    });
+}

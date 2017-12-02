@@ -11,16 +11,17 @@ block styles
         h5.card-title Manage Questions
         h6 Add, modify or delete questions.
       .card-action
-        table.bordered
+        table.bordered.centered
           thead
             tr
               th Visiblity
+                button(id='allVisibility', onClick='updateAllVisibility()') Show All Questions
                 .switch
                   label
-                    | Hide
+                    | Hide List
                     input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility()')
                     span.lever
-                    | Show
+                    | Show List
               th ID
               th Title
               th Topic

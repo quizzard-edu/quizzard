@@ -274,7 +274,6 @@ var displayQuestionTable = function() {
         url: '/questionlist',
         success: function(data) {
             $('#admin-content').html(data);
-
             addQuestionsTableEvents();
 
             $('#option-questions').addClass('active');
@@ -1011,5 +1010,18 @@ var initSummernote = function () {
     $('.modal').each(function( i ) {
         $(this).attr('id', 'mediaModal' + i);
         $('#mediaModal' + i +'> div > div').removeClass('modal-content');
+    });
+}
+
+var updateAllVisibility = function () {
+    $.ajax({
+        type: 'POST',
+        url: '/changeAllVisibility',
+        success: function(data) {
+            alert('good');
+        },
+        error: function(data) {
+            alert('riiiiiiiip');
+        }
     });
 }
