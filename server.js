@@ -1622,7 +1622,7 @@ app.post('/changeAllVisibility', function(req, res) {
     questions.changeAllVisibility(req.body.changeValue, function(err, result) {
         if (err) {
             logger.error(err);
-            //res.status(500).send(common.getError(3004));
+            res.status(500).send(common.getError(3020));
         }
 
         return res.status(200).send(result);

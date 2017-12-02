@@ -17,13 +17,14 @@ block styles
               th Visiblity
                 br
                 .chip(id='allVisibility', onClick='updateAllVisibility(true)') Show All
-                .chip(id='allVisibility', onClick='updateAllVisibility(false)') Hide All
+                .chip(id='allVisibility', onClick='updateAllVisibility(false)') Hide All 
+                br
                 .switch
                   label
-                    | Hide List
+                    | Display
                     input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility()')
                     span.lever
-                    | Show List
+                    | Edit
               th ID
               th Title
               th Topic

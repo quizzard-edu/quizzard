@@ -639,20 +639,22 @@ exports.updateUserSubmissionTime = function(userId, question, callback){
 exports.changeAllVisibility = function(changeValue, callback) {
     db.getQuestionsList({}, {number: 1}, function(err, questionList){
         if (err) {
-            return callback(err, null);
+            return callback(common.getError(3017), null);
         }
-        for (var i in questionList){
-            var question = questionList[i];
-            if (question.visible !== changeValue){
+
+        questionList.forEach(question => {
+            if (question.visible !== changeValue) {
                 var newQuestion = {};
                 newQuestion['visible'] = changeValue.toString();
-                updateQuestionById(question._id, newQuestion, function(err, result){
+
+                updateQuestionById(question._id, newQuestion, function(err, result) {
                     if (err) {
-                        return callback(err, result);
+                        return callback(common.getError(3020), result);
                     }
                 });
             }
-        }
+        });
+
         return callback(null, 'success');
     });
 }

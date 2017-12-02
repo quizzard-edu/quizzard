@@ -659,7 +659,7 @@ var updateVisibility = function(qid, questionNumber) {
                 });
             // User cancels the visibility change
             } else {
-                displayQuestionTable();
+                $('#checked-' + qid).prop('checked', !$('#checked-' + qid).is(':checked'));
             }
         }
     );
@@ -1014,18 +1014,46 @@ var initSummernote = function () {
 }
 
 var updateAllVisibility = function (changeValue) {
-    $.ajax({
-        type: 'POST',
-        url: '/changeAllVisibility',
-        data: {
-            changeValue: changeValue
+    swal({
+        type: 'warning',
+        title: 'Visibilty Change',
+        text: 'You are about to change the visibility of ALL the questions.',
+        showCancelButton: true,
+        showConfirmButton: true,
+        // User can only close the swal if they click one of the buttons
+        allowEscapeKey: false,
+        allowClickOutside: false,
         },
-        success: function(data) {
-            alert('good');
-            displayQuestionTable();
-        },
-        error: function(data) {
-            alert('riiiiiiiip');
+        function (isConfirm) {
+            // User confirms the visiblity change
+            if (isConfirm) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/changeAllVisibility',
+                    data: {
+                        changeValue: changeValue
+                    },
+                    success: function(data) {
+                        
+                        $('.checked').prop('checked', changeValue);
+                        if (changeValue) {
+                            $('.hiddenEye').html('visibility');
+                            warningSnackbar('All questions are now VISIBLE.');
+                        } else {
+                            $('.hiddenEye').html('visibility_off');
+                            warningSnackbar('All questions are now HIDDEN.');
+                        }
+                    },
+                    error: function(data) {
+                        var jsonResponse = data.responseJSON;
+                        if (data['status'] === 401) {
+                            window.location.href = '/';
+                        } else {
+                            failSnackbar(getErrorFromResponse(jsonResponse));
+                        }
+                    }
+                });
+            }
         }
-    });
+    );
 }
