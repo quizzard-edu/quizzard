@@ -1,0 +1,7 @@
+mkdir ../keys
+
+#Generates Initial CSR and Private key file
+openssl req -new -newkey rsa:2048 -nodes -out ../keys/mydomain.csr -keyout ../keys/private.key
+
+##Self Signging the certificate 
+openssl x509 -req -days 9999 -in ../keys/mydomain.csr -signkey ../keys/private.key -out ../keys/cert.crt
