@@ -1667,7 +1667,7 @@ app.get('/feedback', function(req, res){
 
     users.getFeedback(function(err, result) {
         if (err) {
-            logger.error(err); //TODO:
+            logger.error(err);
             return res.status(500).render('feedback-view', {
                 content: null,
                 user: req.session.user
@@ -1676,7 +1676,7 @@ app.get('/feedback', function(req, res){
 
         users.getUsersList((err, userObj) => {
             if (err) {
-                logger.error(err); //TODO:
+                logger.error(err);
                 return res.status(500).render('feedback-view', {
                     content: [],
                     user: req.session.user
@@ -1707,8 +1707,6 @@ app.get('/feedback', function(req, res){
             }
 
             data = data.length === 0 ? null : data;
-
-            //TODO: empty feedback
 
             return res.status(201).render('feedback-view', {
                 content: data,
