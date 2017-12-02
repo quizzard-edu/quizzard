@@ -1609,6 +1609,7 @@ app.get('/adminAnalytics', function(req,res) {
     });
 });
 
+/* Changes Visibilty of All Questions */
 app.post('/changeAllVisibility', function(req, res) {
     if (!req.session.user) {
         return res.redirect('/');
@@ -1618,7 +1619,7 @@ app.post('/changeAllVisibility', function(req, res) {
         res.status(403).send(common.getError(1002));
     }
 
-    questions.changeAllVisibility(function(err, result) {
+    questions.changeAllVisibility(req.body.changeValue, function(err, result) {
         if (err) {
             logger.error(err);
             //res.status(500).send(common.getError(3004));

@@ -15,7 +15,9 @@ block styles
           thead
             tr
               th Visiblity
-                button(id='allVisibility', onClick='updateAllVisibility()') Show All Questions
+                br
+                .chip(id='allVisibility', onClick='updateAllVisibility(true)') Show All
+                .chip(id='allVisibility', onClick='updateAllVisibility(false)') Hide All
                 .switch
                   label
                     | Hide List

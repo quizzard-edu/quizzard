@@ -1013,12 +1013,16 @@ var initSummernote = function () {
     });
 }
 
-var updateAllVisibility = function () {
+var updateAllVisibility = function (changeValue) {
     $.ajax({
         type: 'POST',
         url: '/changeAllVisibility',
+        data: {
+            changeValue: changeValue
+        },
         success: function(data) {
             alert('good');
+            displayQuestionTable();
         },
         error: function(data) {
             alert('riiiiiiiip');
