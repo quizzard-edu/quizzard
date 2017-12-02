@@ -91,12 +91,18 @@ var displayClassStatistics = function () {
     getClassAnswered(path);
     getClassAccuracy(path);
     getClassPoints(path);
+    getClassPointsPerAttempt(path);
 
     getClassAnsweredOverTime(path);
     getClassPointsPerAttemptOverTime(path);
     getClassOverallOverTime(path);
     getClassAccuracyOverTime(path);
     getClassPointsOverTime(path);
+
+    getClassPointsPerTopicVsClass(path);
+    getClassAccuracyPerTopicVsClass(path);
+    getClassPointsPerTypeVsClass(path);
+    getClassAccuracyPerTypeVsClass(path);
 
     testRadar('#testingCanvas4');
     testRadar('#testingCanvas5');
@@ -310,6 +316,26 @@ var getClassAccuracy = function (path) {
   });
 }
 
+var getClassPointsPerAttempt = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classPointsPerAttempt'
+    },
+    success: function (data) {
+      //$('#classPointsI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classPointsI').html('No Data');
+      }
+    }
+  });
+}
+
 var getClassPoints = function (path) {
   $.ajax({
     type: 'GET',
@@ -378,6 +404,86 @@ var getClassPointsPerAttemptOverTime = function (path) {
     url: path,
     data: {
       type: 'classPointsPerAttemptOverTime'
+    },
+    success: function (data) {
+      //$('#classAnsweredI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classAnsweredI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassPointsPerTopicVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classPointsPerTopicVsClass'
+    },
+    success: function (data) {
+      //$('#classAnsweredI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classAnsweredI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassAccuracyPerTopicVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classAccuracyPerTopicVsClass'
+    },
+    success: function (data) {
+      //$('#classAnsweredI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classAnsweredI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassPointsPerTypeVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classPointsPerTypeVsClass'
+    },
+    success: function (data) {
+      //$('#classAnsweredI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classAnsweredI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassAccuracyPerTypeVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classAccuracyPerTypeVsClass'
     },
     success: function (data) {
       //$('#classAnsweredI').html(data[0]);
