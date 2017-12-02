@@ -67,6 +67,8 @@ exports.getChart = function(query, callback) {
             return getClassAnswered(query, callback);
         case 'classPointsPerAttempt':
             return getClassPointsPerAttempt(query, callback);
+        case 'classOverall':
+            return getClassOverall(query, callback);
         case 'classAnsweredOverTime':
             return getClassAnsweredOverTime(query, callback);
         case 'classPointsPerAttemptOverTime':
@@ -565,10 +567,44 @@ var getClassPointsPerAttempt = function(query, callback) {
         for (i in students) {
             classPointsPerAttempt += students[i].totalAttemptsCount === 0 ? 0 : parseFloat((students[i].points / students[i].totalAttemptsCount).toFixed(2));
             classCount++;
-        }logger.log(classPointsPerAttempt);
+        }
 
         classPointsPerAttemptAverage =  classCount === 0 ? 0 : (classPointsPerAttempt / classCount).toFixed(2);
         return callback(null, [classPointsPerAttemptAverage]);
+    });
+}
+
+/**
+ * get overall value of the class
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassOverall = function(query, callback) {
+    users.getStudentsList(function(err, students) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!students) {
+            return  callback('no results', null);
+        }
+
+        var classOverall = 0;
+        var classCount = 0;
+        var classOverallAverage = 0;
+
+        for (i in students) {
+            classOverall += (students[i].totalAttemptsCount === 0)
+            ? 0
+            : parseFloat((students[i].points *
+            ((students[i].correctAttemptsCount/students[i].totalAttemptsCount) +
+            (students[i].points/students[i].totalAttemptsCount))).toFixed(2));
+            classCount++;
+        }
+
+        classOverallAverage =  classCount === 0 ? 0 : (classOverall / classCount).toFixed(2);
+        return callback(null, [classOverallAverage]);
     });
 }
 

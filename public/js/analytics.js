@@ -92,6 +92,7 @@ var displayClassStatistics = function () {
     getClassAccuracy(path);
     getClassPoints(path);
     getClassPointsPerAttempt(path);
+    getClassOverall(path);
 
     getClassAnsweredOverTime(path);
     getClassPointsPerAttemptOverTime(path);
@@ -322,6 +323,26 @@ var getClassPointsPerAttempt = function (path) {
     url: path,
     data: {
       type: 'classPointsPerAttempt'
+    },
+    success: function (data) {
+      //$('#classPointsI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classPointsI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassOverall = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classOverall'
     },
     success: function (data) {
       //$('#classPointsI').html(data[0]);
