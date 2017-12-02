@@ -119,6 +119,10 @@ var displayStudentStatistics = function (studentId) {
     getCorrectAttemptsOverTime(path);
     getAccuracyOverTime(path);
     getPointsOverTime(path);
+    getOverallRankOverTime(path);
+    getPointsRankOverTime(path);
+    getAttemptRankOverTime(path);
+    getAccuracyRankOverTime(path);
 
     testRadar('#testingCanvas4');
     testRadar('#testingCanvas5');
@@ -349,6 +353,82 @@ var getPointsOverTime = function (path) {
     success: function (data) {
       data.id = '#testingCanvas3';
       createLineChart (data);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getOverallRankOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'overallRankOverTime'
+    },
+    success: function (data) {
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getPointsRankOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsRankOverTime'
+    },
+    success: function (data) {
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getAttemptRankOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'attemptRankOverTime'
+    },
+    success: function (data) {
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getAccuracyRankOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'accuracyRankOverTime'
+    },
+    success: function (data) {
     },
     error: function (data) {
       if (data['status'] === 401) {
