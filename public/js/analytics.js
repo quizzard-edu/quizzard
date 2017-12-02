@@ -440,6 +440,25 @@ var getAccuracyRankOverTime = function (path) {
   });
 }
 
+var getAccuracyRankOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsPerTopicVsClass'
+    },
+    success: function (data) {
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
 var createLineChart = function (data) {
   var ctx = $(data.id);
   var config2 = {

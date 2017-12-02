@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const users = require('./users.js');
+const questions = require('./questions.js');
 const logger = require('./log.js');
 const common = require('./common.js');
 const db = require('./db.js');
@@ -80,6 +81,10 @@ exports.getChart = function(query, callback) {
             return getAttemptRankOverTime(query, callback);
         case 'accuracyRankOverTime':
             return getAccuracyRankOverTime(query, callback);
+        case 'pointsPerTopicVsClass':
+            return getPointsPerTopicVsClass(query, callback);
+        case 'accuracyPerTopicVsClass':
+            return getAccuracyPerTopicVsClass(query, callback);
         default:
             return callback('notFound', null);
     }
@@ -735,6 +740,77 @@ var getAccuracyRankOverTime = function(query, callback) {
             dates: dates,
             studentData: studentData,
             totalStudentsCount: totalStudentsCount
+        });
+    });
+}
+
+/**
+ * get accuracy per question topic
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getPointsPerTopicVsClass = function(query, callback) {
+    questions.getAllQuestionsByQuery({}, {topic: 1}, function(err, questionsList) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!questionsList || !questionsList[0]) {
+            return callback('no questions available', null);
+        }
+
+        var studentId = query.userId;
+        var studentData = [];
+        var classData = [];
+        var currentTopic = questionsList[0].topic;
+        var studentPoints = 0;
+        var classPoints = 0;
+        var classCount = 0;
+
+        for (var i = 0; i < questionsList.length; i++) {
+            var question = questionsList[i];
+
+            if (question.topic !== currentTopic) {
+                var obj = {};
+                obj[currentTopic] = studentPoints;
+                studentData.push(obj);
+                obj = {};
+                obj[currentTopic] = (classCount === 0) ? 0 : (classPoints / classCount).toFixed(0);
+                classData.push(obj);
+                studentPoints = 0;
+                classPoints = 0;
+                classCount = 0;
+                currentTopic = question.topic;
+            }
+
+            for (var j = 0; j < question.correctAttempts.length; j++) {
+                var attempt = question.correctAttempts[j];
+                if (attempt.userId === studentId) {
+                    studentPoints = attempt.points;
+                } else {
+                    classPoints += attempt.points;
+                    classCount ++;
+                }
+            }
+        }
+
+        if (questionsList.length > 0) {
+            currentTopic = questionsList[questionsList.length-1].topic;
+            var obj = {};
+            obj[currentTopic] = studentPoints;
+            studentData.push(obj);
+            obj = {};
+            obj[currentTopic] = (classCount === 0) ? 0 : (classPoints / classCount).toFixed(0);
+            classData.push(obj);
+            studentPoints = 0;
+            classPoints = 0;
+            classCount = 0;
+        }
+
+        return callback(null, {
+            studentData: studentData,
+            classData: classData
         });
     });
 }

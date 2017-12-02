@@ -210,6 +210,11 @@ exports.getAllQuestionsList = function(callback) {
     db.getQuestionsList({}, {number: 1}, callback);
 }
 
+// get all questions list by Query
+exports.getAllQuestionsByQuery = function(findQuery, sortQuery, callback) {
+    db.getQuestionsList(findQuery, sortQuery, callback);
+}
+
 // submit answer
 exports.submitAnswer = function(questionId, userId, correct, points, answer, callback) {
     var currentDate = common.getDate();
