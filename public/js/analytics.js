@@ -115,7 +115,7 @@ var displayStudentStatistics = function (studentId) {
     // questions answered analytics
     getQuestionsAnsweredStudentAndClass(path);
     getCorrectAttemptsOverTime(path);
-    // TODO: RANK MISSING
+    getCorrectAttemptRankOverTime(path);
 
     // accuracy analytics
     getAccuracyStudentAndClass(path);
@@ -289,6 +289,27 @@ var getCorrectAttemptsOverTime = function (path) {
     },
     success: function (data) {
       data.id = '#correctAttemptsOverTime';
+      createLineChart (data);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getCorrectAttemptRankOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'correctAttemptRankOverTime'
+    },
+    success: function (data) {
+      //data.id = '#correctAttemptsOverTime';
       createLineChart (data);
     },
     error: function (data) {

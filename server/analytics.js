@@ -79,6 +79,8 @@ exports.getChart = function(query, callback) {
             return getPointsRankOverTime(query, callback);
         case 'attemptRankOverTime':
             return getAttemptRankOverTime(query, callback);
+        case 'correctAttemptRankOverTime':
+            return getCorrectAttemptRankOverTime(query, callback);
         case 'accuracyRankOverTime':
             return getAccuracyRankOverTime(query, callback);
         case 'pointsPerTopicVsClass':
@@ -167,12 +169,12 @@ var getAnalytics = function(callback) {
 
                         studentsCount++;
                         if (studentsCount === studentsList.length-1) {
+                            classObject.points = studentsCount === 0 ? 0 :  (classObject.points / studentsCount).toFixed(0);
+                            classObject.accuracy = classObject.totalAttemptsCount === 0 ? 0 :  ((classObject.correctAttemptsCount / classObject.totalAttemptsCount) * 100).toFixed(2);
+
                             classObject.correctAttemptsCount += studentsCount === 0 ? 0 :  (classObject.correctAttemptsCount / studentsCount).toFixed(0);
                             classObject.wrongAttemptsCount += studentsCount === 0 ? 0 :  (classObject.wrongAttemptsCount / studentsCount).toFixed(0);
                             classObject.totalAttemptsCount += studentsCount === 0 ? 0 :  (classObject.totalAttemptsCount / studentsCount).toFixed(0);
-
-                            classObject.points = studentsCount === 0 ? 0 :  (classObject.points / studentsCount).toFixed(0);
-                            classObject.accuracy = classObject.totalAttemptsCount === 0 ? 0 :  ((classObject.correctAttemptsCount / classObject.totalAttemptsCount) * 100).toFixed(2);
 
                             classObject.overallAccuracy = studentsCount === 0 ? 0 :  (overallSum / studentsCount).toFixed(2);
                             classObject.attemptAccuracy = studentsCount === 0 ? 0 :  (attemptSum / studentsCount).toFixed(2);
@@ -673,6 +675,7 @@ var getOverallRankOverTime = function(query, callback) {
         var studentData = [];
 
         for (var i = 0; i < studentObject.dates.length; i++) {
+            dates.push(studentObject.dates[i].date);
             studentData.push(studentObject.dates[i].info.overallRank);
         }
 
@@ -700,6 +703,7 @@ var getPointsRankOverTime = function(query, callback) {
         var studentData = [];
 
         for (var i = 0; i < studentObject.dates.length; i++) {
+            dates.push(studentObject.dates[i].date);
             studentData.push(studentObject.dates[i].info.pointsRank);
         }
 
@@ -727,7 +731,36 @@ var getAttemptRankOverTime = function(query, callback) {
         var studentData = [];
 
         for (var i = 0; i < studentObject.dates.length; i++) {
+            dates.push(studentObject.dates[i].date);
             studentData.push(studentObject.dates[i].info.attemptRank);
+        }
+
+        return callback(null, {
+            dates: dates,
+            studentData: studentData,
+            totalStudentsCount: totalStudentsCount
+        });
+    });
+}
+
+/**
+ * get correct attempt rank over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getCorrectAttemptRankOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, studentObject) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var studentData = [];
+
+        for (var i = 0; i < studentObject.dates.length; i++) {
+            dates.push(studentObject.dates[i].date);
+            studentData.push(studentObject.dates[i].info.correctAttemptsRank);
         }
 
         return callback(null, {
@@ -754,6 +787,7 @@ var getAccuracyRankOverTime = function(query, callback) {
         var studentData = [];
 
         for (var i = 0; i < studentObject.dates.length; i++) {
+            dates.push(studentObject.dates[i].date);
             studentData.push(studentObject.dates[i].info.accuracyRank);
         }
 
