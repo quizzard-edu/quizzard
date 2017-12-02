@@ -83,6 +83,8 @@ exports.getChart = function(query, callback) {
             return getCorrectAttemptRankOverTime(query, callback);
         case 'accuracyRankOverTime':
             return getAccuracyRankOverTime(query, callback);
+        case 'pointsPerAttemptsOverTime':
+            return getPointsPerAttemptsOverTime(query, callback);
         case 'pointsPerTopicVsClass':
             return getPointsPerTopicVsClass(query, callback);
         case 'accuracyPerTopicVsClass':
@@ -185,7 +187,7 @@ var getAnalytics = function(callback) {
                             classObject.totalAttemptsCount = studentsCount === 0 ? 0 :  (classTotalAttemptsCount / studentsCount).toFixed(0);
 
                             classObject.overallAverage = studentsCount === 0 ? 0 :  (overallSum / studentsCount).toFixed(2);
-                            classObject.attemptAverage = studentsCount === 0 ? 0 :  (attemptSum / studentsCount).toFixed(2);
+                            classObject.pointsPerAttemptAverage = studentsCount === 0 ? 0 :  (attemptSum / studentsCount).toFixed(2);
                             classObject.accuracyAverage = studentsCount === 0 ? 0 :  (accuracySum / studentsCount).toFixed(2);
                             classObject.pointsAverage = studentsCount === 0 ? 0 :  (pointsSum / studentsCount).toFixed(2);
                             classObject.correctAttemptsAverage = studentsCount === 0 ? 0 :  (correctAttemptsSum / studentsCount).toFixed(2);
@@ -572,6 +574,48 @@ var getCorrectAttemptsOverTime = function(query, callback) {
             for (var i = 0; i < classObject.dates.length; i++) {
                 dates.push(classObject.dates[i].date);
                 classData.push(classObject.dates[i].info.correctAttemptsCount);
+            }
+
+            return callback(null, {
+                dates: dates,
+                studentData: studentData,
+                classData: classData
+            });
+        });
+    });
+}
+
+/**
+ * get points per attempts of user and class over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getPointsPerAttemptsOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:query.userId}, function(err, studentObject) {
+        if (err) {
+            return callback(err, null);
+        }
+        getTimeBasedAnalytics({_id:classId}, function(err, classObject) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            var dates = [];
+            var studentData = [];
+            var classData = [];
+
+            for (var i = 0; i < classObject.dates.length - studentObject.dates.length; i++) {
+                studentData.push(0);
+            }
+
+            for (var i = 0; i < studentObject.dates.length; i++) {
+                studentData.push(studentObject.dates[i].info.pointsPerAttemptValue);
+            }
+
+            for (var i = 0; i < classObject.dates.length; i++) {
+                dates.push(classObject.dates[i].date);
+                classData.push(classObject.dates[i].info.pointsPerAttemptAverage);
             }
 
             return callback(null, {
