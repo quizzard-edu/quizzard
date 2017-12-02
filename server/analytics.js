@@ -118,6 +118,11 @@ var getAnalytics = function(callback) {
             return callback(err, null);
         }
 
+        var classCorrectAttemptsCount = 0;
+        var classWrongAttemptsCount = 0;
+        var classTotalAttemptsCount = 0;
+        var classPoints = 0;
+
         var overallList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'overall'), '_id');
         var attemptList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'attempt'), '_id');
         var accuracyList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'accuracy'), '_id');
@@ -146,16 +151,19 @@ var getAnalytics = function(callback) {
                 row.totalAttemptsCount = student.totalAttemptsCount;
                 row.points = student.points;
                 row.accuracy = student.totalAttemptsCount === 0 ? 0 : ((student.correctAttemptsCount / student.totalAttemptsCount) * 100).toFixed(2);
+
+                row.overallValue = leaderboardList.find((element) => {return element._id === student._id}).overall;
+                row.pointsPerAttemptValue = leaderboardList.find((element) => {return element._id === student._id}).attempt;
                 row.overallRank = overallList.indexOf(student._id);
-                row.attemptRank = attemptList.indexOf(student._id);
+                row.pointsPerAttemptRank = attemptList.indexOf(student._id);
                 row.accuracyRank = accuracyList.indexOf(student._id);
                 row.pointsRank = pointsList.indexOf(student._id);
                 row.correctAttemptsRank = correctAttemptsList.indexOf(student._id);
 
-                classObject.correctAttemptsCount += student.correctAttemptsCount;
-                classObject.wrongAttemptsCount += student.wrongAttemptsCount;
-                classObject.totalAttemptsCount += student.totalAttemptsCount;
-                classObject.points += student.points;
+                classCorrectAttemptsCount += student.correctAttemptsCount;
+                classWrongAttemptsCount += student.wrongAttemptsCount;
+                classTotalAttemptsCount += student.totalAttemptsCount;
+                classPoints += student.points;
 
                 addStudentAnalyticsWithDate(
                     student._id,
@@ -169,18 +177,18 @@ var getAnalytics = function(callback) {
 
                         studentsCount++;
                         if (studentsCount === studentsList.length-1) {
-                            classObject.points = studentsCount === 0 ? 0 :  (classObject.points / studentsCount).toFixed(0);
-                            classObject.accuracy = classObject.totalAttemptsCount === 0 ? 0 :  ((classObject.correctAttemptsCount / classObject.totalAttemptsCount) * 100).toFixed(2);
+                            classObject.points = studentsCount === 0 ? 0 :  (classPoints / studentsCount).toFixed(0);
+                            classObject.accuracy = classCorrectAttemptsCount === 0 ? 0 :  ((classCorrectAttemptsCount / classTotalAttemptsCount) * 100).toFixed(2);
 
-                            classObject.correctAttemptsCount = studentsCount === 0 ? 0 :  (classObject.correctAttemptsCount / studentsCount).toFixed(0);
-                            classObject.wrongAttemptsCount = studentsCount === 0 ? 0 :  (classObject.wrongAttemptsCount / studentsCount).toFixed(0);
-                            classObject.totalAttemptsCount = studentsCount === 0 ? 0 :  (classObject.totalAttemptsCount / studentsCount).toFixed(0);
+                            classObject.correctAttemptsCount = studentsCount === 0 ? 0 :  (classCorrectAttemptsCount / studentsCount).toFixed(0);
+                            classObject.wrongAttemptsCount = studentsCount === 0 ? 0 :  (classWrongAttemptsCount / studentsCount).toFixed(0);
+                            classObject.totalAttemptsCount = studentsCount === 0 ? 0 :  (classTotalAttemptsCount / studentsCount).toFixed(0);
 
-                            classObject.overallAccuracy = studentsCount === 0 ? 0 :  (overallSum / studentsCount).toFixed(2);
-                            classObject.attemptAccuracy = studentsCount === 0 ? 0 :  (attemptSum / studentsCount).toFixed(2);
-                            classObject.accuracyAccuracy = studentsCount === 0 ? 0 :  (accuracySum / studentsCount).toFixed(2);
-                            classObject.pointsAccuracy = studentsCount === 0 ? 0 :  (pointsSum / studentsCount).toFixed(2);
-                            classObject.correctAttemptsAccuracy = studentsCount === 0 ? 0 :  (correctAttemptsSum / studentsCount).toFixed(2);
+                            classObject.overallAverage = studentsCount === 0 ? 0 :  (overallSum / studentsCount).toFixed(2);
+                            classObject.attemptAverage = studentsCount === 0 ? 0 :  (attemptSum / studentsCount).toFixed(2);
+                            classObject.accuracyAverage = studentsCount === 0 ? 0 :  (accuracySum / studentsCount).toFixed(2);
+                            classObject.pointsAverage = studentsCount === 0 ? 0 :  (pointsSum / studentsCount).toFixed(2);
+                            classObject.correctAttemptsAverage = studentsCount === 0 ? 0 :  (correctAttemptsSum / studentsCount).toFixed(2);
 
                             addStudentAnalyticsWithDate(
                                 classId,
@@ -732,7 +740,7 @@ var getAttemptRankOverTime = function(query, callback) {
 
         for (var i = 0; i < studentObject.dates.length; i++) {
             dates.push(studentObject.dates[i].date);
-            studentData.push(studentObject.dates[i].info.attemptRank);
+            studentData.push(studentObject.dates[i].info.pointsPerAttemptRank);
         }
 
         return callback(null, {
