@@ -372,6 +372,8 @@ var getOverallRankOverTime = function (path) {
       type: 'overallRankOverTime'
     },
     success: function (data) {
+      data.id = '#overallRankOverTime';
+      createRankChart(data)
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -391,6 +393,8 @@ var getPointsRankOverTime = function (path) {
       type: 'pointsRankOverTime'
     },
     success: function (data) {
+      data.id = '#pointsRankOverTime';
+      createRankChart(data)
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -410,6 +414,8 @@ var getPointsPerAttemptRankOverTime = function (path) {
       type: 'attemptRankOverTime'
     },
     success: function (data) {
+      data.id = '#pointsPerAttemptRankOverTime';
+      createRankChart(data)
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -429,6 +435,8 @@ var getAccuracyRankOverTime = function (path) {
       type: 'accuracyRankOverTime'
     },
     success: function (data) {
+      data.id = '#accuracyRankOverTime';
+      createRankChart(data)
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -551,7 +559,7 @@ var createLineChart = function (data) {
       scales: {
         yAxes: [{
           ticks: {
-            beginAt: 0,
+            min: 0,
             max: maximum(data)
           }
         }],
@@ -570,6 +578,64 @@ var createLineChart = function (data) {
   };
   new Chart (ctx, config2);
 }
+
+
+var createRankChart = function (data) {
+  var ctx = $(data.id);
+  var config2 = {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          data: data.studentData,
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          borderColor: '#CDDC39',
+          label: 'Me',
+          borderWidth: 4,
+          pointHoverBackgroundColor: 'white',
+          pointHoverBorderColor: '#CDDC39',
+          pointRadius: 2,
+        },
+        {
+          data: data.classData,
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          borderColor: '#d1d1d1',
+          label: 'Class',
+          borderWidth: 4,
+          pointHoverBackgroundColor: 'white',
+          pointHoverBorderColor: '#d1d1d1',
+          pointRadius: 2,
+        }
+      ],
+      labels: data.dates
+    },
+    options: {
+      maintainAspectRatio: false,
+      responsive: true,
+      scales: {
+        yAxes: [{
+          ticks: {
+            min: 0,
+            reverse: true,
+            max: data.totalStudentsCount
+          }
+        }],
+        xAxes: [{
+            display : false
+        }]
+      },
+      layout: {
+        padding: {
+          left: 10,
+          right: 20,
+          bottom: 20
+        }
+      }
+    }
+  };
+  new Chart (ctx, config2);
+}
+
 
 var maximum = function(data) {
   const studentD = data.studentData.reduce(function(a, b) {
