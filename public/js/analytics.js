@@ -91,7 +91,6 @@ var displayClassStatistics = function () {
     getClassAnswered(path);
     getClassAccuracy(path);
     getClassPoints(path);
-    getClassRating(path);
 }
 
 /**
@@ -112,19 +111,37 @@ var displayStudentStatistics = function (studentId) {
     // Request statistics
 
     // Student and Class Statistics
+
+    // questions answered analytics
     getQuestionsAnsweredStudentAndClass(path);
-    getAccuracyStudentAndClass(path);
-    getPointsStudentAndClass(path);
-    getRatingStudentAndClass(path);
     getCorrectAttemptsOverTime(path);
+    // TODO: RANK MISSING
+
+    // accuracy analytics
+    getAccuracyStudentAndClass(path);
     getAccuracyOverTime(path);
-    getPointsOverTime(path);
-    getOverallRankOverTime(path);
-    getPointsRankOverTime(path);
-    getAttemptRankOverTime(path);
     getAccuracyRankOverTime(path);
+    
+    // points analytics
+    getPointsStudentAndClass(path);
+    getPointsOverTime(path);
+    getPointsRankOverTime(path);
+
+    // overall score analytics
+    // TODO: CARD MISSING
+    // TODO: OVER TIME MISSING
+    getOverallRankOverTime(path);
+    
+    // points per attempt analytics
+    // TODO: CARD MISSING
+    // TODO: OVER TIME MISSING
+    getPointsPerAttemptRankOverTime(path);
+
+    // by topic analytics
     getPointsPerTopicVsClass(path);
     getAccuracyPerTopicVsClass(path);
+
+    // by type analytics
     getPointsPerTypeVsClass(path);
     getAccuracyPerTypeVsClass(path);
 
@@ -200,28 +217,6 @@ var getPointsStudentAndClass = function (path) {
   });
 }
 
-var getRatingStudentAndClass = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'RatingVsClass'
-    },
-    success: function (data) {
-      $('#studentRating').html(data[0]);
-      $('#classRating').html(data[1]);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        $('#studentRating').html('No Data');
-        $('#classRating').html('No Data');
-      }
-    }
-  });
-}
-
 // Class statistics
 
 var getClassAnswered = function (path) {
@@ -285,26 +280,6 @@ var getClassPoints = function (path) {
   });
 }
 
-var getClassRating = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'classRating'
-    },
-    success: function (data) {
-      $('#classRatingI').html(data[0]);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        $('#classRatingI').html('No Data');
-      }
-    }
-  });
-}
-
 var getCorrectAttemptsOverTime = function (path) {
   $.ajax({
     type: 'GET',
@@ -313,7 +288,7 @@ var getCorrectAttemptsOverTime = function (path) {
       type: 'correctAttemptsOverTime'
     },
     success: function (data) {
-      data.id = '#testingCanvas1';
+      data.id = '#correctAttemptsOverTime';
       createLineChart (data);
     },
     error: function (data) {
@@ -334,7 +309,7 @@ var getAccuracyOverTime = function (path) {
       type: 'accuracyOverTime'
     },
     success: function (data) {
-      data.id = '#testingCanvas2';
+      data.id = '#accuracyOverTime';
       createLineChart (data);
     },
     error: function (data) {
@@ -355,7 +330,7 @@ var getPointsOverTime = function (path) {
       type: 'pointsOverTime'
     },
     success: function (data) {
-      data.id = '#testingCanvas3';
+      data.id = '#pointsOverTime';
       createLineChart (data);
     },
     error: function (data) {
@@ -406,7 +381,7 @@ var getPointsRankOverTime = function (path) {
   });
 }
 
-var getAttemptRankOverTime = function (path) {
+var getPointsPerAttemptRankOverTime = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
