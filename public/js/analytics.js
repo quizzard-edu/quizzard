@@ -187,15 +187,15 @@ var getOverallVsClass = function (path) {
       type: 'overallVsClass'
     },
     success: function (data) {
-      //$('#studentAnswered').html(data[0]);
-      //$('#classAnswered').html(data[1]);
+      $('#studentOverall').html(data[0]);
+      $('#classOverall').html(data[1]);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#studentAnswered').html('No Data');
-        //$('#classAnswered').html('No Data');
+        $('#studentOverall').html('No Data');
+        $('#classOverall').html('No Data');
       }
     }
   });
@@ -209,15 +209,15 @@ var getPointsPerAttemptVsClass = function (path) {
       type: 'pointsPerAttemptVsClass'
     },
     success: function (data) {
-      //$('#studentAnswered').html(data[0]);
-      //$('#classAnswered').html(data[1]);
+      $('#studentperAttempt').html(data[0]);
+      $('#classPerAttempt').html(data[1]);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#studentAnswered').html('No Data');
-        //$('#classAnswered').html('No Data');
+        $('#studentperAttempt').html('No Data');
+        $('#classPerAttempt').html('No Data');
       }
     }
   });
