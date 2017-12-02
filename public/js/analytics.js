@@ -91,6 +91,8 @@ var displayClassStatistics = function () {
     getClassAnswered(path);
     getClassAccuracy(path);
     getClassPoints(path);
+    testRadar('#testingCanvas4');
+    testRadar('#testingCanvas5');
 }
 
 /**

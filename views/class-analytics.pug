@@ -79,17 +79,26 @@
     .row
       .row
         .col.s12
-          h5.header-style#classAnalyticsHeader &nbsp Overall Score Analytics
-      .row.padding-left-10.padding-right-10
-        .col.s12.m3
-          .card#classPointsCardI
-            .card-content.lime-card.white-text
-              .col.s7.m7
-                i.material-icons.background-round.mt-5 bubble_chart
-                p Average Overall Score
-              .col.s5.m5.right-align.padding-right-10
-                  h5#classPointsI
-        .col.s12.m9
-          h5 Class Overall Score
-          .card.chart.padding-top-10.padding-left-10
-            //-canvas#testingCanvas1
+          h5.header-style#studentAnalyticsHeader &nbsp Question Type Analytics
+      .col.s12.m6
+        h5 Class Question Type Points
+        .card.radar.padding-top-10.padding-left-10
+          //-canvas#testingCanvas4
+      .col.s12.m6
+        h5 Class Question Type Accuracy
+        .card.radar.padding-top-10.padding-left-10
+          //-canvas#testingCanvas5
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#studentAnalyticsHeader &nbsp Question Topic Analytics
+      .col.s12.m6
+        h5 Class Question Topic Points
+        .card.radar.padding-top-10.padding-left-10
+          //-canvas#testingCanvas4
+      .col.s12.m6
+        h5 Class Question Topic Accuracy
+        .card.radar.padding-top-10.padding-left-10
+          //-canvas#testingCanvas5
