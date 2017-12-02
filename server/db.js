@@ -591,7 +591,7 @@ exports.addFeedback = function(feedback, callback) {
 
 exports.getFeedback = function(callback) {
     feedbackCollection.find().sort({time: -1}).toArray(function(err, res) {
-        if(err) {
+        if (err) {
             logger.error('Failed to get feedback');
             return callback(common.getError(8001), res);
         }

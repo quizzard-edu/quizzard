@@ -929,7 +929,7 @@ app.post('/questiondel', function(req, res) {
 // submit question rating from both students and admins
 app.post('/submitQuestionRating', function(req, res) {
     if (!req.session.user) {
-        return res.redirect('/');    
+        return res.redirect('/');
     }
     return submitQuestionRating(req, res);
 });
@@ -1633,6 +1633,7 @@ app.get('/adminAnalytics', function(req,res) {
     });
 });
 
+/* submit course feedback coming from students*/
 app.post('/submitFeedback', function(req, res){
     if (!req.session.user) {
         return res.redirect('/');
@@ -1654,6 +1655,7 @@ app.post('/submitFeedback', function(req, res){
     });
 });
 
+/* get feed back for the admin's `View Feedback` page*/
 app.get('/feedback', function(req, res){
     if (!req.session.user) {
         return res.redirect('/');
@@ -1668,35 +1670,23 @@ app.get('/feedback', function(req, res){
     users.getFeedback(function(err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).render('feedback-view', {
-                content: null,
-                user: req.session.user
-            });
+            return res.status(500).send(common.getError(8001));
         }
 
         users.getUsersList((err, userObj) => {
             if (err) {
                 logger.error(err);
-                return res.status(500).render('feedback-view', {
-                    content: [],
-                    user: req.session.user
-                });
+                return res.status(500).render(common.getError(2002));
             }
 
             var usersList = {};
-            for (i in userObj) {
-                var user = userObj[i];
-                usersList[user._id] = [user.fname + ' ' + user.lname, user.username];
-            }
+            userObj.forEach(user => {
+                usersList[user._id] = [`${user.fname} ${user.lname}`, user.username];
+            });
 
             var data = [];
-            for(i in result) {
-                var tempData = {};
-
-                logger.log("res - " + result[i].uuid);
-
-                logger.log("res2 - " + usersList[result[i].uuid][0]);
-
+            var tempData = {};
+            results.forEach(i => {
                 tempData.fullname = usersList[result[i].uuid][0];
                 tempData.username = usersList[result[i].uuid][1];
                 tempData.subject = result[i].subject;
@@ -1704,7 +1694,8 @@ app.get('/feedback', function(req, res){
                 tempData.time = result[i].time;
 
                 data.push(tempData);
-            }
+                tempData = {}
+            });
 
             data = data.length === 0 ? null : data;
 
@@ -1716,6 +1707,7 @@ app.get('/feedback', function(req, res){
     })
 });
 
+/* allow the admin to clear all the feedback*/
 app.post('/removeAllFeedback', function(req, res) {
     db.removeAllFeedback(function(err, result) {
         if (err) {

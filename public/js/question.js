@@ -89,7 +89,7 @@ var sendAnswerRequest = function(ans) {
                 }
             });
 
-            $('#alertMsg').html('Congratulations! You gained ' + data.points + ' points!<br>Please rate the difficulty of this question:');
+            $('#alertMsg').html(`Congratulations! You gained ${data.points} points!<br>Please rate the difficulty of this question:`);
 
             $('#alert').modal('open');
         },

@@ -16,7 +16,8 @@ function userFeedback() {
             $('#modal-content').scrollTop(0);
             $('.collapsible').collapsible('close', 0);
 
-            if(subject !== "" && message !== "" && !cancelling) { // if all is good, make call
+            // if the user submitted content, and if the user didnt hit the cancel button
+            if(subject !== '' && message !== '' && !cancelling) {
                 $.ajax({
                     type: 'POST',
                     url: '/submitFeedback',
@@ -45,9 +46,6 @@ function userFeedback() {
                 $('#email').val('');
                 $('#feedbackArea').trigger('autoresize');
                 $('#modal-content').scrollTop(0);
-                //$('.collapsible').collapsible('close', 0);
-                //$('.collapsible').collapsible('close', 1);
-
             } else { // if their content was empty, do nothing and notify them
                 $('#subject').val(subject);
                 $('#feedbackArea').val(message);
@@ -65,7 +63,7 @@ function removeAllFeedback() {
         text: 'You are about to remove all the student feedback',
         type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
+        confirmButtonColor: colours.pinkLight,
         confirmButtonText: 'Confirm',
         closeOnConfirm: true
     }, function() {
@@ -74,8 +72,7 @@ function removeAllFeedback() {
             url: '/removeAllFeedback',
             success: function(data) {
                 successSnackbar("Successfully submitted feedback");
-                $('#feedbackContainer').hide();
-                $('#noFeedback2').show();
+                window.location.href = '/';
             },
             error: function(data) {
                 var jsonResponse = data.responseJSON;
