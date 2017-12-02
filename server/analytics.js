@@ -85,6 +85,10 @@ exports.getChart = function(query, callback) {
             return getPointsPerTopicVsClass(query, callback);
         case 'accuracyPerTopicVsClass':
             return getAccuracyPerTopicVsClass(query, callback);
+        case 'pointsPerTypeVsClass':
+            return getPointsPerTypeVsClass(query, callback);
+        case 'accuracyPerTypeVsClass':
+            return getAccuracyPerTypeVsClass(query, callback);
         default:
             return callback('notFound', null);
     }
@@ -881,6 +885,152 @@ var getAccuracyPerTopicVsClass = function(query, callback) {
             studentData.push(obj);
             obj = {};
             obj[currentTopic] = (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2);
+            classData.push(obj);
+        }
+
+        return callback(null, {
+            studentData: studentData,
+            classData: classData
+        });
+    });
+}
+
+/**
+ * get points per question type
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getPointsPerTypeVsClass = function(query, callback) {
+    questions.getAllQuestionsByQuery({}, {type: 1}, function(err, questionsList) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!questionsList || !questionsList[0]) {
+            return callback('no questions available', null);
+        }
+
+        var studentId = query.userId;
+        var studentData = [];
+        var classData = [];
+        var currentType = questionsList[0].type;
+        var studentPoints = 0;
+        var classPoints = 0;
+        var classCount = 0;
+
+        for (var i = 0; i < questionsList.length; i++) {
+            var question = questionsList[i];
+
+            if (question.type !== currentType) {
+                var obj = {};
+                obj[currentType] = studentPoints;
+                studentData.push(obj);
+                obj = {};
+                obj[currentType] = (classCount === 0) ? 0 : (classPoints / classCount).toFixed(0);
+                classData.push(obj);
+                studentPoints = 0;
+                classPoints = 0;
+                classCount = 0;
+                currentType = question.type;
+            }
+
+            for (var j = 0; j < question.correctAttempts.length; j++) {
+                var attempt = question.correctAttempts[j];
+                if (attempt.userId === studentId) {
+                    studentPoints = attempt.points;
+                } else {
+                    classPoints += attempt.points;
+                    classCount ++;
+                }
+            }
+        }
+
+        if (questionsList.length > 0) {
+            currentType = questionsList[questionsList.length-1].type;
+            var obj = {};
+            obj[currentType] = studentPoints;
+            studentData.push(obj);
+            obj = {};
+            obj[currentType] = (classCount === 0) ? 0 : (classPoints / classCount).toFixed(0);
+            classData.push(obj);
+        }
+
+        return callback(null, {
+            studentData: studentData,
+            classData: classData
+        });
+    });
+}
+
+/**
+ * get accuracy per question type
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getAccuracyPerTypeVsClass = function(query, callback) {
+    questions.getAllQuestionsByQuery({}, {type: 1}, function(err, questionsList) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!questionsList || !questionsList[0]) {
+            return callback('no questions available', null);
+        }
+
+        var studentId = query.userId;
+        var studentData = [];
+        var classData = [];
+        var currentType = questionsList[0].type;
+        var studentCorrect = 0;
+        var studentTotal = 0;
+        var classCorrect = 0;
+        var classTotal = 0;
+
+        for (var i = 0; i < questionsList.length; i++) {
+            var question = questionsList[i];
+
+            if (question.type !== currentType) {
+                var obj = {};
+                obj[currentType] = (studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2);
+                studentData.push(obj);
+                obj = {};
+                obj[currentType] = (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2);
+                classData.push(obj);
+                studentCorrect = 0;
+                studentTotal = 0;
+                classCorrect = 0;
+                classTotal = 0;
+                currentType = question.type;
+            }
+
+            for (var j = 0; j < question.correctAttempts.length; j++) {
+                var attempt = question.correctAttempts[j];
+                if (attempt.userId === studentId) {
+                    studentCorrect ++;
+                } else {
+                    classCorrect ++;
+                }
+            }
+
+            for (var j = 0; j < question.totalAttempts.length; j++) {
+                var attempt = question.totalAttempts[j];
+                if (attempt.userId === studentId) {
+                    studentTotal ++;
+                } else {
+                    classTotal ++;
+                }
+            }
+        }
+
+        if (questionsList.length > 0) {
+            currentType = questionsList[questionsList.length-1].type;
+            var obj = {};
+            obj[currentType] = (studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2);
+            studentData.push(obj);
+            obj = {};
+            obj[currentType] = (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2);
             classData.push(obj);
         }
 

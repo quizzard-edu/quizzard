@@ -125,6 +125,8 @@ var displayStudentStatistics = function (studentId) {
     getAccuracyRankOverTime(path);
     getPointsPerTopicVsClass(path);
     getAccuracyPerTopicVsClass(path);
+    getPointsPerTypeVsClass(path);
+    getAccuracyPerTypeVsClass(path);
 
     testRadar('#testingCanvas4');
     testRadar('#testingCanvas5');
@@ -318,7 +320,7 @@ var getCorrectAttemptsOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        failSnackbar('Graph data not match');
+        //failSnackbar('Graph data not match');
       }
     }
   });
@@ -339,7 +341,7 @@ var getAccuracyOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        failSnackbar('Graph data not match');
+        //failSnackbar('Graph data not match');
       }
     }
   });
@@ -360,7 +362,7 @@ var getPointsOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        failSnackbar('Graph data not match');
+        //failSnackbar('Graph data not match');
       }
     }
   });
@@ -379,7 +381,7 @@ var getOverallRankOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        failSnackbar('Graph data not match');
+        //failSnackbar('Graph data not match');
       }
     }
   });
@@ -398,7 +400,7 @@ var getPointsRankOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        failSnackbar('Graph data not match');
+        //failSnackbar('Graph data not match');
       }
     }
   });
@@ -417,7 +419,7 @@ var getAttemptRankOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        failSnackbar('Graph data not match');
+        //failSnackbar('Graph data not match');
       }
     }
   });
@@ -436,7 +438,7 @@ var getAccuracyRankOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        failSnackbar('Graph data not match');
+        //failSnackbar('Graph data not match');
       }
     }
   });
@@ -455,7 +457,7 @@ var getPointsPerTopicVsClass = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        failSnackbar('Graph data not match');
+        //failSnackbar('Graph data not match');
       }
     }
   });
@@ -474,7 +476,45 @@ var getAccuracyPerTopicVsClass = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        failSnackbar('Graph data not match');
+        //failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getPointsPerTypeVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsPerTypeVsClass'
+    },
+    success: function (data) {
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getAccuracyPerTypeVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'accuracyPerTypeVsClass'
+    },
+    success: function (data) {
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //failSnackbar('Graph data not match');
       }
     }
   });
