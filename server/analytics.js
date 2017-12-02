@@ -172,9 +172,9 @@ var getAnalytics = function(callback) {
                             classObject.points = studentsCount === 0 ? 0 :  (classObject.points / studentsCount).toFixed(0);
                             classObject.accuracy = classObject.totalAttemptsCount === 0 ? 0 :  ((classObject.correctAttemptsCount / classObject.totalAttemptsCount) * 100).toFixed(2);
 
-                            classObject.correctAttemptsCount += studentsCount === 0 ? 0 :  (classObject.correctAttemptsCount / studentsCount).toFixed(0);
-                            classObject.wrongAttemptsCount += studentsCount === 0 ? 0 :  (classObject.wrongAttemptsCount / studentsCount).toFixed(0);
-                            classObject.totalAttemptsCount += studentsCount === 0 ? 0 :  (classObject.totalAttemptsCount / studentsCount).toFixed(0);
+                            classObject.correctAttemptsCount = studentsCount === 0 ? 0 :  (classObject.correctAttemptsCount / studentsCount).toFixed(0);
+                            classObject.wrongAttemptsCount = studentsCount === 0 ? 0 :  (classObject.wrongAttemptsCount / studentsCount).toFixed(0);
+                            classObject.totalAttemptsCount = studentsCount === 0 ? 0 :  (classObject.totalAttemptsCount / studentsCount).toFixed(0);
 
                             classObject.overallAccuracy = studentsCount === 0 ? 0 :  (overallSum / studentsCount).toFixed(2);
                             classObject.attemptAccuracy = studentsCount === 0 ? 0 :  (attemptSum / studentsCount).toFixed(2);
@@ -818,6 +818,7 @@ var getPointsPerTopicVsClass = function(query, callback) {
         var studentId = query.userId;
         var studentData = [];
         var classData = [];
+        var labels = [];
         var currentTopic = questionsList[0].topic;
         var studentPoints = 0;
         var classPoints = 0;
@@ -827,12 +828,9 @@ var getPointsPerTopicVsClass = function(query, callback) {
             var question = questionsList[i];
 
             if (question.topic !== currentTopic) {
-                var obj = {};
-                obj[currentTopic] = studentPoints;
-                studentData.push(obj);
-                obj = {};
-                obj[currentTopic] = (classCount === 0) ? 0 : (classPoints / classCount).toFixed(0);
-                classData.push(obj);
+                labels.push(currentTopic);
+                studentData.push(studentPoints);
+                classData.push((classCount === 0) ? 0 : (classPoints / classCount).toFixed(0));
                 studentPoints = 0;
                 classPoints = 0;
                 classCount = 0;
@@ -852,17 +850,15 @@ var getPointsPerTopicVsClass = function(query, callback) {
 
         if (questionsList.length > 0) {
             currentTopic = questionsList[questionsList.length-1].topic;
-            var obj = {};
-            obj[currentTopic] = studentPoints;
-            studentData.push(obj);
-            obj = {};
-            obj[currentTopic] = (classCount === 0) ? 0 : (classPoints / classCount).toFixed(0);
-            classData.push(obj);
+            labels.push(currentTopic);
+            studentData.push(studentPoints);
+            classData.push((classCount === 0) ? 0 : (classPoints / classCount).toFixed(0));
         }
 
         return callback(null, {
             studentData: studentData,
-            classData: classData
+            classData: classData,
+            labels: labels
         });
     });
 }
@@ -886,6 +882,7 @@ var getAccuracyPerTopicVsClass = function(query, callback) {
         var studentId = query.userId;
         var studentData = [];
         var classData = [];
+        var labels = [];
         var currentTopic = questionsList[0].topic;
         var studentCorrect = 0;
         var studentTotal = 0;
@@ -896,12 +893,9 @@ var getAccuracyPerTopicVsClass = function(query, callback) {
             var question = questionsList[i];
 
             if (question.topic !== currentTopic) {
-                var obj = {};
-                obj[currentTopic] = (studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2);
-                studentData.push(obj);
-                obj = {};
-                obj[currentTopic] = (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2);
-                classData.push(obj);
+                labels.push(currentTopic);
+                studentData.push((studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2));
+                classData.push((classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2));
                 studentCorrect = 0;
                 studentTotal = 0;
                 classCorrect = 0;
@@ -930,17 +924,15 @@ var getAccuracyPerTopicVsClass = function(query, callback) {
 
         if (questionsList.length > 0) {
             currentTopic = questionsList[questionsList.length-1].topic;
-            var obj = {};
-            obj[currentTopic] = (studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2);
-            studentData.push(obj);
-            obj = {};
-            obj[currentTopic] = (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2);
-            classData.push(obj);
+            labels.push(currentTopic);
+            studentData.push((studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2));
+            classData.push((classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2));
         }
 
         return callback(null, {
             studentData: studentData,
-            classData: classData
+            classData: classData,
+            labels: labels
         });
     });
 }
@@ -964,6 +956,7 @@ var getPointsPerTypeVsClass = function(query, callback) {
         var studentId = query.userId;
         var studentData = [];
         var classData = [];
+        var labels = [];
         var currentType = questionsList[0].type;
         var studentPoints = 0;
         var classPoints = 0;
@@ -973,12 +966,9 @@ var getPointsPerTypeVsClass = function(query, callback) {
             var question = questionsList[i];
 
             if (question.type !== currentType) {
-                var obj = {};
-                obj[currentType] = studentPoints;
-                studentData.push(obj);
-                obj = {};
-                obj[currentType] = (classCount === 0) ? 0 : (classPoints / classCount).toFixed(0);
-                classData.push(obj);
+                labels.push(currentType);
+                studentData.push(studentPoints);
+                classData.push((classCount === 0) ? 0 : (classPoints / classCount).toFixed(0));
                 studentPoints = 0;
                 classPoints = 0;
                 classCount = 0;
@@ -998,17 +988,15 @@ var getPointsPerTypeVsClass = function(query, callback) {
 
         if (questionsList.length > 0) {
             currentType = questionsList[questionsList.length-1].type;
-            var obj = {};
-            obj[currentType] = studentPoints;
-            studentData.push(obj);
-            obj = {};
-            obj[currentType] = (classCount === 0) ? 0 : (classPoints / classCount).toFixed(0);
-            classData.push(obj);
+            labels.push(currentType);
+            studentData.push(studentPoints);
+            classData.push((classCount === 0) ? 0 : (classPoints / classCount).toFixed(0));
         }
 
         return callback(null, {
             studentData: studentData,
-            classData: classData
+            classData: classData,
+            labels: labels
         });
     });
 }
@@ -1032,6 +1020,7 @@ var getAccuracyPerTypeVsClass = function(query, callback) {
         var studentId = query.userId;
         var studentData = [];
         var classData = [];
+        var labels = [];
         var currentType = questionsList[0].type;
         var studentCorrect = 0;
         var studentTotal = 0;
@@ -1042,12 +1031,9 @@ var getAccuracyPerTypeVsClass = function(query, callback) {
             var question = questionsList[i];
 
             if (question.type !== currentType) {
-                var obj = {};
-                obj[currentType] = (studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2);
-                studentData.push(obj);
-                obj = {};
-                obj[currentType] = (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2);
-                classData.push(obj);
+                labels.push(currentType);
+                studentData.push((studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2));
+                classData.push((classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2));
                 studentCorrect = 0;
                 studentTotal = 0;
                 classCorrect = 0;
@@ -1076,17 +1062,15 @@ var getAccuracyPerTypeVsClass = function(query, callback) {
 
         if (questionsList.length > 0) {
             currentType = questionsList[questionsList.length-1].type;
-            var obj = {};
-            obj[currentType] = (studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2);
-            studentData.push(obj);
-            obj = {};
-            obj[currentType] = (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2);
-            classData.push(obj);
+            labels.push(currentType);
+            studentData.push((studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2));
+            classData.push( (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2));
         }
 
         return callback(null, {
             studentData: studentData,
-            classData: classData
+            classData: classData,
+            labels: labels
         });
     });
 }
