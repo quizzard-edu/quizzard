@@ -5,19 +5,29 @@ const colours = Object.freeze({
     blueLight      : 'rgb(51, 102, 255)',
     blueLightExtra : 'rgb(51, 102, 155)',
     cyan           : '#00bcd4',
+    cyanLight      : '#44e8ff',
+    cyanLightO     : 'rgba(68, 232, 255, 0.2)',
     grayLight      : 'rgb(115, 124, 140)',
     green          : 'green',
     greenBorder    : 'rgba(43, 163, 0, 1)',
     greenLight     : 'rgba(43, 244, 33, 0.5)',
     lime           : '#CDDC39',
-    orange         : 'orange accent-4',
-    orangeLight    : '#ff6e40',
+    limeLight      : '#f7ffb2',
+    limeLightO     : 'rgba(247, 255, 178, 0.2)',    
+    orange         : '#ff6e40',
+    orangeDark     : 'orange accent-4',
+    orangeLight    : '#fcab92',
+    orangeLightO   : 'rgba(252, 171, 146, 0.2)',    
     pink           : 'rgb(255, 99, 132)',
     purple         : '#673AB7',
+    purpleLight    : '#b691f7',
+    purpleLightO   : 'rgba(182, 145, 247, 0.2)',    
     redBorder      : 'rgb(243, 13, 20)',
     redDark        : 'red darken-4',
     redLight       : 'rgba(243, 13, 20, 0.5)',
     teal           : '#00bfa5',
+    tealLight      : '#93fff0',
+    tealLightO     : 'rgba(147, 255, 240, 0.2)',    
     white          : 'white'
 });
 
@@ -67,7 +77,7 @@ function successSnackbar(msg) {
 /* This function slides down a warning snakbar */
 function warningSnackbar(msg) {
     // runs the toast function for 5s with given msg and colour
-    Materialize.toast(snack.warning + msg + snack.close, 5000, 'rounded ' + colours.orange);
+    Materialize.toast(snack.warning + msg + snack.close, 5000, 'rounded ' + colours.orangeDark);
 }
 
 /* This function slides down a fail snakbar */
