@@ -123,6 +123,8 @@ var displayStudentStatistics = function (studentId) {
     getPointsRankOverTime(path);
     getAttemptRankOverTime(path);
     getAccuracyRankOverTime(path);
+    getPointsPerTopicVsClass(path);
+    getAccuracyPerTopicVsClass(path);
 
     testRadar('#testingCanvas4');
     testRadar('#testingCanvas5');
@@ -440,12 +442,31 @@ var getAccuracyRankOverTime = function (path) {
   });
 }
 
-var getAccuracyRankOverTime = function (path) {
+var getPointsPerTopicVsClass = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
       type: 'pointsPerTopicVsClass'
+    },
+    success: function (data) {
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getAccuracyPerTopicVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'accuracyPerTopicVsClass'
     },
     success: function (data) {
     },

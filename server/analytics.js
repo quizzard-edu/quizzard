@@ -122,6 +122,7 @@ var getAnalytics = function(callback) {
                 return callback(err, null);
             }
 
+            totalStudentsCount = studentsList.length;
             for (var i in studentsList) {
                 var student = studentsList[i];
                 var row = {};
@@ -745,7 +746,7 @@ var getAccuracyRankOverTime = function(query, callback) {
 }
 
 /**
- * get accuracy per question topic
+ * get points per question topic
  *
  * @param {object} query
  * @param {function} callback
@@ -803,9 +804,84 @@ var getPointsPerTopicVsClass = function(query, callback) {
             obj = {};
             obj[currentTopic] = (classCount === 0) ? 0 : (classPoints / classCount).toFixed(0);
             classData.push(obj);
-            studentPoints = 0;
-            classPoints = 0;
-            classCount = 0;
+        }
+
+        return callback(null, {
+            studentData: studentData,
+            classData: classData
+        });
+    });
+}
+
+/**
+ * get accuracy per question topic
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getAccuracyPerTopicVsClass = function(query, callback) {
+    questions.getAllQuestionsByQuery({}, {topic: 1}, function(err, questionsList) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!questionsList || !questionsList[0]) {
+            return callback('no questions available', null);
+        }
+
+        var studentId = query.userId;
+        var studentData = [];
+        var classData = [];
+        var currentTopic = questionsList[0].topic;
+        var studentCorrect = 0;
+        var studentTotal = 0;
+        var classCorrect = 0;
+        var classTotal = 0;
+
+        for (var i = 0; i < questionsList.length; i++) {
+            var question = questionsList[i];
+
+            if (question.topic !== currentTopic) {
+                var obj = {};
+                obj[currentTopic] = (studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2);
+                studentData.push(obj);
+                obj = {};
+                obj[currentTopic] = (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2);
+                classData.push(obj);
+                studentCorrect = 0;
+                studentTotal = 0;
+                classCorrect = 0;
+                classTotal = 0;
+                currentTopic = question.topic;
+            }
+
+            for (var j = 0; j < question.correctAttempts.length; j++) {
+                var attempt = question.correctAttempts[j];
+                if (attempt.userId === studentId) {
+                    studentCorrect ++;
+                } else {
+                    classCorrect ++;
+                }
+            }
+
+            for (var j = 0; j < question.totalAttempts.length; j++) {
+                var attempt = question.totalAttempts[j];
+                if (attempt.userId === studentId) {
+                    studentTotal ++;
+                } else {
+                    classTotal ++;
+                }
+            }
+        }
+
+        if (questionsList.length > 0) {
+            currentTopic = questionsList[questionsList.length-1].topic;
+            var obj = {};
+            obj[currentTopic] = (studentTotal === 0) ? 0 : ((studentCorrect / studentTotal) * 100).toFixed(2);
+            studentData.push(obj);
+            obj = {};
+            obj[currentTopic] = (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2);
+            classData.push(obj);
         }
 
         return callback(null, {
