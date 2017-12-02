@@ -53,6 +53,10 @@ exports.getChart = function(query, callback) {
     switch(query.type) {
         case 'QuestionsAnsweredVsClass':
             return getQuestionsAnsweredVsClass(query, callback);
+        case 'overallVsClass':
+            return getOverallVsClass(query, callback);
+        case 'pointsPerAttemptVsClass':
+            return getPointsPerAttemptVsClass(query, callback);
         case 'AccuracyVsClass':
             return getAccuracyVsClass(query, callback);
         case 'PointsVsClass':
@@ -293,8 +297,73 @@ var getQuestionsAnsweredVsClass = function(query, callback) {
             }
         }
 
-        classAnsweredAverage = Math.ceil(classAnswered / classCount);
+        classAnsweredAverage = classCount === 0 ? 0 : Math.ceil(classAnswered / classCount);
         return callback(null, [studentAnswered, classAnsweredAverage]);
+    });
+}
+
+/**
+ * get questions answered vs class
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getOverallVsClass = function(query, callback) {
+    users.getFullLeaderboard(function(err, leaderboardList) {
+        if (err) {
+            logger.log(err);
+            return callback(err, null);
+        }
+
+        var studentId = query.userId;
+        var studentOverall = 0;
+        var classOverall = 0;
+        var classCount = 0;
+
+        for (i in leaderboardList) {
+            logger.log(JSON.stringify(leaderboardList[i]));
+            if (leaderboardList[i]._id === studentId) {
+                studentOverall = parseFloat(leaderboardList[i].overall);
+            } else {
+                classOverall += parseFloat(leaderboardList[i].overall);
+                classCount++;
+            }
+        }
+
+        var classOverallAverage = classCount === 0 ? 0 : Math.ceil(classOverall / classCount);
+        return callback(null, [studentOverall, classOverallAverage]);
+    });
+}
+
+/**
+ * get questions answered vs class
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getPointsPerAttemptVsClass = function(query, callback) {
+    users.getFullLeaderboard(function(err, leaderboardList) {
+        if (err) {
+            logger.log(err);
+            return callback(err, null);
+        }
+
+        var studentId = query.userId;
+        var studentPointsPerAttempt = 0;
+        var classPointsPerAttempt = 0;
+        var classCount = 0;
+
+        for (i in leaderboardList) {
+            if (leaderboardList[i]._id === studentId) {
+                studentPointsPerAttempt = parseFloat(leaderboardList[i].attempt);
+            } else {
+                classPointsPerAttempt += parseFloat(leaderboardList[i].attempt);
+                classCount++;
+            }
+        }
+
+        var classAttemptsAverage = classCount === 0 ? 0 : Math.ceil(classPointsPerAttempt / classCount);
+        return callback(null, [studentPointsPerAttempt, classAttemptsAverage]);
     });
 }
 
@@ -329,7 +398,7 @@ var getAccuracyVsClass = function(query, callback) {
             }
         }
 
-        classAverageAccuracy = parseFloat(classCount ? ((classAccuracy / classCount)).toFixed(2) : 0);
+        classAverageAccuracy = classCount === 0 ? 0 : parseFloat(((classAccuracy / classCount)).toFixed(2));
         return callback(null, [studentAccuracy, classAverageAccuracy]);
     });
 }
@@ -365,7 +434,7 @@ var getPointsVsClass = function(query, callback) {
             }
         }
 
-        classPointsAverage = Math.ceil(classPoints / classCount);
+        classPointsAverage = classCount === 0 ? 0 : Math.ceil(classPoints / classCount);
         return callback(null, [studentPoints, classPointsAverage]);
     });
 }
@@ -448,7 +517,7 @@ var getClassAnswered = function(query, callback) {
             classCount++;
         }
 
-        classAnsweredAverage = Math.ceil(classAnswered / classCount);
+        classAnsweredAverage =  classCount === 0 ? 0 :Math.ceil(classAnswered / classCount);
         return callback(null, [classAnsweredAverage]);
     });
 }
@@ -478,7 +547,7 @@ var getClassAccuracy = function(query, callback) {
             classCount++;
         }
 
-        classAverageAccuracy = parseFloat(classCount ? ((classAccuracy / classCount)).toFixed(2) : 0);
+        classAverageAccuracy = classCount === 0 ? 0 : parseFloat(((classAccuracy / classCount)).toFixed(2));
         return callback(null, [classAverageAccuracy]);
     });
 }
@@ -508,7 +577,7 @@ var getClassPoints = function(query, callback) {
             classCount++;
         }
 
-        classPointsAverage = Math.ceil(classPoints / classCount);
+        classPointsAverage = classCount === 0 ? 0 : Math.ceil(classPoints / classCount);
         return callback(null, [classPointsAverage]);
     });
 }

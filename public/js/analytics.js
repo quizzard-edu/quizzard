@@ -130,12 +130,12 @@ var displayStudentStatistics = function (studentId) {
     getPointsRankOverTime(path);
 
     // overall score analytics
-    // TODO: CARD MISSING
+    getOverallVsClass(path);
     getOverallOverTime(path);
     getOverallRankOverTime(path);
     
     // points per attempt analytics
-    // TODO: CARD MISSING
+    getPointsPerAttemptVsClass(path);
     getPointsPerAttemptsOverTime(path);
     getPointsPerAttemptRankOverTime(path);
 
@@ -170,6 +170,50 @@ var getQuestionsAnsweredStudentAndClass = function (path) {
       } else if (data['status'] === 500) {
         $('#studentAnswered').html('No Data');
         $('#classAnswered').html('No Data');
+      }
+    }
+  });
+}
+
+var getOverallVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'overallVsClass'
+    },
+    success: function (data) {
+      //$('#studentAnswered').html(data[0]);
+      //$('#classAnswered').html(data[1]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#studentAnswered').html('No Data');
+        //$('#classAnswered').html('No Data');
+      }
+    }
+  });
+}
+
+var getPointsPerAttemptVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsPerAttemptVsClass'
+    },
+    success: function (data) {
+      //$('#studentAnswered').html(data[0]);
+      //$('#classAnswered').html(data[1]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#studentAnswered').html('No Data');
+        //$('#classAnswered').html('No Data');
       }
     }
   });
