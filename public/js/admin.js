@@ -912,7 +912,11 @@ var sortAccountsTable = function(type) {
     });
 }
 
-// Toggles the view of the Visibility Checkboxes in the Question-Table View
+
+/**
+ * Toggles the view of the Visibility Checkboxes in the Question-Table View
+ * @param {*} toggle only usesd so the visibily snackbar can turn on display mode
+ */
 var toggleButtonVisibility = function(toggle) {
     if ($('#sw').is(':checked') || toggle) {
         $('.visbox').show();
@@ -1014,6 +1018,10 @@ var initSummernote = function () {
     });
 }
 
+/**
+ * Updates the visibility of all questions, based on the changeValue 
+ * @param {*} changeValue true if user is showing all questions, false if user is hiding all questions
+ */
 var updateAllVisibility = function (changeValue) {
     swal({
         type: 'warning',
@@ -1035,7 +1043,7 @@ var updateAllVisibility = function (changeValue) {
                         changeValue: changeValue
                     },
                     success: function(data) {
-                        
+                        // Changes the checkboxes and icons match the new visibility
                         $('.checked').prop('checked', changeValue);
                         if (changeValue) {
                             $('.hiddenEye').html('visibility');

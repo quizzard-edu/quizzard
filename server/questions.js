@@ -635,18 +635,26 @@ exports.updateUserSubmissionTime = function(userId, question, callback){
         });
     }
 }
-
+/**
+ * Changes visibilty of all questions based on the changeValue
+ * @param {*} changeValue 
+ * @param {*} callback 
+ */
 exports.changeAllVisibility = function(changeValue, callback) {
+    // Gets the list of students
     db.getQuestionsList({}, {number: 1}, function(err, questionList){
         if (err) {
             return callback(common.getError(3017), null);
         }
 
         questionList.forEach(question => {
+            // Only change visibility of a question if it is different from the current visibility value
             if (question.visible !== changeValue) {
+                // Question with only visibility because we don't want to change the other attributes of the question
                 var newQuestion = {};
                 newQuestion['visible'] = changeValue.toString();
 
+                // Updates question with new visibility value.
                 updateQuestionById(question._id, newQuestion, function(err, result) {
                     if (err) {
                         return callback(common.getError(3020), result);
