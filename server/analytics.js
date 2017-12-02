@@ -65,6 +65,8 @@ exports.getChart = function(query, callback) {
             return getRatingVsClass(query, callback);
         case 'classAnswered':
             return getClassAnswered(query, callback);
+        case 'classPointsPerAttempt':
+            return getClassPointsPerAttempt(query, callback);
         case 'classAnsweredOverTime':
             return getClassAnsweredOverTime(query, callback);
         case 'classPointsPerAttemptOverTime':
@@ -109,6 +111,14 @@ exports.getChart = function(query, callback) {
             return getPointsPerTypeVsClass(query, callback);
         case 'accuracyPerTypeVsClass':
             return getAccuracyPerTypeVsClass(query, callback);
+        case 'classPointsPerTopicVsClass':
+            return getClassPointsPerTopicVsClass(query, callback);
+        case 'classAccuracyPerTopicVsClass':
+            return getClassAccuracyPerTopicVsClass(query, callback);
+        case 'classPointsPerTypeVsClass':
+            return getClassPointsPerTypeVsClass(query, callback);
+        case 'classAccuracyPerTypeVsClass':
+            return getClassAccuracyPerTypeVsClass(query, callback);
         default:
             return callback('notFound', null);
     }
@@ -529,6 +539,36 @@ var getClassAnswered = function(query, callback) {
 
         classAnsweredAverage =  classCount === 0 ? 0 :Math.ceil(classAnswered / classCount);
         return callback(null, [classAnsweredAverage]);
+    });
+}
+
+/**
+ * get class points per attempt of the class
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassPointsPerAttempt = function(query, callback) {
+    users.getStudentsList(function(err, students) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!students) {
+            return  callback('no results', null);
+        }
+
+        var classPointsPerAttempt = 0;
+        var classCount = 0;
+        var classPointsPerAttemptAverage = 0;
+
+        for (i in students) {
+            classPointsPerAttempt += students[i].totalAttemptsCount === 0 ? 0 : parseFloat((students[i].points / students[i].totalAttemptsCount).toFixed(2));
+            classCount++;
+        }logger.log(classPointsPerAttempt);
+
+        classPointsPerAttemptAverage =  classCount === 0 ? 0 : (classPointsPerAttempt / classCount).toFixed(2);
+        return callback(null, [classPointsPerAttemptAverage]);
     });
 }
 
@@ -1379,6 +1419,210 @@ var getAccuracyPerTypeVsClass = function(query, callback) {
 
         return callback(null, {
             studentData: studentData,
+            classData: classData,
+            labels: labels
+        });
+    });
+}
+
+/**
+ * get class points per question topic
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassPointsPerTopicVsClass = function(query, callback) {
+    questions.getAllQuestionsByQuery({}, {topic: 1}, function(err, questionsList) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!questionsList || !questionsList[0]) {
+            return callback('no questions available', null);
+        }
+
+        var classData = [];
+        var labels = [];
+        var currentTopic = questionsList[0].topic;
+        var classPoints = 0;
+        var classCount = 0;
+
+        for (var i = 0; i < questionsList.length; i++) {
+            var question = questionsList[i];
+
+            if (question.topic !== currentTopic) {
+                labels.push(currentTopic);
+                classData.push((classCount === 0) ? 0 : (classPoints / classCount).toFixed(0));
+                classPoints = 0;
+                classCount = 0;
+                currentTopic = question.topic;
+            }
+
+            for (var j = 0; j < question.correctAttempts.length; j++) {
+                classPoints += question.correctAttempts[j].points;
+                classCount ++;
+            }
+        }
+
+        if (questionsList.length > 0) {
+            currentTopic = questionsList[questionsList.length-1].topic;
+            labels.push(currentTopic);
+            classData.push((classCount === 0) ? 0 : (classPoints / classCount).toFixed(0));
+        }
+
+        return callback(null, {
+            classData: classData,
+            labels: labels
+        });
+    });
+}
+
+/**
+ * get class accuracy per question topic
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassAccuracyPerTopicVsClass = function(query, callback) {
+    questions.getAllQuestionsByQuery({}, {topic: 1}, function(err, questionsList) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!questionsList || !questionsList[0]) {
+            return callback('no questions available', null);
+        }
+
+        var classData = [];
+        var labels = [];
+        var currentTopic = questionsList[0].topic;
+        var classCorrect = 0;
+        var classTotal = 0;
+
+        for (var i = 0; i < questionsList.length; i++) {
+            var question = questionsList[i];
+
+            if (question.topic !== currentTopic) {
+                labels.push(currentTopic);
+                classData.push((classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2));
+                classCorrect = 0;
+                classTotal = 0;
+                currentTopic = question.topic;
+            }
+
+            classCorrect += question.correctAttemptsCount;
+            classTotal += question.totalAttemptsCount;
+        }
+
+        if (questionsList.length > 0) {
+            currentTopic = questionsList[questionsList.length-1].topic;
+            labels.push(currentTopic);
+            classData.push((classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2));
+        }
+
+        return callback(null, {
+            classData: classData,
+            labels: labels
+        });
+    });
+}
+
+/**
+ * get class points per question type
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassPointsPerTypeVsClass = function(query, callback) {
+    questions.getAllQuestionsByQuery({}, {type: 1}, function(err, questionsList) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!questionsList || !questionsList[0]) {
+            return callback('no questions available', null);
+        }
+
+        var classData = [];
+        var labels = [];
+        var currentType = questionsList[0].type;
+        var classPoints = 0;
+        var classCount = 0;
+
+        for (var i = 0; i < questionsList.length; i++) {
+            var question = questionsList[i];
+
+            if (question.type !== currentType) {
+                labels.push(currentType);
+                classData.push((classCount === 0) ? 0 : (classPoints / classCount).toFixed(0));
+                classPoints = 0;
+                classCount = 0;
+                currentType = question.type;
+            }
+
+            for (var j = 0; j < question.correctAttempts.length; j++) {
+                classPoints = question.correctAttempts[j].points;
+                classCount ++;
+            }
+        }
+
+        if (questionsList.length > 0) {
+            currentType = questionsList[questionsList.length-1].type;
+            labels.push(currentType);
+            classData.push((classCount === 0) ? 0 : (classPoints / classCount).toFixed(0));
+        }
+
+        return callback(null, {
+            classData: classData,
+            labels: labels
+        });
+    });
+}
+
+/**
+ * get class accuracy per question type
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassAccuracyPerTypeVsClass = function(query, callback) {
+    questions.getAllQuestionsByQuery({}, {type: 1}, function(err, questionsList) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        if (!questionsList || !questionsList[0]) {
+            return callback('no questions available', null);
+        }
+
+        var classData = [];
+        var labels = [];
+        var currentType = questionsList[0].type;
+        var classCorrect = 0;
+        var classTotal = 0;
+
+        for (var i = 0; i < questionsList.length; i++) {
+            var question = questionsList[i];
+
+            if (question.type !== currentType) {
+                labels.push(currentType);
+                classData.push((classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2));
+                classCorrect = 0;
+                classTotal = 0;
+                currentType = question.type;
+            }
+
+            classCorrect += question.correctAttemptsCount;
+            classTotal += question.totalAttemptsCount;
+        }
+
+        if (questionsList.length > 0) {
+            currentType = questionsList[questionsList.length-1].type;
+            labels.push(currentType);
+            classData.push( (classTotal === 0) ? 0 : ((classCorrect / classTotal) * 100).toFixed(2));
+        }
+
+        return callback(null, {
             classData: classData,
             labels: labels
         });
