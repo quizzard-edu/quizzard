@@ -366,6 +366,8 @@ var getCorrectAttemptsOverTime = function (path) {
     success: function (data) {
       data.id = '#correctAttemptsOverTime';
       data.col = colours.cyan;
+      data.colLight = colours.cyanLight;
+      data.colBack = colours.cyanLightO;
       createLineChart (data);
     },
     error: function (data) {
@@ -568,6 +570,8 @@ var getCorrectAttemptRankOverTime = function (path) {
     success: function (data) {
       data.id = '#correctAttemptRankOverTime';
       data.col = colours.cyan;
+      data.colLight = colours.cyanLight;
+      data.colBack = colours.cyanLightO;
       createRankChart (data);
     },
     error: function (data) {
@@ -590,6 +594,8 @@ var getAccuracyOverTime = function (path) {
     success: function (data) {
       data.id = '#accuracyOverTime';
       data.col = colours.teal;
+      data.colLight = colours.tealLight;
+      data.colBack = colours.tealLightO;
       createLineChart (data);
     },
     error: function (data) {
@@ -612,6 +618,8 @@ var getPointsPerAttemptsOverTime = function (path) {
     success: function (data) {
       data.id = '#pointsPerAttemptsOverTime';
       data.col = colours.purple;
+      data.colLight = colours.purpleLight;
+      data.colBack = colours.purpleLightO;
       createLineChart (data);
     },
     error: function (data) {
@@ -634,6 +642,8 @@ var getOverallOverTime = function (path) {
     success: function (data) {
       data.id = '#overallOverTime';
       data.col = colours.lime;
+      data.colLight = colours.limeLight;
+      data.colBack = colours.limeLightO;
       createLineChart (data);
     },
     error: function (data) {
@@ -655,7 +665,9 @@ var getPointsOverTime = function (path) {
     },
     success: function (data) {
       data.id = '#pointsOverTime';
-      data.col = colours.orangeLight;
+      data.col = colours.orange;
+      data.colLight = colours.orangeLight;
+      data.colBack = colours.orangeLightO;
       createLineChart (data);
     },
     error: function (data) {
@@ -678,6 +690,8 @@ var getOverallRankOverTime = function (path) {
     success: function (data) {
       data.id = '#overallRankOverTime';
       data.col = colours.lime;
+      data.colLight = colours.limeLight;
+      data.colBack = colours.limeLightO;
       createRankChart(data)
     },
     error: function (data) {
@@ -699,7 +713,9 @@ var getPointsRankOverTime = function (path) {
     },
     success: function (data) {
       data.id = '#pointsRankOverTime';
-      data.col = colours.orangeLight;
+      data.col = colours.orange;
+      data.colLight = colours.orangeLight;
+      data.colBack = colours.orangeLightO;
       createRankChart(data)
     },
     error: function (data) {
@@ -722,6 +738,8 @@ var getPointsPerAttemptRankOverTime = function (path) {
     success: function (data) {
       data.id = '#pointsPerAttemptRankOverTime';
       data.col = colours.purple;
+      data.colLight = colours.purpleLight;
+      data.colBack = colours.purpleLightO;
       createRankChart(data)
     },
     error: function (data) {
@@ -744,6 +762,8 @@ var getAccuracyRankOverTime = function (path) {
     success: function (data) {
       data.id = '#accuracyRankOverTime';
       data.col = colours.teal;
+      data.colLight = colours.tealLight;
+      data.colBack = colours.tealLightO;
       createRankChart(data)
     },
     error: function (data) {
@@ -848,23 +868,27 @@ var createLineChart = function (data) {
       datasets: [
         {
           data: data.studentData,
-          backgroundColor: 'rgba(0, 0, 0, 0)',
+          backgroundColor: data.colBack,
           borderColor: data.col,
           label: 'Me',
           borderWidth: 4,
+          pointBorderWidth: 1,
           pointHoverBackgroundColor: 'white',
           pointHoverBorderColor: data.col,
-          pointRadius: 2,
+          pointRadius: 4,
+          pointBackgroundColor: data.colLight
         },
         {
           data: data.classData,
-          backgroundColor: 'rgba(0, 0, 0, 0)',
-          borderColor: '#d1d1d1',
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          borderColor: '#424242',
           label: 'Class',
           borderWidth: 4,
+          pointBorderWidth: 1,
           pointHoverBackgroundColor: 'white',
-          pointHoverBorderColor: '#d1d1d1',
-          pointRadius: 2,
+          pointHoverBorderColor: '#424242',
+          pointRadius: 4,
+          pointBackgroundColor: '#c4c4c4'
         }
       ],
       labels: data.dates
@@ -906,10 +930,13 @@ var createRankChart = function (data) {
           data: data.studentData,
           backgroundColor: 'rgba(0, 0, 0, 0)',
           borderColor: data.col,
+          label: 'Me',
           borderWidth: 4,
+          pointBorderWidth: 1,
           pointHoverBackgroundColor: 'white',
           pointHoverBorderColor: data.col,
-          pointRadius: 2,
+          pointRadius: 4,
+          pointBackgroundColor: data.colLight
         }
       ],
       labels: data.dates
