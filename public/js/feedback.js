@@ -58,3 +58,34 @@ function userFeedback() {
 
     $('#feedback').modal('open');
 }
+
+function removeAllFeedback() {
+    swal({
+        title: 'Remove All Feedback',
+        text: 'You are about to remove all the student feedback',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Confirm',
+        closeOnConfirm: true
+    }, function() {
+        $.ajax({
+            type: 'POST',
+            url: '/removeAllFeedback',
+            success: function(data) {
+                successSnackbar("Successfully submitted feedback");
+                $('#feedbackContainer').hide();
+                $('#noFeedback2').show();
+            },
+            error: function(data) {
+                var jsonResponse = data.responseJSON;
+
+                if (data['status'] === 401) {
+                    window.location.href = '/';
+                } else {
+                    failSnackbar(getErrorFromResponse(jsonResponse));
+                }
+            }
+        });
+    });
+}

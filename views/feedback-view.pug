@@ -12,25 +12,36 @@ block content
   br
   h3.center Class Feedback
 
-  .container
-    .row
-      .col.s12
-        each feedbackItem in content
-          .row.comment
-            .col.s12
-              .row.identification-section
-                span Student: #{feedbackItem.fullname}
-                br
-                span User ID: #{feedbackItem.username}
-                br
-                span Date: #{feedbackItem.time}
-                br
-                span Subject: #{feedbackItem.subject}
+  if content
+    .container#feedbackContainer
+      .row
+        .col.s12
+          button.btn.btn-default.right#clear-feedback-button(onclick='removeAllFeedback()') Remove All Feedback
+          br
+          br
+          each feedbackItem in content
+            .row.comment
+              .col.s12
+                .row.identification-section
+                  span Student: #{feedbackItem.fullname}
+                  br
+                  span User ID: #{feedbackItem.username}
+                  br
+                  span Date: #{feedbackItem.time}
+                  br
+                  span Subject: #{feedbackItem.subject}
 
-              hr.divider
+                hr.divider
 
-              .row
-                p.comment-text #{feedbackItem.message}
+                .row
+                  p.comment-text #{feedbackItem.message}
+  
+  else
+    p.center#noFeedback There is no feedback available at this time
+
+  p.center#noFeedback2(style='display:none;') There is no feedback available at this time
 
 block scripts
   script(src='/js/navbar.js')
+  script(src='/js/feedback.js')
+  script(src='/js/common.js')

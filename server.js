@@ -1667,14 +1667,20 @@ app.get('/feedback', function(req, res){
 
     users.getFeedback(function(err, result) {
         if (err) {
-            logger.error(err);
-            return res.status(500).send(common.getError(8001));
+            logger.error(err); //TODO:
+            return res.status(500).render('feedback-view', {
+                content: null,
+                user: req.session.user
+            });
         }
 
         users.getUsersList((err, userObj) => {
             if (err) {
-                logger.error(err);
-                return res.status(500).send(common.getError(2002));
+                logger.error(err); //TODO:
+                return res.status(500).render('feedback-view', {
+                    content: [],
+                    user: req.session.user
+                });
             }
 
             var usersList = {};
@@ -1700,12 +1706,26 @@ app.get('/feedback', function(req, res){
                 data.push(tempData);
             }
 
+            data = data.length === 0 ? null : data;
+
+            //TODO: empty feedback
+
             return res.status(201).render('feedback-view', {
                 content: data,
                 user: req.session.user
             });
         });
     })
+});
+
+app.post('/removeAllFeedback', function(req, res) {
+    db.removeAllFeedback(function(err, result) {
+        if (err) {
+            return callback(common.getError(8002), null);
+        }
+
+        return res.status(201).send('User feedback removed');
+    });
 });
 
 // 404 route
