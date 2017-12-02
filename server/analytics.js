@@ -65,6 +65,16 @@ exports.getChart = function(query, callback) {
             return getRatingVsClass(query, callback);
         case 'classAnswered':
             return getClassAnswered(query, callback);
+        case 'classAnsweredOverTime':
+            return getClassAnsweredOverTime(query, callback);
+        case 'classPointsPerAttemptOverTime':
+            return getClassPointsPerAttemptOverTime(query, callback);
+        case 'classOverallOverTime':
+            return getClassOverallOverTime(query, callback);
+        case 'classAccuracyOverTime':
+            return getClassAccuracyOverTime(query, callback);
+        case 'classPointsOverTime':
+            return getClassPointsOverTime(query, callback);
         case 'classAccuracy':
             return getClassAccuracy(query, callback);
         case 'classPoints':
@@ -519,6 +529,141 @@ var getClassAnswered = function(query, callback) {
 
         classAnsweredAverage =  classCount === 0 ? 0 :Math.ceil(classAnswered / classCount);
         return callback(null, [classAnsweredAverage]);
+    });
+}
+
+/**
+ * get questions answered of the class over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassAnsweredOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:classId}, function(err, classObject) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var classData = [];
+
+        for (var i = 0; i < classObject.dates.length; i++) {
+            dates.push(classObject.dates[i].date);
+            classData.push(classObject.dates[i].info.correctAttemptsCount);
+        }
+
+        return callback(null, {
+            dates: dates,
+            classData: classData
+        });
+    });
+}
+
+/**
+ * get overall average of the class over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassOverallOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:classId}, function(err, classObject) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var classData = [];
+
+        for (var i = 0; i < classObject.dates.length; i++) {
+            dates.push(classObject.dates[i].date);
+            classData.push(classObject.dates[i].info.overallAverage);
+        }
+
+        return callback(null, {
+            dates: dates,
+            classData: classData
+        });
+    });
+}
+
+/**
+ * get points per attempt average of the class over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassPointsPerAttemptOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:classId}, function(err, classObject) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var classData = [];
+
+        for (var i = 0; i < classObject.dates.length; i++) {
+            dates.push(classObject.dates[i].date);
+            classData.push(classObject.dates[i].info.pointsPerAttemptAverage);
+        }
+
+        return callback(null, {
+            dates: dates,
+            classData: classData
+        });
+    });
+}
+
+/**
+ * get accuracy of the class over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassAccuracyOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:classId}, function(err, classObject) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var classData = [];
+
+        for (var i = 0; i < classObject.dates.length; i++) {
+            dates.push(classObject.dates[i].date);
+            classData.push(classObject.dates[i].info.accuracyAverage);
+        }
+
+        return callback(null, {
+            dates: dates,
+            classData: classData
+        });
+    });
+}
+
+/**
+ * get points of the class over time
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+var getClassPointsOverTime = function(query, callback) {
+    getTimeBasedAnalytics({_id:classId}, function(err, classObject) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        var dates = [];
+        var classData = [];
+
+        for (var i = 0; i < classObject.dates.length; i++) {
+            dates.push(classObject.dates[i].date);
+            classData.push(classObject.dates[i].info.pointsAverage);
+        }
+
+        return callback(null, {
+            dates: dates,
+            classData: classData
+        });
     });
 }
 

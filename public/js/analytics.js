@@ -91,6 +91,13 @@ var displayClassStatistics = function () {
     getClassAnswered(path);
     getClassAccuracy(path);
     getClassPoints(path);
+
+    getClassAnsweredOverTime(path);
+    getClassPointsPerAttemptOverTime(path);
+    getClassOverallOverTime(path);
+    getClassAccuracyOverTime(path);
+    getClassPointsOverTime(path);
+
     testRadar('#testingCanvas4');
     testRadar('#testingCanvas5');
 }
@@ -123,7 +130,7 @@ var displayStudentStatistics = function (studentId) {
     getAccuracyStudentAndClass(path);
     getAccuracyOverTime(path);
     getAccuracyRankOverTime(path);
-    
+
     // points analytics
     getPointsStudentAndClass(path);
     getPointsOverTime(path);
@@ -133,7 +140,7 @@ var displayStudentStatistics = function (studentId) {
     getOverallVsClass(path);
     getOverallOverTime(path);
     getOverallRankOverTime(path);
-    
+
     // points per attempt analytics
     getPointsPerAttemptVsClass(path);
     getPointsPerAttemptsOverTime(path);
@@ -340,6 +347,106 @@ var getCorrectAttemptsOverTime = function (path) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
         //failSnackbar('Graph data not match');
+      }
+    }
+  });
+}
+
+var getClassAnsweredOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classAnsweredOverTime'
+    },
+    success: function (data) {
+      //$('#classAnsweredI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classAnsweredI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassPointsPerAttemptOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classPointsPerAttemptOverTime'
+    },
+    success: function (data) {
+      //$('#classAnsweredI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classAnsweredI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassOverallOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classOverallOverTime'
+    },
+    success: function (data) {
+      //$('#classAnsweredI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classAnsweredI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassAccuracyOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classAccuracyOverTime'
+    },
+    success: function (data) {
+      //$('#classAnsweredI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classAnsweredI').html('No Data');
+      }
+    }
+  });
+}
+
+var getClassPointsOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classPointsOverTime'
+    },
+    success: function (data) {
+      //$('#classAnsweredI').html(data[0]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        //$('#classAnsweredI').html('No Data');
       }
     }
   });
