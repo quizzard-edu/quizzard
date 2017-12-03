@@ -1686,12 +1686,12 @@ app.get('/feedback', function(req, res){
 
             var data = [];
             var tempData = {};
-            results.forEach(i => {
-                tempData.fullname = usersList[result[i].uuid][0];
-                tempData.username = usersList[result[i].uuid][1];
-                tempData.subject = result[i].subject;
-                tempData.message = result[i].message;
-                tempData.time = result[i].time;
+            result.forEach(feedbackItem => {
+                tempData.fullname = usersList[feedbackItem.uuid][0];
+                tempData.username = usersList[feedbackItem.uuid][1];
+                tempData.subject = feedbackItem.subject;
+                tempData.message = feedbackItem.message;
+                tempData.time = feedbackItem.time;
 
                 data.push(tempData);
                 tempData = {}

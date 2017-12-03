@@ -1,105 +1,105 @@
 .identification-section {
-  margin-bottom: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 .comment {
-  text-align: left;
-  background-color: white;
-  border: solid;
-  border-style: solid;
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: lightgray;
-  margin: 2px !important;
-  word-wrap: break-word;
+    text-align: left;
+    background-color: white;
+    border: solid;
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: lightgray;
+    margin: 2px !important;
+    word-wrap: break-word;
 }
 
 .reply {
-  text-align: left;
-  float: right !important;
-  background-color: white;
-  margin: 0 !important;
+    text-align: left;
+    float: right !important;
+    background-color: white;
+    margin: 0 !important;
 }
 
 .profile-picture {
-  padding: 10px 10px 0 20px;
+    padding: 10px 10px 0 20px;
 }
 
 .name {
-  vertical-align: super;
+    vertical-align: super;
 }
 
 .comment-text {
-  padding: 0 20px 0 50px;
-  margin: 5px;
-  text-align: left;
+    padding: 0 20px 0 50px;
+    margin: 5px;
+    text-align: left;
 }
 
 .divider {
-  margin: 0 !important;
+    margin: 0 !important;
 }
 
 .likes-section {
-  float: right;
-  padding-right: 25px;
+    float: right;
+    padding-right: 25px;
 }
 
 .thumb-up-picture {
-  padding: 10px 5px;
+    padding: 10px 5px;
 }
 
 .thumb-down-picture {
-  padding: 10px 5px;
+    padding: 10px 5px;
 }
 
 .reply-picture {
-  padding: 10px 5px;
+    padding: 10px 5px;
 }
 
 .likes-number {
-  vertical-align: super;
-  font-size: 20px;
+    vertical-align: super;
+    font-size: 20px;
 }
 
 .comment-box {
-  margin: 10px !important;
-  resize: vertical;
-  min-height: 6em;
-  width: -webkit-fill-available;
-  border-radius: 5px;
-  border-color: lightgray;
+    margin: 10px !important;
+    resize: vertical;
+    min-height: 6em;
+    width: -webkit-fill-available;
+    border-radius: 5px;
+    border-color: lightgray;
 }
 
 .comment-reply-button {
-  float: right;
-  margin-right: 10px;
+    float: right;
+    margin-right: 10px;
 }
 
 .view-replies-button {
-  float: right;
-  margin-right: 10px;
+    float: right;
+    margin-right: 10px;
 }
 
 .date {
-  padding-left: 20px;
+    padding-left: 20px;
 }
 
 .cursor-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .liked {
-  color: rgb(51, 102, 255);
+    color: rgb(51, 102, 255);
 }
 
 .liked-hover {
-  color: rgb(51, 102, 155);
+    color: rgb(51, 102, 155);
 }
 
 .disliked {
-  color: rgb(243, 13, 20);
+    color: rgb(243, 13, 20);
 }
 
 .disliked-hover {
-  color: rgba(243, 13, 20, 0.5);
+    color: rgba(243, 13, 20, 0.5);
 }
