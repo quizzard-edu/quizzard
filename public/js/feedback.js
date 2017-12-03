@@ -71,7 +71,7 @@ function removeAllFeedback() {
             type: 'POST',
             url: '/removeAllFeedback',
             success: function(data) {
-                successSnackbar("Successfully submitted feedback");
+                successSnackbar("Successfully removed all feedback");
                 window.location.href = '/';
             },
             error: function(data) {
