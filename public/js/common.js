@@ -45,6 +45,15 @@ const leaderboardTypes = Object.freeze({
     POINTSBOARD   : {name: 'points', displayName: 'Points'},
     ACCURACYBOARD : {name: 'accuracy', displayName: 'Accuracy'},
     ATTEMPTBOARD  : {name: 'attempt', displayName: 'Points Per Attempt'}
+});
+
+const questionTypes = Object.freeze({
+    mc         : 'Multiple Choice',
+    re         : 'Regular',
+    tf         : 'True and False',
+    matching   : 'Matching',
+    ca         : 'Choose All',
+    ordering   : 'Ordering'
 })
 
 // This is the function.

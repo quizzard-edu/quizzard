@@ -325,13 +325,13 @@ var getClassPointsPerAttempt = function (path) {
       type: 'classPointsPerAttempt'
     },
     success: function (data) {
-      //$('#classPointsI').html(data[0]);
+      $('#classPointsPerAttemptI').html(data[0]);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classPointsI').html('No Data');
+        $('#classPointsPerAttemptI').html('No Data');
       }
     }
   });
@@ -345,13 +345,13 @@ var getClassOverall = function (path) {
       type: 'classOverall'
     },
     success: function (data) {
-      //$('#classPointsI').html(data[0]);
+      $('#classOverallI').html(data[0]);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classPointsI').html('No Data');
+        $('#classOverallI').html('No Data');
       }
     }
   });
@@ -395,7 +395,7 @@ var getCorrectAttemptsOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#correctAttemptsOverTime');
       }
     }
   });
@@ -419,7 +419,7 @@ var getClassAnsweredOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classAnsweredI').html('No Data');
+        noDataCanvas('#classAnsweredOverTime');
       }
     }
   });
@@ -443,7 +443,7 @@ var getClassPointsPerAttemptOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classAnsweredI').html('No Data');
+        noDataCanvas('#classPointsPerAttemptOverTime');
       }
     }
   });
@@ -464,7 +464,7 @@ var getClassPointsPerTopicVsClass = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classAnsweredI').html('No Data');
+        noDataCanvas('#classPointsPerTopicVsClass');
       }
     }
   });
@@ -485,7 +485,7 @@ var getClassAccuracyPerTopicVsClass = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classAnsweredI').html('No Data');
+        noDataCanvas('#classAccuracyPerTopicVsClass');
       }
     }
   });
@@ -500,13 +500,16 @@ var getClassPointsPerTypeVsClass = function (path) {
     },
     success: function (data) {
       data.id = '#classPointsPerTypeVsClass';
+      data.labels = data.labels.map(item => {
+          return questionTypes[item];
+      });
       createClassRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classAnsweredI').html('No Data');
+        noDataCanvas('#classPointsPerTypeVsClass');
       }
     }
   });
@@ -521,13 +524,16 @@ var getClassAccuracyPerTypeVsClass = function (path) {
     },
     success: function (data) {
       data.id = '#classAccuracyPerTypeVsClass';
+      data.labels = data.labels.map(item => {
+        return questionTypes[item];
+      });
       createClassRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classAnsweredI').html('No Data');
+        noDataCanvas('#classAccuracyPerTypeVsClass');
       }
     }
   });
@@ -551,7 +557,7 @@ var getClassOverallOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classAnsweredI').html('No Data');
+        noDataCanvas('#classOverallOverTime');
       }
     }
   });
@@ -575,7 +581,7 @@ var getClassAccuracyOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classAnsweredI').html('No Data');
+        noDataCanvas('#classAccuracyOverTime');
       }
     }
   });
@@ -599,7 +605,7 @@ var getClassPointsOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //$('#classAnsweredI').html('No Data');
+        noDataCanvas('#classPointsOverTime');
       }
     }
   });
@@ -623,7 +629,7 @@ var getCorrectAttemptRankOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#correctAttemptRankOverTime');
       }
     }
   });
@@ -647,7 +653,7 @@ var getAccuracyOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#accuracyOverTime');
       }
     }
   });
@@ -671,7 +677,7 @@ var getPointsPerAttemptsOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#pointsPerAttemptsOverTime');
       }
     }
   });
@@ -695,7 +701,7 @@ var getOverallOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#overallOverTime');
       }
     }
   });
@@ -719,7 +725,7 @@ var getPointsOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#pointsOverTime');
       }
     }
   });
@@ -743,7 +749,7 @@ var getOverallRankOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#overallRankOverTime');
       }
     }
   });
@@ -767,7 +773,7 @@ var getPointsRankOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#pointsRankOverTime');
       }
     }
   });
@@ -791,7 +797,7 @@ var getPointsPerAttemptRankOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#pointsPerAttemptRankOverTime');
       }
     }
   });
@@ -815,7 +821,7 @@ var getAccuracyRankOverTime = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#accuracyRankOverTime');
       }
     }
   });
@@ -836,7 +842,7 @@ var getPointsPerTopicVsClass = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#pointsPerTopicVsClass');
       }
     }
   });
@@ -857,7 +863,7 @@ var getAccuracyPerTopicVsClass = function (path) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#accuracyPerTopicVsClass');
       }
     }
   });
@@ -872,13 +878,16 @@ var getPointsPerTypeVsClass = function (path) {
     },
     success: function (data) {
       data.id = '#pointsPerTypeVsClass';
+      data.labels = data.labels.map(item => {
+        return questionTypes[item];
+      });
       createRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#pointsPerTypeVsClass');
       }
     }
   });
@@ -893,13 +902,16 @@ var getAccuracyPerTypeVsClass = function (path) {
     },
     success: function (data) {
       data.id = '#accuracyPerTypeVsClass';
+      data.labels = data.labels.map(item => {
+        return questionTypes[item];
+      });
       createRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        //failSnackbar('Graph data not match');
+        noDataCanvas('#accuracyPerTypeVsClass');
       }
     }
   });
@@ -1174,4 +1186,15 @@ var createClassRadarChart = function (data) {
     }
   };
   new Chart (ctx, config2);
+}
+
+var noDataCanvas = function(id) {
+    var byId = $(id)[0];  
+    var context=byId.getContext("2d");
+    
+    context.translate(70, 50);
+    context.font = '25pt Calibri';
+    context.textAlign = 'center';
+    context.fillStyle = '#000';
+    context.fillText('No Data', 0, 0);
 }
