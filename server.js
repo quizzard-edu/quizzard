@@ -64,15 +64,20 @@ app.use(function(req, res, next) {
 });
 
 app.set('view engine', 'pug');
-app.use(helmet());
 
 app.use(fileUpload());
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet());
 app.use(session({
     secret: 'test',
     resave: true,
-    saveUninitialized: false
+    saveUninitialized: false,
+    rolling: true,
+    cookie: { 
+        secure:true,
+        maxAge: config.maxAge 
+    }
 }));
 
 /*
