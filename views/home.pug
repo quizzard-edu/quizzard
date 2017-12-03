@@ -14,7 +14,8 @@ block content
   br
   .container
     .row
-      .col.s12.m8
+      .col.s12
+        include home-sidebar
         .row
           ul.tabs
             li.tab.col.s6
@@ -23,8 +24,9 @@ block content
               a.noLineLink(href='#')#qlist-answered Answered
           .question-list
             include questionlist
-      .col.s12.m4
-        include home-sidebar
+      //-
+        .col.s12.m4
+          include home-sidebar
 
 block scripts
   script(src='/js/common.js')
