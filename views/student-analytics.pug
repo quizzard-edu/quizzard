@@ -8,7 +8,13 @@
         .col.s12.m12
           h5 Your Questions Answered VS. Class Average Questions Answered
           .card.chart
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.cyanO filter_list
             canvas#correctAttemptsOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #correctAttemptsOverTimeTable
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentAnsweredCard
@@ -28,7 +34,13 @@
         .col.s12.m9
           h5 Your Questions Answered Ranking
           .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.cyanO filter_list
             canvas#correctAttemptRankOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #correctAttemptRankOverTimeTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -39,7 +51,13 @@
         .col.s12.m12
           h5 Your Accuracy VS. Class Average Accuracy
           .card.chart
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.tealO filter_list
             canvas#accuracyOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #accuracyOverTimeTable
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentAccuracyCard
@@ -59,7 +77,13 @@
         .col.s12.m9
           h5 Your Accuracy Ranking
           .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.tealO filter_list
             canvas#accuracyRankOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #accuracyRankOverTimeTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -70,7 +94,13 @@
         .col.s12.m12
           h5 Your Points VS. Class Average Points
           .card.chart
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.orangeO filter_list
             canvas#pointsOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #pointsOverTimeTable
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentPointsCard
@@ -90,7 +120,13 @@
         .col.s12.m9
           h5 Your Points Ranking
           .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.orangeO filter_list
             canvas#pointsRankOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #pointsRankOverTimeTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -101,7 +137,13 @@
         .col.s12.m12
           h5 Your Points Per Attempt VS. Class Average Points Per Attempt
           .card.chart
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.purpleO filter_list
             canvas#pointsPerAttemptsOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #pointsPerAttemptsOverTimeTable
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentPointsCard
@@ -121,7 +163,13 @@
         .col.s12.m9
           h5 Your Points Per Attempt Ranking
           .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.purpleO filter_list
             canvas#pointsPerAttemptRankOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #pointsPerAttemptRankOverTimeTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -132,7 +180,13 @@
         .col.s12.m12
           h5 Your Overall Score VS. Class Average Overall Score
           .card.chart
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.limeO filter_list
             canvas#overallOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #overallOverTimeTable
       .row.padding-left-10.padding-right-10
         .col.s12.m3
           .card#studentPointsCard
@@ -152,7 +206,13 @@
         .col.s12.m9
           h5 Your Overall Score Ranking
           .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.limeO filter_list
             canvas#overallRankOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #overallRankOverTimeTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -162,11 +222,23 @@
       .col.s12.m6
         h5 Your Question Type Points VS Class Question Type Points
         .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+            i.material-icons.blue filter_list
           canvas#pointsPerTypeVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #pointsPerTypeVsClassTable
       .col.s12.m6
         h5 Your Question Type Accuracy VS Class Question Type Accuracy
         .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+            i.material-icons.blue filter_list
           canvas#accuracyPerTypeVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #accuracyPerTypeVsClassTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -176,8 +248,20 @@
       .col.s12.m6
         h5 Your Question Topic Points VS Class Question Topic Points
         .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+            i.material-icons.blue filter_list
           canvas#pointsPerTopicVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #pointsPerTopicVsClassTable
       .col.s12.m6
         h5 Your Question Topic Accuracy VS Class Question Topic Accuracy
         .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+            i.material-icons.blue filter_list
           canvas#accuracyPerTopicVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #accuracyPerTopicVsClassTable

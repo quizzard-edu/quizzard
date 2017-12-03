@@ -16,7 +16,13 @@
         .col.s12.m9
           h5 Class Questions Answered
           .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.cyanO filter_list
             canvas#classAnsweredOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classAnsweredOverTimeTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -35,7 +41,13 @@
         .col.s12.m9
           h5 Class Accuracy
           .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.tealO filter_list
             canvas#classAccuracyOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classAccuracyOverTimeTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -54,7 +66,13 @@
         .col.s12.m9
           h5 Class Points
           .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.orangeO filter_list
             canvas#classPointsOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classPointsOverTimeTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -73,7 +91,13 @@
         .col.s12.m9
           h5 Class Points Per Attempt
           .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.purpleO filter_list
             canvas#classPointsPerAttemptOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classPointsPerAttemptOverTimeTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -92,7 +116,13 @@
         .col.s12.m9
           h5 Class Overall Points
           .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.limeO filter_list
             canvas#classOverallOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classOverallOverTimeTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -102,11 +132,23 @@
       .col.s12.m6
         h5 Class Question Type Points
         .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
           canvas#classPointsPerTypeVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classPointsPerTypeVsClassTable
       .col.s12.m6
         h5 Class Question Type Accuracy
         .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
           canvas#classAccuracyPerTypeVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classAccuracyPerTypeVsClassTable
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -116,8 +158,20 @@
       .col.s12.m6
         h5 Class Question Topic Points
         .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
           canvas#classPointsPerTopicVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classPointsPerTopicVsClassTable
       .col.s12.m6
         h5 Class Question Topic Accuracy
         .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
           canvas#classAccuracyPerTopicVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classAccuracyPerTopicVsClassTable

@@ -104,9 +104,6 @@ var displayClassStatistics = function () {
     getClassAccuracyPerTopicVsClass(path);
     getClassPointsPerTypeVsClass(path);
     getClassAccuracyPerTypeVsClass(path);
-
-    testRadar('#testingCanvas4');
-    testRadar('#testingCanvas5');
 }
 
 /**
@@ -390,6 +387,7 @@ var getCorrectAttemptsOverTime = function (path) {
       data.colLight = colours.cyanLight;
       data.colBack = colours.cyanLightO;
       createLineChart (data);
+      createTable('#correctAttemptsOverTimeTable', ['Date', 'Me', 'Class'], [data.dates, data.studentData, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -414,6 +412,7 @@ var getClassAnsweredOverTime = function (path) {
       data.colLight = colours.cyanLight;
       data.colBack = colours.cyanLightO;
       createClassLineChart (data);
+      createTable('#classAnsweredOverTimeTable', ['Date', 'Class'], [data.dates, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -438,6 +437,7 @@ var getClassPointsPerAttemptOverTime = function (path) {
       data.colLight = colours.purpleLight;
       data.colBack = colours.purpleLightO;
       createClassLineChart (data);    
+      createTable('#classPointsPerAttemptOverTimeTable', ['Date', 'Class'], [data.dates, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -459,6 +459,8 @@ var getClassPointsPerTopicVsClass = function (path) {
     success: function (data) {
       data.id = '#classPointsPerTopicVsClass';
       createClassRadarChart(data);
+      createTable('#pointsPerTopicVsClassTable', ['Topic', 'Class'], [data.labels, data.classData]);
+      createTable('#classPointsPerTopicVsClassTable', ['Topic', 'Class'], [data.labels, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -480,6 +482,7 @@ var getClassAccuracyPerTopicVsClass = function (path) {
     success: function (data) {
       data.id = '#classAccuracyPerTopicVsClass';
       createClassRadarChart(data);
+      createTable('#classAccuracyPerTopicVsClassTable', ['Topic', 'Class'], [data.labels, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -504,6 +507,7 @@ var getClassPointsPerTypeVsClass = function (path) {
           return questionTypes[item];
       });
       createClassRadarChart(data);
+      createTable('#classPointsPerTypeVsClassTable', ['Type', 'Class'], [data.labels, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -528,6 +532,7 @@ var getClassAccuracyPerTypeVsClass = function (path) {
         return questionTypes[item];
       });
       createClassRadarChart(data);
+      createTable('#classAccuracyPerTypeVsClassTable', ['Type', 'Class'], [data.labels, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -552,6 +557,7 @@ var getClassOverallOverTime = function (path) {
       data.colLight = colours.limeLight;
       data.colBack = colours.limeLightO;
       createClassLineChart (data);   
+      createTable('#classOverallOverTimeTable', ['Date', 'Class'], [data.dates, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -576,6 +582,7 @@ var getClassAccuracyOverTime = function (path) {
       data.colLight = colours.tealLight;
       data.colBack = colours.tealLightO;
       createClassLineChart (data); 
+      createTable('#classAccuracyOverTimeTable', ['Date', 'Class'], [data.dates, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -600,6 +607,7 @@ var getClassPointsOverTime = function (path) {
       data.colLight = colours.orangeLight;
       data.colBack = colours.orangeLightO;
       createClassLineChart (data); 
+      createTable('#classPointsOverTimeTable', ['Date', 'Class'], [data.dates, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -624,6 +632,7 @@ var getCorrectAttemptRankOverTime = function (path) {
       data.colLight = colours.cyanLight;
       data.colBack = colours.cyanLightO;
       createRankChart (data);
+      createTable('#correctAttemptRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -648,6 +657,7 @@ var getAccuracyOverTime = function (path) {
       data.colLight = colours.tealLight;
       data.colBack = colours.tealLightO;
       createLineChart (data);
+      createTable('#accuracyOverTimeTable', ['Date', 'Me', 'Class'], [data.dates, data.studentData, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -672,6 +682,7 @@ var getPointsPerAttemptsOverTime = function (path) {
       data.colLight = colours.purpleLight;
       data.colBack = colours.purpleLightO;
       createLineChart (data);
+      createTable('#pointsPerAttemptsOverTimeTable', ['Date', 'Me', 'Class'], [data.dates, data.studentData, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -696,6 +707,7 @@ var getOverallOverTime = function (path) {
       data.colLight = colours.limeLight;
       data.colBack = colours.limeLightO;
       createLineChart (data);
+      createTable('#overallOverTimeTable', ['Date', 'Me', 'Class'], [data.dates, data.studentData, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -720,6 +732,7 @@ var getPointsOverTime = function (path) {
       data.colLight = colours.orangeLight;
       data.colBack = colours.orangeLightO;
       createLineChart (data);
+      createTable('#pointsOverTimeTable', ['Date', 'Me', 'Class'], [data.dates, data.studentData, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -743,7 +756,8 @@ var getOverallRankOverTime = function (path) {
       data.col = colours.lime;
       data.colLight = colours.limeLight;
       data.colBack = colours.limeLightO;
-      createRankChart(data)
+      createRankChart(data);
+      createTable('#overallRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -767,7 +781,8 @@ var getPointsRankOverTime = function (path) {
       data.col = colours.orange;
       data.colLight = colours.orangeLight;
       data.colBack = colours.orangeLightO;
-      createRankChart(data)
+      createRankChart(data);
+      createTable('#pointsRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -791,7 +806,8 @@ var getPointsPerAttemptRankOverTime = function (path) {
       data.col = colours.purple;
       data.colLight = colours.purpleLight;
       data.colBack = colours.purpleLightO;
-      createRankChart(data)
+      createRankChart(data);
+      createTable('#pointsPerAttemptRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -815,7 +831,8 @@ var getAccuracyRankOverTime = function (path) {
       data.col = colours.teal;
       data.colLight = colours.tealLight;
       data.colBack = colours.tealLightO;
-      createRankChart(data)
+      createRankChart(data);
+      createTable('#accuracyRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -837,6 +854,7 @@ var getPointsPerTopicVsClass = function (path) {
     success: function (data) {
       data.id = '#pointsPerTopicVsClass';
       createRadarChart(data);
+      createTable('#pointsPerTopicVsClassTable', ['Topic', 'Me', 'Class'], [data.labels, data.studentData, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -858,6 +876,7 @@ var getAccuracyPerTopicVsClass = function (path) {
     success: function (data) {
       data.id = '#accuracyPerTopicVsClass';
       createRadarChart(data);
+      createTable('#accuracyPerTopicVsClassTable', ['Topic', 'Me', 'Class'], [data.labels, data.studentData, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -882,6 +901,7 @@ var getPointsPerTypeVsClass = function (path) {
         return questionTypes[item];
       });
       createRadarChart(data);
+      createTable('#pointsPerTypeVsClassTable', ['Type', 'Me', 'Class'], [data.labels, data.studentData, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -906,6 +926,7 @@ var getAccuracyPerTypeVsClass = function (path) {
         return questionTypes[item];
       });
       createRadarChart(data);
+      createTable('#accuracyPerTypeVsClassTable', ['Type', 'Me', 'Class'], [data.labels, data.studentData, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -919,6 +940,7 @@ var getAccuracyPerTypeVsClass = function (path) {
 
 var createLineChart = function (data) {
   var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
   var config2 = {
     type: 'line',
     data: {
@@ -978,6 +1000,7 @@ var createLineChart = function (data) {
 
 var createClassLineChart = function (data) {
   var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
   var config2 = {
     type: 'line',
     data: {
@@ -1029,6 +1052,7 @@ var createClassLineChart = function (data) {
 
 var createRankChart = function (data) {
   var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
   var config2 = {
     type: 'line',
     data: {
@@ -1092,6 +1116,7 @@ var maximum = function(data) {
 
 var createRadarChart = function (data) {
   var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
   var config2 = {
     type: 'radar',
     data: {
@@ -1146,6 +1171,7 @@ var createRadarChart = function (data) {
 
 var createClassRadarChart = function (data) {
   var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
   var config2 = {
     type: 'radar',
     data: {
@@ -1191,10 +1217,32 @@ var createClassRadarChart = function (data) {
 var noDataCanvas = function(id) {
     var byId = $(id)[0];  
     var context=byId.getContext("2d");
-    
+    byId.width = byId.width;
     context.translate(70, 50);
     context.font = '25pt Calibri';
     context.textAlign = 'center';
     context.fillStyle = '#000';
     context.fillText('No Data', 0, 0);
+}
+
+var createTable = function(id, headers, content) {
+  var tableString = '<table>';
+
+  tableString += '<tr>';
+  headers.forEach(title => {
+      tableString += `<th>${title}</th>`;
+  });
+  tableString += '</tr>';
+
+  for (i = content[0].length - 1; i >= 0; i--) {
+    tableString += '<tr>';
+    for (j = 0; j < content.length; j++) {
+      tableString += `<td>${content[j][i]}</td>`;
+    }
+    tableString += '</tr>';
+  }
+
+  tableString += '</table>';
+  $(id).html(tableString);
+  
 }
