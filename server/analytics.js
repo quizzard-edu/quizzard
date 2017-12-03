@@ -153,7 +153,7 @@ var getAnalytics = function(callback) {
         points: 0,
         accuracy: 0
     };
-    var currentDate = common.getDate();
+    var currentDate = common.getDateByFormat('YYYY-MM-DD');
 
     users.getFullLeaderboard(function (err, leaderboardList) {
         if (err) {
@@ -365,7 +365,7 @@ var getQuestionsAnsweredVsClass = function(query, callback) {
 var getOverallVsClass = function(query, callback) {
     users.getFullLeaderboard(function(err, leaderboardList) {
         if (err) {
-            logger.log(err);
+            logger.error(err);
             return callback(err, null);
         }
 
@@ -375,7 +375,6 @@ var getOverallVsClass = function(query, callback) {
         var classCount = 0;
 
         for (i in leaderboardList) {
-            logger.log(JSON.stringify(leaderboardList[i]));
             if (leaderboardList[i]._id === studentId) {
                 studentOverall = parseFloat(leaderboardList[i].overall);
             } else {
@@ -398,7 +397,7 @@ var getOverallVsClass = function(query, callback) {
 var getPointsPerAttemptVsClass = function(query, callback) {
     users.getFullLeaderboard(function(err, leaderboardList) {
         if (err) {
-            logger.log(err);
+            logger.error(err);
             return callback(err, null);
         }
 
