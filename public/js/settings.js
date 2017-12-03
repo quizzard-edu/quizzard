@@ -43,7 +43,7 @@ var cancel = function() {
         text: 'Your current changes will not be applied',
         type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
+        confirmButtonColor: 'colours.pinkLightExtra',
         confirmButtonText: 'Confirm',
         closeOnConfirm: true
     }, function() {
@@ -62,7 +62,7 @@ var resetDefault = function() {
         text: 'All the settings will be reverted to their default value',
         type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
+        confirmButtonColor: 'colours.pinkLightExtra',
         confirmButtonText: 'Confirm',
         closeOnConfirm: true
     }, function() {
@@ -97,7 +97,7 @@ var save = function() {
         text: 'Are you sure you would like to save the current changes',
         type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
+        confirmButtonColor: 'colours.pinkLightExtra',
         confirmButtonText: 'Confirm',
         closeOnConfirm: true
     }, function() {

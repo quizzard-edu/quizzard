@@ -63,7 +63,7 @@ function removeAllFeedback() {
         text: 'You are about to remove all the student feedback',
         type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: colours.pinkLight,
+        confirmButtonColor: colours.pinkLightExtra,
         confirmButtonText: 'Confirm',
         closeOnConfirm: true
     }, function() {
