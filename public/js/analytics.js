@@ -990,22 +990,22 @@ var createLineChart = function (data) {
           label: 'Me',
           borderWidth: 4,
           pointBorderWidth: 1,
-          pointHoverBackgroundColor: 'white',
+          pointHoverBackgroundColor: colours.white,
           pointHoverBorderColor: data.col,
           pointRadius: 4,
           pointBackgroundColor: data.colLight
         },
         {
           data: data.classData,
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          borderColor: '#424242',
+          backgroundColor: colours.grayDarkO,
+          borderColor: colours.grayDark,
           label: 'Class',
           borderWidth: 4,
           pointBorderWidth: 1,
-          pointHoverBackgroundColor: 'white',
-          pointHoverBorderColor: '#424242',
+          pointHoverBackgroundColor: colours.white,
+          pointHoverBorderColor: colours.grayDark,
           pointRadius: 4,
-          pointBackgroundColor: '#c4c4c4'
+          pointBackgroundColor: colours.grayDark
         }
       ],
       labels: data.dates
@@ -1049,7 +1049,7 @@ var createClassLineChart = function (data) {
           borderColor: data.col,
           borderWidth: 4,
           pointBorderWidth: 1,
-          pointHoverBackgroundColor: 'white',
+          pointHoverBackgroundColor: colours.white,
           pointHoverBorderColor: data.col,
           pointRadius: 4,
           pointBackgroundColor: data.colLight
@@ -1097,12 +1097,12 @@ var createRankChart = function (data) {
       datasets: [
         {
           data: data.studentData,
-          backgroundColor: 'rgba(0, 0, 0, 0)',
+          backgroundColor: colours.transparent,
           borderColor: data.col,
           label: 'Me',
           borderWidth: 4,
           pointBorderWidth: 1,
-          pointHoverBackgroundColor: 'white',
+          pointHoverBackgroundColor: colours.white,
           pointHoverBorderColor: data.col,
           pointRadius: 4,
           pointBackgroundColor: data.colLight
@@ -1160,26 +1160,26 @@ var createRadarChart = function (data) {
       datasets: [
         {
           data: data.studentData,
-          backgroundColor: 'rgba(168, 216, 255, 0.3)',
-          borderColor: '#42A5F5',
-          pointBorderColor: '#42A5F5',
+          backgroundColor: colours.blueBackO,
+          borderColor: colours.blueMatt,
+          pointBorderColor: colours.blueMatt,
           label: 'Me',
           borderWidth: 4,
-          pointHoverBackgroundColor: 'white',
-          pointBackgroundColor: '#90CAF9',
-          pointHoverBorderColor: '#42A5F5',
+          pointHoverBackgroundColor: colours.white,
+          pointBackgroundColor: colours.blueBack,
+          pointHoverBorderColor: colours.blueMatt,
           pointRadius: 4,
         },
         {
           data: data.classData,
-          backgroundColor: 'rgba(255, 150, 185, 0.3)',
-          borderColor: '#F06292',
-          pointBorderColor: '#F06292',
+          backgroundColor: colours.pinkLightO,
+          borderColor: colours.pinkHot,
+          pointBorderColor: colours.pinkHot,
           label: 'Class',
           borderWidth: 4,
-          pointHoverBackgroundColor: 'white',
-          pointBackgroundColor: '#F8BBD0',
-          pointHoverBorderColor: '#F06292',
+          pointHoverBackgroundColor: colours.white,
+          pointBackgroundColor: colours.pinkLight,
+          pointHoverBorderColor: colours.pinkHot,
           pointRadius: 4,
         }
       ],
@@ -1215,13 +1215,13 @@ var createClassRadarChart = function (data) {
       datasets: [
         {
           data: data.classData,
-          backgroundColor: 'rgba(168, 216, 255, 0.3)',
-          borderColor: '#42A5F5',
-          pointBorderColor: '#42A5F5',
+          backgroundColor: colours.blueBackO,
+          borderColor: colours.blueMatt,
+          pointBorderColor: colours.blueMatt,
           borderWidth: 4,
-          pointHoverBackgroundColor: 'white',
-          pointBackgroundColor: '#90CAF9',
-          pointHoverBorderColor: '#42A5F5',
+          pointHoverBackgroundColor: colours.white,
+          pointBackgroundColor: colours.blueBack,
+          pointHoverBorderColor: colours.blueMatt,
           pointRadius: 4,
         }
       ],
