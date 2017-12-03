@@ -14,7 +14,7 @@ const colours = Object.freeze({
     redBorder      : 'rgb(243, 13, 20)',
     redDark        : 'red darken-4',
     redLight       : 'rgba(243, 13, 20, 0.5)',
-    white          : 'white',
+    white          : 'white'
 });
 
 const snack = Object.freeze({
