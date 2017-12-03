@@ -8,7 +8,7 @@ $(function () {
   displayStudentStatistics(null);
 
   // Loads the list of students so that the instructor can select one
-  getStudentList ();
+  getStudentList();
   studentList = {};
   for (var s in students) {
     studentList[students[s]] = null;
@@ -20,7 +20,7 @@ $(function () {
     limit: 20,
     onAutocomplete: function (val) {
       $('#student-analytics-card').removeClass('hidden');
-      displayStudentStatistics(val.split (' ')[0]);
+      displayStudentStatistics(val.split(' ')[0]);
     },
     minLength: 1,
   });
@@ -32,7 +32,7 @@ $(function () {
     for (var s in studentList) {
       if (s === autocompleteValue) {
         $('#student-analytics-card').removeClass('hidden');
-        displayStudentStatistics(autocompleteValue.split (' ')[0]);
+        displayStudentStatistics(autocompleteValue.split(' ')[0]);
         return;
       }
     }
@@ -62,14 +62,14 @@ var getStudentList = function () {
 * Switching to class statistics tab
 */
 $('#option-class').click(function (evt) {
-    displayClassStatistics();
+  displayClassStatistics();
 });
 
 /**
 * Switching to student statistics tab
 */
 $('#option-student').click(function (evt) {
-    displayStudentStatistics(null);
+  displayStudentStatistics(null);
 });
 
 /**
@@ -78,35 +78,32 @@ $('#option-student').click(function (evt) {
 * Calls requested charts to update
 */
 var displayClassStatistics = function () {
-    // Card visibilty
-    $('#student-analytics-card').addClass('hidden');
-    $('#studentSelector').addClass('hidden');
-    $('#class-analytics-card').removeClass('hidden');
+  // Card visibilty
+  $('#student-analytics-card').addClass('hidden');
+  $('#studentSelector').addClass('hidden');
+  $('#class-analytics-card').removeClass('hidden');
 
-    $('#studentAnalyticsHeader').addClass('hidden');
+  $('#studentAnalyticsHeader').addClass('hidden');
 
-    var path = '/adminAnalytics';
+  var path = '/adminAnalytics';
 
-    // Class Statistics
-    getClassAnswered(path);
-    getClassAccuracy(path);
-    getClassPoints(path);
-    getClassPointsPerAttempt(path);
-    getClassOverall(path);
+  // Class Statistics
+  getClassAnswered(path);
+  getClassAccuracy(path);
+  getClassPoints(path);
+  getClassPointsPerAttempt(path);
+  getClassOverall(path);
 
-    getClassAnsweredOverTime(path);
-    getClassPointsPerAttemptOverTime(path);
-    getClassOverallOverTime(path);
-    getClassAccuracyOverTime(path);
-    getClassPointsOverTime(path);
+  getClassAnsweredOverTime(path);
+  getClassPointsPerAttemptOverTime(path);
+  getClassOverallOverTime(path);
+  getClassAccuracyOverTime(path);
+  getClassPointsOverTime(path);
 
-    getClassPointsPerTopicVsClass(path);
-    getClassAccuracyPerTopicVsClass(path);
-    getClassPointsPerTypeVsClass(path);
-    getClassAccuracyPerTypeVsClass(path);
-
-    testRadar('#testingCanvas4');
-    testRadar('#testingCanvas5');
+  getClassPointsPerTopicVsClass(path);
+  getClassAccuracyPerTopicVsClass(path);
+  getClassPointsPerTypeVsClass(path);
+  getClassAccuracyPerTypeVsClass(path);
 }
 
 /**
@@ -115,54 +112,53 @@ var displayClassStatistics = function () {
 * Calls requested charts to update
 */
 var displayStudentStatistics = function (studentId) {
-    // Card visibilty
-    $('#student-analytics-card').removeClass('hidden');
-    $('#studentSelector').removeClass('hidden');
-    $('#class-analytics-card').addClass('hidden');
+  // Card visibilty
+  $('#student-analytics-card').removeClass('hidden');
+  $('#studentSelector').removeClass('hidden');
+  $('#class-analytics-card').addClass('hidden');
 
-    $('#studentAnalyticsHeader').removeClass('hidden');
+  $('#studentAnalyticsHeader').removeClass('hidden');
 
-    var path = studentId ? '/studentAnalytics?studentId=' + studentId : '/studentAnalytics';
+  var path = studentId ? '/studentAnalytics?studentId=' + studentId : '/studentAnalytics';
 
-    // Request statistics
+  // Request statistics
+  // Student and Class Statistics
 
-    // Student and Class Statistics
+  // questions answered analytics
+  getQuestionsAnsweredStudentAndClass(path);
+  getCorrectAttemptsOverTime(path);
+  getCorrectAttemptRankOverTime(path);
 
-    // questions answered analytics
-    getQuestionsAnsweredStudentAndClass(path);
-    getCorrectAttemptsOverTime(path);
-    getCorrectAttemptRankOverTime(path);
+  // accuracy analytics
+  getAccuracyStudentAndClass(path);
+  getAccuracyOverTime(path);
+  getAccuracyRankOverTime(path);
 
-    // accuracy analytics
-    getAccuracyStudentAndClass(path);
-    getAccuracyOverTime(path);
-    getAccuracyRankOverTime(path);
+  // points analytics
+  getPointsStudentAndClass(path);
+  getPointsOverTime(path);
+  getPointsRankOverTime(path);
 
-    // points analytics
-    getPointsStudentAndClass(path);
-    getPointsOverTime(path);
-    getPointsRankOverTime(path);
+  // overall score analytics
+  getOverallVsClass(path);
+  getOverallOverTime(path);
+  getOverallRankOverTime(path);
 
-    // overall score analytics
-    getOverallVsClass(path);
-    getOverallOverTime(path);
-    getOverallRankOverTime(path);
+  // points per attempt analytics
+  getPointsPerAttemptVsClass(path);
+  getPointsPerAttemptsOverTime(path);
+  getPointsPerAttemptRankOverTime(path);
 
-    // points per attempt analytics
-    getPointsPerAttemptVsClass(path);
-    getPointsPerAttemptsOverTime(path);
-    getPointsPerAttemptRankOverTime(path);
+  // by topic analytics
+  getPointsPerTopicVsClass(path);
+  getAccuracyPerTopicVsClass(path);
 
-    // by topic analytics
-    getPointsPerTopicVsClass(path);
-    getAccuracyPerTopicVsClass(path);
-
-    // by type analytics
-    getPointsPerTypeVsClass(path);
-    getAccuracyPerTypeVsClass(path);
+  // by type analytics
+  getPointsPerTypeVsClass(path);
+  getAccuracyPerTypeVsClass(path);
 }
 
-// Student statistics
+// questions answered analytics
 
 var getQuestionsAnsweredStudentAndClass = function (path) {
   $.ajax({
@@ -186,49 +182,57 @@ var getQuestionsAnsweredStudentAndClass = function (path) {
   });
 }
 
-var getOverallVsClass = function (path) {
+var getCorrectAttemptsOverTime = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
-      type: 'overallVsClass'
+      type: 'correctAttemptsOverTime'
     },
     success: function (data) {
-      $('#studentOverall').html(data[0]);
-      $('#classOverall').html(data[1]);
+      data.id = '#correctAttemptsOverTime';
+      data.col = colours.cyan;
+      data.colLight = colours.cyanLight;
+      data.colBack = colours.cyanLightO;
+      createLineChart(data);
+      createTable('#correctAttemptsOverTimeTable', ['Date', 'Me', 'Class'], [data.dates, data.studentData, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        $('#studentOverall').html('No Data');
-        $('#classOverall').html('No Data');
+        noDataCanvas('#correctAttemptsOverTime');
       }
     }
   });
 }
 
-var getPointsPerAttemptVsClass = function (path) {
+var getCorrectAttemptRankOverTime = function (path) {
   $.ajax({
     type: 'GET',
     url: path,
     data: {
-      type: 'pointsPerAttemptVsClass'
+      type: 'correctAttemptRankOverTime'
     },
     success: function (data) {
-      $('#studentperAttempt').html(data[0]);
-      $('#classPerAttempt').html(data[1]);
+      data.id = '#correctAttemptRankOverTime';
+      data.col = colours.cyan;
+      data.colLight = colours.cyanLight;
+      data.colBack = colours.cyanLightO;
+      createRankChart(data);
+      createTable('#correctAttemptRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
-        $('#studentperAttempt').html('No Data');
-        $('#classPerAttempt').html('No Data');
+        noDataCanvas('#correctAttemptRankOverTime');
       }
     }
   });
 }
+
+// accuracy analytics
 
 var getAccuracyStudentAndClass = function (path) {
   $.ajax({
@@ -252,6 +256,58 @@ var getAccuracyStudentAndClass = function (path) {
   });
 }
 
+var getAccuracyOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'accuracyOverTime'
+    },
+    success: function (data) {
+      data.id = '#accuracyOverTime';
+      data.col = colours.teal;
+      data.colLight = colours.tealLight;
+      data.colBack = colours.tealLightO;
+      createLineChart(data);
+      createTable('#accuracyOverTimeTable', ['Date', 'Me', 'Class'], [data.dates, data.studentData, data.classData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#accuracyOverTime');
+      }
+    }
+  });
+}
+
+var getAccuracyRankOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'accuracyRankOverTime'
+    },
+    success: function (data) {
+      data.id = '#accuracyRankOverTime';
+      data.col = colours.teal;
+      data.colLight = colours.tealLight;
+      data.colBack = colours.tealLightO;
+      createRankChart(data);
+      createTable('#accuracyRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#accuracyRankOverTime');
+      }
+    }
+  });
+}
+
+// points analytics
+
 var getPointsStudentAndClass = function (path) {
   $.ajax({
     type: 'GET',
@@ -269,6 +325,303 @@ var getPointsStudentAndClass = function (path) {
       } else if (data['status'] === 500) {
         $('#studentPoints').html('No Data');
         $('#classPoints').html('No Data');
+      }
+    }
+  });
+}
+
+var getPointsOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsOverTime'
+    },
+    success: function (data) {
+      data.id = '#pointsOverTime';
+      data.col = colours.orange;
+      data.colLight = colours.orangeLight;
+      data.colBack = colours.orangeLightO;
+      createLineChart(data);
+      createTable('#pointsOverTimeTable', ['Date', 'Me', 'Class'], [data.dates, data.studentData, data.classData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#pointsOverTime');
+      }
+    }
+  });
+}
+
+var getPointsRankOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsRankOverTime'
+    },
+    success: function (data) {
+      data.id = '#pointsRankOverTime';
+      data.col = colours.orange;
+      data.colLight = colours.orangeLight;
+      data.colBack = colours.orangeLightO;
+      createRankChart(data);
+      createTable('#pointsRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#pointsRankOverTime');
+      }
+    }
+  });
+}
+
+// overall score analytics
+
+var getOverallVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'overallVsClass'
+    },
+    success: function (data) {
+      $('#studentOverall').html(data[0]);
+      $('#classOverall').html(data[1]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#studentOverall').html('No Data');
+        $('#classOverall').html('No Data');
+      }
+    }
+  });
+}
+
+var getOverallOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'overallOverTime'
+    },
+    success: function (data) {
+      data.id = '#overallOverTime';
+      data.col = colours.lime;
+      data.colLight = colours.limeLight;
+      data.colBack = colours.limeLightO;
+      createLineChart(data);
+      createTable('#overallOverTimeTable', ['Date', 'Me', 'Class'], [data.dates, data.studentData, data.classData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#overallOverTime');
+      }
+    }
+  });
+}
+
+var getOverallRankOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'overallRankOverTime'
+    },
+    success: function (data) {
+      data.id = '#overallRankOverTime';
+      data.col = colours.lime;
+      data.colLight = colours.limeLight;
+      data.colBack = colours.limeLightO;
+      createRankChart(data);
+      createTable('#overallRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#overallRankOverTime');
+      }
+    }
+  });
+}
+
+// points per attempt analytics
+
+var getPointsPerAttemptVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsPerAttemptVsClass'
+    },
+    success: function (data) {
+      $('#studentperAttempt').html(data[0]);
+      $('#classPerAttempt').html(data[1]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        $('#studentperAttempt').html('No Data');
+        $('#classPerAttempt').html('No Data');
+      }
+    }
+  });
+}
+
+var getPointsPerAttemptsOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsPerAttemptsOverTime'
+    },
+    success: function (data) {
+      data.id = '#pointsPerAttemptsOverTime';
+      data.col = colours.purple;
+      data.colLight = colours.purpleLight;
+      data.colBack = colours.purpleLightO;
+      createLineChart(data);
+      createTable('#pointsPerAttemptsOverTimeTable', ['Date', 'Me', 'Class'], [data.dates, data.studentData, data.classData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#pointsPerAttemptsOverTime');
+      }
+    }
+  });
+}
+
+var getPointsPerAttemptRankOverTime = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'attemptRankOverTime'
+    },
+    success: function (data) {
+      data.id = '#pointsPerAttemptRankOverTime';
+      data.col = colours.purple;
+      data.colLight = colours.purpleLight;
+      data.colBack = colours.purpleLightO;
+      createRankChart(data);
+      createTable('#pointsPerAttemptRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#pointsPerAttemptRankOverTime');
+      }
+    }
+  });
+}
+
+// by topic analytics
+
+
+var getPointsPerTopicVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsPerTopicVsClass'
+    },
+    success: function (data) {
+      data.id = '#pointsPerTopicVsClass';
+      createRadarChart(data);
+      createTable('#pointsPerTopicVsClassTable', ['Topic', 'Me', 'Class'], [data.labels, data.studentData, data.classData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#pointsPerTopicVsClass');
+      }
+    }
+  });
+}
+
+var getAccuracyPerTopicVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'accuracyPerTopicVsClass'
+    },
+    success: function (data) {
+      data.id = '#accuracyPerTopicVsClass';
+      createRadarChart(data);
+      createTable('#accuracyPerTopicVsClassTable', ['Topic', 'Me', 'Class'], [data.labels, data.studentData, data.classData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#accuracyPerTopicVsClass');
+      }
+    }
+  });
+}
+
+// by type analytics
+
+var getPointsPerTypeVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'pointsPerTypeVsClass'
+    },
+    success: function (data) {
+      data.id = '#pointsPerTypeVsClass';
+      data.labels = data.labels.map(item => {
+        return questionTypes[item];
+      });
+      createRadarChart(data);
+      createTable('#pointsPerTypeVsClassTable', ['Type', 'Me', 'Class'], [data.labels, data.studentData, data.classData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#pointsPerTypeVsClass');
+      }
+    }
+  });
+}
+
+var getAccuracyPerTypeVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'accuracyPerTypeVsClass'
+    },
+    success: function (data) {
+      data.id = '#accuracyPerTypeVsClass';
+      data.labels = data.labels.map(item => {
+        return questionTypes[item];
+      });
+      createRadarChart(data);
+      createTable('#accuracyPerTypeVsClassTable', ['Type', 'Me', 'Class'], [data.labels, data.studentData, data.classData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 500) {
+        noDataCanvas('#accuracyPerTypeVsClass');
       }
     }
   });
@@ -295,7 +648,6 @@ var getClassAnswered = function (path) {
     }
   });
 }
-
 
 var getClassAccuracy = function (path) {
   $.ajax({
@@ -377,30 +729,6 @@ var getClassPoints = function (path) {
   });
 }
 
-var getCorrectAttemptsOverTime = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'correctAttemptsOverTime'
-    },
-    success: function (data) {
-      data.id = '#correctAttemptsOverTime';
-      data.col = colours.cyan;
-      data.colLight = colours.cyanLight;
-      data.colBack = colours.cyanLightO;
-      createLineChart (data);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#correctAttemptsOverTime');
-      }
-    }
-  });
-}
-
 var getClassAnsweredOverTime = function (path) {
   $.ajax({
     type: 'GET',
@@ -413,7 +741,8 @@ var getClassAnsweredOverTime = function (path) {
       data.col = colours.cyan;
       data.colLight = colours.cyanLight;
       data.colBack = colours.cyanLightO;
-      createClassLineChart (data);
+      createClassLineChart(data);
+      createTable('#classAnsweredOverTimeTable', ['Date', 'Class'], [data.dates, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -437,7 +766,8 @@ var getClassPointsPerAttemptOverTime = function (path) {
       data.col = colours.purple;
       data.colLight = colours.purpleLight;
       data.colBack = colours.purpleLightO;
-      createClassLineChart (data);    
+      createClassLineChart(data);
+      createTable('#classPointsPerAttemptOverTimeTable', ['Date', 'Class'], [data.dates, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -459,6 +789,8 @@ var getClassPointsPerTopicVsClass = function (path) {
     success: function (data) {
       data.id = '#classPointsPerTopicVsClass';
       createClassRadarChart(data);
+      createTable('#pointsPerTopicVsClassTable', ['Topic', 'Class'], [data.labels, data.classData]);
+      createTable('#classPointsPerTopicVsClassTable', ['Topic', 'Class'], [data.labels, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -480,6 +812,7 @@ var getClassAccuracyPerTopicVsClass = function (path) {
     success: function (data) {
       data.id = '#classAccuracyPerTopicVsClass';
       createClassRadarChart(data);
+      createTable('#classAccuracyPerTopicVsClassTable', ['Topic', 'Class'], [data.labels, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -501,9 +834,10 @@ var getClassPointsPerTypeVsClass = function (path) {
     success: function (data) {
       data.id = '#classPointsPerTypeVsClass';
       data.labels = data.labels.map(item => {
-          return questionTypes[item];
+        return questionTypes[item];
       });
       createClassRadarChart(data);
+      createTable('#classPointsPerTypeVsClassTable', ['Type', 'Class'], [data.labels, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -528,6 +862,7 @@ var getClassAccuracyPerTypeVsClass = function (path) {
         return questionTypes[item];
       });
       createClassRadarChart(data);
+      createTable('#classAccuracyPerTypeVsClassTable', ['Type', 'Class'], [data.labels, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -551,7 +886,8 @@ var getClassOverallOverTime = function (path) {
       data.col = colours.lime;
       data.colLight = colours.limeLight;
       data.colBack = colours.limeLightO;
-      createClassLineChart (data);   
+      createClassLineChart(data);
+      createTable('#classOverallOverTimeTable', ['Date', 'Class'], [data.dates, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -575,7 +911,8 @@ var getClassAccuracyOverTime = function (path) {
       data.col = colours.teal;
       data.colLight = colours.tealLight;
       data.colBack = colours.tealLightO;
-      createClassLineChart (data); 
+      createClassLineChart(data);
+      createTable('#classAccuracyOverTimeTable', ['Date', 'Class'], [data.dates, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -599,157 +936,14 @@ var getClassPointsOverTime = function (path) {
       data.col = colours.orange;
       data.colLight = colours.orangeLight;
       data.colBack = colours.orangeLightO;
-      createClassLineChart (data); 
+      createClassLineChart(data);
+      createTable('#classPointsOverTimeTable', ['Date', 'Class'], [data.dates, data.classData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
         window.location.href = '/';
       } else if (data['status'] === 500) {
         noDataCanvas('#classPointsOverTime');
-      }
-    }
-  });
-}
-
-var getCorrectAttemptRankOverTime = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'correctAttemptRankOverTime'
-    },
-    success: function (data) {
-      data.id = '#correctAttemptRankOverTime';
-      data.col = colours.cyan;
-      data.colLight = colours.cyanLight;
-      data.colBack = colours.cyanLightO;
-      createRankChart (data);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#correctAttemptRankOverTime');
-      }
-    }
-  });
-}
-
-var getAccuracyOverTime = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'accuracyOverTime'
-    },
-    success: function (data) {
-      data.id = '#accuracyOverTime';
-      data.col = colours.teal;
-      data.colLight = colours.tealLight;
-      data.colBack = colours.tealLightO;
-      createLineChart (data);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#accuracyOverTime');
-      }
-    }
-  });
-}
-
-var getPointsPerAttemptsOverTime = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'pointsPerAttemptsOverTime'
-    },
-    success: function (data) {
-      data.id = '#pointsPerAttemptsOverTime';
-      data.col = colours.purple;
-      data.colLight = colours.purpleLight;
-      data.colBack = colours.purpleLightO;
-      createLineChart (data);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#pointsPerAttemptsOverTime');
-      }
-    }
-  });
-}
-
-var getOverallOverTime = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'overallOverTime'
-    },
-    success: function (data) {
-      data.id = '#overallOverTime';
-      data.col = colours.lime;
-      data.colLight = colours.limeLight;
-      data.colBack = colours.limeLightO;
-      createLineChart (data);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#overallOverTime');
-      }
-    }
-  });
-}
-
-var getPointsOverTime = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'pointsOverTime'
-    },
-    success: function (data) {
-      data.id = '#pointsOverTime';
-      data.col = colours.orange;
-      data.colLight = colours.orangeLight;
-      data.colBack = colours.orangeLightO;
-      createLineChart (data);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#pointsOverTime');
-      }
-    }
-  });
-}
-
-var getOverallRankOverTime = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'overallRankOverTime'
-    },
-    success: function (data) {
-      data.id = '#overallRankOverTime';
-      data.col = colours.lime;
-      data.colLight = colours.limeLight;
-      data.colBack = colours.limeLightO;
-      createRankChart(data)
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#overallRankOverTime');
       }
     }
   });
@@ -767,7 +961,8 @@ var getPointsRankOverTime = function (path) {
       data.col = colours.orange;
       data.colLight = colours.orangeLight;
       data.colBack = colours.orangeLightO;
-      createRankChart(data)
+      createRankChart(data);
+      createTable('#pointsRankOverTimeTable', ['Date', 'Me'], [data.dates, data.studentData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -779,146 +974,11 @@ var getPointsRankOverTime = function (path) {
   });
 }
 
-var getPointsPerAttemptRankOverTime = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'attemptRankOverTime'
-    },
-    success: function (data) {
-      data.id = '#pointsPerAttemptRankOverTime';
-      data.col = colours.purple;
-      data.colLight = colours.purpleLight;
-      data.colBack = colours.purpleLightO;
-      createRankChart(data)
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#pointsPerAttemptRankOverTime');
-      }
-    }
-  });
-}
-
-var getAccuracyRankOverTime = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'accuracyRankOverTime'
-    },
-    success: function (data) {
-      data.id = '#accuracyRankOverTime';
-      data.col = colours.teal;
-      data.colLight = colours.tealLight;
-      data.colBack = colours.tealLightO;
-      createRankChart(data)
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#accuracyRankOverTime');
-      }
-    }
-  });
-}
-
-var getPointsPerTopicVsClass = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'pointsPerTopicVsClass'
-    },
-    success: function (data) {
-      data.id = '#pointsPerTopicVsClass';
-      createRadarChart(data);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#pointsPerTopicVsClass');
-      }
-    }
-  });
-}
-
-var getAccuracyPerTopicVsClass = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'accuracyPerTopicVsClass'
-    },
-    success: function (data) {
-      data.id = '#accuracyPerTopicVsClass';
-      createRadarChart(data);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#accuracyPerTopicVsClass');
-      }
-    }
-  });
-}
-
-var getPointsPerTypeVsClass = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'pointsPerTypeVsClass'
-    },
-    success: function (data) {
-      data.id = '#pointsPerTypeVsClass';
-      data.labels = data.labels.map(item => {
-        return questionTypes[item];
-      });
-      createRadarChart(data);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#pointsPerTypeVsClass');
-      }
-    }
-  });
-}
-
-var getAccuracyPerTypeVsClass = function (path) {
-  $.ajax({
-    type: 'GET',
-    url: path,
-    data: {
-      type: 'accuracyPerTypeVsClass'
-    },
-    success: function (data) {
-      data.id = '#accuracyPerTypeVsClass';
-      data.labels = data.labels.map(item => {
-        return questionTypes[item];
-      });
-      createRadarChart(data);
-    },
-    error: function (data) {
-      if (data['status'] === 401) {
-        window.location.href = '/';
-      } else if (data['status'] === 500) {
-        noDataCanvas('#accuracyPerTypeVsClass');
-      }
-    }
-  });
-}
+// Helper functions to create tables and charts
 
 var createLineChart = function (data) {
   var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
   var config2 = {
     type: 'line',
     data: {
@@ -930,22 +990,22 @@ var createLineChart = function (data) {
           label: 'Me',
           borderWidth: 4,
           pointBorderWidth: 1,
-          pointHoverBackgroundColor: 'white',
+          pointHoverBackgroundColor: colours.white,
           pointHoverBorderColor: data.col,
           pointRadius: 4,
           pointBackgroundColor: data.colLight
         },
         {
           data: data.classData,
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          borderColor: '#424242',
+          backgroundColor: colours.grayDarkO,
+          borderColor: colours.grayDark,
           label: 'Class',
           borderWidth: 4,
           pointBorderWidth: 1,
-          pointHoverBackgroundColor: 'white',
-          pointHoverBorderColor: '#424242',
+          pointHoverBackgroundColor: colours.white,
+          pointHoverBorderColor: colours.grayDark,
           pointRadius: 4,
-          pointBackgroundColor: '#c4c4c4'
+          pointBackgroundColor: colours.grayDark
         }
       ],
       labels: data.dates
@@ -961,7 +1021,7 @@ var createLineChart = function (data) {
           }
         }],
         xAxes: [{
-            display : false
+          display: false
         }]
       },
       layout: {
@@ -973,11 +1033,12 @@ var createLineChart = function (data) {
       }
     }
   };
-  new Chart (ctx, config2);
+  new Chart(ctx, config2);
 }
 
 var createClassLineChart = function (data) {
   var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
   var config2 = {
     type: 'line',
     data: {
@@ -988,7 +1049,7 @@ var createClassLineChart = function (data) {
           borderColor: data.col,
           borderWidth: 4,
           pointBorderWidth: 1,
-          pointHoverBackgroundColor: 'white',
+          pointHoverBackgroundColor: colours.white,
           pointHoverBorderColor: data.col,
           pointRadius: 4,
           pointBackgroundColor: data.colLight
@@ -1003,13 +1064,13 @@ var createClassLineChart = function (data) {
         yAxes: [{
           ticks: {
             min: 0,
-            max: data.classData.reduce(function(a, b) {
+            max: data.classData.reduce(function (a, b) {
               return Math.max(a, b);
             }) + 10
           }
         }],
         xAxes: [{
-            display : false
+          display: false
         }]
       },
       layout: {
@@ -1024,23 +1085,24 @@ var createClassLineChart = function (data) {
       }
     }
   };
-  new Chart (ctx, config2);
+  new Chart(ctx, config2);
 }
 
 var createRankChart = function (data) {
   var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
   var config2 = {
     type: 'line',
     data: {
       datasets: [
         {
           data: data.studentData,
-          backgroundColor: 'rgba(0, 0, 0, 0)',
+          backgroundColor: colours.transparent,
           borderColor: data.col,
           label: 'Me',
           borderWidth: 4,
           pointBorderWidth: 1,
-          pointHoverBackgroundColor: 'white',
+          pointHoverBackgroundColor: colours.white,
           pointHoverBorderColor: data.col,
           pointRadius: 4,
           pointBackgroundColor: data.colLight
@@ -1060,7 +1122,7 @@ var createRankChart = function (data) {
           }
         }],
         xAxes: [{
-            display : false
+          display: false
         }]
       },
       layout: {
@@ -1074,16 +1136,15 @@ var createRankChart = function (data) {
       }
     }
   };
-  new Chart (ctx, config2);
+  new Chart(ctx, config2);
 }
 
-
-var maximum = function(data) {
-  const studentD = data.studentData.reduce(function(a, b) {
+var maximum = function (data) {
+  const studentD = data.studentData.reduce(function (a, b) {
     return Math.max(a, b);
   });
 
-  const classD = data.classData.reduce(function(a, b) {
+  const classD = data.classData.reduce(function (a, b) {
     return Math.max(a, b);
   });
 
@@ -1092,32 +1153,33 @@ var maximum = function(data) {
 
 var createRadarChart = function (data) {
   var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
   var config2 = {
     type: 'radar',
     data: {
       datasets: [
         {
           data: data.studentData,
-          backgroundColor: 'rgba(168, 216, 255, 0.3)',
-          borderColor: '#42A5F5',
-          pointBorderColor: '#42A5F5',
+          backgroundColor: colours.blueBackO,
+          borderColor: colours.blueMatt,
+          pointBorderColor: colours.blueMatt,
           label: 'Me',
           borderWidth: 4,
-          pointHoverBackgroundColor: 'white',
-          pointBackgroundColor: '#90CAF9',
-          pointHoverBorderColor: '#42A5F5',
+          pointHoverBackgroundColor: colours.white,
+          pointBackgroundColor: colours.blueBack,
+          pointHoverBorderColor: colours.blueMatt,
           pointRadius: 4,
         },
         {
           data: data.classData,
-          backgroundColor: 'rgba(255, 150, 185, 0.3)',
-          borderColor: '#F06292',
-          pointBorderColor: '#F06292',
+          backgroundColor: colours.pinkLightO,
+          borderColor: colours.pinkHot,
+          pointBorderColor: colours.pinkHot,
           label: 'Class',
           borderWidth: 4,
-          pointHoverBackgroundColor: 'white',
-          pointBackgroundColor: '#F8BBD0',
-          pointHoverBorderColor: '#F06292',
+          pointHoverBackgroundColor: colours.white,
+          pointBackgroundColor: colours.pinkLight,
+          pointHoverBorderColor: colours.pinkHot,
           pointRadius: 4,
         }
       ],
@@ -1131,7 +1193,7 @@ var createRadarChart = function (data) {
           display: false
         }],
         xAxes: [{
-            display : false
+          display: false
         }]
       },
       layout: {
@@ -1141,24 +1203,25 @@ var createRadarChart = function (data) {
       }
     }
   };
-  new Chart (ctx, config2);
+  new Chart(ctx, config2);
 }
 
 var createClassRadarChart = function (data) {
   var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
   var config2 = {
     type: 'radar',
     data: {
       datasets: [
         {
           data: data.classData,
-          backgroundColor: 'rgba(168, 216, 255, 0.3)',
-          borderColor: '#42A5F5',
-          pointBorderColor: '#42A5F5',
+          backgroundColor: colours.blueBackO,
+          borderColor: colours.blueMatt,
+          pointBorderColor: colours.blueMatt,
           borderWidth: 4,
-          pointHoverBackgroundColor: 'white',
-          pointBackgroundColor: '#90CAF9',
-          pointHoverBorderColor: '#42A5F5',
+          pointHoverBackgroundColor: colours.white,
+          pointBackgroundColor: colours.blueBack,
+          pointHoverBorderColor: colours.blueMatt,
           pointRadius: 4,
         }
       ],
@@ -1172,7 +1235,7 @@ var createClassRadarChart = function (data) {
           display: false
         }],
         xAxes: [{
-            display : false
+          display: false
         }]
       },
       layout: {
@@ -1185,16 +1248,37 @@ var createClassRadarChart = function (data) {
       }
     }
   };
-  new Chart (ctx, config2);
+  new Chart(ctx, config2);
 }
 
-var noDataCanvas = function(id) {
-    var byId = $(id)[0];  
-    var context=byId.getContext("2d");
-    
-    context.translate(70, 50);
-    context.font = '25pt Calibri';
-    context.textAlign = 'center';
-    context.fillStyle = '#000';
-    context.fillText('No Data', 0, 0);
+var noDataCanvas = function (id) {
+  var byId = $(id)[0];
+  var context = byId.getContext("2d");
+  byId.width = byId.width;
+  context.translate(70, 50);
+  context.font = '25pt Calibri';
+  context.textAlign = 'center';
+  context.fillStyle = '#000';
+  context.fillText('No Data', 0, 0);
+}
+
+var createTable = function (id, headers, content) {
+  var tableString = '<table>';
+
+  tableString += '<tr>';
+  headers.forEach(title => {
+    tableString += `<th>${title}</th>`;
+  });
+  tableString += '</tr>';
+
+  for (i = content[0].length - 1; i >= 0; i--) {
+    tableString += '<tr>';
+    for (j = 0; j < content.length; j++) {
+      tableString += `<td>${content[j][i]}</td>`;
+    }
+    tableString += '</tr>';
+  }
+
+  tableString += '</table>';
+  $(id).html(tableString);
 }

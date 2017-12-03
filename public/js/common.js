@@ -2,11 +2,16 @@
 const colours = Object.freeze({
     blackLight     : 'rgb(51, 51, 51)',
     blue           : 'rgb(54, 162, 235)',
+    blueBack       : '#90CAF9',
+    blueBackO      : 'rgba(168, 216, 255, 0.3)',
     blueLight      : 'rgb(51, 102, 255)',
     blueLightExtra : 'rgb(51, 102, 155)',
+    blueMatt       : '#42A5F5',
     cyan           : '#00bcd4',
     cyanLight      : '#44e8ff',
     cyanLightO     : 'rgba(68, 232, 255, 0.2)',
+    grayDark       : '#424242',
+    grayDarkO      : 'rgba(0, 0, 0, 0.2)',
     grayLight      : 'rgb(115, 124, 140)',
     green          : 'green',
     greenBorder    : 'rgba(43, 163, 0, 1)',
@@ -19,6 +24,9 @@ const colours = Object.freeze({
     orangeLight    : '#fcab92',
     orangeLightO   : 'rgba(252, 171, 146, 0.2)',    
     pink           : 'rgb(255, 99, 132)',
+    pinkHot        : '#F06292',
+    pinkLight      : '#F8BBD0',
+    pinkLightO     : 'rgba(255, 150, 185, 0.3)',
     purple         : '#673AB7',
     purpleLight    : '#b691f7',
     purpleLightO   : 'rgba(182, 145, 247, 0.2)',    
@@ -27,7 +35,8 @@ const colours = Object.freeze({
     redLight       : 'rgba(243, 13, 20, 0.5)',
     teal           : '#00bfa5',
     tealLight      : '#93fff0',
-    tealLightO     : 'rgba(147, 255, 240, 0.2)',    
+    tealLightO     : 'rgba(147, 255, 240, 0.2)',
+    transparent    : 'rgba(0, 0, 0, 0)',
     white          : 'white'
 });
 
