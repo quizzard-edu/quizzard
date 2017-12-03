@@ -16,7 +16,7 @@
         .col.s12.m9
           h5 Class Questions Answered
           .card.chart.padding-top-10.padding-left-10
-            //-canvas#testingCanvas1
+            canvas#classAnsweredOverTime
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -35,7 +35,7 @@
         .col.s12.m9
           h5 Class Accuracy
           .card.chart.padding-top-10.padding-left-10
-            //-canvas#testingCanvas1
+            canvas#classAccuracyOverTime
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -54,7 +54,7 @@
         .col.s12.m9
           h5 Class Points
           .card.chart.padding-top-10.padding-left-10
-            //-canvas#testingCanvas1
+            canvas#classPointsOverTime
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -73,7 +73,26 @@
         .col.s12.m9
           h5 Class Points Per Attempt
           .card.chart.padding-top-10.padding-left-10
-            //-canvas#testingCanvas1
+            canvas#classPointsPerAttemptOverTime
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#classAnalyticsHeader &nbsp Overall Points Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#classPointsCardI
+            .card-content.lime-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Average Overall Points
+              .col.s5.m5.right-align.padding-right-10
+                  h5#classPointsI
+        .col.s12.m9
+          h5 Class Overall Points
+          .card.chart.padding-top-10.padding-left-10
+            canvas#classOverallOverTime
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -83,11 +102,11 @@
       .col.s12.m6
         h5 Class Question Type Points
         .card.radar.padding-top-10.padding-left-10
-          //-canvas#testingCanvas4
+          canvas#classPointsPerTypeVsClass
       .col.s12.m6
         h5 Class Question Type Accuracy
         .card.radar.padding-top-10.padding-left-10
-          //-canvas#testingCanvas5
+          canvas#classAccuracyPerTypeVsClass
 
   .card.white.padding-left-10.padding-right-10
     .row
@@ -97,8 +116,8 @@
       .col.s12.m6
         h5 Class Question Topic Points
         .card.radar.padding-top-10.padding-left-10
-          //-canvas#testingCanvas4
+          canvas#classPointsPerTopicVsClass
       .col.s12.m6
         h5 Class Question Topic Accuracy
         .card.radar.padding-top-10.padding-left-10
-          //-canvas#testingCanvas5
+          canvas#classAccuracyPerTopicVsClass

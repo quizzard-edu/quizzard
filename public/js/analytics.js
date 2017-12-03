@@ -409,7 +409,11 @@ var getClassAnsweredOverTime = function (path) {
       type: 'classAnsweredOverTime'
     },
     success: function (data) {
-      //$('#classAnsweredI').html(data[0]);
+      data.id = '#classAnsweredOverTime';
+      data.col = colours.cyan;
+      data.colLight = colours.cyanLight;
+      data.colBack = colours.cyanLightO;
+      createClassLineChart (data);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -429,7 +433,11 @@ var getClassPointsPerAttemptOverTime = function (path) {
       type: 'classPointsPerAttemptOverTime'
     },
     success: function (data) {
-      //$('#classAnsweredI').html(data[0]);
+      data.id = '#classPointsPerAttemptOverTime';
+      data.col = colours.purple;
+      data.colLight = colours.purpleLight;
+      data.colBack = colours.purpleLightO;
+      createClassLineChart (data);    
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -449,7 +457,8 @@ var getClassPointsPerTopicVsClass = function (path) {
       type: 'classPointsPerTopicVsClass'
     },
     success: function (data) {
-      //$('#classAnsweredI').html(data[0]);
+      data.id = '#classPointsPerTopicVsClass';
+      createClassRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -469,7 +478,8 @@ var getClassAccuracyPerTopicVsClass = function (path) {
       type: 'classAccuracyPerTopicVsClass'
     },
     success: function (data) {
-      //$('#classAnsweredI').html(data[0]);
+      data.id = '#classAccuracyPerTopicVsClass';
+      createClassRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -489,7 +499,8 @@ var getClassPointsPerTypeVsClass = function (path) {
       type: 'classPointsPerTypeVsClass'
     },
     success: function (data) {
-      //$('#classAnsweredI').html(data[0]);
+      data.id = '#classPointsPerTypeVsClass';
+      createClassRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -509,7 +520,8 @@ var getClassAccuracyPerTypeVsClass = function (path) {
       type: 'classAccuracyPerTypeVsClass'
     },
     success: function (data) {
-      //$('#classAnsweredI').html(data[0]);
+      data.id = '#classAccuracyPerTypeVsClass';
+      createClassRadarChart(data);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -529,7 +541,11 @@ var getClassOverallOverTime = function (path) {
       type: 'classOverallOverTime'
     },
     success: function (data) {
-      //$('#classAnsweredI').html(data[0]);
+      data.id = '#classOverallOverTime';
+      data.col = colours.lime;
+      data.colLight = colours.limeLight;
+      data.colBack = colours.limeLightO;
+      createClassLineChart (data);   
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -549,7 +565,11 @@ var getClassAccuracyOverTime = function (path) {
       type: 'classAccuracyOverTime'
     },
     success: function (data) {
-      //$('#classAnsweredI').html(data[0]);
+      data.id = '#classAccuracyOverTime';
+      data.col = colours.teal;
+      data.colLight = colours.tealLight;
+      data.colBack = colours.tealLightO;
+      createClassLineChart (data); 
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -569,7 +589,11 @@ var getClassPointsOverTime = function (path) {
       type: 'classPointsOverTime'
     },
     success: function (data) {
-      //$('#classAnsweredI').html(data[0]);
+      data.id = '#classPointsOverTime';
+      data.col = colours.orange;
+      data.colLight = colours.orangeLight;
+      data.colBack = colours.orangeLightO;
+      createClassLineChart (data); 
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -940,6 +964,56 @@ var createLineChart = function (data) {
   new Chart (ctx, config2);
 }
 
+var createClassLineChart = function (data) {
+  var ctx = $(data.id);
+  var config2 = {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          data: data.classData,
+          backgroundColor: data.colBack,
+          borderColor: data.col,
+          borderWidth: 4,
+          pointBorderWidth: 1,
+          pointHoverBackgroundColor: 'white',
+          pointHoverBorderColor: data.col,
+          pointRadius: 4,
+          pointBackgroundColor: data.colLight
+        },
+      ],
+      labels: data.dates
+    },
+    options: {
+      maintainAspectRatio: false,
+      responsive: true,
+      scales: {
+        yAxes: [{
+          ticks: {
+            min: 0,
+            max: data.classData.reduce(function(a, b) {
+              return Math.max(a, b);
+            }) + 10
+          }
+        }],
+        xAxes: [{
+            display : false
+        }]
+      },
+      layout: {
+        padding: {
+          left: 10,
+          right: 20,
+          bottom: 20
+        }
+      },
+      legend: {
+        display: false
+      }
+    }
+  };
+  new Chart (ctx, config2);
+}
 
 var createRankChart = function (data) {
   var ctx = $(data.id);
@@ -1012,7 +1086,7 @@ var createRadarChart = function (data) {
       datasets: [
         {
           data: data.studentData,
-          backgroundColor: 'rgba(0, 0, 0, 0)',
+          backgroundColor: 'rgba(168, 216, 255, 0.3)',
           borderColor: '#42A5F5',
           pointBorderColor: '#42A5F5',
           label: 'Me',
@@ -1024,7 +1098,7 @@ var createRadarChart = function (data) {
         },
         {
           data: data.classData,
-          backgroundColor: 'rgba(0, 0, 0, 0)',
+          backgroundColor: 'rgba(255, 150, 185, 0.3)',
           borderColor: '#F06292',
           pointBorderColor: '#F06292',
           label: 'Class',
@@ -1052,6 +1126,50 @@ var createRadarChart = function (data) {
         padding: {
           bottom: 20
         }
+      }
+    }
+  };
+  new Chart (ctx, config2);
+}
+
+var createClassRadarChart = function (data) {
+  var ctx = $(data.id);
+  var config2 = {
+    type: 'radar',
+    data: {
+      datasets: [
+        {
+          data: data.classData,
+          backgroundColor: 'rgba(168, 216, 255, 0.3)',
+          borderColor: '#42A5F5',
+          pointBorderColor: '#42A5F5',
+          borderWidth: 4,
+          pointHoverBackgroundColor: 'white',
+          pointBackgroundColor: '#90CAF9',
+          pointHoverBorderColor: '#42A5F5',
+          pointRadius: 4,
+        }
+      ],
+      labels: data.labels
+    },
+    options: {
+      maintainAspectRatio: false,
+      responsive: true,
+      scales: {
+        yAxes: [{
+          display: false
+        }],
+        xAxes: [{
+            display : false
+        }]
+      },
+      layout: {
+        padding: {
+          bottom: 20
+        }
+      },
+      legend: {
+        display: false
       }
     }
   };
