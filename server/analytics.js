@@ -25,6 +25,8 @@ const common = require('./common.js');
 const db = require('./db.js');
 
 const classId = 'class';
+const analyticsTimeInterval = 86400000; // 24 * 60 * 60 * 1000
+
 var totalStudentsCount = 0;
 
 /**
@@ -33,7 +35,18 @@ var totalStudentsCount = 0;
  * @param {function} callback
  */
 exports.initialize = function(callback) {
-    getAnalytics(callback);
+    var d = new Date();
+    var h = d.getHours();
+    var m = d.getMinutes();
+    var s = d.getSeconds();
+    var secondsTilMidNight = ((24 * 60 * 60) - (h * 60 * 60) - (m * 60) - s) * 1000;
+
+    setTimeout(function () {
+        getAnalytics(callback);
+        setInterval(function () {
+            getAnalytics(callback);
+        }, analyticsTimeInterval);
+    }, secondsTilMidNight);
 
     users.getStudentsList(function (err, studentsList) {
         if (err) {
