@@ -153,11 +153,30 @@ var getAnalytics = function(callback) {
         var classTotalAttemptsCount = 0;
         var classPoints = 0;
 
-        var overallList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'overall'), '_id');
-        var attemptList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'attempt'), '_id');
-        var accuracyList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'accuracy'), '_id');
-        var pointsList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'points'), '_id');
-        var correctAttemptsList = common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'correctAttemptsCount'), '_id');
+        var getRanks = function (query) {
+            var objList = {};
+            var list = sortLeaderBoard(leaderboardList, query);
+            var rank = 0;
+            var score = -1;
+            var repeated = 1;
+            for (var i = 0; i < list.length; i++) {
+                if (score !== list[i][query]) {
+                    score = list[i][query];
+                    rank += repeated;
+                    repeated = 1;
+                } else {
+                    repeated ++;
+                }
+                objList[list[i]._id] = rank;
+            }
+            return objList;
+        }
+
+        var overallList = getRanks('overall');
+        var attemptList = getRanks('attempt');
+        var accuracyList = getRanks('accuracy');
+        var pointsList = getRanks('points');
+        var correctAttemptsList = getRanks('correctAttemptsCount');
 
         var overallSum = common.sumListOfNumbers(common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'overall'), 'overall'));
         var attemptSum = common.sumListOfNumbers(common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'attempt'), 'attempt'));
@@ -184,11 +203,11 @@ var getAnalytics = function(callback) {
 
                 row.overallValue = leaderboardList.find((element) => {return element._id === student._id}).overall;
                 row.pointsPerAttemptValue = leaderboardList.find((element) => {return element._id === student._id}).attempt;
-                row.overallRank = overallList.indexOf(student._id);
-                row.pointsPerAttemptRank = attemptList.indexOf(student._id);
-                row.accuracyRank = accuracyList.indexOf(student._id);
-                row.pointsRank = pointsList.indexOf(student._id);
-                row.correctAttemptsRank = correctAttemptsList.indexOf(student._id);
+                row.overallRank = overallList[student._id];
+                row.pointsPerAttemptRank = attemptList[student._id];
+                row.accuracyRank = accuracyList[student._id];
+                row.pointsRank = pointsList[student._id];
+                row.correctAttemptsRank = correctAttemptsList[student._id];
 
                 classCorrectAttemptsCount += student.correctAttemptsCount;
                 classWrongAttemptsCount += student.wrongAttemptsCount;
