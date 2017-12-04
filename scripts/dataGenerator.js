@@ -1071,29 +1071,25 @@ var minMaxPointGenerator = function () {
 
 db.initialize(function () {
     db.removeAllUsers(function (err, res) {
-        if (err) {
-            process.exit(1);
-        }
-
-        db.removeAllQuestions(function (err, res) {
-            if (err) {
-                process.exit(1);
-            }
-
-            db.removeAnalytics(function (err, res) {
-                if (err) {
-                    process.exit(1);
+        if (!err) {
+            db.removeAllQuestions(function (err, res) {
+                if (!err) {
+                    db.resetAllSettings(function (err, res) {
+                        if (!err) {
+                            db.removeAllFeedback(function(err, res) {
+                                if (!err) {
+                                    db.removeAnalytics(function (err, res) {
+                                        if (!err) {
+                                            calculateTotalNumberOfQuestions();
+                                            createAdmins();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
                 }
-
-                db.resetAllSettings(function (err, res) {
-                    if (err) {
-                        process.exit(1);
-                    }
-
-                    calculateTotalNumberOfQuestions();
-                    createAdmins();
-                });
             });
-        });
+        }
     });
 });

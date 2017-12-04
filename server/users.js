@@ -561,3 +561,42 @@ exports.getFullLeaderboard = function (callback) {
     });
 }
 
+/**
+ * Adds the user's feedback into the database
+ *
+ * @param {string} uuid
+ * @param {string} subject
+ * @param {string} message 
+ * @param {funciton} callback
+ */
+exports.addFeedback = function(uuid, subject, message, callback) {
+
+    if (!uuid || !subject || !message) {
+        logger.error('Failed to add user feedback, missing requirements');
+        return callback(common.getError(8000), null);
+    }
+
+    var feedback = {};
+
+    feedback.uuid = uuid;
+    feedback.subject = subject;
+    feedback.message = message;
+    feedback.time = common.getDate();
+
+    db.addFeedback(feedback, function(err, result) {
+        if (err) {
+            return callback(common.getError(8000), null);
+        }
+
+        return callback(null, 'success');
+    });
+}
+
+/**
+ * Get all the feedback stored in the collection
+ *
+ * @param {function} callback
+ */
+exports.getFeedback = function (callback){
+    db.getFeedback(callback);
+}

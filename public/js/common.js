@@ -18,18 +18,19 @@ const colours = Object.freeze({
     greenLight     : 'rgba(43, 244, 33, 0.5)',
     lime           : '#CDDC39',
     limeLight      : '#f7ffb2',
-    limeLightO     : 'rgba(247, 255, 178, 0.2)',    
+    limeLightO     : 'rgba(247, 255, 178, 0.2)',
     orange         : '#ff6e40',
     orangeDark     : 'orange accent-4',
     orangeLight    : '#fcab92',
-    orangeLightO   : 'rgba(252, 171, 146, 0.2)',    
+    orangeLightO   : 'rgba(252, 171, 146, 0.2)',
     pink           : 'rgb(255, 99, 132)',
+    pinkLightExtra : '#DD6B55',
     pinkHot        : '#F06292',
     pinkLight      : '#F8BBD0',
     pinkLightO     : 'rgba(255, 150, 185, 0.3)',
     purple         : '#673AB7',
     purpleLight    : '#b691f7',
-    purpleLightO   : 'rgba(182, 145, 247, 0.2)',    
+    purpleLightO   : 'rgba(182, 145, 247, 0.2)',
     redBorder      : 'rgb(243, 13, 20)',
     redDark        : 'red darken-4',
     redLight       : 'rgba(243, 13, 20, 0.5)',
@@ -121,6 +122,7 @@ categories:
 5000 -> analytics
 6000 -> import/export
 7000 -> settings
+8000 -> feedback
 */
 
 const errors = Object.freeze({
@@ -213,6 +215,11 @@ const errors = Object.freeze({
     7004: 'Settings not found',
     7005: 'Failed to get settings',
     7006: 'Class is not active',
+
+    //8000 feedback
+    8000: 'Failed to add feedback',
+    8001: 'Failed to get feedback',
+    8002: 'Failed to remove all feedback',
 });
 
 function getErrorFromResponse(data) {

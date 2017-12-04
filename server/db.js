@@ -33,6 +33,7 @@ const db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 var usersCollection;
 var questionsCollection;
 var analyticsCollection;
+var feedbackCollection;
 var settingsCollection;
 
 var nextQuestionNumber = 0;
@@ -53,6 +54,7 @@ exports.initialize = function(callback) {
         usersCollection = db.collection('users');
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
+        feedbackCollection = db.collection('feedback');
         settingsCollection = db.collection('settings');
 
         getNextQuestionNumber(function() {
@@ -706,6 +708,39 @@ exports.updateQuestionById = function(questionId, request, callback) {
 exports.updateQuestionByQuery = function (query, update, callback) {
     questionsCollection.update(query, update, function(err, obj) {
         return callback(err, obj);
+    });
+}
+
+// add feedback to feedback collections directly using a query
+exports.addFeedback = function(feedback, callback) {
+    feedbackCollection.insert(feedback, function(err, res) {
+        if (err) {
+            logger.error('Failed to add feedback');
+            return callback(common.getError(8000), null);
+        }
+        
+        return callback(null, 'success');
+    });
+}
+
+exports.getFeedback = function(callback) {
+    feedbackCollection.find().sort({time: -1}).toArray(function(err, res) {
+        if (err) {
+            logger.error('Failed to get feedback');
+            return callback(common.getError(8001), res);
+        }
+        
+        return callback(null, res);
+    });
+}
+
+exports.removeAllFeedback = function(callback) {
+    feedbackCollection.remove({}, function(err, result) {
+        if (err) {
+            return callback(common.getError(8002), null);
+        }
+
+        return callback(null, 'ok');
     });
 }
 
