@@ -1,28 +1,21 @@
 .row
-  .col.s12
-    .card.horizontal
-      img.profilePicture(src='img/logo.png' alt='Profile Picture')
+  .col.s6
+    .card
+      .card-content.center
+        img.profilePicture(src='img/logo.png' alt='Profile Picture')
+        h5.card-title#sidebar-name User Name: #{user.username}
+        h5.card-title#sidebar-name Name: #{user.fname} #{user.lname}
+      .card-action.center
+        h5.sidebar-item#sidebar-points Total Points: #{user.points}
+        p.sidebar-item Total Attemtps: #{user.totalAttemptsCount}
+        p.sidebar-item Questions answered: #{user.correctAttemptsCount}
+        if user.totalAttemptsCount === 0
+          p.sidebar-item You have not yet attempted any questions.
+        else
+          p.sidebar-item You have an accuracy of #{((user.correctAttemptsCount / user.totalAttemptsCount) * 100).toFixed(2)}%.
+  .col.s6
+    .card
       .card-content
-        h5.card-title#sidebar-name.right #{user.username}
-        br
-        h5.card-title#sidebar-name.right #{user.fname}
-        br
-        h5.card-title#sidebar-name.right #{user.lname}
-      .card-stacked
-        .card-action.center
-          h5.sidebar-item#sidebar-points Total Points: #{user.points}
-          p.sidebar-item Total Attemtps: #{user.totalAttemptsCount}
-          p.sidebar-item Questions answered: #{user.correctAttemptsCount}
-          if user.totalAttemptsCount === 0
-            p.sidebar-item You have not yet attempted any questions.
-          else
-            p.sidebar-item You have an accuracy of #{((user.correctAttemptsCount / user.totalAttemptsCount) * 100).toFixed(2)}%.
-        .card-content
-          h3.card-title.activator
-            | Points Leaderboard
-            i.material-icons.right.medium keyboard_arrow_up
-      .card-reveal
-        h5.card-title.center
-          | Points Leaderboard
-          i.material-icons.right close
+        h4.center Points Leaderboard
+      .card-action
         .leaderboard-small
