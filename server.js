@@ -1713,6 +1713,25 @@ app.post('/removeAllFeedback', function(req, res) {
     });
 });
 
+/* Changes Visibilty of All Questions */
+app.post('/changeAllVisibility', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        res.status(403).send(common.getError(1002));
+    }
+
+    questions.changeAllVisibility(req.body.changeValue, function(err, result) {
+        if (err) {
+            logger.error(err);
+            res.status(500).send(common.getError(3020));
+        }
+        return res.status(200).send(result);
+    });
+});
+
 // 404 route
 app.use(function(req, res, next) {
     return res.status(404).render('page-not-found');

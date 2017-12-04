@@ -11,16 +11,20 @@ block styles
         h5.card-title Manage Questions
         h6 Add, modify or delete questions.
       .card-action
-        table.bordered
+        table.bordered.centered
           thead
             tr
               th Visiblity
+                br
+                .chip(onClick='updateAllVisibility(true)') Show All
+                .chip(onClick='updateAllVisibility(false)') Hide All 
+                br
                 .switch
                   label
-                    | Hide
-                    input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility()')
+                    | Display
+                    input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
                     span.lever
-                    | Show
+                    | Edit
               th ID
               th Title
               th Topic
@@ -29,8 +33,12 @@ block styles
           tbody
             each q in questions
               tr
-                td
+                td.center
                   p
+                    if q.visible
+                      i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()') visibility
+                    else
+                      i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()') visibility_off
                     input.checked(id='checked-' + q._id, name=q.number, type='checkbox', checked=q.visible)
                     label.visbox(for='checked-' + q._id, name=q.number)
                 td #{q.number}

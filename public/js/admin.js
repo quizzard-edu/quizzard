@@ -274,7 +274,6 @@ var displayQuestionTable = function() {
         url: '/questionlist',
         success: function(data) {
             $('#admin-content').html(data);
-
             addQuestionsTableEvents();
 
             $('#option-questions').addClass('active');
@@ -640,8 +639,10 @@ var updateVisibility = function(qid, questionNumber) {
 
                         if (question['visible']) {
                             successSnackbar('Question ' + questionNumber + msg);
+                            $('#hiddenEye' + qid).html('visibility');
                         } else {
                             warningSnackbar('Question ' + questionNumber + msg);
+                            $('#hiddenEye' + qid).html('visibility_off');
                         }
                     },
                     error: function(data) {
@@ -658,7 +659,7 @@ var updateVisibility = function(qid, questionNumber) {
                 });
             // User cancels the visibility change
             } else {
-                displayQuestionTable();
+                $('#checked-' + qid).prop('checked', !$('#checked-' + qid).is(':checked'));
             }
         }
     );
@@ -911,12 +912,19 @@ var sortAccountsTable = function(type) {
     });
 }
 
-// Toggles the view of the Visibility Checkboxes in the Question-Table View
-var toggleButtonVisibility = function() {
-    if ($('#sw').is(':checked')) {
+
+/**
+ * Toggles the view of the Visibility Checkboxes in the Question-Table View
+ * @param {boolean} toggle only usesd so the visibily snackbar can turn on display mode
+ */
+var toggleButtonVisibility = function(toggle) {
+    if ($('#sw').is(':checked') || toggle) {
         $('.visbox').show();
+        $('.hiddenEye').hide();
+        $('#sw').prop('checked', true);
     } else {
         $('.visbox').hide();
+        $('.hiddenEye').show();
     }
 }
 
@@ -1008,4 +1016,53 @@ var initSummernote = function () {
         $(this).attr('id', 'mediaModal' + i);
         $('#mediaModal' + i +'> div > div').removeClass('modal-content');
     });
+}
+
+/**
+ * Updates the visibility of all questions, based on the changeValue 
+ * @param {boolean} changeValue true if user is showing all questions, false if user is hiding all questions
+ */
+var updateAllVisibility = function (changeValue) {
+    swal({
+        type: 'warning',
+        title: 'Visibilty Change',
+        text: 'You are about to change the visibility of ALL the questions.',
+        showCancelButton: true,
+        showConfirmButton: true,
+        // User can only close the swal if they click one of the buttons
+        allowEscapeKey: false,
+        allowClickOutside: false,
+        },
+        function (isConfirm) {
+            // User confirms the visiblity change
+            if (isConfirm) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/changeAllVisibility',
+                    data: {
+                        changeValue: changeValue
+                    },
+                    success: function(data) {
+                        // Changes the checkboxes and icons match the new visibility
+                        $('.checked').prop('checked', changeValue);
+                        if (changeValue) {
+                            $('.hiddenEye').html('visibility');
+                            warningSnackbar('All questions are now VISIBLE.');
+                        } else {
+                            $('.hiddenEye').html('visibility_off');
+                            warningSnackbar('All questions are now HIDDEN.');
+                        }
+                    },
+                    error: function(data) {
+                        var jsonResponse = data.responseJSON;
+                        if (data['status'] === 401) {
+                            window.location.href = '/';
+                        } else {
+                            failSnackbar(getErrorFromResponse(jsonResponse));
+                        }
+                    }
+                });
+            }
+        }
+    );
 }
