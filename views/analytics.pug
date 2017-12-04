@@ -29,14 +29,15 @@ block content
               .row
                 .col.s12
                   .row
-                    .input-field.col.s12
+                    .input-field.col.s11
                       input#autocomplete-input.autocomplete(type='text')
                       label(for='autocomplete-input') Select a student by ID
+                    .input-field.col.s1
+                      i.material-icons.cursor-pointer(onClick=" $('#autocomplete-input').val(''); displayStudentStatistics(null);") close
     .row
       .col.s12
-        .card.white.padding-left-10.padding-right-10
-          include student-analytics
-          include class-analytics
+        include student-analytics
+        include class-analytics
 
 block scripts
   script(src='/lib/charts/Chart.min.js')

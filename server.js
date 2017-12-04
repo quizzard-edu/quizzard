@@ -99,6 +99,11 @@ secureServer.listen(config.httpsPort,function(){
             if (err) {
                 process.exit(1);
             }
+            analytics.initialize(function(err, result) {
+                if (err) {
+                    process.exit(1);
+                }
+            });
         });
     });
 });
@@ -549,39 +554,6 @@ app.get('/statistics', function(req, res) {
             return res.status(200).send(html);
         });
     });
-});
-
-app.get('/sortlist', function(req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    return res.status(200).send(common.sortTypes);
-});
-
-/* Sort question list by specified criterion and send new HTML. */
-app.post('/sortlist', function(req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    var type;
-
-    for (type in common.sortTypes) {
-        if (req.body.sort == common.sortTypes[type]) {
-            break;
-        }
-    }
-
-    questions.sortQuestions(req.session.questions, common.sortTypes[type],
-        function(err, results) {
-          var html = questionListPug({
-              questions: results
-          });
-
-          return res.status(200).send(html);
-        }
-    );
 });
 
 /* Display the question page. */
@@ -1247,7 +1219,7 @@ app.get('/studentsListofIdsNames', function(req, res) {
 
         var idsList = [];
         for (s in studentList) {
-            idsList.push(studentList[s].id + ' - ' + studentList[s].fname + ' ' + studentList[s].lname);
+            idsList.push(studentList[s].username + ' - ' + studentList[s].fname + ' ' + studentList[s].lname);
         }
         return res.status(200).send(idsList);
     });
@@ -1608,12 +1580,32 @@ app.get('/studentAnalytics', function(req,res) {
         if (!req.query.studentId) {
             return res.status(500).send(common.getError(5000));
         }
-        query.userId = req.query.studentId;
-    }
+        users.getUserByUsername(req.query.studentId, function (err, userObj) {
+            if (err) {
+                return res.status(500).send(err);
+            }
 
-    analytics.getChart(query, function(err, result) {
-        return res.status(200).send(result);
-    });
+            if (!userObj) {
+                return res.status(400).send('user not found');
+            }
+
+            analytics.getChart({userId: userObj._id, type: req.query.type},
+                function (err, result) {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+                    return res.status(200).send(result);
+                }
+            );
+        });
+    } else {
+        analytics.getChart(query, function (err, result) {
+            if (err) {
+                return res.status(500).send(err);
+            }
+            return res.status(200).send(result);
+        });
+    }
 });
 
 /* get analytics for a admins*/
@@ -1628,7 +1620,10 @@ app.get('/adminAnalytics', function(req,res) {
 
     var query = {user: req.session.user, type: req.query.type};
 
-    analytics.getChart(query, function(err, result) {
+    analytics.getChart(query, function (err, result) {
+        if (err) {
+            return res.status(500).send(err);
+        }
         return res.status(200).send(result);
     });
 });

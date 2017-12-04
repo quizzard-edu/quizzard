@@ -141,11 +141,6 @@ exports.addQuestion = function(question, callback) {
     })
 }
 
-/* Sort questions by the given sort type. */
-exports.sortQuestions = function(qs, type, callback) {
-    db.sortQuestions(qs, type, callback);
-}
-
 /* Replace a question in the database with the provided question object. */
 exports.updateQuestionById = function(questionId, info, callback) {
     updateQuestionById(questionId, info, callback);
@@ -213,6 +208,11 @@ exports.submitRating = function (questionId, userId, rating, callback) {
 // get all questions list
 exports.getAllQuestionsList = function(callback) {
     db.getQuestionsList({}, {number: 1}, callback);
+}
+
+// get all questions list by Query
+exports.getAllQuestionsByQuery = function(findQuery, sortQuery, callback) {
+    db.getQuestionsList(findQuery, sortQuery, callback);
 }
 
 // submit answer
