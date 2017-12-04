@@ -17,19 +17,19 @@ block content
       .col.s12
         include home-sidebar
         .row
-          a.right.dropdown-button.btn(href='#', data-activates='dropdown1') Sort By:
-          ul#dropdown1.dropdown-content
+          a.right.dropdown-button.btn(href='#', data-activates='dropdown') Sort By
+          ul#dropdown.dropdown-content
             li
-              a(href='#!') Topic
+              a#sort-topic(href='#!') Topic
             li.divider
             li
-              a(href='#!') Type
+              a#sort-type(href='#!') Type
             li.divider
             li
-              a(href='#!') Creation Date
+              a#sort-date(href='#!') Creation Date
             li.divider
             li
-              a(href='#!') Attemtps
+              a#sort-attempt(href='#!') Attemtps
           ul.tabs
             li.tab.col.s6
               a.noLineLink.active(href='#')#qlist-unanswered Unanswered

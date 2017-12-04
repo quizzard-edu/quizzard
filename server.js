@@ -459,7 +459,10 @@ app.get('/questionlist', function(req, res) {
                  });
             }
 
-            return res.status(200).send(html);
+            return res.status(200).send({
+                html : html,
+                questions : questionList
+            });
         });
     });
 });

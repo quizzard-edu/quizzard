@@ -23,6 +23,13 @@ const snack = Object.freeze({
     close       :   '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
 });
 
+const sortTypes = Object.freeze({
+    SORT_TOPIC      :   'topic',
+    SORT_TYPE       :   'type',
+    SORT_DATE       :   'ctime',
+    SORT_ATTEMPT    :   'totalAttemptsCount'
+});
+
 const loadingAnimation = '<div class="progress"><div class="indeterminate"></div></div>';
 
 const leaderboardTypes = Object.freeze({

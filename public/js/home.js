@@ -1,4 +1,4 @@
-var sortTypes;
+//var sortTypes;
 var leaderboardRow;
 var leaderboardTable;
 var studentLeaderList;
@@ -16,11 +16,19 @@ $.ajax({
 $('#nav-home').addClass('active');
 
 $('#sort-topic').click(function(evt) {
-    sortRequest(sortTypes.SORT_TOPIC);
+    alert('Sort by ' + sortTypes.SORT_TOPIC);
 });
 
-$('#sort-point').click(function(evt) {
-    sortRequest(sortTypes.SORT_POINTS);
+$('#sort-type').click(function(evt) {
+    alert('Sort by ' + sortTypes.SORT_TYPE);
+});
+
+$('#sort-date').click(function(evt) {
+    alert('Sort by ' + sortTypes.SORT_DATE);
+});
+
+$('#sort-attempt').click(function(evt) {
+    alert('Sort by ' + sortTypes.SORT_ATTEMPT);
 });
 
 $('#qlist-unanswered').click(function(evt) {
@@ -37,7 +45,9 @@ var fetchQList = function(which) {
         url: '/questionlist',
         data: { type: which },
         success: function(data) {
-            $('.question-list').html(data);
+            debugger;
+            alert(data.questions);
+            $('.question-list').html(data.html);
         },
         error: function(data){
             var jsonResponse = data.responseJSON;
