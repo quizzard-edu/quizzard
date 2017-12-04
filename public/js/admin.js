@@ -454,7 +454,7 @@ var deactivateUser = function(id, username) {
         text: username + '\'s  account will be deactivated.',
         type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
+        confirmButtonColor: colours.pinkLightExtra,
         confirmButtonText: 'Deactivate',
         closeOnConfirm: true
     }, function() {
@@ -489,7 +489,7 @@ var activateUser = function(id, username) {
         text: username + '\'s  account will be activated.',
         type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
+        confirmButtonColor: colours.pinkLightExtra,
         confirmButtonText: 'Activate',
         closeOnConfirm: true
     }, function() {
@@ -753,7 +753,7 @@ var deleteQuestion = function(qid, questionNumber) {
         text: 'Question ' + questionNumber + ' will be removed from the database.',
         type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
+        confirmButtonColor: colours.pinkLightExtra,
         confirmButtonText: 'Delete',
         closeOnConfirm: true
     }, function() {

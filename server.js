@@ -1633,6 +1633,91 @@ app.get('/adminAnalytics', function(req,res) {
     });
 });
 
+/* submit course feedback coming from students*/
+app.post('/submitFeedback', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type === common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    logger.log(common.formatString('Feedback from {0} regarding {1}', [req.session.user._id, req.body.subject]));
+
+    users.addFeedback(req.session.user._id, req.body.subject, req.body.message, function(err, result) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(common.getError(8000));
+        }
+
+        return res.status(201).send('User feedback submitted');
+    });
+});
+
+/* get feed back for the admin's `View Feedback` page*/
+app.get('/feedback', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    logger.log(common.formatString('Getting feedback for {0}', [req.session.user.username]));
+
+    users.getFeedback(function(err, result) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(common.getError(8001));
+        }
+
+        users.getUsersList((err, userObj) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).render(common.getError(2002));
+            }
+
+            var usersList = {};
+            userObj.forEach(user => {
+                usersList[user._id] = [`${user.fname} ${user.lname}`, user.username];
+            });
+
+            var data = [];
+            var tempData = {};
+            result.forEach(feedbackItem => {
+                tempData.fullname = usersList[feedbackItem.uuid][0];
+                tempData.username = usersList[feedbackItem.uuid][1];
+                tempData.subject = feedbackItem.subject;
+                tempData.message = feedbackItem.message;
+                tempData.time = feedbackItem.time;
+
+                data.push(tempData);
+                tempData = {}
+            });
+
+            data = data.length === 0 ? null : data;
+
+            return res.status(201).render('feedback-view', {
+                content: data,
+                user: req.session.user
+            });
+        });
+    })
+});
+
+/* allow the admin to clear all the feedback*/
+app.post('/removeAllFeedback', function(req, res) {
+    db.removeAllFeedback(function(err, result) {
+        if (err) {
+            return callback(common.getError(8002), null);
+        }
+
+        return res.status(201).send('User feedback removed');
+    });
+});
+
 /* Changes Visibilty of All Questions */
 app.post('/changeAllVisibility', function(req, res) {
     if (!req.session.user) {

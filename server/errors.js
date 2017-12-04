@@ -9,6 +9,7 @@ categories:
 5000 -> analytics
 6000 -> import/export
 7000 -> settings
+8000 -> feedback
 */
 
 const errors = Object.freeze({
@@ -101,5 +102,10 @@ const errors = Object.freeze({
     7004: 'settings object not found',
     7005: 'failed to get all settings',
     7006: 'class is not active',
+
+    //8000 feedback
+    8000: 'failed to add feedback',
+    8001: 'failed to get feedback',
+    8002: 'failed to remove all feedback',
 });
 exports.errors = errors;
