@@ -1,15 +1,15 @@
 block style
-  link(rel='stylesheet' href='/css/modal-alert.css')
+  link(rel='stylesheet' href='/css/alert.css')
 
 block content
-  #modalAlert.modal
+  #alert.modal
     .modal-content
 
       include checkmark
 
       h3 Correct
       if !answered
-        p.center#modalAlertMsg
+        p.center#alertMsg
         include rating
       else
         p Congratulations, you got the question right!
