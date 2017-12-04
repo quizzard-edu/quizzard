@@ -19,10 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const uuidv1 = require('uuid/v1');
-const fs = require('fs');
 const date = require('moment');
-const path = require('path');
-const rimraf = require('rimraf');
 const errorFile = require('./errors');
 
 // <Global Constants> ------------------------------------------
@@ -31,13 +28,21 @@ const errors = errorFile.errors;
 exports.errors = errors;
 
 // common path shared across the backend
-const fsTree = Object.freeze({
-    ROOT: __dirname + '/..',
-    HOME: __dirname + '/../FileSystem',
-    USERS: __dirname + '/../FileSystem/Users',
-    QUESTIONS: __dirname + '/../FileSystem/Questions'
+const vfsTree = Object.freeze({
+    ROOT      : __dirname + '/..',
+    HOME      : __dirname + '/../FileSystem',
+    USERS     : __dirname + '/../FileSystem/Users',
+    QUESTIONS : __dirname + '/../FileSystem/Questions'
 });
-exports.fsTree = fsTree;
+exports.vfsTree = vfsTree;
+
+// common path shared across the backend
+const vfsPermission = Object.freeze({
+    PUBLIC    : 'public',
+    OWNER     : 'owner',
+    SYSTEM    : 'system'
+});
+exports.vfsPermission = vfsPermission;
 
 // all user types
 const userTypes = Object.freeze({
@@ -312,52 +317,3 @@ var isKeyValuePairInJsonList = function(list, field, value) {
 exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
 
 // </Global Function> -----------------------------------------------
-
-// <File System functions> ------------------------------------------
-// make a directory given the path and the name of the new directory
-var mkdir = function (parentPath, directoryName, callback) {
-    var fullPath = path.join(parentPath, directoryName);
-    fs.mkdir(fullPath, function (err) {
-        return callback(err ? getError(1007) : null, err ? null : 'ok');
-    });
-}
-exports.mkdir = mkdir;
-
-// BE CAREFUL: remove a directory given the path and the name of the new directory
-var rmdir = function (parentPath, directoryName, callback) {
-    var fullPath = path.join(parentPath, directoryName);
-    fs.rmdir(fullPath, function (err) {
-        return callback(err ? getError(1012) : null, err ? null : 'ok');
-    });
-}
-exports.rmdir = rmdir;
-
-// BE CAREFUL: perform rm -rf on a directory
-var rmrf = function (parentPath, directoryName, callback) {
-    var fullPath = path.join(parentPath, directoryName);
-    rimraf(fullPath, function (err) {
-        return callback(err ? getError(1010) : null, err ? null : 'ok');
-    });
-}
-exports.rmrf = rmrf;
-
-// check if a directory exists
-var existsSync = function (parentPath, name) {
-    var fullPath = path.join(parentPath, name);
-    return fs.existsSync(fullPath);
-}
-exports.dirExists = existsSync;
-exports.fileExists = existsSync;
-
-// write data to a fils
-var writeFile = function (filePath, fileName, fileExtension, fileData, callback) {
-    var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
-    fs.writeFile(fullPath, fileData, function (err) {
-        return callback(err ? getError(1013) : null, err ? null : 'ok');
-    });
-}
-exports.saveFile = writeFile;
-
-// convert string to a path
-exports.joinPath = path.join;
-// </File System functions> -----------------------------------------

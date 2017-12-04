@@ -101,5 +101,11 @@ const errors = Object.freeze({
     7004: 'settings object not found',
     7005: 'failed to get all settings',
     7006: 'class is not active',
+
+    //9000 setting
+    9000: 'failed to clean the virtual file system',
+    9001: 'failed to add to the virtual file system',
+    9002: 'error trying to find item in virtual file system',
+    9003: 'can not find item in virtual file system'
 });
 exports.errors = errors;

@@ -94,7 +94,10 @@ app.use(forceSSL);
 secureServer.listen(config.httpsPort,function(){
     logger.log('//------------------------');
     logger.log(common.formatString('Secure Server listening on https://{0}:{1}.', [config.hostName, config.httpsPort]));
-    db.initialize(function() {
+    db.initialize(function(err, result) {
+        if (err) {
+            process.exit(1);
+        }
         settings.initialize(function(err, result) {
             if (err) {
                 process.exit(1);
@@ -105,7 +108,6 @@ secureServer.listen(config.httpsPort,function(){
 
 //HTTP server
 httpServer.listen(config.httpPort, function(){
-    logger.log('//------------------------');
     logger.log(common.formatString('HTTP Server listening on http://{0}:{1}.', [config.hostName, config.httpPort]));
 })
 

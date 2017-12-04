@@ -34,6 +34,7 @@ var usersCollection;
 var questionsCollection;
 var analyticsCollection;
 var settingsCollection;
+var vfsCollection;
 
 var nextQuestionNumber = 0;
 
@@ -42,7 +43,7 @@ exports.initialize = function(callback) {
     db.open(function(err, db) {
         if (err) {
             logger.error(common.getError(1004));
-            process.exit(1);
+            return callback(err, null);
         }
 
         logger.log('Connection to Quizzard database successful.');
@@ -50,10 +51,11 @@ exports.initialize = function(callback) {
         questionsCollection = db.collection('questions');
         analyticsCollection = db.collection('analytics');
         settingsCollection = db.collection('settings');
+        vfsCollection = db.collection('virtualFileSystem');
 
         getNextQuestionNumber(function() {
             logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
-            return callback();
+            return callback(err, null);
         });
     });
 }
@@ -175,28 +177,14 @@ var validatePassword = function(userobj, pass, callback) {
 
 // cleanup the users collection
 exports.removeAllUsers = function(callback) {
-    common.rmrf(common.fsTree.HOME, 'Users', function (err, result) {
+    usersCollection.remove({}, function(err, obj) {
         if (err) {
             logger.error(err);
-            return callback(common.getError(2016), null);
+            return callback(common.getError(1008), null);
         }
 
-        common.mkdir(common.fsTree.HOME, 'Users', function (err, result) {
-            if (err) {
-                logger.error(err);
-                return callback(common.getError(1007), null);
-            }
-
-            usersCollection.remove({}, function(err, obj) {
-                if (err) {
-                    logger.error(err);
-                    return callback(common.getError(1008), null);
-                }
-
-                logger.log('All users have been removed');
-                return callback(null, obj);
-            });
-        });
+        logger.log('All users have been removed');
+        return callback(null, obj);
     });
 }
 
@@ -374,30 +362,16 @@ exports.addQuestion = function(question, callback) {
 
 // cleanup the users collection
 exports.removeAllQuestions = function(callback) {
-    common.rmrf(common.fsTree.HOME, 'Questions', function (err, result) {
+    questionsCollection.remove({}, function(err, res) {
         if (err) {
             logger.error(err);
-            return callback(common.getError(1010), null);
+            return callback(common.getError(1008), null);
         }
 
-        common.mkdir(common.fsTree.HOME, 'Questions', function (err, result) {
-            if (err) {
-                logger.error(err);
-                return callback(common.getError(1007), null);
-            }
-
-            questionsCollection.remove({}, function(err, res) {
-                if (err) {
-                    logger.error(err);
-                    return callback(common.getError(1008), null);
-                }
-
-                nextQuestionNumber = 0;
-                logger.log('All questions have been removed');
-                logger.log(common.formatString('next question: {0}', [nextQuestionNumber]));
-                return callback(null, res);
-            });
-        });
+        nextQuestionNumber = 0;
+        logger.log('All questions have been removed');
+        logger.log(common.formatString('next question: {0}', [nextQuestionNumber]));
+        return callback(null, res);
     });
 }
 
@@ -664,4 +638,49 @@ var getAllSettings = function (callback) {
  */
 exports.updateSettings = function (findQuery, updateQuery, callback) {
     settingsCollection.update(findQuery, updateQuery, callback);
+}
+
+/**
+ * clean up the virtual file system
+ * 
+ * @param {function} callback 
+ */
+exports.removeVirtualFileSystem = function (callback) {
+    vfsCollection.remove({}, function (err, result) {
+        if (err) {
+            return callback(common.getError(7000), null);
+        }
+
+        return callback(common.getError(9000), null);
+    });
+}
+
+/**
+ * add item to the virtual file system
+ * 
+ * @param {function} callback 
+ */
+exports.addToVirtualFileSystem = function (object, callback) {
+    vfsCollection.insert(object, function (err, obj) {
+        if (err) {
+            return callback(common.getError(9001), null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+
+/**
+ * find in the virtual file system
+ * 
+ * @param {function} callback 
+ */
+exports.findInVirtualFileSystem = function (findQuery, callback) {
+    vfsCollection.findOne(findQuery, function (err, obj) {
+        if (err) {
+            return callback(common.getError(9002), null);
+        }
+
+        return callback(null, 'ok');
+    });
 }

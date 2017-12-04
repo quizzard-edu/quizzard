@@ -23,6 +23,7 @@ const db = require('./db.js');
 const logger = require('./log.js');
 const common = require('./common.js');
 const settings = require('./settings.js');
+const vfs = require('./virtualFileSystem.js');
 
 /**
  * Create a student USER, if the USER object is valid
@@ -68,7 +69,7 @@ exports.addAdmin = function (user, callback) {
                 return callback(common.getError(2005), null);
             }
 
-            common.mkdir(common.fsTree.USERS, userToAdd._id, function (err, result) {
+            vfs.mkdir(common.vfsTree.USERS, userToAdd._id, function (err, result) {
                 logger.log(common.formatString('Creating user {0} directory: {1} {2}', [userToAdd.username, userToAdd._id, err ? err : result]));
             });
 
@@ -131,7 +132,7 @@ exports.addStudent = function (user, callback) {
                 return callback(err, null);
             }
 
-            common.mkdir(common.fsTree.USERS, userToAdd._id, function (err, result) {
+            vfs.mkdir(common.vfsTree.USERS, userToAdd._id, function (err, result) {
                 logger.log(common.formatString('Creating user {0} directory: {1} {2}', [userToAdd.username, userToAdd._id, err ? err : result]));
             });
 
