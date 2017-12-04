@@ -35,10 +35,9 @@ const logger = require('./log.js');
  * @param {function} callback
  */
 var mkdir = function (parentPath, directoryName, directoryPermissions, callback) {
-    var randomName = common.getUUID();
     var fullPath = path.join(parentPath, directoryName);
     var fileObject = {
-        _id: randomName,
+        _id: directoryName,
         path: fullPath,
         type: common.vfsTypes.DIRECTORY,
         permission: directoryPermissions
@@ -50,7 +49,7 @@ var mkdir = function (parentPath, directoryName, directoryPermissions, callback)
         }
 
         fs.mkdir(fullPath, function (err) {
-            return callback(err ? getError(1007) : null, err ? null : 'ok');
+            return callback(err ? getError(1007) : null, err ? null : fileObject);
         });
     });
 }
@@ -89,12 +88,17 @@ exports.rmrf = rmrf;
 /**
  * check if a directory exists
  *
- * @param {string} parentPath
- * @param {string} name
+ * @param {string} fileId
+ * @param {function} callback
  */
-var existsSync = function (parentPath, name) {
-    var fullPath = path.join(parentPath, name);
-    return fs.existsSync(fullPath);
+var existsSync = function (fileId, callback) {
+    db.findInVirtualFileSystem({_id: fileId}, function (err, fileObj) {
+        if (err || !fs.existsSync(fileObj.path)) {
+            return callback(common.getError(9003), null);
+        }
+
+        return callback(null, fileObj);
+    });
 }
 exports.dirExists = existsSync;
 exports.fileExists = existsSync;
@@ -110,10 +114,9 @@ exports.fileExists = existsSync;
  * @param {function} callback
  */
 var writeFile = function (filePath, fileName, fileExtension, fileData, filePermissions, callback) {
-    var randomName = common.getUUID();
     var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
     var fileObject = {
-        _id: randomName,
+        _id: fileName,
         path: fullPath,
         type: common.vfsTypes.FILE,
         permission: filePermissions
@@ -125,7 +128,7 @@ var writeFile = function (filePath, fileName, fileExtension, fileData, filePermi
         }
 
         fs.writeFile(fullPath, fileData, function (err) {
-            return callback(err ? getError(1013) : null, err ? null : 'ok');
+            return callback(err ? getError(1013) : null, err ? null : fileObject);
         });
     });
 }

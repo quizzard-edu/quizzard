@@ -686,6 +686,6 @@ exports.findInVirtualFileSystem = function (findQuery, callback) {
             return callback(common.getError(9003), null);
         }
 
-        return callback(null, 'ok');
+        return callback(null, obj);
     });
 }

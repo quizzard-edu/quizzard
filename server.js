@@ -32,7 +32,8 @@ const analytics = require('./server/analytics.js');
 const settings = require('./server/settings.js');
 const json2csv = require('json2csv');
 const csv2json = require('csvtojson');
-const config = require('./server/config.js')
+const config = require('./server/config.js');
+const vfs = require('./server/virtualFileSystem.js');
 
 const app = express();
 
@@ -1303,50 +1304,53 @@ app.post('/accountsExportFile', function(req, res) {
         return res.status(403).send(common.getError(1002));
     }
 
-    if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
-        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
-        return res.status(500).send(common.getError(2009));
-    }
+    vfs.dirExists(req.session.user._id, function (err, resultObj) {
+        if (err) {
+            logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
+            return res.status(500).send(common.getError(2009));
+        }
 
-    var requestedList = req.body.studentsList;
-    var totalCount = requestedList.length;
-    var studentsCount = 0;
-    var studentsList = [];
-    var errors = 0;
+        var requestedList = req.body.studentsList;
+        var totalCount = requestedList.length;
+        var studentsCount = 0;
+        var studentsList = [];
+        var errors = 0;
 
-    for (var i in requestedList) {
-        users.getStudentById(requestedList[i], function(err, studentFound) {
-            if (err || !studentFound) {
-                logger.error(common.getError(2001));
-                errors++;
-            }
-
-            studentsList.push(studentFound);
-            studentsCount++;
-            if (studentsCount === totalCount) {
-                if (errors > 0) {
-                    return res.status(500).send(common.getError(6000));
+        for (var i in requestedList) {
+            users.getStudentById(requestedList[i], function(err, studentFound) {
+                if (err || !studentFound) {
+                    logger.error(common.getError(2001));
+                    errors++;
                 }
 
-                var fields = ['username', 'fname', 'lname', 'email'];
-                var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
-                var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
-                var file = 'exportJob-students-'+new Date().toString();
-                var fileName = file + '.csv';
-
-                var userDirectory = common.joinPath(common.fsTree.USERS, req.session.user._id);
-                common.saveFile(userDirectory, file, 'csv', csvData, function(err, result) {
-                    if (err) {
-                        logger.error(err);
-                        return res.status(500).send(common.getError(6001));
+                studentsList.push(studentFound);
+                studentsCount++;
+                if (studentsCount === totalCount) {
+                    if (errors > 0) {
+                        return res.status(500).send(common.getError(6000));
                     }
-                    return res.status(200).render('users/accounts-export-complete', {
-                        file: fileName
+
+                    var fields = ['username', 'fname', 'lname', 'email'];
+                    var fieldNames = ['Username', 'First Name', 'Last Name', 'Email'];
+                    var csvData = json2csv({ data: studentsList, fields: fields, fieldNames: fieldNames });
+
+                    var fileName = common.getUUID();
+                    var file = fileName + '.csv';
+                    var userDirectory = vfs.joinPath(common.vfsTree.USERS, req.session.user._id);
+
+                    vfs.writeFile(userDirectory, fileName, 'csv', csvData, common.vfsPermission.OWNER, function(err, result) {
+                        if (err) {
+                            logger.error(err);
+                            return res.status(500).send(common.getError(6001));
+                        }
+                        return res.status(200).render('users/accounts-export-complete', {
+                            file: file
+                        });
                     });
-                });
-            }
-        });
-    }
+                }
+            });
+        }
+    });
 });
 
 // import the students' list file
@@ -1359,7 +1363,7 @@ app.post('/accountsImportFile', function (req, res) {
         return res.status(403).send(common.getError(1002));
     }
 
-    if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
+    if (!common.dirExists(common.vfsTree.USERS, req.session.user._id)) {
         logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
         return res.status(500).send(common.getError(2009));
     }
@@ -1370,7 +1374,7 @@ app.post('/accountsImportFile', function (req, res) {
     }
 
     var newFileName = 'importJob-students-' + uploadedFile.name;
-    var newFile = common.joinPath(common.fsTree.USERS, req.session.user._id, newFileName);
+    var newFile = common.joinPath(common.vfsTree.USERS, req.session.user._id, newFileName);
     uploadedFile.mv(newFile, function(err) {
         if (err) {
             logger.error(err);
@@ -1465,19 +1469,19 @@ app.get('/download', function(req, res) {
         return res.redirect('/');
     }
 
-    if (!common.dirExists(common.fsTree.USERS, req.session.user._id)) {
+    if (!common.dirExists(common.vfsTree.USERS, req.session.user._id)) {
         logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
         return res.status(500).send(common.getError(2009));
     }
 
     var fileName = req.query.file;
-    var userDir = common.joinPath(common.fsTree.USERS, req.session.user._id);
+    var userDir = common.joinPath(common.vfsTree.USERS, req.session.user._id);
     if (!common.fileExists(userDir, fileName)) {
         logger.error(common.formatString('File: {0} does not exist', [fileName]));
         return res.status(500).send(common.getError(6006));
     }
 
-    var filePath = common.joinPath(common.fsTree.USERS, req.session.user._id, fileName);
+    var filePath = common.joinPath(common.vfsTree.USERS, req.session.user._id, fileName);
     return res.download(filePath, fileName, function (err) {
         if (err) {
             logger.error(err); //handle using common.getError(6007)
