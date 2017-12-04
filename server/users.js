@@ -268,6 +268,16 @@ exports.getAdminById = function (adminId, callback) {
 }
 
 /**
+ * get the user object by username if exists
+ *
+ * @param {string} adminId
+ * @param {function} callback
+ */
+exports.getUserByUsername = function (username, callback) {
+    db.getUserObject({username: username}, callback);
+}
+
+/**
  * submit user's answer on a question by updating the collections
  *
  * @param {string} userId
@@ -515,12 +525,49 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
 }
 
 /**
+ * Fetch a list of students to display in the leaderboard.
+ *
+ * @param {function} callback
+ */
+exports.getFullLeaderboard = function (callback) {
+    getStudentsListSorted(0, function(err, studentlist) {
+        if (err) {
+            logger.error('Leaderboard error: ' + err);
+            return callback(common.getError(2020), []);
+        }
+
+        var leaderboardList = [];
+        for (var i = 0; i < studentlist.length; ++i) {
+            var currentStudent = studentlist[i];
+            var student = {
+                _id:currentStudent._id,
+                points:currentStudent.points,
+                correctAttemptsCount:currentStudent.correctAttemptsCount,
+                accuracy:(currentStudent.totalAttemptsCount === 0)
+                    ? 0
+                    : ((currentStudent.correctAttemptsCount / currentStudent.totalAttemptsCount) * 100).toFixed(2),
+                attempt:(currentStudent.totalAttemptsCount === 0)
+                    ? 0
+                    : (currentStudent.points / currentStudent.totalAttemptsCount).toFixed(2),
+                overall:(currentStudent.totalAttemptsCount === 0)
+                    ? 0
+                    : (currentStudent.points *
+                    ((currentStudent.correctAttemptsCount/currentStudent.totalAttemptsCount) +
+                    (currentStudent.points/currentStudent.totalAttemptsCount))).toFixed(2)
+            }
+            leaderboardList.push(student);
+        }
+        return callback(err, leaderboardList);
+    });
+}
+
+/**
  * Adds the user's feedback into the database
- * 
- * @param {string} uuid 
- * @param {string} subject 
+ *
+ * @param {string} uuid
+ * @param {string} subject
  * @param {string} message 
- * @param {funciton} callback 
+ * @param {funciton} callback
  */
 exports.addFeedback = function(uuid, subject, message, callback) {
 
@@ -540,15 +587,15 @@ exports.addFeedback = function(uuid, subject, message, callback) {
         if (err) {
             return callback(common.getError(8000), null);
         }
-        
+
         return callback(null, 'success');
     });
 }
 
 /**
  * Get all the feedback stored in the collection
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 exports.getFeedback = function (callback){
     db.getFeedback(callback);

@@ -1,37 +1,177 @@
-.row.hidden#class-analytics-card
-  .row
-    .col.s12
-      h5.header-style#classAnalyticsHeader &nbsp Class Analytics
-  .row.padding-left-10.padding-right-10
-    .col.s6.m3
-      .card#classAnsweredCardI
-        .card-content.gradient-45deg-light-blue-cyan.white-text
-          .col.s7.m7
-            i.material-icons.background-round.mt-5 playlist_add_check
-            p Questions Answered
-          .col.s5.m5.right-align.padding-right-10
-            h5#classAnsweredI
-    .col.s6.m3
-      .card#classAccuracyCardI
-        .card-content.gradient-45deg-red-pink.white-text
-          .col.s7.m7
-            i.material-icons.background-round.mt-5 gps_fixed
-            p Accuracy
-          .col.s5.m5.right-align.padding-right-10
-            h5#classAccuracyI
-    .col.s6.m3
-      .card#classPointsCardI
-        .card-content.gradient-45deg-amber-amber.white-text
-          .col.s7.m7
-            i.material-icons.background-round.mt-5 bubble_chart
-            p Total Points
-          .col.s5.m5.right-align.padding-right-10
-              h5#classPointsI
-    .col.s6.m3
-      .card#classRatingCardI
-        .card-content.gradient-45deg-green-teal.white-text
-          .col.s7.m7
-            i.material-icons.background-round star
-            p Average Rating
-          .col.s5.m5.right-align.padding-right-10
-            h5#classRatingI
+.hidden#class-analytics-card
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#classAnalyticsHeader &nbsp Questions Answered Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#classAnsweredCardI
+            .card-content.cyan-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 playlist_add_check
+                p Questions Answered
+              .col.s5.m5.right-align.padding-right-10
+                h5#classAnsweredI
+        .col.s12.m9
+          h5 Class Questions Answered
+          .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.cyanO filter_list
+            canvas#classAnsweredOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classAnsweredOverTimeTable
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#classAnalyticsHeader &nbsp Accuracy Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#classAccuracyCardI
+            .card-content.teal-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 gps_fixed
+                p Accuracy
+              .col.s5.m5.right-align.padding-right-10
+                h5#classAccuracyI
+        .col.s12.m9
+          h5 Class Accuracy
+          .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.tealO filter_list
+            canvas#classAccuracyOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classAccuracyOverTimeTable
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#classAnalyticsHeader &nbsp Points Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#classPointsCardI
+            .card-content.orange-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Points
+              .col.s5.m5.right-align.padding-right-10
+                  h5#classPointsI
+        .col.s12.m9
+          h5 Class Points
+          .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.orangeO filter_list
+            canvas#classPointsOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classPointsOverTimeTable
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#classAnalyticsHeader &nbsp Points/Attempt Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#classPointsCardI
+            .card-content.purple-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Points/Attempt
+              .col.s5.m5.right-align.padding-right-10
+                  h5#classPointsPerAttemptI
+        .col.s12.m9
+          h5 Class Points/Attempt
+          .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.purpleO filter_list
+            canvas#classPointsPerAttemptOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classPointsPerAttemptOverTimeTable
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#classAnalyticsHeader &nbsp Overall Points Analytics
+      .row.padding-left-10.padding-right-10
+        .col.s12.m3
+          .card#classPointsCardI
+            .card-content.lime-card.white-text
+              .col.s7.m7
+                i.material-icons.background-round.mt-5 bubble_chart
+                p Overall Points
+              .col.s5.m5.right-align.padding-right-10
+                  h5#classOverallI
+        .col.s12.m9
+          h5 Class Overall Points
+          .card.chart.padding-top-10.padding-left-10
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.limeO filter_list
+            canvas#classOverallOverTime
+            .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classOverallOverTimeTable
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#studentAnalyticsHeader &nbsp Question Type Analytics
+      .col.s12.m6
+        h5 Class Question Type Points
+        .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
+          canvas#classPointsPerTypeVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classPointsPerTypeVsClassTable
+      .col.s12.m6
+        h5 Class Question Type Accuracy
+        .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
+          canvas#classAccuracyPerTypeVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classAccuracyPerTypeVsClassTable
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#studentAnalyticsHeader &nbsp Question Topic Analytics
+      .col.s12.m6
+        h5 Class Question Topic Points
+        .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
+          canvas#classPointsPerTopicVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classPointsPerTopicVsClassTable
+      .col.s12.m6
+        h5 Class Question Topic Accuracy
+        .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
+          canvas#classAccuracyPerTopicVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classAccuracyPerTopicVsClassTable

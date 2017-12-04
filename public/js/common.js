@@ -2,18 +2,42 @@
 const colours = Object.freeze({
     blackLight     : 'rgb(51, 51, 51)',
     blue           : 'rgb(54, 162, 235)',
+    blueBack       : '#90CAF9',
+    blueBackO      : 'rgba(168, 216, 255, 0.3)',
     blueLight      : 'rgb(51, 102, 255)',
     blueLightExtra : 'rgb(51, 102, 155)',
+    blueMatt       : '#42A5F5',
+    cyan           : '#00bcd4',
+    cyanLight      : '#44e8ff',
+    cyanLightO     : 'rgba(68, 232, 255, 0.2)',
+    grayDark       : '#424242',
+    grayDarkO      : 'rgba(0, 0, 0, 0.2)',
     grayLight      : 'rgb(115, 124, 140)',
     green          : 'green',
     greenBorder    : 'rgba(43, 163, 0, 1)',
     greenLight     : 'rgba(43, 244, 33, 0.5)',
-    orange         : 'orange accent-4',
+    lime           : '#CDDC39',
+    limeLight      : '#f7ffb2',
+    limeLightO     : 'rgba(247, 255, 178, 0.2)',
+    orange         : '#ff6e40',
+    orangeDark     : 'orange accent-4',
+    orangeLight    : '#fcab92',
+    orangeLightO   : 'rgba(252, 171, 146, 0.2)',
     pink           : 'rgb(255, 99, 132)',
     pinkLightExtra : '#DD6B55',
+    pinkHot        : '#F06292',
+    pinkLight      : '#F8BBD0',
+    pinkLightO     : 'rgba(255, 150, 185, 0.3)',
+    purple         : '#673AB7',
+    purpleLight    : '#b691f7',
+    purpleLightO   : 'rgba(182, 145, 247, 0.2)',
     redBorder      : 'rgb(243, 13, 20)',
     redDark        : 'red darken-4',
     redLight       : 'rgba(243, 13, 20, 0.5)',
+    teal           : '#00bfa5',
+    tealLight      : '#93fff0',
+    tealLightO     : 'rgba(147, 255, 240, 0.2)',
+    transparent    : 'rgba(0, 0, 0, 0)',
     white          : 'white'
 });
 
@@ -32,6 +56,15 @@ const leaderboardTypes = Object.freeze({
     POINTSBOARD   : {name: 'points', displayName: 'Points'},
     ACCURACYBOARD : {name: 'accuracy', displayName: 'Accuracy'},
     ATTEMPTBOARD  : {name: 'attempt', displayName: 'Points Per Attempt'}
+});
+
+const questionTypes = Object.freeze({
+    mc         : 'Multiple Choice',
+    re         : 'Regular',
+    tf         : 'True and False',
+    matching   : 'Matching',
+    ca         : 'Choose All',
+    ordering   : 'Ordering'
 })
 
 // This is the function.
@@ -64,7 +97,7 @@ function successSnackbar(msg) {
 /* This function slides down a warning snakbar */
 function warningSnackbar(msg) {
     // runs the toast function for 5s with given msg and colour
-    Materialize.toast(snack.warning + msg + snack.close, 5000, 'rounded ' + colours.orange);
+    Materialize.toast(snack.warning + msg + snack.close, 5000, 'rounded ' + colours.orangeDark);
 }
 
 /* This function slides down a fail snakbar */

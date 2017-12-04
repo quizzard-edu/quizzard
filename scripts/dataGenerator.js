@@ -1078,8 +1078,12 @@ db.initialize(function () {
                         if (!err) {
                             db.removeAllFeedback(function(err, res) {
                                 if (!err) {
-                                    calculateTotalNumberOfQuestions();
-                                    createAdmins();
+                                    db.removeAnalytics(function (err, res) {
+                                        if (!err) {
+                                            calculateTotalNumberOfQuestions();
+                                            createAdmins();
+                                        }
+                                    });
                                 }
                             });
                         }

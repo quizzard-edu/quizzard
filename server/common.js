@@ -177,6 +177,18 @@ var getIdsListFromJSONList = function (JSONList, idType) {
 exports.getIdsListFromJSONList = getIdsListFromJSONList;
 
 /**
+ * return a number as the sum of all numbers in a list
+ * 
+ * @param {list} list 
+ */
+var sumListOfNumbers = function (list) {
+    return list.reduce((x, y) => {
+        return parseInt(x) + parseInt(y);
+    });
+}
+exports.sumListOfNumbers = sumListOfNumbers;
+
+/**
 * check if json obejct is empty
 *
 * @return {boolean}
@@ -311,6 +323,25 @@ var isKeyValuePairInJsonList = function(list, field, value) {
 }
 exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
 
+/**
+ * Classic Fisher-Yates shuffle. Nothing to see here
+ * 
+ * @param {list} arr 
+ */
+var shuffleList = function(arr) {
+    var curr, tmp, rnd;
+
+    curr = arr.length;
+
+    while (curr) {
+        rnd = Math.floor(Math.random() * curr);
+        --curr;
+        tmp = arr[curr];
+        arr[curr] = arr[rnd];
+        arr[rnd] = tmp;
+    }
+}
+exports.shuffleList = shuffleList;
 // </Global Function> -----------------------------------------------
 
 // <File System functions> ------------------------------------------
