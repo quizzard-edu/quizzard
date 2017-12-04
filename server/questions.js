@@ -638,7 +638,7 @@ exports.updateUserSubmissionTime = function(userId, question, callback){
 /**
  * Changes visibilty of all questions based on the changeValue
  * @param {boolean} changeValue 
- * @param {*} callback 
+ * @param {funciton} callback 
  */
 exports.changeAllVisibility = function(changeValue, callback) {
     // Gets the list of students
