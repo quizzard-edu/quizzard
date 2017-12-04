@@ -30,7 +30,7 @@ $(function () {
     const autocompleteValue = $('#autocomplete-input').val();
 
     for (var s in studentList) {
-      if (s === autocompleteValue) {
+      if (s.split(' ')[0].toLowerCase() === autocompleteValue.split(' ')[0].toLowerCase()) {
         $('#student-analytics-card').removeClass('hidden');
         displayStudentStatistics(autocompleteValue.split(' ')[0]);
         return;
@@ -69,7 +69,8 @@ $('#option-class').click(function (evt) {
 * Switching to student statistics tab
 */
 $('#option-student').click(function (evt) {
-  displayStudentStatistics(null);
+  const autocompleteValue = $('#autocomplete-input').val() || '';
+  displayStudentStatistics(autocompleteValue.split(' ')[0]);
 });
 
 /**
@@ -789,7 +790,6 @@ var getClassPointsPerTopicVsClass = function (path) {
     success: function (data) {
       data.id = '#classPointsPerTopicVsClass';
       createClassRadarChart(data);
-      createTable('#pointsPerTopicVsClassTable', ['Topic', 'Class'], [data.labels, data.classData]);
       createTable('#classPointsPerTopicVsClassTable', ['Topic', 'Class'], [data.labels, data.classData]);
     },
     error: function (data) {
@@ -1252,6 +1252,7 @@ var createClassRadarChart = function (data) {
 }
 
 var noDataCanvas = function (id) {
+  createTable(id + 'Table', [], []);
   var byId = $(id)[0];
   var context = byId.getContext("2d");
   byId.width = byId.width;
@@ -1265,18 +1266,21 @@ var noDataCanvas = function (id) {
 var createTable = function (id, headers, content) {
   var tableString = '<table>';
 
-  tableString += '<tr>';
-  headers.forEach(title => {
-    tableString += `<th>${title}</th>`;
-  });
-  tableString += '</tr>';
-
-  for (i = content[0].length - 1; i >= 0; i--) {
+  if (content.length > 0) {
     tableString += '<tr>';
-    for (j = 0; j < content.length; j++) {
-      tableString += `<td>${content[j][i]}</td>`;
-    }
+
+    headers.forEach(title => {
+      tableString += `<th>${title}</th>`;
+    });
     tableString += '</tr>';
+
+    for (i = content[0].length - 1; i >= 0; i--) {
+      tableString += '<tr>';
+      for (j = 0; j < content.length; j++) {
+        tableString += `<td>${content[j][i]}</td>`;
+      }
+      tableString += '</tr>';
+    }
   }
 
   tableString += '</table>';
