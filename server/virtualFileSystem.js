@@ -24,6 +24,7 @@ const path = require('path');
 const rimraf = require('rimraf');
 const common = require('./common.js');
 const db = require('./db.js');
+const logger = require('./log.js');
 
 /**
  * make a directory given the path and the name of the new directory

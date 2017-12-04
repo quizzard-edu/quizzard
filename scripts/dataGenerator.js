@@ -23,17 +23,18 @@ const db = require('./../server/db.js');
 const users = require('./../server/users.js');
 const questions = require('./../server/questions.js');
 const common = require('./../server/common.js');
+const vfs = require('./../server/virtualFileSystem.js');
 const datagenInfo = require('./datagenInfo.js');
 
 // constants to control the genereated data
 
 const numberOfEachQuestion = {
-    'regular': 2,
-    'multipleChoice': 2,
-    'trueFalse': 2,
-    'matching': 2,
-    'chooseAll': 2,
-    'ordering': 2
+    'regular': 4,
+    'multipleChoice': 4,
+    'trueFalse': 4,
+    'matching': 4,
+    'chooseAll': 4,
+    'ordering': 4
 };
 
 const adminsCount = 2;
@@ -1070,23 +1071,29 @@ var minMaxPointGenerator = function () {
 }
 
 db.initialize(function () {
-    db.removeAllUsers(function (err, res) {
+    vfs.removeVirtualFileSystem(function (err, res) {
         if (err) {
             process.exit(1);
         }
 
-        db.removeAllQuestions(function (err, res) {
+        db.removeAllUsers(function (err, res) {
             if (err) {
                 process.exit(1);
             }
 
-            db.resetAllSettings(function (err, res) {
+            db.removeAllQuestions(function (err, res) {
                 if (err) {
                     process.exit(1);
                 }
 
-                calculateTotalNumberOfQuestions();
-                createAdmins();
+                db.resetAllSettings(function (err, res) {
+                    if (err) {
+                        process.exit(1);
+                    }
+
+                    calculateTotalNumberOfQuestions();
+                    createAdmins();
+                });
             });
         });
     });

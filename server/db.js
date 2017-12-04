@@ -370,7 +370,7 @@ exports.removeAllQuestions = function(callback) {
 
         nextQuestionNumber = 0;
         logger.log('All questions have been removed');
-        logger.log(common.formatString('next question: {0}', [nextQuestionNumber]));
+        logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
         return callback(null, res);
     });
 }
@@ -648,10 +648,11 @@ exports.updateSettings = function (findQuery, updateQuery, callback) {
 exports.removeVirtualFileSystem = function (callback) {
     vfsCollection.remove({}, function (err, result) {
         if (err) {
-            return callback(common.getError(7000), null);
+            logger.error(err);
+            return callback(common.getError(9000), null);
         }
 
-        return callback(common.getError(9000), null);
+        return callback(null, 'ok');
     });
 }
 
