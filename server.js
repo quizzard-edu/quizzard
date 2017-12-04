@@ -443,11 +443,11 @@ app.get('/questionlist', function(req, res) {
                         return 'UNKNOWN';
                     }
                  });
+                return res.status(200).send(html);
             }
 
             if (req.session.user.type === common.userTypes.STUDENT) {
-                html = questionListPug({
-                    questions : questionsList,
+                questionListHTML = questionListPug({
                     getQuestionIcon: function(type) {
                         for (var i in common.questionTypes) {
                             if (type === common.questionTypes[i].value) {
@@ -457,12 +457,12 @@ app.get('/questionlist', function(req, res) {
                         return 'help';
                     }
                  });
+                return res.status(200).send({
+                    questions : questionsList,
+                    questionListHTML : questionListHTML
+                });
             }
-
-            return res.status(200).send({
-                html : html,
-                questions : questionList
-            });
+            //return res.status(200).send(html);
         });
     });
 });

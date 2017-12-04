@@ -47,9 +47,11 @@ var fetchQList = function(which) {
         success: function(data) {
             debugger;
             alert(data.questions);
-            $('.question-list').html(data.html);
+            $('.question-list').html(data.questionListHTML);
+            //$('.question-list').html(html);
         },
         error: function(data){
+            debugger;
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
