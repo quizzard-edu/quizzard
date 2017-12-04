@@ -113,12 +113,13 @@ exports.fileExists = existsSync;
  * @param {string} filePermissions
  * @param {function} callback
  */
-var writeFile = function (filePath, fileName, fileExtension, fileData, filePermissions, callback) {
+var writeFile = function (filePath, fileName, fileExtension, fileData, filePermissions, creator, callback) {
     var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
     var fileObject = {
         _id: fileName,
         path: fullPath,
         type: common.vfsTypes.FILE,
+        creator: creator,
         permission: filePermissions
     };
 

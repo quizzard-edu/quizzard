@@ -1338,7 +1338,7 @@ app.post('/accountsExportFile', function (req, res) {
                     var file = fileName + '.csv';
                     var userDirectory = vfs.joinPath(common.vfsTree.USERS, req.session.user._id);
 
-                    vfs.writeFile(userDirectory, fileName, 'csv', csvData, common.vfsPermission.OWNER, function (err, result) {
+                    vfs.writeFile(userDirectory, fileName, 'csv', csvData, common.vfsPermission.OWNER, req.session.user._id, function (err, result) {
                         if (err) {
                             logger.error(err);
                             return res.status(500).send(common.getError(6001));
@@ -1363,28 +1363,23 @@ app.post('/accountsImportFile', function (req, res) {
         return res.status(403).send(common.getError(1002));
     }
 
-    if (!common.dirExists(common.vfsTree.USERS, req.session.user._id)) {
-        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
-        return res.status(500).send(common.getError(2009));
-    }
-
     var uploadedFile = req.files.usercsv;
     if (!uploadedFile || uploadedFile.mimetype !== 'text/csv') {
         return res.status(400).send(common.getError(6002));
     }
 
-    var newFileName = 'importJob-students-' + uploadedFile.name;
-    var newFile = common.joinPath(common.vfsTree.USERS, req.session.user._id, newFileName);
-    uploadedFile.mv(newFile, function (err) {
+    var fileName = common.getUUID();
+    var filePath = vfs.joinPath(common.vfsTree.USERS, req.session.user._id);
+    vfs.writeFile(filePath, fileName, 'csv', uploadedFile.data, common.vfsPermission.OWNER, req.session.user._id, function (err, fileObj) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(6003));
         }
 
-        logger.log(common.formatString('Uploaded: {0}', [newFile]));
+        logger.log(common.formatString('Uploaded: {0}', [fileName]));
 
         var importedList = [];
-        csv2json().fromFile(newFile).on('json', function (jsonObj) {
+        csv2json().fromFile(fileObj.path).on('json', function (jsonObj) {
             var userObj = {};
             userObj['username'] = jsonObj['Username'];
             userObj['fname'] = jsonObj['First Name'];
@@ -1464,28 +1459,24 @@ app.post('/accountsImportList', function (req, res) {
 });
 
 /* download */
-app.get('/download', function (req, res) {
+app.get('/downloadExportFile', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    if (!common.dirExists(common.vfsTree.USERS, req.session.user._id)) {
-        logger.error(common.formatString('User {0} does not exists in the file system', [req.session.user._id]));
-        return res.status(500).send(common.getError(2009));
-    }
-
-    var fileName = req.query.file;
-    var userDir = common.joinPath(common.vfsTree.USERS, req.session.user._id);
-    if (!common.fileExists(userDir, fileName)) {
-        logger.error(common.formatString('File: {0} does not exist', [fileName]));
-        return res.status(500).send(common.getError(6006));
-    }
-
-    var filePath = common.joinPath(common.vfsTree.USERS, req.session.user._id, fileName);
-    return res.download(filePath, fileName, function (err) {
+    var file = req.query.file;
+    var fileName = file.split('.')[0];
+    vfs.fileExists(fileName, function (err, fileObj) {
         if (err) {
-            logger.error(err); //handle using common.getError(6007)
+            logger.error(common.formatString('File: {0} does not exist', [file]));
+            return res.status(500).send(common.getError(6006));
         }
+
+        return res.download(fileObj.path, file, function (err) {
+            if (err) {
+                logger.error(err);
+            }
+        });
     });
 });
 
