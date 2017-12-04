@@ -1,33 +1,50 @@
-.gradient-45deg-light-blue-cyan {
-  background: #0288d1;
-  background: -webkit-linear-gradient(45deg, #0288d1 0%, #26c6da 100%);
-  background: linear-gradient(45deg, #0288d1 0%, #26c6da 100%);
-  box-shadow: 0 6px 20px 0 rgba(38, 198, 218, 0.5);
-  min-height: 125px !important;
-}
-
-.gradient-45deg-red-pink {
-    background: #FF5252;
-    background: -webkit-linear-gradient(45deg, #FF5252 0%, #f48fb1 100%);
-    background: linear-gradient(45deg, #FF5252 0%, #f48fb1 100%);
-    box-shadow: 0 6px 20px 0 rgba(244, 143, 177, 0.5);
+.cyan-card {
+    background: #00bcd4;
     min-height: 125px !important;
 }
 
-.gradient-45deg-amber-amber {
-    background: #ff6f00;
-    background: -webkit-linear-gradient(45deg, #ff6f00 0%, #ffca28 100%);
-    background: linear-gradient(45deg, #ff6f00 0%, #ffca28 100%);
-    box-shadow: 0 6px 20px 0 rgba(255, 111, 0, 0.3);
+.teal-card {
+    background: #00bfa5;
     min-height: 125px !important;
 }
 
-.gradient-45deg-green-teal {
-    background: #43A047;
-    background: -webkit-linear-gradient(45deg, #43A047 0%, #1de9b6 100%);
-    background: linear-gradient(45deg, #43A047 0%, #1de9b6 100%);
-    box-shadow: 0 6px 20px 0 rgba(77, 182, 172, 0.5);
+.orange-card {
+    background: #ff6e40;
     min-height: 125px !important;
+}
+
+.purple-card {
+    background: #673AB7;
+    min-height: 125px !important;
+}
+
+.lime-card {
+    background: #CDDC39;
+    min-height: 125px !important;
+}
+
+.cyanO {
+    background: #00bcd4;
+}
+
+.tealO {
+    background: #00bfa5;
+}
+
+.orangeO {
+    background: #ff6e40;
+}
+
+.purpleO {
+    background: #673AB7;
+}
+
+.limeO {
+    background: #CDDC39;
+}
+
+.padding-top-10 {
+    padding-top: 10px;
 }
 
 .padding-left-10 {
@@ -43,4 +60,32 @@
     background-color: #ee6e73;
     padding: 5px;
     color: white;
+}
+
+.chart {
+    border-radius: 5px;
+    box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27);
+    height: 225px;
+}
+
+.radar {
+    border-radius: 5px;
+    box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27);
+    height: 500px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+.cursor-pointer {
+    cursor: pointer;
 }

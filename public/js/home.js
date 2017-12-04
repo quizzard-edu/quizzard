@@ -3,14 +3,10 @@ var leaderboardRow;
 var leaderboardTable;
 var studentLeaderList;
 
-/* Fetch the list of valid question list sort types from the server.
-$.ajax({
-    type: 'GET',
-    url: '/sortlist',
-    success: function(data) {
-        sortTypes = data;
-    }
-});*/
+$(function () {
+    fetchQList('unanswered');
+    fetchLeaderboard();
+});
 
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
@@ -63,42 +59,6 @@ var fetchQList = function(which) {
     });
 }
 
-fetchQList('unanswered');
-
-/*
- * Send a request to sort the question list in a given order.
- */
-var sortRequest = function(type) {
-    $.ajax({
-        type: 'POST',
-        url: '/sortlist',
-        data: { sort: type },
-        success: function(data) {
-            var s;
-
-            switch (type) {
-            case sortTypes.SORT_TOPIC:
-                s = 'Topic';
-                break;
-            case sortTypes.SORT_POINTS:
-                s = 'Points';
-                break;
-            }
-            $('.question-list').html(data);
-            $('#sort').html(s + '<span class="caret"></span>');
-        },
-        error: function(data){
-            var jsonResponse = data.responseJSON;
-
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else {
-                failSnackbar(getErrorFromResponse(jsonResponse));
-            }
-        }
-    });
-};
-
 // chenge the href to point to the questoin page with the given id
 var goToQuestion = function (questionId) {
     window.location.href = '/question?_id=' + questionId;
@@ -132,8 +92,6 @@ var fetchLeaderboard = function() {
         }
     });
 }
-
-fetchLeaderboard();
 
 // Adds the students information to the leaderboard
 var displayLeaderboard = function(studentLeaderList, userId) {

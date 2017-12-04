@@ -1,4 +1,4 @@
-#modalAlert {
+#alert {
 	background-color: white;
 	max-width: 500px;
 	max-height:375px;
@@ -12,28 +12,27 @@
 	border-radius: 0px;
 	outline: 0;
 	box-shadow: 0 0px 0px;
-	padding-bottom: 0px !important;
+	position: relative;
+	height: 100%;
 }
 
 .modal-content h3 {
-	font-family: 'open sans';
 	color: #575757;
 	font-weight: 600;
 	font-size: 30px;
 }
 
 .modal-content p {
-	font-family: 'open sans';
 	color: #797979;
 	font-size: 16px;
-    font-weight: 300;
+	font-weight: 300;
 }
 
 .modal-content button {
 	vertical-align: bottom;
 	background-color: #8CD4F5;
 	box-shadow: none !important;
-	margin-top: 15px;
+	margin-top: 5px;
 	border-radius: 5px;
 }
 
