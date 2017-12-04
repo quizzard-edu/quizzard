@@ -36,13 +36,3 @@ Arguments:
                Combination of SORT and/or QUERY bitmask from findTypes.
     user - object of user to select questions for.
     callback - function to call with resulting question list.
-
-
-questionSelector.sortQuestions(qs, type, callback)
-
-Sorts a list of questions in a specified order.
-
-Arguments:
-    qs - the question list.
-    type - one of the SORT_* constants from findTypes.
-    callback - function to call with sorted list.

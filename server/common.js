@@ -189,6 +189,18 @@ var getIdsListFromJSONList = function (JSONList, idType) {
 exports.getIdsListFromJSONList = getIdsListFromJSONList;
 
 /**
+ * return a number as the sum of all numbers in a list
+ * 
+ * @param {list} list 
+ */
+var sumListOfNumbers = function (list) {
+    return list.reduce((x, y) => {
+        return parseInt(x) + parseInt(y);
+    });
+}
+exports.sumListOfNumbers = sumListOfNumbers;
+
+/**
 * check if json obejct is empty
 *
 * @return {boolean}

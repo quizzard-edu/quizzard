@@ -142,11 +142,6 @@ exports.addQuestion = function(question, callback) {
     })
 }
 
-/* Sort questions by the given sort type. */
-exports.sortQuestions = function(qs, type, callback) {
-    db.sortQuestions(qs, type, callback);
-}
-
 /* Replace a question in the database with the provided question object. */
 exports.updateQuestionById = function(questionId, info, callback) {
     updateQuestionById(questionId, info, callback);
@@ -214,6 +209,11 @@ exports.submitRating = function (questionId, userId, rating, callback) {
 // get all questions list
 exports.getAllQuestionsList = function(callback) {
     db.getQuestionsList({}, {number: 1}, callback);
+}
+
+// get all questions list by Query
+exports.getAllQuestionsByQuery = function(findQuery, sortQuery, callback) {
+    db.getQuestionsList(findQuery, sortQuery, callback);
 }
 
 // submit answer
@@ -635,4 +635,35 @@ exports.updateUserSubmissionTime = function(userId, question, callback){
             return callback(null,'success');
         });
     }
+}
+/**
+ * Changes visibilty of all questions based on the changeValue
+ * @param {boolean} changeValue 
+ * @param {funciton} callback 
+ */
+exports.changeAllVisibility = function(changeValue, callback) {
+    // Gets the list of students
+    db.getQuestionsList({}, {number: 1}, function(err, questionList){
+        if (err) {
+            return callback(common.getError(3017), null);
+        }
+
+        questionList.forEach(question => {
+            // Only change visibility of a question if it is different from the current visibility value
+            if (question.visible !== changeValue) {
+                // Question with only visibility because we don't want to change the other attributes of the question
+                var newQuestion = {};
+                newQuestion['visible'] = changeValue.toString();
+
+                // Updates question with new visibility value.
+                updateQuestionById(question._id, newQuestion, function(err, result) {
+                    if (err) {
+                        return callback(common.getError(3020), result);
+                    }
+                });
+            }
+        });
+
+        return callback(null, 'success');
+    });
 }

@@ -103,6 +103,11 @@ secureServer.listen(config.httpsPort,function () {
             if (err) {
                 process.exit(1);
             }
+            analytics.initialize(function(err, result) {
+                if (err) {
+                    process.exit(1);
+                }
+            });
         });
     });
 });
@@ -552,39 +557,6 @@ app.get('/statistics', function (req, res) {
             return res.status(200).send(html);
         });
     });
-});
-
-app.get('/sortlist', function (req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    return res.status(200).send(common.sortTypes);
-});
-
-/* Sort question list by specified criterion and send new HTML. */
-app.post('/sortlist', function (req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    var type;
-
-    for (type in common.sortTypes) {
-        if (req.body.sort == common.sortTypes[type]) {
-            break;
-        }
-    }
-
-    questions.sortQuestions(req.session.questions, common.sortTypes[type],
-        function (err, results) {
-          var html = questionListPug({
-              questions: results
-          });
-
-          return res.status(200).send(html);
-        }
-    );
 });
 
 /* Display the question page. */
@@ -1250,7 +1222,7 @@ app.get('/studentsListofIdsNames', function (req, res) {
 
         var idsList = [];
         for (s in studentList) {
-            idsList.push(studentList[s].id + ' - ' + studentList[s].fname + ' ' + studentList[s].lname);
+            idsList.push(studentList[s].username + ' - ' + studentList[s].fname + ' ' + studentList[s].lname);
         }
         return res.status(200).send(idsList);
     });
@@ -1605,12 +1577,32 @@ app.get('/studentAnalytics', function (req,res) {
         if (!req.query.studentId) {
             return res.status(500).send(common.getError(5000));
         }
-        query.userId = req.query.studentId;
-    }
+        users.getUserByUsername(req.query.studentId, function (err, userObj) {
+            if (err) {
+                return res.status(500).send(err);
+            }
 
-    analytics.getChart(query, function (err, result) {
-        return res.status(200).send(result);
-    });
+            if (!userObj) {
+                return res.status(400).send('user not found');
+            }
+
+            analytics.getChart({userId: userObj._id, type: req.query.type},
+                function (err, result) {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+                    return res.status(200).send(result);
+                }
+            );
+        });
+    } else {
+        analytics.getChart(query, function (err, result) {
+            if (err) {
+                return res.status(500).send(err);
+            }
+            return res.status(200).send(result);
+        });
+    }
 });
 
 /* get analytics for a admins*/
@@ -1626,6 +1618,113 @@ app.get('/adminAnalytics', function (req,res) {
     var query = {user: req.session.user, type: req.query.type};
 
     analytics.getChart(query, function (err, result) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        return res.status(200).send(result);
+    });
+});
+
+/* submit course feedback coming from students*/
+app.post('/submitFeedback', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type === common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    logger.log(common.formatString('Feedback from {0} regarding {1}', [req.session.user._id, req.body.subject]));
+
+    users.addFeedback(req.session.user._id, req.body.subject, req.body.message, function(err, result) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(common.getError(8000));
+        }
+
+        return res.status(201).send('User feedback submitted');
+    });
+});
+
+/* get feed back for the admin's `View Feedback` page*/
+app.get('/feedback', function(req, res){
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    logger.log(common.formatString('Getting feedback for {0}', [req.session.user.username]));
+
+    users.getFeedback(function(err, result) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(common.getError(8001));
+        }
+
+        users.getUsersList((err, userObj) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).render(common.getError(2002));
+            }
+
+            var usersList = {};
+            userObj.forEach(user => {
+                usersList[user._id] = [`${user.fname} ${user.lname}`, user.username];
+            });
+
+            var data = [];
+            var tempData = {};
+            result.forEach(feedbackItem => {
+                tempData.fullname = usersList[feedbackItem.uuid][0];
+                tempData.username = usersList[feedbackItem.uuid][1];
+                tempData.subject = feedbackItem.subject;
+                tempData.message = feedbackItem.message;
+                tempData.time = feedbackItem.time;
+
+                data.push(tempData);
+                tempData = {}
+            });
+
+            data = data.length === 0 ? null : data;
+
+            return res.status(201).render('feedback-view', {
+                content: data,
+                user: req.session.user
+            });
+        });
+    })
+});
+
+/* allow the admin to clear all the feedback*/
+app.post('/removeAllFeedback', function(req, res) {
+    db.removeAllFeedback(function(err, result) {
+        if (err) {
+            return callback(common.getError(8002), null);
+        }
+
+        return res.status(201).send('User feedback removed');
+    });
+});
+
+/* Changes Visibilty of All Questions */
+app.post('/changeAllVisibility', function(req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        res.status(403).send(common.getError(1002));
+    }
+
+    questions.changeAllVisibility(req.body.changeValue, function(err, result) {
+        if (err) {
+            logger.error(err);
+            res.status(500).send(common.getError(3020));
+        }
         return res.status(200).send(result);
     });
 });

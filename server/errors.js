@@ -9,6 +9,7 @@ categories:
 5000 -> analytics
 6000 -> import/export
 7000 -> settings
+8000 -> feedback
 */
 
 const errors = Object.freeze({
@@ -102,7 +103,12 @@ const errors = Object.freeze({
     7005: 'failed to get all settings',
     7006: 'class is not active',
 
-    //9000 setting
+    //8000 feedback
+    8000: 'failed to add feedback',
+    8001: 'failed to get feedback',
+    8002: 'failed to remove all feedback',
+
+    //9000 virtual file system
     9000: 'failed to clean the virtual file system',
     9001: 'failed to add to the virtual file system',
     9002: 'error trying to find item in virtual file system',
