@@ -17,6 +17,19 @@ block content
       .col.s12
         include home-sidebar
         .row
+          a.right.dropdown-button.btn(href='#', data-activates='dropdown1') Sort By:
+          ul#dropdown1.dropdown-content
+            li
+              a(href='#!') Topic
+            li.divider
+            li
+              a(href='#!') Type
+            li.divider
+            li
+              a(href='#!') Creation Date
+            li.divider
+            li
+              a(href='#!') Attemtps
           ul.tabs
             li.tab.col.s6
               a.noLineLink.active(href='#')#qlist-unanswered Unanswered

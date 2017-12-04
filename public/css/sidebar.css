@@ -10,3 +10,20 @@
 .sidebar h3, h4 {
   font-weight: bold;
 }
+
+.profilePicture {
+  padding: 20px;
+  width: 20%;
+  height: 20%;
+}
+
+.qInfoLeft {
+  top: 20px;
+}
+
+.qInfoRight {
+  position: relative;
+  top: -25px;
+  float: right !important;
+  display: table-cell;
+}

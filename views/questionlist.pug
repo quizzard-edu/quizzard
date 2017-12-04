@@ -3,10 +3,11 @@ ul.collection
     li.collection-item.avatar.disable-select.question-list-hover(onClick='goToQuestion(this.id)', id=q._id)
       i.material-icons.circle #{getQuestionIcon(q.type)}
       span.title #{q.title}
-      p #{q.topic}
-      p #{q.type}
-      p.right #{q.ctime}
-      p.right #{q.totalAttemptsCount}
+      p.qInfoLeft Topic: #{q.topic}
+      p.qInfoLeft Type: #{q.type}
+      p.qInfoRight Created: #{q.ctime}
+      br
+      p.qInfoRight Attempts: #{q.totalAttemptsCount}
       a.secondary-content.question-block.noLineLink(href='/question?_id='+q._id, style='cursor: pointer;')
         i.material-icons whatshot
         p.text-center.title
