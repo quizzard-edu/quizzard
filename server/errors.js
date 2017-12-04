@@ -10,6 +10,7 @@ categories:
 6000 -> import/export
 7000 -> settings
 8000 -> feedback
+9000 -> virtual file system
 */
 
 const errors = Object.freeze({
@@ -113,6 +114,8 @@ const errors = Object.freeze({
     9001: 'failed to add to the virtual file system',
     9002: 'error trying to find item in virtual file system',
     9003: 'can not find item in virtual file system',
-    9004: 'can not add item in virtual file system'
+    9004: 'can not add item in virtual file system',
+    9005: 'file permissions are not set properly',
+    9006: 'user does not have permission to access resources'
 });
 exports.errors = errors;

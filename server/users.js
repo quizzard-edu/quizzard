@@ -57,6 +57,7 @@ exports.addAdmin = function (user, callback) {
         userToAdd.type = common.userTypes.ADMIN;
         userToAdd.password = hash;
         userToAdd.active = true;
+        userToAdd.picture = null;
         userToAdd.ratings = [];
 
         db.addAdmin(userToAdd, function (err, userObj) {
@@ -111,6 +112,7 @@ exports.addStudent = function (user, callback) {
         userToAdd.type = common.userTypes.STUDENT;
         userToAdd.password = hash;
         userToAdd.active = true;
+        userToAdd.picture = null;
         userToAdd.ratings = [];
 
         userToAdd.points = 0.0;

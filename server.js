@@ -1444,6 +1444,16 @@ app.get('/downloadExportFile', function (req, res) {
             return res.status(500).send(common.getError(6006));
         }
 
+        if (fileObj.permission !== common.vfsPermission.OWNER) {
+            logger.error(common.getError(9005).message);
+            return res.status(500).send(common.getError(9005));
+        }
+
+        if (fileObj.creator !== req.session.user._id) {
+            logger.error(common.getError(9006).message);
+            return res.status(403).send(common.getError(9006));
+        }
+
         return res.download(fileObj.path, file, function (err) {
             if (err) {
                 logger.error(err);
