@@ -1,7 +1,7 @@
 var usersTableActive = true;
 var autocompleteTopics;
 
-$(function(){
+$(function () {
     /* show the account table by default */
     displayQuestionTable();
 });
@@ -9,17 +9,17 @@ $(function(){
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
-var toggleUsersSwitch = function() {
+var toggleUsersSwitch = function () {
     usersTableActive = !usersTableActive;
     displayAccountsTable();
 }
 
 /* Display the table of user accounts. */
-var displayAccountsTable = function() {
+var displayAccountsTable = function () {
     $.ajax({
         type: 'GET',
         url: '/studentlist?active=' + usersTableActive,
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
 
             addAccountsTableEvents();
@@ -29,21 +29,21 @@ var displayAccountsTable = function() {
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
 
-            $('#account-creation-button').click(function() {
+            $('#account-creation-button').click(function () {
                 displayAccountForm();
             });
 
-            $('#account-export-button').click(function() {
+            $('#account-export-button').click(function () {
                 displayExportAccountsForm();
             });
 
-            $('#account-import-button').click(function() {
+            $('#account-import-button').click(function () {
                 displayImportAccountsForm();
             });
 
             $('#usersSwitch').prop('checked', usersTableActive);
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -56,18 +56,18 @@ var displayAccountsTable = function() {
 }
 
 /* display Export Accounts Form */
-var displayExportAccountsForm = function() {
+var displayExportAccountsForm = function () {
     $.ajax({
         type: 'GET',
         url: '/accountsExportForm',
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
 
-            $('#account-export-back-button').click(function() {
+            $('#account-export-back-button').click(function () {
                 displayAccountsTable();
             });
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -80,18 +80,18 @@ var displayExportAccountsForm = function() {
 }
 
 /* display Import Accounts Form */
-var displayImportAccountsForm = function() {
+var displayImportAccountsForm = function () {
     $.ajax({
         type: 'GET',
         url: '/accountsImportForm',
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
 
-            $('#account-import-back-button').click(function() {
+            $('#account-import-back-button').click(function () {
                 displayAccountsTable();
             });
         },
-        error: function(data) {
+        error: function (data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -102,26 +102,28 @@ var displayImportAccountsForm = function() {
 }
 
 /* submit export form */
-var submitExportForm = function() {
+var submitExportForm = function () {
     var selected = [];
-    $('div#exportForm input[type=checkbox]').each(function() {
+    $('div#exportForm input[type=checkbox]').each(function () {
         if ($(this).is(':checked')) {
             selected.push($(this).attr('id').substring(3));
         }
     });
 
+    $('#admin-content').html(loadingAnimation);
+
     $.ajax({
         type: 'POST',
         url: '/accountsExportFile',
         data: {studentsList: selected},
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
 
-            $('#account-export-complete-back-button').click(function() {
+            $('#account-export-complete-back-button').click(function () {
                 displayAccountsTable();
             });
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -134,7 +136,7 @@ var submitExportForm = function() {
 }
 
 /* Upload a file of users to the server. */
-var submitImportForm = function() {
+var submitImportForm = function () {
     var files = $('#import-form-input').get(0).files;
     var formData = new FormData();
 
@@ -151,15 +153,15 @@ var submitImportForm = function() {
         processData: false,
         contentType: false,
         data: formData,
-        success: function(data) {
+        success: function (data) {
             successSnackbar('File uploaded successfully');
             $('#admin-content').html(data);
 
-            $('#account-import-list-back-button').click(function() {
+            $('#account-import-list-back-button').click(function () {
                 displayAccountsTable();
             });
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -172,7 +174,7 @@ var submitImportForm = function() {
 }
 
 /* submit export form */
-var submitImportList = function() {
+var submitImportList = function () {
     var selected = [];
     $('#importList').find('tr').each(function (i, el) {
         if (i === 0) {
@@ -199,15 +201,15 @@ var submitImportList = function() {
         type: 'POST',
         url: '/accountsImportList',
         data: {selectedList: selected},
-        success: function(data) {
+        success: function (data) {
             successSnackbar('Students\' list uploaded successfully');
             $('#admin-content').html(data);
 
-            $('#account-import-complete-back-button').click(function() {
+            $('#account-import-complete-back-button').click(function () {
                 displayAccountsTable();
             });
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -222,42 +224,42 @@ var submitImportList = function() {
 
 
 /* Add click events to the buttons in the account table. */
-var addAccountsTableEvents = function() {
-    $('.deactivate-button').click(function(evt) {
+var addAccountsTableEvents = function () {
+    $('.deactivate-button').click(function (evt) {
         /* cut off the delete- */
         deactivateUser(this.id.substring(11), this.name);
     });
-    $('.activate-button').click(function(evt) {
+    $('.activate-button').click(function (evt) {
         /* cut off the delete- */
         activateUser(this.id.substring(9), this.name);
     });
-    $('.edit-button').click(function(evt) {
+    $('.edit-button').click(function (evt) {
         /* cut off the edit- */
         editUser(this.id.substring(5), this.name);
     });
-    $('.sort-table').click(function(evt) {
+    $('.sort-table').click(function (evt) {
         sortAccountsTable(this.id.substring(5));
     });
 }
 
 /* Fetch and display the account creation form. */
-var displayAccountForm = function() {
+var displayAccountForm = function () {
     $.ajax({
         type: 'GET',
         url: '/accountform',
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
 
-            $('#account-creation-back-button').click(function() {
+            $('#account-creation-back-button').click(function () {
                 displayAccountsTable();
             });
 
-            $('#userform').submit(function(evt) {
+            $('#userform').submit(function (evt) {
                 evt.preventDefault();
                 submitUserForm();
             });
         },
-        error: function(data) {
+        error: function (data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -268,11 +270,11 @@ var displayAccountForm = function() {
 }
 
 /* Fetch and display the table of questions. */
-var displayQuestionTable = function() {
+var displayQuestionTable = function () {
     $.ajax({
         type: 'GET',
         url: '/questionlist',
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
 
             addQuestionsTableEvents();
@@ -284,11 +286,11 @@ var displayQuestionTable = function() {
 
             $('.visbox').hide();
 
-            $('#question-creation-button').click(function(evt) {
+            $('#question-creation-button').click(function (evt) {
                 displayQuestionForm();
             });
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -300,36 +302,36 @@ var displayQuestionTable = function() {
     });
 }
 
-var addQuestionsTableEvents = function() {
-    $('.view-button').click(function(evt) {
+var addQuestionsTableEvents = function () {
+    $('.view-button').click(function (evt) {
         window.location.href = '/question?_id=' + this.id.substring(5);
     });
-    $('.delete-button').click(function(evt) {
+    $('.delete-button').click(function (evt) {
         deleteQuestion(this.id.substring(7), this.name);
     });
-    $('.edit-button').click(function(evt) {
+    $('.edit-button').click(function (evt) {
         editQuestion(this.id.substring(5), this.name);
     });
-    $('.checked').change(function(evt) {
+    $('.checked').change(function (evt) {
         updateVisibility(this.id.substring(8), this.name);
     });
 }
 
 
 /* Fetch and display the question creation form. */
-var displayQuestionForm = function() {
+var displayQuestionForm = function () {
     $.ajax({
         type: 'GET',
         url: '/questionform',
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
 
-            $('#question-creation-back-button').click(function(evt) {
+            $('#question-creation-back-button').click(function (evt) {
                 displayQuestionTable();
             });
 
             // choose the type of question creating
-            $('#qType').change(function(evt) {
+            $('#qType').change(function (evt) {
                 // get the answer part for the form requested
                 // id to replace is qAnswer
                 const form = $(this).val();
@@ -337,7 +339,7 @@ var displayQuestionForm = function() {
                 $('#questionform').show();
             });
 
-            $('#questionform').submit(function(evt) {
+            $('#questionform').submit(function (evt) {
                 evt.preventDefault();
                 submitQuestionForm();
             });
@@ -348,7 +350,7 @@ var displayQuestionForm = function() {
 
             initSummernote();
         },
-        error: function(data) {
+        error: function (data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
@@ -359,15 +361,15 @@ var displayQuestionForm = function() {
 }
 
 // replace the answer field in Question-creation.pug for specific question
-var getQuestionFormAnswer = function(form) {
+var getQuestionFormAnswer = function (form) {
     $.ajax({
         type: 'GET',
         url: '/answerForm',
         data: {qType:form},
-        success: function(data) {
+        success: function (data) {
             $('#qAnswer').html(data);
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -380,11 +382,11 @@ var getQuestionFormAnswer = function(form) {
 }
 
 /* Display the application statistics form. */
-var displayStatistics = function() {
+var displayStatistics = function () {
     $.ajax({
         type: 'GET',
         url: '/statistics',
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
 
             $('#option-stats').addClass('active');
@@ -392,7 +394,7 @@ var displayStatistics = function() {
             $('#option-questions').removeClass('active');
             $('#option-settings').removeClass('active');
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -404,11 +406,11 @@ var displayStatistics = function() {
     });
 }
 
-var displaySettings = function() {
+var displaySettings = function () {
     $.ajax({
         type: 'GET',
         url: '/settings',
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
 
             $('#option-settings').addClass('active');
@@ -416,7 +418,7 @@ var displaySettings = function() {
             $('#option-accounts').removeClass('active');
             $('#option-questions').removeClass('active');
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -429,19 +431,19 @@ var displaySettings = function() {
 }
 
 /* Set up events for the sidebar buttons. */
-$('#option-accounts').click(function(evt) {
+$('#option-accounts').click(function (evt) {
     displayAccountsTable();
 });
 
-$('#option-questions').click(function(evt) {
+$('#option-questions').click(function (evt) {
     displayQuestionTable();
 });
 
-$('#option-stats').click(function(evt) {
+$('#option-stats').click(function (evt) {
     displayStatistics();
 });
 
-$('#option-settings').click(function(evt) {
+$('#option-settings').click(function (evt) {
     displaySettings();
 });
 
@@ -449,7 +451,7 @@ $('#option-settings').click(function(evt) {
  * Process user deactiavtion request.
  * First, display a confirmation message and then request the user's deactivation.
  */
-var deactivateUser = function(id, username) {
+var deactivateUser = function (id, username) {
     swal({
         title: 'Confirm Deactivation',
         text: username + '\'s  account will be deactivated.',
@@ -458,16 +460,16 @@ var deactivateUser = function(id, username) {
         confirmButtonColor: '#DD6B55',
         confirmButtonText: 'Deactivate',
         closeOnConfirm: true
-    }, function() {
+    }, function () {
         $.ajax({
             type: 'POST',
             url: '/setUserStatus',
             data: { userid: id, active: false },
-            success: function(data) {
+            success: function (data) {
                 displayAccountsTable();
                 warningSnackbar(username + ' account has been&nbsp;<u><b>deactivated</b></u>&nbsp;');
             },
-            error: function(data) {
+            error: function (data) {
                 var jsonResponse = data.responseJSON;
 
                 if (data['status'] === 401) {
@@ -484,7 +486,7 @@ var deactivateUser = function(id, username) {
  * Process user actiavtion request.
  * First, display a confirmation message and then request the user's activation.
  */
-var activateUser = function(id, username) {
+var activateUser = function (id, username) {
     swal({
         title: 'Confirm Activation',
         text: username + '\'s  account will be activated.',
@@ -493,16 +495,16 @@ var activateUser = function(id, username) {
         confirmButtonColor: '#DD6B55',
         confirmButtonText: 'Activate',
         closeOnConfirm: true
-    }, function() {
+    }, function () {
         $.ajax({
             type: 'POST',
             url: '/setUserStatus',
             data: { userid: id, active: true },
-            success: function(data) {
+            success: function (data) {
                 displayAccountsTable();
                 successSnackbar(username + '\'s account has been activated');
             },
-            error: function(data) {
+            error: function (data) {
                 var jsonResponse = data.responseJSON;
 
                 if (data['status'] === 401) {
@@ -516,22 +518,22 @@ var activateUser = function(id, username) {
 }
 
 /* Fetch data for the user editing form. */
-var editUser = function(id) {
+var editUser = function (id) {
     $.ajax({
         type: 'GET',
         url: '/accounteditform',
         data: { userid: id },
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
-            $('#account-edit-back-button').click(function(evt) {
+            $('#account-edit-back-button').click(function (evt) {
                 displayAccountsTable();
             });
-            $('#account-edit-form').submit(function(evt) {
+            $('#account-edit-form').submit(function (evt) {
                 evt.preventDefault();
                 submitEditForm(id);
             });
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -544,11 +546,11 @@ var editUser = function(id) {
 }
 
 /* Read data from user creation form and send request to create user. */
-var submitUserForm = function() {
+var submitUserForm = function () {
     var fields = $('#userform').serializeArray();
     var user = {};
 
-    jQuery.each(fields, function(i, field) {
+    jQuery.each(fields, function (i, field) {
         user[field.name] = field.value;
     });
 
@@ -556,11 +558,11 @@ var submitUserForm = function() {
         type: 'PUT',
         url: '/useradd',
         data: user,
-        success: function(data) {
+        success: function (data) {
             displayAccountsTable();
             successSnackbar('User ' + user.username + ' added to database');
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -573,13 +575,13 @@ var submitUserForm = function() {
 }
 
 /* Process submitted user edit form. */
-var submitEditForm = function(id) {
+var submitEditForm = function (id) {
     var fields = $('#account-edit-form').serializeArray();
     var user = {
         _id: id
     };
 
-    jQuery.each(fields, function(i, field) {
+    jQuery.each(fields, function (i, field) {
         if (field.value) {
             user[field.name] = field.value;
         }
@@ -589,16 +591,16 @@ var submitEditForm = function(id) {
         type: 'POST',
         url: '/usermod',
         data: user,
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data.html);
-            $('#account-edit-form').submit(function(evt) {
+            $('#account-edit-form').submit(function (evt) {
                 evt.preventDefault();
                 submitEditForm(user._id);
             });
             displayAccountsTable();
             successSnackbar('User ' + user.username + ' has been updated');
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -611,7 +613,7 @@ var submitEditForm = function(id) {
 }
 
 /* Updates the Vilibility of a Question */
-var updateVisibility = function(qid, questionNumber) {
+var updateVisibility = function (qid, questionNumber) {
     var question = {};
     swal({
         type: 'warning',
@@ -634,7 +636,7 @@ var updateVisibility = function(qid, questionNumber) {
                         question: question,
                         id: qid
                     },
-                    success: function(data) {
+                    success: function (data) {
                         // Toast notifiation
                         const msg = question['visible'] ? ' is now visible to the students' : ' is now&nbsp<u><b>not</b></u>&nbspvisible to the students';
 
@@ -644,7 +646,7 @@ var updateVisibility = function(qid, questionNumber) {
                             warningSnackbar('Question ' + questionNumber + msg);
                         }
                     },
-                    error: function(data) {
+                    error: function (data) {
                         var jsonResponse = data.responseJSON;
 
                         if (data['status'] === 401) {
@@ -665,7 +667,7 @@ var updateVisibility = function(qid, questionNumber) {
 }
 
 /*Collects form fields for Question-Creation and Question-Edit*/
-var collectQuestionFormData = function(form){
+var collectQuestionFormData = function (form) {
     var fields = $(form).serializeArray();
     var question = {};
     question['choices'] = [];
@@ -673,7 +675,7 @@ var collectQuestionFormData = function(form){
     question['rightSide'] = [];
     question['answer'] = [];
 
-    jQuery.each(fields, function(i, field) {
+    jQuery.each(fields, function (i, field) {
         if(field.name.startsWith('radbutton')) {
             question['answer'] = fields[i+1].value;
         }
@@ -694,7 +696,7 @@ var collectQuestionFormData = function(form){
             question['answer'] = field.value;
         }
 
-        if(field.name.startsWith('checkButton') ){
+        if(field.name.startsWith('checkButton') ) {
            question['answer'].push(fields[i+1].value);
         }
 
@@ -710,7 +712,7 @@ var collectQuestionFormData = function(form){
 }
 
 /* Process submitted question edit form. */
-var submitQuestionForm = function() {
+var submitQuestionForm = function () {
     if ($('#qtext').summernote('isEmpty')) {
         failSnackbar('Please enter a question body in the editor.');
         return;
@@ -728,11 +730,11 @@ var submitQuestionForm = function() {
         type: 'PUT',
         url: '/questionadd',
         data: question,
-        success: function(data) {
+        success: function (data) {
             successSnackbar('Question added to database');
             displayQuestionTable();
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -746,7 +748,7 @@ var submitQuestionForm = function() {
     });
 }
 
-var deleteQuestion = function(qid, questionNumber) {
+var deleteQuestion = function (qid, questionNumber) {
     swal({
         title: 'Confirm deletion',
         text: 'Question ' + questionNumber + ' will be removed from the database.',
@@ -755,16 +757,16 @@ var deleteQuestion = function(qid, questionNumber) {
         confirmButtonColor: '#DD6B55',
         confirmButtonText: 'Delete',
         closeOnConfirm: true
-    }, function() {
+    }, function () {
         $.ajax({
             type: 'POST',
             url: '/questiondel',
             data: { qid: qid },
-            success: function(data) {
+            success: function (data) {
                 successSnackbar('Question ' + questionNumber + ' was removed from the database');
                 displayQuestionTable();
             },
-            error: function(data) {
+            error: function (data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
                 } else {
@@ -775,19 +777,19 @@ var deleteQuestion = function(qid, questionNumber) {
     });
 }
 
-var editQuestion = function(qid, questionNumber) {
+var editQuestion = function (qid, questionNumber) {
     $.ajax({
         type: 'GET',
         url: '/questionedit',
         data: { questionid: qid },
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data.html);
-            $('#question-edit-back-button').click(function(evt) {
+            $('#question-edit-back-button').click(function (evt) {
                 displayQuestionTable();
             });
             initSummernote();
             $('#qtext').summernote('code', data.qtext);
-            $('#question-edit-form').submit(function(evt) {
+            $('#question-edit-form').submit(function (evt) {
                 evt.preventDefault();
                 submitQEditForm(qid, questionNumber);
             });
@@ -796,7 +798,7 @@ var editQuestion = function(qid, questionNumber) {
             // gets the updated topics list
             getQuestionsTopicsList();
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -808,7 +810,7 @@ var editQuestion = function(qid, questionNumber) {
     });
 }
 
-var submitQEditForm = function(qid, questionNumber) {
+var submitQEditForm = function (qid, questionNumber) {
     if ($('#qtext').summernote('isEmpty')) {
         failSnackbar('Please enter a question body in the editor.');
         return;
@@ -827,11 +829,11 @@ var submitQEditForm = function(qid, questionNumber) {
             question: question,
             id: qid
         },
-        success: function(data) {
+        success: function (data) {
             successSnackbar('Question ' + questionNumber + ' has been modified.');
             displayQuestionTable();
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -855,8 +857,8 @@ var submitQuestionRating = function (rating, qid) {
             qId: qid
         },
         async: false,
-        success: function(data) { },
-        error: function(data) {
+        success: function (data) { },
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -879,7 +881,7 @@ var accountSortTypes = {
     id: false
 }
 
-var sortAccountsTable = function(type) {
+var sortAccountsTable = function (type) {
     /* Toggle type's sort order; reset all others. */
     for (var ind in accountSortTypes) {
         if (ind == type)
@@ -895,11 +897,11 @@ var sortAccountsTable = function(type) {
             type: type,
             asc: accountSortTypes[type]
         },
-        success: function(data) {
+        success: function (data) {
             $('#admin-content').html(data);
             addAccountsTableEvents();
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -912,7 +914,7 @@ var sortAccountsTable = function(type) {
 }
 
 // Toggles the view of the Visibility Checkboxes in the Question-Table View
-var toggleButtonVisibility = function() {
+var toggleButtonVisibility = function () {
     if ($('#sw').is(':checked')) {
         $('.visbox').show();
     } else {
@@ -926,7 +928,7 @@ var getQuestionsTopicsList = function () {
         async: false,
         type: 'GET',
         url: '/questionsListofTopics',
-        success: function(data) {
+        success: function (data) {
             autocompleteTopics = {};
 
             for (var t in data) {
@@ -940,7 +942,7 @@ var getQuestionsTopicsList = function () {
                 minLength: 0
             });
         },
-        error: function(data) {
+        error: function (data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             }
@@ -1004,7 +1006,7 @@ var initSummernote = function () {
     $('.modal').modal({
         dismissible: false
     });
-    $('.modal').each(function( i ) {
+    $('.modal').each(function ( i ) {
         $(this).attr('id', 'mediaModal' + i);
         $('#mediaModal' + i +'> div > div').removeClass('modal-content');
     });

@@ -58,7 +58,7 @@ const leaderboardTablePug = pug.compileFile('views/leaderboard-table.pug');
 const leaderboardRowPug = pug.compileFile('views/leaderboard-row.pug');
 
 /* print urls of all incoming requests to stdout */
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     logger.log(common.formatString('Request path: {0}', [req.url]));
     next();
 });
@@ -83,7 +83,7 @@ var https = require('https');
 
 var secureServer = https.createServer(config.ssl_options, app);
 
-var httpServer = http.createServer(function(req, res) {
+var httpServer = http.createServer(function (req, res) {
     // Redirects to https location
     res.writeHead(301, {'Location': common.formatString('https://{0}:{1}',[config.hostName, config.httpsPort])});
     res.end();
@@ -92,14 +92,14 @@ var httpServer = http.createServer(function(req, res) {
 app.use(forceSSL);
 
 //HTTPS server
-secureServer.listen(config.httpsPort,function(){
+secureServer.listen(config.httpsPort,function () {
     logger.log('//------------------------');
     logger.log(common.formatString('Secure Server listening on https://{0}:{1}.', [config.hostName, config.httpsPort]));
-    db.initialize(function(err, result) {
+    db.initialize(function (err, result) {
         if (err) {
             process.exit(1);
         }
-        settings.initialize(function(err, result) {
+        settings.initialize(function (err, result) {
             if (err) {
                 process.exit(1);
             }
@@ -108,12 +108,12 @@ secureServer.listen(config.httpsPort,function(){
 });
 
 //HTTP server
-httpServer.listen(config.httpPort, function(){
+httpServer.listen(config.httpPort, function () {
     logger.log(common.formatString('HTTP Server listening on http://{0}:{1}.', [config.hostName, config.httpPort]));
 })
 
 /* main page */
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     /* if the user has already logged in, redirect to home */
     if (req.session.user) {
         return res.redirect('home');
@@ -123,7 +123,7 @@ app.get('/', function(req, res) {
 });
 
 /* check username and password and send appropriate response */
-app.post('/login', function(req, res) {
+app.post('/login', function (req, res) {
     if ('user' in req.session) {
         req.session.destroy();
         return res.status(400).send(common.getError(1000));
@@ -138,7 +138,7 @@ app.post('/login', function(req, res) {
 
     logger.log(common.formatString('Attempted login by user {0}', [username]));
 
-    users.checkLogin(username, password, function(err, user) {
+    users.checkLogin(username, password, function (err, user) {
         if (err) {
             logger.error(err);
             return res.status(403).send(common.getError(2000));
@@ -163,7 +163,7 @@ app.post('/login', function(req, res) {
 });
 
 /* End a user's session. */
-app.get('/logout', function(req, res) {
+app.get('/logout', function (req, res) {
     if (req.session.user) {
         logger.log(common.formatString('User {0} logged out.', [req.session.user._id]));
         req.session.destroy();
@@ -173,7 +173,7 @@ app.get('/logout', function(req, res) {
 });
 
 /* Display the home page. */
-app.get('/home', function(req, res) {
+app.get('/home', function (req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (!req.session.user) {
         return res.redirect('/');
@@ -184,13 +184,13 @@ app.get('/home', function(req, res) {
     }
 
     var request = { user : req.session.user, questionsStatus : 'unanswered' };
-    users.getQuestionsListByUser(request, function(err, results) {
+    users.getQuestionsListByUser(request, function (err, results) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(3000));
         }
 
-        users.getStudentById(req.session.user._id, function(err, userFound) {
+        users.getStudentById(req.session.user._id, function (err, userFound) {
             if (err) {
                 logger.error(err);
                 return res.status(500).send(common.getError(2001));
@@ -199,7 +199,7 @@ app.get('/home', function(req, res) {
             return res.status(200).render('home', {
                 user: userFound,
                 questions: results,
-                getQuestionIcon: function(type) {
+                getQuestionIcon: function (type) {
                     for (var i in common.questionTypes) {
                         if (type === common.questionTypes[i].value) {
                             return common.questionTypes[i].icon;
@@ -213,7 +213,7 @@ app.get('/home', function(req, res) {
 });
 
 /* Display the leaderboard page. */
-app.get('/leaderboard', function(req, res) {
+app.get('/leaderboard', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -222,7 +222,7 @@ app.get('/leaderboard', function(req, res) {
 });
 
 /* Display the admin page. */
-app.get('/admin', function(req,res) {
+app.get('/admin', function (req,res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -235,7 +235,7 @@ app.get('/admin', function(req,res) {
 });
 
 /* Display the about page. */
-app.get('/about', function(req,res) {
+app.get('/about', function (req,res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -244,15 +244,15 @@ app.get('/about', function(req,res) {
 });
 
 /* Fetch and render the leaderboard table.*/
-app.get('/leaderboard-table', function(req, res) {
+app.get('/leaderboard-table', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
     var smallBoard = false;
-    if (req.query.smallBoard === 'true'){
+    if (req.query.smallBoard === 'true') {
         smallBoard = true;
     }
-    users.getLeaderboard(req.session.user._id, smallBoard, function(err, leaderboardList) {
+    users.getLeaderboard(req.session.user._id, smallBoard, function (err, leaderboardList) {
 
         if (err) {
             return res.status(500).send(common.getError(2020));
@@ -270,7 +270,7 @@ app.get('/leaderboard-table', function(req, res) {
 });
 
 /* Send the student table HTML. */
-app.get('/studentlist', function(req, res) {
+app.get('/studentlist', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -280,7 +280,7 @@ app.get('/studentlist', function(req, res) {
     }
 
     /* only fetch student list once, then store it */
-    users.getStudentsListWithStatus(req.query.active === 'true', function(err, studentlist) {
+    users.getStudentsListWithStatus(req.query.active === 'true', function (err, studentlist) {
         if (err) {
             return res.status(500).send(common.getError(2003));
         }
@@ -294,7 +294,7 @@ app.get('/studentlist', function(req, res) {
 });
 
 /* Sort the list of student accounts by the specified criterion. */
-app.post('/sortaccountlist', function(req, res) {
+app.post('/sortaccountlist', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -322,7 +322,7 @@ app.post('/sortaccountlist', function(req, res) {
 });
 
 /* Send the account creation form HTML. */
-app.get('/accountform', function(req, res) {
+app.get('/accountform', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -333,7 +333,7 @@ app.get('/accountform', function(req, res) {
 });
 
 /* Send the question creation form HTML. */
-app.get('/questionform', function(req, res) {
+app.get('/questionform', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -350,7 +350,7 @@ app.get('/questionform', function(req, res) {
 });
 
 /* get question answer form */
-app.get('/answerForm', function(req, res) {
+app.get('/answerForm', function (req, res) {
     switch (req.query.qType) {
         case common.questionTypes.REGULAR.value:
             res.status(200).render(
@@ -382,7 +382,7 @@ app.get('/answerForm', function(req, res) {
 })
 
 /* Return a formatted date for the given timestamp. */
-var creationDate = function(timestamp) {
+var creationDate = function (timestamp) {
     const months = ['Jan', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var date = new Date(timestamp);
 
@@ -390,7 +390,7 @@ var creationDate = function(timestamp) {
 }
 
 /* Send the account editing form HTML. */
-app.get('/accounteditform', function(req, res) {
+app.get('/accounteditform', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -399,7 +399,7 @@ app.get('/accounteditform', function(req, res) {
         return res.status(403).send(common.getError(1002));
     }
 
-    users.getStudentById(req.query.userid, function(err, student) {
+    users.getStudentById(req.query.userid, function (err, student) {
         if (err || !student) {
             return res.status(500).send(common.getError(2001));
         }
@@ -414,13 +414,13 @@ app.get('/accounteditform', function(req, res) {
 });
 
 /* Send the question table HTML. */
-app.get('/questionlist', function(req, res) {
+app.get('/questionlist', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
     var userId = req.session.user._id;
-    users.getUserById(userId, function(err, user) {
+    users.getUserById(userId, function (err, user) {
         if (err || !user) {
             return res.status(400).send(common.getError(2006));
         }
@@ -428,7 +428,7 @@ app.get('/questionlist', function(req, res) {
         var request = {};
         request.questionsStatus = req.query.type;
         request.user = user;
-        users.getQuestionsListByUser(request, function(err, questionsList) {
+        users.getQuestionsListByUser(request, function (err, questionsList) {
             if (err) {
                 return res.status(500).send(common.getError(3000));
             }
@@ -437,7 +437,7 @@ app.get('/questionlist', function(req, res) {
             if (req.session.user.type === common.userTypes.ADMIN) {
                 html = questionTablePug({
                     questions : questionsList,
-                    questionType: function(type) {
+                    questionType: function (type) {
                         for (var i in common.questionTypes) {
                             if (type === common.questionTypes[i].value) {
                                 return common.questionTypes[i].name;
@@ -451,7 +451,7 @@ app.get('/questionlist', function(req, res) {
             if (req.session.user.type === common.userTypes.STUDENT) {
                 html = questionListPug({
                     questions : questionsList,
-                    getQuestionIcon: function(type) {
+                    getQuestionIcon: function (type) {
                         for (var i in common.questionTypes) {
                             if (type === common.questionTypes[i].value) {
                                 return common.questionTypes[i].icon;
@@ -468,13 +468,13 @@ app.get('/questionlist', function(req, res) {
 });
 
 /* Send the question editing form HTML. */
-app.get('/questionedit', function(req, res) {
+app.get('/questionedit', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
     var qId = req.query.questionid;
-    questions.lookupQuestionById(qId, function(err, question) {
+    questions.lookupQuestionById(qId, function (err, question) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(3002));
@@ -486,7 +486,7 @@ app.get('/questionedit', function(req, res) {
 
         var html = questionEditPug({
             question: question,
-            getQuestionForm: function() {
+            getQuestionForm: function () {
                 switch (question.type) {
                     case common.questionTypes.REGULAR.value:
                         return regexFormPug({adminQuestionEdit:true, question:question})
@@ -523,7 +523,7 @@ app.get('/questionedit', function(req, res) {
 });
 
 /* Send the application statistics HTML. */
-app.get('/statistics', function(req, res) {
+app.get('/statistics', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -532,13 +532,13 @@ app.get('/statistics', function(req, res) {
         return res.status(403).send(common.getError(1002));
     }
 
-    questions.getAllQuestionsList(function(err, questionslist) {
+    questions.getAllQuestionsList(function (err, questionslist) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(3004));
         }
 
-        users.getStudentsList(function(err, studentslist) {
+        users.getStudentsList(function (err, studentslist) {
             if (err) {
                 logger.error(err);
                 return res.status(500).send(common.getError(2003));
@@ -554,7 +554,7 @@ app.get('/statistics', function(req, res) {
     });
 });
 
-app.get('/sortlist', function(req, res) {
+app.get('/sortlist', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -563,7 +563,7 @@ app.get('/sortlist', function(req, res) {
 });
 
 /* Sort question list by specified criterion and send new HTML. */
-app.post('/sortlist', function(req, res) {
+app.post('/sortlist', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -577,7 +577,7 @@ app.post('/sortlist', function(req, res) {
     }
 
     questions.sortQuestions(req.session.questions, common.sortTypes[type],
-        function(err, results) {
+        function (err, results) {
           var html = questionListPug({
               questions: results
           });
@@ -588,13 +588,13 @@ app.post('/sortlist', function(req, res) {
 });
 
 /* Display the question page. */
-app.get('/question', function(req, res) {
+app.get('/question', function (req, res) {
     /* if the user has not yet logged in, redirect to login page */
     if (!req.session.user) {
         return res.redirect('/');
     }
     const userId = req.session.user._id;
-    questions.lookupQuestionById(req.query._id, function(err, questionFound) {
+    questions.lookupQuestionById(req.query._id, function (err, questionFound) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(3002));
@@ -615,7 +615,7 @@ app.get('/question', function(req, res) {
                 hasQrating = true;
             }
         }
-        questions.isUserLocked(userId, questionFound, function(err, isLocked, waitTimeMessage, waitTimeinMiliSeconds){
+        questions.isUserLocked(userId, questionFound, function (err, isLocked, waitTimeMessage, waitTimeinMiliSeconds) {
             if(err) {
                 logger.error(err);
                 return res.status(500).send(common.getError(3006));
@@ -625,12 +625,12 @@ app.get('/question', function(req, res) {
                 user: req.session.user,
                 question: questionFound,
                 answered: (answeredList.indexOf(userId) !== -1),
-                isAdmin : function() {
+                isAdmin : function () {
                     return req.session.user.type === common.userTypes.ADMIN;
                 },
                 hasQrating: hasQrating,
-                getQuestionForm: function(){
-                    switch (questionFound.type){
+                getQuestionForm: function () {
+                    switch (questionFound.type) {
                         case common.questionTypes.REGULAR.value:
                             return regexFormPug({studentQuestionForm:true})
                         case common.questionTypes.MULTIPLECHOICE.value:
@@ -660,7 +660,7 @@ app.get('/question', function(req, res) {
 });
 
 /* check if the submitted answer is correct */
-app.post('/submitanswer', function(req, res) {
+app.post('/submitanswer', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -669,7 +669,7 @@ app.post('/submitanswer', function(req, res) {
     var answer = req.body.answer;
     var userId = req.session.user._id;
 
-    questions.lookupQuestionById(questionId,function(err, question) {
+    questions.lookupQuestionById(questionId,function (err, question) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(3002));
@@ -681,13 +681,13 @@ app.post('/submitanswer', function(req, res) {
         }
 
         // check if question is locked for the student
-        questions.isUserLocked(userId, question, function(err, isLocked, waitTimeMessage, waitTimeinMiliSeconds){
-            if(err){
+        questions.isUserLocked(userId, question, function (err, isLocked, waitTimeMessage, waitTimeinMiliSeconds) {
+            if(err) {
                 logger.error(err);
                 return res.status(500).send(common.getError(3006));
             }
 
-            if (isLocked){
+            if (isLocked) {
                 return res.status(423).send(waitTimeMessage);
             }
 
@@ -698,7 +698,7 @@ app.post('/submitanswer', function(req, res) {
             var text = 'incorrect';
             var status = 405;
 
-            if (isCorrect){
+            if (isCorrect) {
                 text = 'correct';
                 status = 200;
                 points = Math.floor(Math.max(question.minpoints, question.maxpoints/Math.cbrt(question.correctAttemptsCount + 1)));
@@ -710,20 +710,20 @@ app.post('/submitanswer', function(req, res) {
                 return res.status(status).send(response);
             }
 
-            users.submitAnswer(userId, questionId, isCorrect, points, answer, function(err, result){
-                if(err){
+            users.submitAnswer(userId, questionId, isCorrect, points, answer, function (err, result) {
+                if(err) {
                     logger.error(err);
                     return res.status(500).send(common.getError(3006));
                 }
 
-                questions.submitAnswer(questionId, userId, isCorrect, points, answer, function(err, result) {
-                    if(err){
+                questions.submitAnswer(questionId, userId, isCorrect, points, answer, function (err, result) {
+                    if(err) {
                         logger.error(err);
                         return res.status(500).send(err);
                     }
 
-                    questions.updateUserSubmissionTime(userId, question, function(err, result){
-                        if(err){
+                    questions.updateUserSubmissionTime(userId, question, function (err, result) {
+                        if(err) {
                             logger.error(err);
                             return res.status(500).send(err);
                         }
@@ -744,12 +744,12 @@ app.post('/submitanswer', function(req, res) {
  * Otherwise, the user is inserted into the database and added
  * to the active admin student list.
  */
-app.put('/useradd', function(req, res) {
+app.put('/useradd', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    users.addStudent(req.body, function(err, result) {
+    users.addStudent(req.body, function (err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(2007));
@@ -764,7 +764,7 @@ app.put('/useradd', function(req, res) {
  * The request body is an object with a single 'userid' field,
  * containing the ID of the user to be deleted.
  */
-app.post('/setUserStatus', function(req, res) {
+app.post('/setUserStatus', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -773,7 +773,7 @@ app.post('/setUserStatus', function(req, res) {
         return res.status(403).send(common.getError(1002));
     }
 
-    users.setUserStatus(req.body.userid, req.body.active === 'true' , function(err, result) {
+    users.setUserStatus(req.body.userid, req.body.active === 'true' , function (err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(2008));
@@ -786,7 +786,7 @@ app.post('/setUserStatus', function(req, res) {
 /*
  * update the profile of a user given the information
  */
-app.post('/profilemod', function(req, res) {
+app.post('/profilemod', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -807,7 +807,7 @@ app.post('/profilemod', function(req, res) {
             return res.status(400).send(common.getError(2009));
         }
 
-        users.checkLogin(userObj.username, req.body.currentpasswd, function(err, user) {
+        users.checkLogin(userObj.username, req.body.currentpasswd, function (err, user) {
             if (err) {
                 logger.error(err);
                 return res.status(500).send(common.getError(2010));
@@ -836,7 +836,7 @@ app.post('/profilemod', function(req, res) {
  * Modify a user object in the database.
  * The request body contains a user object with the fields to be modified.
  */
-app.post('/usermod', function(req, res) {
+app.post('/usermod', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -846,13 +846,13 @@ app.post('/usermod', function(req, res) {
     }
 
     var userId = req.body._id;
-    users.updateStudentById(userId, req.body, function(err, result) {
+    users.updateStudentById(userId, req.body, function (err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(2012));
         }
 
-        users.getStudentById(userId, function(err, userFound) {
+        users.getStudentById(userId, function (err, userFound) {
             if (err || !userFound) {
                 logger.error(err);
                 return res.status(500).send(common.getError(2001));
@@ -875,12 +875,12 @@ app.post('/usermod', function(req, res) {
  * Add a question to the database.
  * The request body contains the question to be added.
  */
-app.put('/questionadd', function(req, res) {
+app.put('/questionadd', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
-    questions.addQuestion(req.body, function(err, qId) {
+    questions.addQuestion(req.body, function (err, qId) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(3007));
@@ -900,7 +900,7 @@ app.put('/questionadd', function(req, res) {
  * Request body contains question's ID and a question object with
  * the fields to be changed.
  */
-app.post('/questionmod', function(req, res) {
+app.post('/questionmod', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -908,7 +908,7 @@ app.post('/questionmod', function(req, res) {
     var qid = req.body.id;
     var q = req.body.question;
 
-    questions.updateQuestionById(qid, q, function(err, result) {
+    questions.updateQuestionById(qid, q, function (err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(3020));
@@ -921,7 +921,7 @@ app.post('/questionmod', function(req, res) {
  * Remove a question from the database.
  * The request body contains the ID of the question to delete.
  */
-app.post('/questiondel', function(req, res) {
+app.post('/questiondel', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -930,7 +930,7 @@ app.post('/questiondel', function(req, res) {
 });
 
 // submit question rating from both students and admins
-app.post('/submitQuestionRating', function(req, res) {
+app.post('/submitQuestionRating', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -947,13 +947,13 @@ var submitQuestionRating = function (req, res) {
         return res.status(400).send(common.getError(3008));
     }
 
-    questions.submitRating(questionId, userId, rating, function(err, result) {
+    questions.submitRating(questionId, userId, rating, function (err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(3009));
         }
 
-        users.submitRating(userId, questionId, rating, function(err, result) {
+        users.submitRating(userId, questionId, rating, function (err, result) {
             if (err) {
                 logger.error(err);
                 return res.status(500).send(common.getError(3009));
@@ -965,7 +965,7 @@ var submitQuestionRating = function (req, res) {
 }
 
 // get discussion board
-app.get('/getDiscussionBoard', function(req, res) {
+app.get('/getDiscussionBoard', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1206,7 +1206,7 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
 });
 
 // questions list of topics
-app.get('/questionsListofTopics', function(req, res) {
+app.get('/questionsListofTopics', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1215,7 +1215,7 @@ app.get('/questionsListofTopics', function(req, res) {
         return res.status(403).send(common.getError(1002));
     }
 
-    questions.getAllQuestionsList(function(err, docs) {
+    questions.getAllQuestionsList(function (err, docs) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(3017));
@@ -1233,7 +1233,7 @@ app.get('/questionsListofTopics', function(req, res) {
 });
 
 /* get the list of students' ids*/
-app.get('/studentsListofIdsNames', function(req, res) {
+app.get('/studentsListofIdsNames', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1242,7 +1242,7 @@ app.get('/studentsListofIdsNames', function(req, res) {
         return res.status(403).send(common.getError(1002));
     }
 
-    users.getStudentsList(function(err, studentList) {
+    users.getStudentsList(function (err, studentList) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(2003));
@@ -1257,7 +1257,7 @@ app.get('/studentsListofIdsNames', function(req, res) {
 });
 
 /* Display accounts export form */
-app.get('/accountsExportForm', function(req, res) {
+app.get('/accountsExportForm', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1266,7 +1266,7 @@ app.get('/accountsExportForm', function(req, res) {
         return res.status(403).send(common.getError(1002));
     }
 
-    users.getStudentsList(function(err, studentsList) {
+    users.getStudentsList(function (err, studentsList) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(2003));
@@ -1280,7 +1280,7 @@ app.get('/accountsExportForm', function(req, res) {
 });
 
 /* Display accounts import form */
-app.get('/accountsImportForm', function(req, res) {
+app.get('/accountsImportForm', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1295,7 +1295,7 @@ app.get('/accountsImportForm', function(req, res) {
 });
 
 /* Display accounts export form */
-app.post('/accountsExportFile', function(req, res) {
+app.post('/accountsExportFile', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1317,7 +1317,7 @@ app.post('/accountsExportFile', function(req, res) {
         var errors = 0;
 
         for (var i in requestedList) {
-            users.getStudentById(requestedList[i], function(err, studentFound) {
+            users.getStudentById(requestedList[i], function (err, studentFound) {
                 if (err || !studentFound) {
                     logger.error(common.getError(2001));
                     errors++;
@@ -1338,7 +1338,7 @@ app.post('/accountsExportFile', function(req, res) {
                     var file = fileName + '.csv';
                     var userDirectory = vfs.joinPath(common.vfsTree.USERS, req.session.user._id);
 
-                    vfs.writeFile(userDirectory, fileName, 'csv', csvData, common.vfsPermission.OWNER, function(err, result) {
+                    vfs.writeFile(userDirectory, fileName, 'csv', csvData, common.vfsPermission.OWNER, function (err, result) {
                         if (err) {
                             logger.error(err);
                             return res.status(500).send(common.getError(6001));
@@ -1375,7 +1375,7 @@ app.post('/accountsImportFile', function (req, res) {
 
     var newFileName = 'importJob-students-' + uploadedFile.name;
     var newFile = common.joinPath(common.vfsTree.USERS, req.session.user._id, newFileName);
-    uploadedFile.mv(newFile, function(err) {
+    uploadedFile.mv(newFile, function (err) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(6003));
@@ -1384,14 +1384,14 @@ app.post('/accountsImportFile', function (req, res) {
         logger.log(common.formatString('Uploaded: {0}', [newFile]));
 
         var importedList = [];
-        csv2json().fromFile(newFile).on('json', function(jsonObj) {
+        csv2json().fromFile(newFile).on('json', function (jsonObj) {
             var userObj = {};
             userObj['username'] = jsonObj['Username'];
             userObj['fname'] = jsonObj['First Name'];
             userObj['lname'] = jsonObj['Last Name'];
             userObj['email'] = jsonObj['Email'];
             importedList.push(userObj);
-        }).on('done', function(err) {
+        }).on('done', function (err) {
             if (err) {
                 logger.error(err);
                 return res.status(500).send(common.getError(6004));
@@ -1464,7 +1464,7 @@ app.post('/accountsImportList', function (req, res) {
 });
 
 /* download */
-app.get('/download', function(req, res) {
+app.get('/download', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1490,27 +1490,27 @@ app.get('/download', function(req, res) {
 });
 
 /* Display some charts and graphs */
-app.get('/analytics', function(req, res) {
+app.get('/analytics', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
     return res.status(200).render('analytics', {
         user: req.session.user,
-        isAdmin : function() {
+        isAdmin : function () {
             return req.session.user.type === common.userTypes.ADMIN;
         }
     });
 });
 
 /* Get the profile page */
-app.get('/profile', function(req, res) {
+app.get('/profile', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
     const allSettings = settings.getAllSettings();
 
-    users.getUserById(req.session.user._id, function(err, user) {
+    users.getUserById(req.session.user._id, function (err, user) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(7005));
@@ -1536,7 +1536,7 @@ app.get('/profile', function(req, res) {
 });
 
 /* Get the settings page */
-app.get('/settings', function(req, res) {
+app.get('/settings', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1583,7 +1583,7 @@ app.post('/resetSettings', function (req, res) {
 });
 
 /* Update the settings collection */
-app.post('/updateSettings', function(req, res) {
+app.post('/updateSettings', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1603,7 +1603,7 @@ app.post('/updateSettings', function(req, res) {
 });
 
 /* get analytics for a student*/
-app.get('/studentAnalytics', function(req,res) {
+app.get('/studentAnalytics', function (req,res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1617,13 +1617,13 @@ app.get('/studentAnalytics', function(req,res) {
         query.userId = req.query.studentId;
     }
 
-    analytics.getChart(query, function(err, result) {
+    analytics.getChart(query, function (err, result) {
         return res.status(200).send(result);
     });
 });
 
 /* get analytics for a admins*/
-app.get('/adminAnalytics', function(req,res) {
+app.get('/adminAnalytics', function (req,res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1634,12 +1634,12 @@ app.get('/adminAnalytics', function(req,res) {
 
     var query = {user: req.session.user, type: req.query.type};
 
-    analytics.getChart(query, function(err, result) {
+    analytics.getChart(query, function (err, result) {
         return res.status(200).send(result);
     });
 });
 
 // 404 route
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     return res.status(404).render('page-not-found');
 });
