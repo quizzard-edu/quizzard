@@ -75,7 +75,7 @@ function failSnackbar(msg) {
 /* This function slides down a visibility snakbar */
 function visibilitySnackbar() {
     // runs the toast function for 5s with given msg and colour
-    Materialize.toast(snack.visibility + 'You are currently in display mode, please enable edit mode or click the icon on the left.' + snack.close, 5000, 'rounded ' + colours.orange);
+    Materialize.toast(`${snack.visibility}  You are currently in display mode, please enable edit mode or click the icon on the left.  ${snack.close}`, 5000, `rounded ${colours.orange}`);
 }
 
 /* Listener for the `x` on the snackbar/toasts */

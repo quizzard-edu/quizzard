@@ -915,7 +915,7 @@ var sortAccountsTable = function(type) {
 
 /**
  * Toggles the view of the Visibility Checkboxes in the Question-Table View
- * @param {*} toggle only usesd so the visibily snackbar can turn on display mode
+ * @param {boolean} toggle only usesd so the visibily snackbar can turn on display mode
  */
 var toggleButtonVisibility = function(toggle) {
     if ($('#sw').is(':checked') || toggle) {
@@ -1020,7 +1020,7 @@ var initSummernote = function () {
 
 /**
  * Updates the visibility of all questions, based on the changeValue 
- * @param {*} changeValue true if user is showing all questions, false if user is hiding all questions
+ * @param {boolean} changeValue true if user is showing all questions, false if user is hiding all questions
  */
 var updateAllVisibility = function (changeValue) {
     swal({
