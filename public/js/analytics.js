@@ -1063,10 +1063,7 @@ var createClassLineChart = function (data) {
       scales: {
         yAxes: [{
           ticks: {
-            min: 0,
-            max: data.classData.reduce(function (a, b) {
-              return Math.max(a, b);
-            }) + 10
+            min: 0
           }
         }],
         xAxes: [{
