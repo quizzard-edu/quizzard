@@ -642,8 +642,8 @@ exports.updateSettings = function (findQuery, updateQuery, callback) {
 
 /**
  * clean up the virtual file system
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 exports.removeVirtualFileSystem = function (callback) {
     vfsCollection.remove({}, function (err, result) {
@@ -657,8 +657,8 @@ exports.removeVirtualFileSystem = function (callback) {
 
 /**
  * add item to the virtual file system
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 exports.addToVirtualFileSystem = function (object, callback) {
     vfsCollection.insert(object, function (err, obj) {
@@ -672,13 +672,17 @@ exports.addToVirtualFileSystem = function (object, callback) {
 
 /**
  * find in the virtual file system
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 exports.findInVirtualFileSystem = function (findQuery, callback) {
     vfsCollection.findOne(findQuery, function (err, obj) {
         if (err) {
             return callback(common.getError(9002), null);
+        }
+
+        if (!obj) {
+            return callback(common.getError(9003), null);
         }
 
         return callback(null, 'ok');

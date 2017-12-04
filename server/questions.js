@@ -130,7 +130,7 @@ exports.addQuestion = function(question, callback) {
                     return callback(common.getError(3018), null);
                 }
 
-                vfs.mkdir(common.vfsTree.QUESTIONS, questionToAdd._id, function (err, result) {
+                vfs.mkdir(common.vfsTree.QUESTIONS, questionToAdd._id, common.vfsPermission.OWNER, function (err, result) {
                     logger.log(common.formatString('Creating question directory: {0} {1}', [questionToAdd._id, err ? err : result]));
                 });
 

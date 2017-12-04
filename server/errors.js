@@ -106,6 +106,7 @@ const errors = Object.freeze({
     9000: 'failed to clean the virtual file system',
     9001: 'failed to add to the virtual file system',
     9002: 'error trying to find item in virtual file system',
-    9003: 'can not find item in virtual file system'
+    9003: 'can not find item in virtual file system',
+    9004: 'can not add item in virtual file system'
 });
 exports.errors = errors;

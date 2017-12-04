@@ -29,25 +29,32 @@ exports.errors = errors;
 
 // common path shared across the backend
 const vfsTree = Object.freeze({
-    ROOT      : __dirname + '/..',
-    HOME      : __dirname + '/../FileSystem',
-    USERS     : __dirname + '/../FileSystem/Users',
-    QUESTIONS : __dirname + '/../FileSystem/Questions'
+    ROOT            : __dirname + '/..',
+    HOME            : __dirname + '/../FileSystem',
+    USERS           : __dirname + '/../FileSystem/Users',
+    QUESTIONS       : __dirname + '/../FileSystem/Questions'
 });
 exports.vfsTree = vfsTree;
 
-// common path shared across the backend
+// common permission on files
 const vfsPermission = Object.freeze({
-    PUBLIC    : 'public',
-    OWNER     : 'owner',
-    SYSTEM    : 'system'
+    PUBLIC          : 'public',
+    OWNER           : 'owner',
+    SYSTEM          : 'system'
 });
 exports.vfsPermission = vfsPermission;
 
+// common item types
+const vfsTypes = Object.freeze({
+    FILE            : 'file',
+    DIRECTORY       : 'directory'
+});
+exports.vfsTypes = vfsTypes;
+
 // all user types
 const userTypes = Object.freeze({
-    ADMIN     : 0,
-    STUDENT   : 1
+    ADMIN           : 0,
+    STUDENT         : 1
 });
 exports.userTypes = userTypes;
 
@@ -315,5 +322,4 @@ var isKeyValuePairInJsonList = function(list, field, value) {
     return false;
 }
 exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
-
 // </Global Function> -----------------------------------------------

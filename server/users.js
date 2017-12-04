@@ -69,7 +69,7 @@ exports.addAdmin = function (user, callback) {
                 return callback(common.getError(2005), null);
             }
 
-            vfs.mkdir(common.vfsTree.USERS, userToAdd._id, function (err, result) {
+            vfs.mkdir(common.vfsTree.USERS, userToAdd._id, common.vfsPermission.OWNER, function (err, result) {
                 logger.log(common.formatString('Creating user {0} directory: {1} {2}', [userToAdd.username, userToAdd._id, err ? err : result]));
             });
 
@@ -132,7 +132,7 @@ exports.addStudent = function (user, callback) {
                 return callback(err, null);
             }
 
-            vfs.mkdir(common.vfsTree.USERS, userToAdd._id, function (err, result) {
+            vfs.mkdir(common.vfsTree.USERS, userToAdd._id, common.vfsPermission.OWNER, function (err, result) {
                 logger.log(common.formatString('Creating user {0} directory: {1} {2}', [userToAdd.username, userToAdd._id, err ? err : result]));
             });
 

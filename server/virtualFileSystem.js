@@ -27,25 +27,40 @@ const db = require('./db.js');
 
 /**
  * make a directory given the path and the name of the new directory
- * 
- * @param {string} parentPath 
- * @param {string} directoryName 
- * @param {function} callback 
+ *
+ * @param {string} parentPath
+ * @param {string} directoryName
+ * @param {string} directoryPermissions
+ * @param {function} callback
  */
-var mkdir = function (parentPath, directoryName, callback) {
+var mkdir = function (parentPath, directoryName, directoryPermissions, callback) {
+    var randomName = common.getUUID();
     var fullPath = path.join(parentPath, directoryName);
-    fs.mkdir(fullPath, function (err) {
-        return callback(err ? getError(1007) : null, err ? null : 'ok');
+    var fileObject = {
+        _id: randomName,
+        path: fullPath,
+        type: common.vfsTypes.DIRECTORY,
+        permission: directoryPermissions
+    };
+
+    db.addToVirtualFileSystem(fileObject, function (err, result) {
+        if (err) {
+            return callback(getError(9004), null);
+        }
+
+        fs.mkdir(fullPath, function (err) {
+            return callback(err ? getError(1007) : null, err ? null : 'ok');
+        });
     });
 }
 exports.mkdir = mkdir;
 
 /**
  * BE CAREFUL: remove a directory given the path and the name of the new directory
- * 
- * @param {string} parentPath 
- * @param {string} directoryName 
- * @param {function} callback 
+ *
+ * @param {string} parentPath
+ * @param {string} directoryName
+ * @param {function} callback
  */
 var rmdir = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
@@ -57,10 +72,10 @@ exports.rmdir = rmdir;
 
 /**
  * BE CAREFUL: perform rm -rf on a directory
- * 
- * @param {string} parentPath 
- * @param {string} directoryName 
- * @param {function} callback 
+ *
+ * @param {string} parentPath
+ * @param {string} directoryName
+ * @param {function} callback
  */
 var rmrf = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
@@ -72,9 +87,9 @@ exports.rmrf = rmrf;
 
 /**
  * check if a directory exists
- * 
- * @param {string} parentPath 
- * @param {string} name 
+ *
+ * @param {string} parentPath
+ * @param {string} name
  */
 var existsSync = function (parentPath, name) {
     var fullPath = path.join(parentPath, name);
@@ -85,29 +100,43 @@ exports.fileExists = existsSync;
 
 /**
  * write data to a fils
- * 
- * @param {string} filePath 
- * @param {string} fileName 
- * @param {string} fileExtension 
- * @param {string} fileData 
- * @param {function} callback 
+ *
+ * @param {string} filePath
+ * @param {string} fileName
+ * @param {string} fileExtension
+ * @param {string} fileData
+ * @param {string} filePermissions
+ * @param {function} callback
  */
 var writeFile = function (filePath, fileName, fileExtension, fileData, filePermissions, callback) {
     var randomName = common.getUUID();
     var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
-    fs.writeFile(fullPath, fileData, function (err) {
-        return callback(err ? getError(1013) : null, err ? null : 'ok');
+    var fileObject = {
+        _id: randomName,
+        path: fullPath,
+        type: common.vfsTypes.FILE,
+        permission: filePermissions
+    };
+
+    db.addToVirtualFileSystem(fileObject, function (err, result) {
+        if (err) {
+            return callback(getError(9004), null);
+        }
+
+        fs.writeFile(fullPath, fileData, function (err) {
+            return callback(err ? getError(1013) : null, err ? null : 'ok');
+        });
     });
 }
-exports.saveFile = writeFile;
+exports.writeFile = writeFile;
 
 // convert string to a path
 exports.joinPath = path.join;
 
 /**
  * clean up the virtual file system
- * 
- * @param {function} callback 
+ *
+ * @param {function} callback
  */
 exports.removeVirtualFileSystem = function (callback) {
     rmrf(common.vfsTree.HOME, 'Users', function (err, result) {
@@ -116,7 +145,7 @@ exports.removeVirtualFileSystem = function (callback) {
             return callback(common.getError(2016), null);
         }
 
-        mkdir(common.vfsTree.HOME, 'Users', function (err, result) {
+        mkdir(common.vfsTree.HOME, 'Users', common.vfsPermission.SYSTEM, function (err, result) {
             if (err) {
                 logger.error(err);
                 return callback(common.getError(1007), null);
@@ -128,7 +157,7 @@ exports.removeVirtualFileSystem = function (callback) {
                     return callback(common.getError(1010), null);
                 }
 
-                mkdir(common.vfsTree.HOME, 'Questions', function (err, result) {
+                mkdir(common.vfsTree.HOME, 'Questions', common.vfsPermission.SYSTEM, function (err, result) {
                     if (err) {
                         logger.error(err);
                         return callback(common.getError(1007), null);
