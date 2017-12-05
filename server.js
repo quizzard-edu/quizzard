@@ -876,7 +876,7 @@ app.get('/profilePicture/:pictureId', function (req, res) {
 
     var pictureId = req.params.pictureId;
     if (pictureId === 'null') {
-        var defaultImagePath = common.formatString('{0}/public/img/{1}', [__dirname, 'logo.png']);
+        var defaultImagePath = common.formatString('{0}/public/img/{1}', [__dirname, 'account_circle.png']);
         return res.sendFile(defaultImagePath, function (err) {
             if (err) {
                 logger.error(err);
