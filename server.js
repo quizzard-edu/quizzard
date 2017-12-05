@@ -336,6 +336,10 @@ app.get('/accountform', function (req, res) {
         return res.redirect('/');
     }
 
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
     var html = accountCreationPug();
 
     return res.status(200).send(html);
@@ -360,6 +364,10 @@ app.get('/questionform', function (req, res) {
 
 /* get question answer form */
 app.get('/answerForm', function (req, res) {
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
     switch (req.query.qType) {
         case common.questionTypes.REGULAR.value:
             res.status(200).render(
@@ -725,6 +733,10 @@ app.put('/useradd', function (req, res) {
         return res.redirect('/');
     }
 
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
     users.addStudent(req.body, function (err, result) {
         if (err) {
             logger.error(err);
@@ -931,6 +943,10 @@ app.put('/questionadd', function (req, res) {
         return res.redirect('/');
     }
 
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
     questions.addQuestion(req.body, function (err, qId) {
         if (err) {
             logger.error(err);
@@ -954,6 +970,10 @@ app.put('/questionadd', function (req, res) {
 app.post('/questionmod', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
     }
 
     var qid = req.body.id;
