@@ -448,7 +448,8 @@ app.get('/questionlist', function(req, res) {
                             }
                         }
                         return 'UNKNOWN';
-                    }
+                    },
+                    isActive : request.active
                  });
             }
 
