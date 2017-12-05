@@ -292,6 +292,10 @@ app.get('/studentlist', function (req, res) {
         return res.redirect('/');
     }
 
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
     if (typeof req.query.active === 'undefined') {
         return res.status(500).send(common.getError(2002));
     }
@@ -308,34 +312,6 @@ app.get('/studentlist', function (req, res) {
 
         return res.status(200).send(html);
     });
-});
-
-/* Sort the list of student accounts by the specified criterion. */
-app.post('/sortaccountlist', function (req, res) {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-
-    if (!req.session.adminStudentList) {
-        var html = studentTablePug( { students : [] });
-
-        return res.status(200).send(html);
-    }
-
-    students.sortAccounts(
-        req.session.adminStudentList,
-        req.body.type,
-        req.body.asc == 'true',
-        function (err, result) {
-            if (err) {
-                return res.status(500).send(common.getError(2004));
-            }
-
-            var html = studentTablePug( { students : result } );
-
-            return res.status(200).send(html);
-        }
-    );
 });
 
 /* Send the account creation form HTML. */
@@ -359,6 +335,10 @@ app.get('/questionform', function (req, res) {
         return res.redirect('/');
     }
 
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
     const allSettings = settings.getAllSettings();
     var html = questionCreationPug({
         questionType: common.questionTypes,
@@ -372,6 +352,10 @@ app.get('/questionform', function (req, res) {
 
 /* get question answer form */
 app.get('/answerForm', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
     if (req.session.user.type !== common.userTypes.ADMIN) {
         return res.status(403).send(common.getError(1002));
     }
@@ -496,6 +480,10 @@ app.get('/questionlist', function (req, res) {
 app.get('/questionedit', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
     }
 
     var qId = req.query.questionid;
@@ -870,6 +858,9 @@ app.post('/updateUserPicture', function (req, res) {
     });
 });
 
+/**
+ * fetch the profile picture
+ */
 app.get('/profilePicture/:pictureId', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
@@ -1556,6 +1547,10 @@ app.post('/accountsImportList', function (req, res) {
 app.get('/downloadExportFile', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
     }
 
     var file = req.query.file;

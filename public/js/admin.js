@@ -872,49 +872,6 @@ var submitQuestionRating = function (rating, qid) {
     });
 }
 
-/*
- * Determines the sorting order for accounts in the accounts table.
- * false: will be sorted in ascending order
- * true: will be sorted in descending order
- */
-var accountSortTypes = {
-    fname: false,
-    lname: false,
-    id: false
-}
-
-var sortAccountsTable = function (type) {
-    /* Toggle type's sort order; reset all others. */
-    for (var ind in accountSortTypes) {
-        if (ind == type)
-            accountSortTypes[type] = !accountSortTypes[type];
-        else
-            accountSortTypes[ind] = false;
-    }
-
-    $.ajax({
-        type: 'POST',
-        url: '/sortaccountlist',
-        data: {
-            type: type,
-            asc: accountSortTypes[type]
-        },
-        success: function (data) {
-            $('#admin-content').html(data);
-            addAccountsTableEvents();
-        },
-        error: function (data) {
-            var jsonResponse = data.responseJSON;
-
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else {
-                failSnackbar(getErrorFromResponse(jsonResponse));
-            }
-        }
-    });
-}
-
 /**
  * Toggles the view of the Visibility Checkboxes in the Question-Table View
  * @param {boolean} toggle only usesd so the visibily snackbar can turn on display mode
