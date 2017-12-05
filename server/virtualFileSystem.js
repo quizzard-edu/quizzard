@@ -106,21 +106,18 @@ exports.fileExists = existsSync;
 /**
  * write data to a fils
  *
- * @param {string} filePath
- * @param {string} fileName
- * @param {string} fileExtension
- * @param {string} fileData
- * @param {string} filePermissions
+ * @param {object} fileObj
  * @param {function} callback
  */
-var writeFile = function (filePath, fileName, fileExtension, fileData, filePermissions, creator, callback) {
-    var fullPath = path.join(filePath, fileName) + '.' + fileExtension;
+var writeFile = function (fileObj, callback) {
+    var fullPath = path.join(fileObj.filePath, fileObj.fileName) + '.' + fileObj.fileExtension;
     var fileObject = {
-        _id: fileName,
+        _id: fileObj.fileName,
         path: fullPath,
         type: common.vfsTypes.FILE,
-        creator: creator,
-        permission: filePermissions
+        extension: fileObj.fileExtension,
+        creator: fileObj.fileCreator,
+        permission: fileObj.filePermissions
     };
 
     db.addToVirtualFileSystem(fileObject, function (err, result) {
@@ -128,7 +125,7 @@ var writeFile = function (filePath, fileName, fileExtension, fileData, filePermi
             return callback(getError(9004), null);
         }
 
-        fs.writeFile(fullPath, fileData, function (err) {
+        fs.writeFile(fullPath, fileObj.fileData, function (err) {
             return callback(err ? getError(1013) : null, err ? null : fileObject);
         });
     });

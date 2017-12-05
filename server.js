@@ -64,7 +64,11 @@ app.use(function (req, res, next) {
 });
 
 app.set('view engine', 'pug');
-app.use(fileUpload());
+app.use(fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 },
+    safeFileNames: true,
+    preserveExtension: true
+}));
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
@@ -804,6 +808,41 @@ app.post('/profilemod', function (req, res) {
     });
 });
 
+/**
+ * upload profile pictures
+ */
+app.post('/updateUserPicture', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var validImageExtensions = ['image/jpeg', 'image/png'];
+    var uploadedFile = req.files.userpicture;
+    if (!uploadedFile || validImageExtensions.indexOf(uploadedFile.mimetype) === -1) {
+        return res.status(400).send(common.getError(6002));
+    }
+
+    var fileName = common.getUUID();
+    var fileExtension = uploadedFile.mimetype.split('/')[1];
+    var fileObject = {
+        fileName: fileName,
+        filePath: vfs.joinPath(common.vfsTree.USERS, req.session.user._id),
+        fileExtension: fileExtension,
+        fileData: uploadedFile.data,
+        filePermissions: common.vfsPermission.PUBLIC,
+        fileCreator: req.session.user._id
+    };
+    vfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(common.getError(6003));
+        }
+
+        logger.log(common.formatString('Uploaded: {0}', [fileName]));
+        return res.status(200).send('ok');
+    });
+});
+
 /*
  * Modify a user object in the database.
  * The request body contains a user object with the fields to be modified.
@@ -1308,9 +1347,16 @@ app.post('/accountsExportFile', function (req, res) {
 
                     var fileName = common.getUUID();
                     var file = fileName + '.csv';
-                    var userDirectory = vfs.joinPath(common.vfsTree.USERS, req.session.user._id);
 
-                    vfs.writeFile(userDirectory, fileName, 'csv', csvData, common.vfsPermission.OWNER, req.session.user._id, function (err, result) {
+                    var fileObject = {
+                        fileName: fileName,
+                        filePath: vfs.joinPath(common.vfsTree.USERS, req.session.user._id),
+                        fileExtension: 'csv',
+                        fileData: csvData,
+                        filePermissions: common.vfsPermission.OWNER,
+                        fileCreator: req.session.user._id
+                    };
+                    vfs.writeFile(fileObject, function (err, result) {
                         if (err) {
                             logger.error(err);
                             return res.status(500).send(common.getError(6001));
@@ -1341,8 +1387,15 @@ app.post('/accountsImportFile', function (req, res) {
     }
 
     var fileName = common.getUUID();
-    var filePath = vfs.joinPath(common.vfsTree.USERS, req.session.user._id);
-    vfs.writeFile(filePath, fileName, 'csv', uploadedFile.data, common.vfsPermission.OWNER, req.session.user._id, function (err, fileObj) {
+    var fileObject = {
+        fileName: fileName,
+        filePath: vfs.joinPath(common.vfsTree.USERS, req.session.user._id),
+        fileExtension: 'csv',
+        fileData: uploadedFile.data,
+        filePermissions: common.vfsPermission.OWNER,
+        fileCreator: req.session.user._id
+    };
+    vfs.writeFile(fileObject, function (err, fileObj) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(6003));
@@ -1593,13 +1646,13 @@ app.get('/studentAnalytics', function (req,res) {
             }
 
             if (!userObj) {
-                return res.status(400).send('user not found');
+                return res.status(400).send(common.getError(2009));
             }
 
             analytics.getChart({userId: userObj._id, type: req.query.type},
                 function (err, result) {
                     if (err) {
-                        return res.status(500).send(err);
+                        return res.status(500).send(common.getError(5000));
                     }
                     return res.status(200).send(result);
                 }
@@ -1608,7 +1661,7 @@ app.get('/studentAnalytics', function (req,res) {
     } else {
         analytics.getChart(query, function (err, result) {
             if (err) {
-                return res.status(500).send(err);
+                return res.status(500).send(common.getError(5000));
             }
             return res.status(200).send(result);
         });
@@ -1629,7 +1682,7 @@ app.get('/adminAnalytics', function (req,res) {
 
     analytics.getChart(query, function (err, result) {
         if (err) {
-            return res.status(500).send(err);
+            return res.status(500).send(common.getError(5000));
         }
         return res.status(200).send(result);
     });

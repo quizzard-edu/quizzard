@@ -32,7 +32,14 @@ var disableEdit = function() {
     location.reload();
 }
 
+/**
+ * submit data to update the profile information
+ *
+ * @param {string} id
+ */
 var editProfile = function(id) {
+    uploadProfilePicture();
+
     var fields = $('#editForm').serializeArray();
     var user = {};
 
@@ -50,6 +57,50 @@ var editProfile = function(id) {
             location.reload();
         },
         error: function(data) {
+            var jsonResponse = data.responseJSON;
+
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
+            }
+        }
+    });
+}
+
+/**
+ * upload profile picture
+ */
+var uploadProfilePicture = function () {
+    var files = $('#profile-picture-input').get(0).files;
+
+    if (files.length < 1) {
+        return;
+    }
+
+    if (files.length !== 1) {
+        warningSnackbar('You can only upload one picture!');
+        return;
+    }
+
+    var formData = new FormData();
+    formData.append('userpicture', files[0]);
+
+    $.ajax({
+        type: 'POST',
+        url: '/updateUserPicture',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+            successSnackbar('File uploaded successfully');
+            $('#admin-content').html(data);
+
+            $('#account-import-list-back-button').click(function () {
+                displayAccountsTable();
+            });
+        },
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
