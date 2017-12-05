@@ -430,6 +430,8 @@ app.get('/questionlist', function(req, res) {
         var request = {};
         request.questionsStatus = req.query.type;
         request.user = user;
+        request.active = req.query.active ? req.query.active === 'true' : null;
+
         users.getQuestionsListByUser(request, function(err, questionsList) {
             if (err) {
                 return res.status(500).send(common.getError(3000));
