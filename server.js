@@ -455,23 +455,31 @@ app.get('/questionlist', function (req, res) {
                         return 'UNKNOWN';
                     }
                  });
+
+                 return res.status(200).send(html);
             }
 
             if (req.session.user.type === common.userTypes.STUDENT) {
-                html = questionListPug({
-                    questions : questionsList,
-                    getQuestionIcon: function (type) {
-                        for (var i in common.questionTypes) {
-                            if (type === common.questionTypes[i].value) {
-                                return common.questionTypes[i].icon;
-                            }
-                        }
-                        return 'help';
-                    }
-                 });
+                var returnQuestionsList = [];
+
+                questionsList.forEach(questionObject => {
+                    returnQuestionsList.push({
+                        _id: questionObject._id,
+                        type: questionObject.type,
+                        title: questionObject.title,
+                        topic: questionObject.topic,
+                        ctime: questionObject.ctime,
+                        totalAttemptsCount: questionObject.totalAttemptsCount
+                    });
+                })
+
+                return res.status(200).send({
+                     html: questionListPug(),
+                     questionsList: returnQuestionsList
+                });
             }
 
-            return res.status(200).send(html);
+            return res.status(500).send(common.getError(3000));
         });
     });
 });

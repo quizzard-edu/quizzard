@@ -588,7 +588,7 @@ var getPointsPerTypeVsClass = function (path) {
     success: function (data) {
       data.id = '#pointsPerTypeVsClass';
       data.labels = data.labels.map(item => {
-        return questionTypes[item];
+        return questionTypes[item].value;
       });
       createRadarChart(data);
       createTable('#pointsPerTypeVsClassTable', ['Type', 'Me', 'Class'], [data.labels, data.studentData, data.classData]);
@@ -613,7 +613,7 @@ var getAccuracyPerTypeVsClass = function (path) {
     success: function (data) {
       data.id = '#accuracyPerTypeVsClass';
       data.labels = data.labels.map(item => {
-        return questionTypes[item];
+        return questionTypes[item].value;
       });
       createRadarChart(data);
       createTable('#accuracyPerTypeVsClassTable', ['Type', 'Me', 'Class'], [data.labels, data.studentData, data.classData]);
@@ -834,7 +834,7 @@ var getClassPointsPerTypeVsClass = function (path) {
     success: function (data) {
       data.id = '#classPointsPerTypeVsClass';
       data.labels = data.labels.map(item => {
-        return questionTypes[item];
+        return questionTypes[item].value;
       });
       createClassRadarChart(data);
       createTable('#classPointsPerTypeVsClassTable', ['Type', 'Class'], [data.labels, data.classData]);
@@ -859,7 +859,7 @@ var getClassAccuracyPerTypeVsClass = function (path) {
     success: function (data) {
       data.id = '#classAccuracyPerTypeVsClass';
       data.labels = data.labels.map(item => {
-        return questionTypes[item];
+        return questionTypes[item].value;
       });
       createClassRadarChart(data);
       createTable('#classAccuracyPerTypeVsClassTable', ['Type', 'Class'], [data.labels, data.classData]);
