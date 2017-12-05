@@ -594,7 +594,9 @@ exports.getQuestionsList = function(findQuery, sortQuery, callback) {
  * @param {function} callback
  */
 exports.lookupQuestion = function(findQuery, callback) {
-    questionsCollection.findOne(findQuery, function(err, question) {
+    var query = findQuery;
+    query['deleted'] = {$ne: true};
+    questionsCollection.findOne(query, function(err, question) {
         if (err) {
             return callback(common.getError(3019), null);
         }
