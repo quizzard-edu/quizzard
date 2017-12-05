@@ -572,7 +572,9 @@ var getNextQuestionNumber = function(callback) {
  * @param {function} callback
  */
 exports.getQuestionsList = function(findQuery, sortQuery, callback) {
-    questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
+    var query = findQuery;
+    query['deleted'] = {$ne: true};
+    questionsCollection.find(query).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
             return callback(common.getError(3017), null);
         }

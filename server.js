@@ -895,7 +895,17 @@ app.post('/questiondel', function(req, res) {
         return res.redirect('/');
     }
 
-    return res.status(200);
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    questions.deleteQuestion(req.body.qid, function(err, result){
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+        return res.status(200).send();
+    });
 });
 
 // submit question rating from both students and admins
