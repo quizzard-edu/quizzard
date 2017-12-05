@@ -22,16 +22,18 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
+const helmet = require('helmet');
+const pug = require('pug');
+const json2csv = require('json2csv');
+const csv2json = require('csvtojson');
+
 const db = require('./server/db.js');
 const users = require('./server/users.js');
 const questions = require('./server/questions.js');
 const logger = require('./server/log.js');
-const pug = require('pug');
 const common = require('./server/common.js');
 const analytics = require('./server/analytics.js');
 const settings = require('./server/settings.js');
-const json2csv = require('json2csv');
-const csv2json = require('csvtojson');
 const config = require('./server/config.js');
 const vfs = require('./server/virtualFileSystem.js');
 
@@ -64,17 +66,28 @@ app.use(function (req, res, next) {
 });
 
 app.set('view engine', 'pug');
+<<<<<<< HEAD
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
     safeFileNames: true,
     preserveExtension: true
 }));
+=======
+
+app.use(fileUpload());
+>>>>>>> 085f058ced3f94a4fe32ab28f025f4d6d670f6dc
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet());
 app.use(session({
     secret: 'test',
     resave: true,
-    saveUninitialized: false
+    saveUninitialized: false,
+    rolling: true,
+    cookie: { 
+        secure: true,
+        maxAge: config.maxAge 
+    }
 }));
 
 /*

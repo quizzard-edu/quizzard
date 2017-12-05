@@ -25,6 +25,7 @@
     "express-fileupload": "^0.3.0",
     "express-force-ssl": "^0.3.2",
     "express-session": "^1.14.1",
+    "helmet": "^3.9.0",
     "json2csv": "^3.11.5",
     "moment": "^2.19.1",
     "mongodb": "^2.2.10",
