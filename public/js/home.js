@@ -1,4 +1,3 @@
-//var sortTypes;
 var leaderboardRow;
 var leaderboardTable;
 var studentLeaderList;
