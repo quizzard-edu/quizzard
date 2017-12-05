@@ -66,16 +66,11 @@ app.use(function (req, res, next) {
 });
 
 app.set('view engine', 'pug');
-<<<<<<< HEAD
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
     safeFileNames: true,
     preserveExtension: true
 }));
-=======
-
-app.use(fileUpload());
->>>>>>> 085f058ced3f94a4fe32ab28f025f4d6d670f6dc
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
