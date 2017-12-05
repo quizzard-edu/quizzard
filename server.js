@@ -32,7 +32,8 @@ const analytics = require('./server/analytics.js');
 const settings = require('./server/settings.js');
 const json2csv = require('json2csv');
 const csv2json = require('csvtojson');
-const config = require('./server/config.js')
+const config = require('./server/config.js');
+const helmet = require('helmet');
 
 const app = express();
 
@@ -63,13 +64,20 @@ app.use(function(req, res, next) {
 });
 
 app.set('view engine', 'pug');
+
 app.use(fileUpload());
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet());
 app.use(session({
     secret: 'test',
     resave: true,
-    saveUninitialized: false
+    saveUninitialized: false,
+    rolling: true,
+    cookie: { 
+        secure: true,
+        maxAge: config.maxAge 
+    }
 }));
 
 /*
