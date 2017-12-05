@@ -1467,6 +1467,7 @@ app.post('/accountsImportFile', function (req, res) {
         csv2json().fromFile(fileObj.path).on('json', function (jsonObj) {
             var userObj = {};
             userObj['username'] = jsonObj['Username'];
+            userObj['password'] = jsonObj['Password'];
             userObj['fname'] = jsonObj['First Name'];
             userObj['lname'] = jsonObj['Last Name'];
             userObj['email'] = jsonObj['Email'];
@@ -1516,7 +1517,7 @@ app.post('/accountsImportList', function (req, res) {
             lname: inputUser.lname,
             username: inputUser.username,
             email: inputUser.email,
-            password: 'KonniChiwa'
+            password: inputUser.password
         };
         users.addStudent(userToAdd, function (err, userObj) {
             total++;
