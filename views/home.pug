@@ -14,17 +14,39 @@ block content
   br
   .container
     .row
-      .col.s12.m8
+      .col.s12
+        include home-sidebar
         .row
+          .right
+            a.dropdown-button.btn#sortButton(href='#', data-activates='dropdown') Sort By
+            ul#dropdown.dropdown-content
+              li
+                a#sort-title(href='#!') Title
+              li.divider
+              li
+                a#sort-topic(href='#!') Topic
+              li.divider
+              li
+                a#sort-type(href='#!') Type
+              li.divider
+              li
+                a#sort-date(href='#!') Date
+              li.divider
+              li
+                a#sort-attempt(href='#!') Attemtps
+            .switch
+              label
+                | Ascending
+                input(id='order' type='checkbox', checked=true, onClick='sortQuestionsList()')
+                span.lever
+                | Decending
           ul.tabs
             li.tab.col.s6
               a.noLineLink.active(href='#')#qlist-unanswered Unanswered
             li.tab.col.s6
               a.noLineLink(href='#')#qlist-answered Answered
-          .question-list
-            include questionlist
-      .col.s12.m4
-        include home-sidebar
+          ul.collection.question-list
+            #questionsList
 
 block scripts
   script(src='/js/common.js')
