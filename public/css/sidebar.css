@@ -1,32 +1,32 @@
 .sidebar .sidebar-item {
-  display: block;
-  text-align: center;
+    display: block;
+    text-align: center;
 }
 
 .sidebar .sidebar-item#points {
-  font-size: 30px;
+    font-size: 30px;
 }
 
 .sidebar h3, h4 {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .profilePicture {
-  padding: 20px;
-  width: 25%;
-  height: 25%;
-  margin: auto;
-  display: block;
+    padding: 20px;
+    width: 25%;
+    height: 25%;
+    margin: auto;
+    display: block;
 }
 
 .qInfoLeft {
-  position: relative;
-  top: 20px;
+    position: relative;
+    top: 20px;
 }
 
 .qInfoRight {
-  position: relative;
-  top: -25px;
-  float: right !important;
-  display: table-cell;
+    position: relative;
+    top: -25px;
+    float: right !important;
+    display: table-cell;
 }
