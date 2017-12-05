@@ -600,6 +600,10 @@ exports.addFeedback = function(uuid, subject, message, callback) {
  *
  * @param {function} callback
  */
-exports.getFeedback = function (callback){
+exports.getFeedback = function (callback) {
     db.getFeedback(callback);
+}
+
+exports.updateUserPicture = function (userId, pictureId, callback) {
+    db.updateUserByQuery({_id: userId}, {$set: {picture: pictureId}}, callback);
 }

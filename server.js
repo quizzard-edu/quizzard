@@ -832,14 +832,21 @@ app.post('/updateUserPicture', function (req, res) {
         filePermissions: common.vfsPermission.PUBLIC,
         fileCreator: req.session.user._id
     };
+
     vfs.writeFile(fileObject, function (err, fileObj) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(6003));
         }
 
-        logger.log(common.formatString('Uploaded: {0}', [fileName]));
-        return res.status(200).send('ok');
+        logger.log(common.formatString('Uploaded: {0}', [fileName]));        
+        users.updateUserPicture(req.session.user._id, fileName, function (err, result) {
+            if (err) {
+                logger.error(err);
+                return res.status(500).send(common.getError(6003));
+            }
+            return res.status(200).send('ok');
+        });
     });
 });
 
