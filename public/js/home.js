@@ -79,7 +79,6 @@ var fetchQList = function(which) {
             sortQuestionsList();
         },
         error: function(data){
-            // debugger;
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
