@@ -850,6 +850,39 @@ app.post('/updateUserPicture', function (req, res) {
     });
 });
 
+app.get('/profilePicture/:pictureId', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var pictureId = req.params.pictureId;
+    if (pictureId === 'null') {
+        var defaultImagePath = common.formatString('{0}/public/img/{1}', [__dirname, 'logo.png']);
+        return res.sendFile(defaultImagePath, function (err) {
+            if (err) {
+                logger.error(err);
+            }
+        });
+    }
+    vfs.fileExists(pictureId, function (err, fileObj) {
+        if (err) {
+            logger.error(common.formatString('{0} does not exists',[pictureId]));
+            return res.status(400).send(common.getError(9003));
+        }
+
+        if (fileObj.permission !== common.vfsPermission.PUBLIC) {
+            logger.error(common.formatString('Permission denied to access: {0}',[pictureId]));
+            return res.status(403).send(common.getError(9006));
+        }
+
+        return res.sendFile(fileObj.path, function (err) {
+            if (err) {
+                logger.error(err);
+            }
+        });
+    });
+});
+
 /*
  * Modify a user object in the database.
  * The request body contains a user object with the fields to be modified.
@@ -1337,7 +1370,7 @@ app.post('/accountsExportFile', function (req, res) {
         for (var i in requestedList) {
             users.getStudentById(requestedList[i], function (err, studentFound) {
                 if (err || !studentFound) {
-                    logger.error(common.getError(2001));
+                    logger.error(common.getError(2001).message);
                     errors++;
                 }
 
