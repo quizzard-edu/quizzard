@@ -506,6 +506,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
 
                 var student = {
                     displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
+                    picture: currentStudent.picture,
                     points:currentStudent.points,
                     accuracy:(currentStudent.totalAttemptsCount === 0)
                         ? 0
