@@ -185,9 +185,10 @@ var submitImportList = function () {
         var isSelected = $tds.eq(0).find('input[type=checkbox]').is(':checked');
         var userObj = {
             username: $tds.eq(1).text(),
-            fname: $tds.eq(2).text(),
-            lname: $tds.eq(3).text(),
-            email: $tds.eq(4).text()
+            password: $tds.eq(2).text(),
+            fname: $tds.eq(3).text(),
+            lname: $tds.eq(4).text(),
+            email: $tds.eq(5).text()
         };
 
         if (isSelected) {
