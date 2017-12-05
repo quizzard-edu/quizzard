@@ -50,10 +50,11 @@ const snack = Object.freeze({
 });
 
 const sortTypes = Object.freeze({
-    SORT_TOPIC      :   'topic',
-    SORT_TYPE       :   'type',
-    SORT_DATE       :   'ctime',
-    SORT_ATTEMPT    :   'totalAttemptsCount'
+    SORT_TITLE      :   {value: 'title', display: 'Title'},
+    SORT_TOPIC      :   {value: 'topic', display: 'Topic'},
+    SORT_TYPE       :   {value: 'type', display: 'Type'},
+    SORT_DATE       :   {value: 'ctime', display: 'Date'},
+    SORT_ATTEMPT    :   {value: 'totalAttemptsCount', display: 'Attempts'}
 });
 
 const loadingAnimation = '<div class="progress"><div class="indeterminate"></div></div>';
@@ -66,12 +67,12 @@ const leaderboardTypes = Object.freeze({
 });
 
 const questionTypes = Object.freeze({
-    mc         : 'Multiple Choice',
-    re         : 'Regular',
-    tf         : 'True and False',
-    matching   : 'Matching',
-    ca         : 'Choose All',
-    ordering   : 'Ordering'
+    mc         : {value: 'Multiple Choice', icon: 'format_list_bulleted'},
+    re         : {value: 'Regular', icon: 'font_download'},
+    tf         : {value: 'True and False', icon: 'check_circle'},
+    matching   : {value: 'Matching', icon: 'dashboard'},
+    ca         : {value: 'Choose All', icon: 'format_list_bulleted'},
+    ordering   : {value: 'Ordering', icon: 'format_list_bulleted'}
 })
 
 // This is the function.

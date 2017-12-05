@@ -3,6 +3,12 @@ var leaderboardRow;
 var leaderboardTable;
 var studentLeaderList;
 
+// Variables for question list
+var questionsList;
+var questionsListHTML;
+
+var currentCriteria = sortTypes.SORT_DATE;
+
 $(function () {
     fetchQList('unanswered');
     fetchLeaderboard();
@@ -11,20 +17,48 @@ $(function () {
 /* set home as the active navbar element */
 $('#nav-home').addClass('active');
 
+var sortQuestionsList = function(criteria = currentCriteria) {
+    $('#sortButton').html(`Sort By: ${criteria.display}`);
+    currentCriteria = criteria;
+
+    var ordering = -1;
+    if ($('#order').is(':checked')) {
+        ordering = 1;
+    }
+    
+    displayQuestionList(questionsList.sort((a, b) => {
+        var item1 = a[criteria.value];
+        var item2 = b[criteria.value];
+
+        if (typeof item1 === 'string') {
+            item1 = item1.toLowerCase();
+            item2 = item2.toLowerCase();
+        }
+
+        if(item1 < item2) return ordering;
+        if(item1 > item2) return ordering*-1;
+        return 0;
+    }));
+}
+
+$('#sort-title').click(function(evt) {
+    sortQuestionsList(sortTypes.SORT_TITLE);
+});
+
 $('#sort-topic').click(function(evt) {
-    alert('Sort by ' + sortTypes.SORT_TOPIC);
+    sortQuestionsList(sortTypes.SORT_TOPIC);
 });
 
 $('#sort-type').click(function(evt) {
-    alert('Sort by ' + sortTypes.SORT_TYPE);
+    sortQuestionsList(sortTypes.SORT_TYPE);
 });
 
 $('#sort-date').click(function(evt) {
-    alert('Sort by ' + sortTypes.SORT_DATE);
+    sortQuestionsList(sortTypes.SORT_DATE);
 });
 
 $('#sort-attempt').click(function(evt) {
-    alert('Sort by ' + sortTypes.SORT_ATTEMPT);
+    sortQuestionsList(sortTypes.SORT_ATTEMPT);
 });
 
 $('#qlist-unanswered').click(function(evt) {
@@ -41,13 +75,12 @@ var fetchQList = function(which) {
         url: '/questionlist',
         data: { type: which },
         success: function(data) {
-            debugger;
-            alert(data.questions);
-            $('.question-list').html(data.questionListHTML);
-            //$('.question-list').html(html);
+            questionsList = data.questionsList;
+            questionsListHTML = $(data.html);
+            sortQuestionsList();
         },
         error: function(data){
-            debugger;
+            // debugger;
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -56,6 +89,20 @@ var fetchQList = function(which) {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
+    });
+}
+
+var displayQuestionList = function(qList) {
+    $('#questionsList').html('');
+    qList.forEach((questionObject, index) => {
+        questionsListHTML[0].id = questionObject._id;
+        questionsListHTML.find('#icon').html(questionTypes[questionObject.type].icon);
+        questionsListHTML.find('#title').html(questionObject.title);
+        questionsListHTML.find('#topic').html(`Topic: ${questionObject.topic}`);
+        questionsListHTML.find('#type').html(`Type: ${questionTypes[questionObject.type].value}`);
+        questionsListHTML.find('#time').html(`Created On: ${questionObject.ctime}`);
+        questionsListHTML.find('#attempts').html(`Attempts: ${questionObject.totalAttemptsCount}`);
+        $('#questionsList').append(questionsListHTML[0].outerHTML);
     });
 }
 

@@ -1,5 +1,5 @@
 .row
-  .col.s6
+  .col.s12.m6
     .card
       .card-content.center
         img.profilePicture(src='img/logo.png' alt='Profile Picture')
@@ -13,7 +13,7 @@
           p.sidebar-item You have not yet attempted any questions.
         else
           p.sidebar-item You have an accuracy of #{((user.correctAttemptsCount / user.totalAttemptsCount) * 100).toFixed(2)}%.
-  .col.s6
+  .col.s12.m6.hide-on-small-only
     .card
       .card-content
         h4.center Points Leaderboard

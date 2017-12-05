@@ -1,13 +1,17 @@
-ul.collection
-  each q in questions
-    li.collection-item.avatar.disable-select.question-list-hover(onClick='goToQuestion(this.id)', id=q._id)
-      i.material-icons.circle #{getQuestionIcon(q.type)}
-      span.title #{q.title}
-      p.qInfoLeft Topic: #{q.topic}
-      p.qInfoLeft Type: #{q.type}
-      p.qInfoRight Created: #{q.ctime}
-      br
-      p.qInfoRight Attempts: #{q.totalAttemptsCount}
-      a.secondary-content.question-block.noLineLink(href='/question?_id='+q._id, style='cursor: pointer;')
-        i.material-icons whatshot
-        p.text-center.title
+li.collection-item.avatar.disable-select.question-list-hover(onClick='goToQuestion(this.id)')
+  i.material-icons.circle#icon
+  h6#title
+  .hide-on-large-only
+    p#topic
+    p#type
+    p#time
+    p#attempts
+  .hide-on-med-and-down
+    p.qInfoLeft#topic
+    p.qInfoLeft#type
+    p.qInfoRight#time
+    br
+    p.qInfoRight#attempts
+  a.secondary-content.question-block.noLineLink(style='cursor: pointer;')
+    i.material-icons whatshot
+    p.text-center.title
