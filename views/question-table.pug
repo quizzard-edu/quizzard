@@ -10,12 +10,14 @@ block styles
       .card-content
         h5.card-title Manage Questions
         h6 Add, modify or delete questions.
-        .switch
-          label
-            | Deleted
-            input(id='questionSwitch', type='checkbox', onClick='toggleQuestionSwitch()')
-            span.lever
-            | Active
+        //remove if statement to turn on deletion feature
+        if false
+          .switch
+            label
+              | Deleted
+              input(id='questionSwitch', type='checkbox', onClick='toggleQuestionSwitch()')
+              span.lever
+              | Active
       .card-action
         table.bordered.centered
           thead

@@ -430,7 +430,10 @@ app.get('/questionlist', function(req, res) {
         var request = {};
         request.questionsStatus = req.query.type;
         request.user = user;
-        request.active = req.query.active ? req.query.active === 'true' : null;
+        /*TO TURN ON deletion feature replace 'true' with this ->
+        req.query.active ? req.query.active === 'true' : null;
+        and make changes to question-table.pug*/
+        request.active = true;
 
         users.getQuestionsListByUser(request, function(err, questionsList) {
             if (err) {
@@ -449,7 +452,7 @@ app.get('/questionlist', function(req, res) {
                         }
                         return 'UNKNOWN';
                     },
-                    isActive : request.active
+                    isActive : request.active 
                  });
             }
 
