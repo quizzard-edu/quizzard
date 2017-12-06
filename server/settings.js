@@ -325,7 +325,7 @@ exports.getAllSettings = function (callback) {
  */
 var getAllSettings = function (callback) {
     db.getAllSettings(function (err, allSettings) {
-        return callback(err ? common.getError(7005) : null, err ? null : allSettings);
+        return callback(err ? err : null, err ? null : allSettings);
     });
 }
 
@@ -428,9 +428,26 @@ var updateSettings = function (updateQuery, callback) {
 exports.initialize = function(callback){
     getAllSettings(function(err, allSettingsObj){
         if(err){
-            return callback(err, null);
+            // initialize if does not exist in db
+            if(err.code === 7004){
+                db.resetAllSettings(function(err, result){
+                    if (err){
+                        return callback(err, null);
+                    }
+                    getAllSettings(function(err,defaultAllSettings){
+                        if (err){
+                            return callback(err, null);
+                        }
+                        allSettings = defaultAllSettings;
+                        return callback(null,'success');
+                    });
+                });
+            } else {
+                return callback(err, null);
+            }
+        } else {
+            allSettings = allSettingsObj;
+            return callback(null,'success');
         }
-        allSettings = allSettingsObj;
-        return callback(null,'success');
     });
 }
