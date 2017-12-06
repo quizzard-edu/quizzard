@@ -69,6 +69,7 @@ var prepareQuestionData = function(question, callback) {
     questionToAdd.ratings = [];
     questionToAdd.comments = [];
     questionToAdd.userSubmissionTime = [];
+    questionToAdd.deleted = false;
     //Add specific attributes by Type
     switch (question.type) {
         case common.questionTypes.REGULAR.value:
@@ -112,7 +113,7 @@ var prepareQuestionData = function(question, callback) {
 }
 
 /*
-* Insert a new regular question into the database.
+* Insert a new question into the database.
 * The question object passed to the function should have
 * the text, topic, type, answer, minpoints, maxpoints and hint set.
 */
@@ -165,16 +166,26 @@ var updateQuestionById = function(qId, infoToUpdate, callback) {
     });
 }
 
-/* Remove the question with ID qid from the database. */
+/* Deactivate the question with ID qid from the database. */
 exports.deleteQuestion = function(questionId, callback) {
-    questions.remove({_id: questionId}, function(err, res) {
+    lookupQuestionById(questionId, function(err, questionObj){
         if (err) {
             logger.error(err);
             return callback(common.getError(3023), null);
         }
 
-        logger.log(common.formatString('Question {0} deleted from database.', [questionId]));
-        return callback(null, 'success');
+        var query = {_id:questionId};
+        var update = {};
+        update.$set = {'deleted':true};
+
+        db.updateQuestionByQuery(query, update, function(err, res){
+            if (err) {
+                logger.error(err);
+                return callback(common.getError(3023), null);
+            }
+            logger.log(common.formatString('Question {0} deleted from database.', [questionId]));
+            return callback(null, res);
+        });
     });
 }
 

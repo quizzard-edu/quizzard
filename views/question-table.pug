@@ -10,21 +10,30 @@ block styles
       .card-content
         h5.card-title Manage Questions
         h6 Add, modify or delete questions.
+        //remove if statement to turn on deletion feature
+        if false
+          .switch
+            label
+              | Deleted
+              input(id='questionSwitch', type='checkbox', onClick='toggleQuestionSwitch()')
+              span.lever
+              | Active
       .card-action
         table.bordered.centered
           thead
             tr
-              th Visiblity
-                br
-                .chip(onClick='updateAllVisibility(true)') Show All
-                .chip(onClick='updateAllVisibility(false)') Hide All 
-                br
-                .switch
-                  label
-                    | Display
-                    input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
-                    span.lever
-                    | Edit
+              if isActive
+                th Visiblity
+                  br
+                  .chip(onClick='updateAllVisibility(true)') Show All
+                  .chip(onClick='updateAllVisibility(false)') Hide All 
+                  br
+                  .switch
+                    label
+                      | Display
+                      input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
+                      span.lever
+                      | Edit
               th ID
               th Title
               th Topic
@@ -33,14 +42,15 @@ block styles
           tbody
             each q in questions
               tr
-                td.center
-                  p
-                    if q.visible
-                      i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()') visibility
-                    else
-                      i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()') visibility_off
-                    input.checked(id='checked-' + q._id, name=q.number, type='checkbox', checked=q.visible)
-                    label.visbox(for='checked-' + q._id, name=q.number)
+                if isActive
+                  td.center
+                    p
+                      if q.visible
+                        i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()') visibility
+                      else
+                        i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()') visibility_off
+                      input.checked(id='checked-' + q._id, name=q.number, type='checkbox', checked=q.visible)
+                      label.visbox(for='checked-' + q._id, name=q.number)
                 td #{q.number}
                 td #{q.title}
                 td #{q.topic}
@@ -48,7 +58,8 @@ block styles
                 td
                   button.btn.btn-default.view-button(id='view-' + q._id, name=q.number, type='button', aria-label='View')
                     i.material-icons remove_red_eye
-                  button.btn.btn-default.edit-button(id='edit-' + q._id, name=q.number, type='button', aria-label='Edit')
-                    i.material-icons edit
-                  button.btn.btn-default.delete-button(id='delete-' + q._id, name=q.number, type='button', aria-label='Delete')
-                    i.material-icons close
+                  if isActive
+                    button.btn.btn-default.edit-button(id='edit-' + q._id, name=q.number, type='button', aria-label='Edit')
+                      i.material-icons edit
+                    button.btn.btn-default.delete-button(id='delete-' + q._id, name=q.number, type='button', aria-label='Delete')
+                      i.material-icons close

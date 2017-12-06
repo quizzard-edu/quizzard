@@ -437,7 +437,13 @@ app.get('/questionlist', function (req, res) {
         var request = {};
         request.questionsStatus = req.query.type;
         request.user = user;
-        users.getQuestionsListByUser(request, function (err, questionsList) {
+
+        /*TO TURN ON deletion feature extended, replace value for request.active with this ->
+        req.query.active ? req.query.active === 'true' : null;
+        and make changes to question-table.pug*/
+        request.active = true;
+
+        users.getQuestionsListByUser(request, function(err, questionsList) {
             if (err) {
                 return res.status(500).send(common.getError(3000));
             }
@@ -453,7 +459,8 @@ app.get('/questionlist', function (req, res) {
                             }
                         }
                         return 'UNKNOWN';
-                    }
+                    },
+                    isActive : request.active 
                  });
 
                  return res.status(200).send(html);
@@ -1016,7 +1023,17 @@ app.post('/questiondel', function (req, res) {
         return res.redirect('/');
     }
 
-    return res.status(200);
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    questions.deleteQuestion(req.body.qid, function(err, result){
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(err);
+        }
+        return res.status(200).send();
+    });
 });
 
 // submit question rating from both students and admins

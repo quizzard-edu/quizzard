@@ -1,4 +1,5 @@
 var usersTableActive = true;
+var questionTableActive = true;
 var autocompleteTopics;
 
 $(function () {
@@ -12,6 +13,11 @@ $('#nav-home').addClass('active');
 var toggleUsersSwitch = function () {
     usersTableActive = !usersTableActive;
     displayAccountsTable();
+}
+
+var toggleQuestionSwitch = function() {
+    questionTableActive = !questionTableActive;
+    displayQuestionTable();
 }
 
 /* Display the table of user accounts. */
@@ -274,8 +280,8 @@ var displayAccountForm = function () {
 var displayQuestionTable = function () {
     $.ajax({
         type: 'GET',
-        url: '/questionlist',
-        success: function (data) {
+        url: '/questionlist?active=' + questionTableActive,
+        success: function(data) {
             $('#admin-content').html(data);
             addQuestionsTableEvents();
 
@@ -285,6 +291,7 @@ var displayQuestionTable = function () {
             $('#option-settings').removeClass('active');
 
             $('.visbox').hide();
+            $('#questionSwitch').prop('checked', questionTableActive);
 
             $('#question-creation-button').click(function (evt) {
                 displayQuestionForm();

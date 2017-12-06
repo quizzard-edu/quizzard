@@ -358,7 +358,10 @@ exports.getQuestionsListByUser = function (request, callback) {
     }
 
     if (user.type === common.userTypes.ADMIN) {
-        db.getQuestionsList(questionsQuery, sortQuery, function (err, docs){
+        if (typeof request.active !== 'boolean') {
+            return callback(common.getError(1000), null);
+        }
+        db.getQuestionsListforAdmin({'deleted':{$ne:request.active}}, sortQuery, function (err, docs){
             return callback(err, docs);
         });
     }
