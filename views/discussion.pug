@@ -46,7 +46,7 @@ each itemComment, indexReply in comments
       .col.s12.reply
         h5 Add a Reply:
         .row.identification-section
-          i.small.material-icons.profile-picture account_circle
+          img.user-img(src='/profilePicture/' + getCurrentUserPicture(), alt='Profile Picture')
           span.name #{getCurrentUser()}
         .row
           textarea.comment-box(id='replyTo_' + itemComment['_id'], placeholder='Enter a Reply...', spellcheck='true')
@@ -56,7 +56,7 @@ each itemComment, indexReply in comments
   .col.s12
     h5 Add a comment:
     .row.identification-section
-      i.small.material-icons.profile-picture account_circle
+      img.user-img(src='/profilePicture/' + getCurrentUserPicture(), alt='Profile Picture')
       span.name #{getCurrentUser()}
     .row
       textarea.comment-box#commentBox(placeholder='Enter a comment...', spellcheck='true')

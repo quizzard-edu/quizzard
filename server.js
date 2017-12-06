@@ -1094,6 +1094,13 @@ app.get('/getDiscussionBoard', function (req, res) {
             var discussionHtml = discussionBoardPug({
                 comments: question.comments,
                 isDislikesEnabled: isDislikesEnabled,
+                getCurrentUserPicture: () => {
+                    var userId = req.session.user._id;
+                    if (!pictureList[userId]) {
+                        return 'null';
+                    }
+                    return pictureList[userId];
+                },
                 getUserPicture: (userId) => {
                     if (!pictureList[userId]) {
                         return 'null';
