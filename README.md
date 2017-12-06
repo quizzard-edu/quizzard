@@ -37,17 +37,6 @@ and `mongodb` installed.
     3. For `hostName` Enter the public web-address for this website, ex (www.quizzard.com)
     4. You can change the session expiration time, by default it is set to 2 hours.
     5. Replace the default self-signed SSL Certificates with your certificates.
-  ```
-  httpsPort = 8080;
-  httpPort = 8000;
-  hostName = '127.0.0.1';
-  maxSessionAge = 60 * 60 * 1000 * 2;
-
-  var ssl_options = {
-    key: fs.readFileSync('./keys/private.key'),
-    cert: fs.readFileSync('./keys/cert.crt')
-  };  
-  ```
 
   To generate your own Self-Signed Certificate, Run the following script on your shell (terminal):
   - Note: Make sure to have openssl installed on your shell.
