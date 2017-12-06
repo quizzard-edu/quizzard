@@ -425,6 +425,14 @@ exports.updateProfile = function (userId, request, callback) {
 
     update.$set = {};
 
+    if (request.newfname) {
+        update.$set.fname = request.newfname;
+    }
+
+    if (request.newlname) {
+        update.$set.lname = request.newlname;
+    }
+
     if (request.newemail) {
         update.$set.email = request.newemail;
     }

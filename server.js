@@ -810,6 +810,18 @@ app.post('/profilemod', function (req, res) {
                 return res.status(403).send(common.getError(2010));
             }
 
+            const allSettings = settings.getAllSettings();
+
+            if (user.type === common.userTypes.STUDENT && (
+                (!allSettings.student.editNames && 'newfname' in req.body) ||
+                (!allSettings.student.editNames && 'newlname' in req.body) ||
+                (!allSettings.student.editEmail && 'newemail' in req.body) ||
+                (!allSettings.student.editPassword && 'newpassword' in req.body)
+            )) {
+                logger.error(common.getError(2011).message);
+                return res.status(500).send(common.getError(2011));
+            }
+
             if (user) {
                 users.updateProfile(userId, req.body, function (err, result) {
                     if (err) {
