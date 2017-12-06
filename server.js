@@ -430,7 +430,7 @@ app.get('/questionlist', function(req, res) {
         var request = {};
         request.questionsStatus = req.query.type;
         request.user = user;
-        /*TO TURN ON deletion feature replace 'true' with this ->
+        /*TO TURN ON deletion feature extended, replace value for request.active with this ->
         req.query.active ? req.query.active === 'true' : null;
         and make changes to question-table.pug*/
         request.active = true;
