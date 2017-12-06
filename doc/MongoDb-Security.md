@@ -1,5 +1,3 @@
-Created user/pass authentication for mongodb, any connection to mongodb is authenticated, only one auth needs to be created (application server)
-
 Step 1 Create administrator account:
 1. console 1 run: `mongod --port 27017 --dbpath /data/db`
 2. console 2 run:`mongo --port 27017 quizzard`
