@@ -37,7 +37,8 @@ db.createUser({
 Now we have successfully created an authenticated mongodb. Only with this account can the application server read/write to the db.
 
 When initializing the db in /server/db.js, Once the db connection is open, use this function below to authenticate, remember to change the `'appuser', 'apppass'` arguements to the quizzard account you have created:
-`db.authenticate('appuser', 'apppass', function(err, result) {
+```
+db.authenticate('appuser', 'apppass', function(err, result) {
   logger.log('Connection to Quizzard database successful.');
   usersCollection = db.collection('users');
   questionsCollection = db.collection('questions');
@@ -50,7 +51,8 @@ When initializing the db in /server/db.js, Once the db connection is open, use t
       logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
       return callback(err, null);
   });
-});`
+});
+```
 
 Run the mongod instance like this for authentication:
 `mongod --auth --port 27017 --dbpath /data/db`
