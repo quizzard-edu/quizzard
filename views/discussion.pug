@@ -3,7 +3,7 @@ each itemComment, indexReply in comments
   .row.comment
     .col.s12
       .row.identification-section
-        i.small.material-icons.profile-picture account_circle
+        img.user-img(src='/profilePicture/' + getUserPicture(itemComment['userId']), alt='Profile Picture')
         span.name=getFirstLastName(itemComment['userId'])
         span.likes-section
           i.small.material-icons.reply-picture.cursor-pointer(onclick='repliesSection("#viewReplies_" + "'+itemComment['_id']+'")') reply
@@ -29,7 +29,7 @@ each itemComment, indexReply in comments
       each itemReply, indexReply in itemComment['replies']
         .col.s11.reply
           .row.identification-section
-            i.small.material-icons.profile-picture account_circle
+            img.user-img(src='/profilePicture/' + getUserPicture(itemReply['userId']), alt='Profile Picture')
             span.name=getFirstLastName(itemReply['userId'])
             span.likes-section
               i.small.material-icons.thumb-up-picture.cursor-pointer(id='like_' + itemReply['_id'], onclick='voteClickReply($(this), 1)', onmouseover='voteHover($(this), 1)', onmouseout='voteLeave($(this), 1)', class=isLiked(itemReply['likes']) ? 'liked' : '') thumb_up

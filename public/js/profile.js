@@ -38,8 +38,6 @@ var disableEdit = function() {
  * @param {string} id
  */
 var editProfile = function(id) {
-    uploadProfilePicture();
-
     var fields = $('#editForm').serializeArray();
     var user = {};
 
@@ -54,7 +52,7 @@ var editProfile = function(id) {
         url: '/profilemod',
         data: user,
         success: function(data) {
-            location.reload();
+            uploadProfilePicture();
         },
         error: function(data) {
             var jsonResponse = data.responseJSON;
@@ -75,6 +73,7 @@ var uploadProfilePicture = function () {
     var files = $('#profile-picture-input').get(0).files;
 
     if (files.length < 1) {
+        location.reload();
         return;
     }
 
@@ -93,12 +92,7 @@ var uploadProfilePicture = function () {
         contentType: false,
         data: formData,
         success: function (data) {
-            successSnackbar('File uploaded successfully');
-            $('#admin-content').html(data);
-
-            $('#account-import-list-back-button').click(function () {
-                displayAccountsTable();
-            });
+            location.reload();
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;

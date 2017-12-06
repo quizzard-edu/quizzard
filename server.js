@@ -861,7 +861,7 @@ app.post('/updateUserPicture', function (req, res) {
                 logger.error(err);
                 return res.status(500).send(common.getError(6003));
             }
-            return res.status(200).send('ok');
+            return res.status(200).send(fileName);
         });
     });
 });
@@ -1084,15 +1084,23 @@ app.get('/getDiscussionBoard', function (req, res) {
             }
 
             var usersList = {};
+            var pictureList = {};
             for (var i in userObj) {
                 var user = userObj[i];
                 usersList[user._id] = user.fname + ' ' + user.lname;
+                pictureList[user._id] = user.picture;
             }
 
             var discussionHtml = discussionBoardPug({
                 comments: question.comments,
                 isDislikesEnabled: isDislikesEnabled,
-                getCurrentUser: () =>{
+                getUserPicture: (userId) => {
+                    if (!pictureList[userId]) {
+                        return 'null';
+                    }
+                    return pictureList[userId];
+                },
+                getCurrentUser: () => {
                     var userId = req.session.user._id;
                     if (!usersList[userId]) {
                         return 'UNKNOWN';
