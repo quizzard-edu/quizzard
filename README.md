@@ -30,19 +30,48 @@ and `mongodb` installed.
   $ npm install
   ```
 
-2. You can now launch the server by running
+2. Configure server settings and SSL Certification
+
+  Note: To run this application locally you do not have to change any configuration settings.
+
+  Go to server/config.js
+    1. Change the https and http ports.
+    2. For `hostName` Enter the public web-address for this website, ex (www.quizzard.com)
+    3. You can change the session expiration time, by default it is set to 2 hours.
+    4. Replace the default self-signed SSL Certificates with your certificates.
+  ```
+  httpsPort = 8080;
+  httpPort = 8000;
+  hostName = '127.0.0.1';
+  maxSessionAge = 60 * 60 * 1000 * 2;
+
+  var ssl_options = {
+    key: fs.readFileSync('./keys/private.key'),
+    cert: fs.readFileSync('./keys/cert.crt')
+  };  
+  ```
+
+  To generate your own Self-Signed Certificate, Run the following script on your shell (terminal):
+    Note: Make sure to have openssl installed on your shell.
+    ```
+      sh scripts/certificateGenerator
+    ```
+
+3. To secure MongoDB authentication and advanced firewall rules follow the steps provided under doc/MongoDb-Security.md.
+  Note: You can skip this step if you are running this in a local environment (localhost).
+
+4. You can now launch the server by running
 
   ```
   $ npm start
   ```
 
-  You should now be able to access Quizzard by visiting
-  https://localhost:8000 in your browser.
+  If haven't changed any settings you should now be able to access Quizzard by visiting
+  https://localhost:8080 in your browser.
 
 3. The port on which the server runs and the mongodb connection settings can
   be modified through the following environment variables:
 
-  * `QUIZZARD_PORT` - the port on which the server listens (default: 8000)
   * `DB_HOST` - mongodb database server address (default: localhost)
   * `DB_PORT` - mongodb connection port (default: 27017)
   * `DB_NAME` - name of appplication's database within mongodb (default: quizzard)
