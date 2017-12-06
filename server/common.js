@@ -100,7 +100,8 @@ const questionAttributes = Object.freeze({
         ctime                   : {type:'[object String]'},
         mtime                   : {type:'[object String]'},
         ratings                 : {type:'[object Array]'},
-        userSubmissionTime      : {type:'[object Array]'}
+        userSubmissionTime      : {type:'[object Array]'},
+        deleted                 : {type:'[object Boolean]'}
     },
     REGULAR:        {
         answer                  : {type:'[object String]'}

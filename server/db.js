@@ -565,13 +565,36 @@ var getNextQuestionNumber = function(callback) {
 }
 
 /**
- * get the list of questions sorted
+ * get the list of Active questions sorted
  *
  * @param {object} findQuery
  * @param {object} sortQuery
  * @param {function} callback
  */
 exports.getQuestionsList = function(findQuery, sortQuery, callback) {
+    var query = findQuery;
+    query['deleted'] = {$ne: true};
+    questionsCollection.find(query).sort(sortQuery).toArray(function(err, docs) {
+        if (err) {
+            return callback(common.getError(3017), null);
+        }
+
+        for (q in docs) {
+            docs[q].firstAnswer = docs[q].correctAttempts[0] ? docs[q].correctAttempts[0].userId : 'No One';
+        }
+
+        return callback(null, docs);
+    });
+}
+
+/**
+ * get the list of questions sorted
+ *
+ * @param {object} findQuery
+ * @param {object} sortQuery
+ * @param {function} callback
+ */
+exports.getQuestionsListforAdmin = function(findQuery, sortQuery, callback) {
     questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
         if (err) {
             return callback(common.getError(3017), null);
@@ -592,7 +615,9 @@ exports.getQuestionsList = function(findQuery, sortQuery, callback) {
  * @param {function} callback
  */
 exports.lookupQuestion = function(findQuery, callback) {
-    questionsCollection.findOne(findQuery, function(err, question) {
+    var query = findQuery;
+    query['deleted'] = {$ne: true};
+    questionsCollection.findOne(query, function(err, question) {
         if (err) {
             return callback(common.getError(3019), null);
         }
