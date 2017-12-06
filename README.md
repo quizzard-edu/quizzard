@@ -32,8 +32,7 @@ and `mongodb` installed.
 
 2. Configure server settings and SSL Certification
    * Note: To run this application locally you do not have to change any configuration settings.
-
-  Go to server/config.js
+- Go to server/config.js
     1. Change the https and http ports.
     2. For `hostName` Enter the public web-address for this website, ex (www.quizzard.com)
     3. You can change the session expiration time, by default it is set to 2 hours.
@@ -51,7 +50,7 @@ and `mongodb` installed.
   ```
 
   To generate your own Self-Signed Certificate, Run the following script on your shell (terminal):
-    Note: Make sure to have openssl installed on your shell.
+  - Note: Make sure to have openssl installed on your shell.
     ```
       sh scripts/certificateGenerator
     ```
