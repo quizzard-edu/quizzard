@@ -2,7 +2,7 @@
   .col.s12.m6
     .card
       .card-content.center
-        img.profilePicture(src='img/logo.png' alt='Profile Picture')
+        img.profile-picture(src='/profilePicture/' + user.picture, alt='Profile Picture')
         h5.card-title#sidebar-name User Name: #{user.username}
         h5.card-title#sidebar-name Name: #{user.fname} #{user.lname}
       .card-action.center

@@ -103,3 +103,10 @@
 .disliked-hover {
     color: rgba(243, 13, 20, 0.5);
 }
+
+.user-img {
+    width: 70px !important;
+    height: 70px !important;
+    padding: 10px;
+    border-radius: 50%;
+}

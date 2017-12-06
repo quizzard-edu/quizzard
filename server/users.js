@@ -23,6 +23,7 @@ const db = require('./db.js');
 const logger = require('./log.js');
 const common = require('./common.js');
 const settings = require('./settings.js');
+const vfs = require('./virtualFileSystem.js');
 
 /**
  * Create a student USER, if the USER object is valid
@@ -56,6 +57,7 @@ exports.addAdmin = function (user, callback) {
         userToAdd.type = common.userTypes.ADMIN;
         userToAdd.password = hash;
         userToAdd.active = true;
+        userToAdd.picture = null;
         userToAdd.ratings = [];
 
         db.addAdmin(userToAdd, function (err, userObj) {
@@ -68,8 +70,8 @@ exports.addAdmin = function (user, callback) {
                 return callback(common.getError(2005), null);
             }
 
-            common.mkdir(common.fsTree.USERS, userToAdd._id, function (err, result) {
-                logger.log(common.formatString('Creating user {0} directory: {1} {2}', [userToAdd.username, userToAdd._id, err ? err : result]));
+            vfs.mkdir(common.vfsTree.USERS, userToAdd._id, common.vfsPermission.OWNER, function (err, result) {
+                logger.log(common.formatString('Creating user {0} directory: {1} {2}', [userToAdd.username, userToAdd._id, err ? err : 'ok']));
             });
 
             logger.log(common.formatString('Admin {0} created', [userToAdd.username]));
@@ -110,6 +112,7 @@ exports.addStudent = function (user, callback) {
         userToAdd.type = common.userTypes.STUDENT;
         userToAdd.password = hash;
         userToAdd.active = true;
+        userToAdd.picture = null;
         userToAdd.ratings = [];
 
         userToAdd.points = 0.0;
@@ -131,8 +134,8 @@ exports.addStudent = function (user, callback) {
                 return callback(err, null);
             }
 
-            common.mkdir(common.fsTree.USERS, userToAdd._id, function (err, result) {
-                logger.log(common.formatString('Creating user {0} directory: {1} {2}', [userToAdd.username, userToAdd._id, err ? err : result]));
+            vfs.mkdir(common.vfsTree.USERS, userToAdd._id, common.vfsPermission.OWNER, function (err, result) {
+                logger.log(common.formatString('Creating user {0} directory: {1} {2}', [userToAdd.username, userToAdd._id, err ? err : 'ok']));
             });
 
             logger.log(common.formatString('Student {0} created', [userToAdd.username]));
@@ -425,6 +428,14 @@ exports.updateProfile = function (userId, request, callback) {
 
     update.$set = {};
 
+    if (request.newfname) {
+        update.$set.fname = request.newfname;
+    }
+
+    if (request.newlname) {
+        update.$set.lname = request.newlname;
+    }
+
     if (request.newemail) {
         update.$set.email = request.newemail;
     }
@@ -506,6 +517,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
 
                 var student = {
                     displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
+                    picture: currentStudent.picture,
                     points:currentStudent.points,
                     accuracy:(currentStudent.totalAttemptsCount === 0)
                         ? 0
@@ -600,6 +612,10 @@ exports.addFeedback = function(uuid, subject, message, callback) {
  *
  * @param {function} callback
  */
-exports.getFeedback = function (callback){
+exports.getFeedback = function (callback) {
     db.getFeedback(callback);
+}
+
+exports.updateUserPicture = function (userId, pictureId, callback) {
+    db.updateUserByQuery({_id: userId}, {$set: {picture: pictureId}}, callback);
 }

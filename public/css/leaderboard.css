@@ -4,14 +4,42 @@ div.podium {
     text-align: center;
     padding: 35px;    
 }
+
 div.podium p {
     margin-top: 0;
     color: #000000;
     font-size: 20px;
 }
+
 div.podium p span.score {
     font-weight: bold;
 }
+
+img#first {
+    display: inline-flex;
+    max-width: 60%;
+    width: 250px !important;
+    height: 250px !important;
+    border-radius: 50%;
+}
+
+
+img#second {
+    display: inline-flex;
+    max-width: 60%;
+    width: 200px !important;
+    height: 200px !important;
+    border-radius: 50%;
+}
+
+img#third {
+    display: inline-flex;
+    max-width: 60%;
+    width: 150px !important;
+    height: 150px !important;
+    border-radius: 50%;
+}
+
 
 ol, li {
     list-style: none;

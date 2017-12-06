@@ -22,7 +22,8 @@ const db = require('./db.js');
 const logger = require('./log.js');
 const common = require('./common.js');
 const questionValidator = require('./questionValidator.js');
-const settings = require('./settings.js')
+const settings = require('./settings.js');
+const vfs = require('./virtualFileSystem.js');
 
 /*Preparing data on update/edit of a question */
 var questionUpdateParser = function(question) {
@@ -130,8 +131,8 @@ exports.addQuestion = function(question, callback) {
                     return callback(common.getError(3018), null);
                 }
 
-                common.mkdir(common.fsTree.QUESTIONS, questionToAdd._id, function (err, result) {
-                    logger.log(common.formatString('Creating question directory: {0} {1}', [questionToAdd._id, err ? err : result]));
+                vfs.mkdir(common.vfsTree.QUESTIONS, questionToAdd._id, common.vfsPermission.OWNER, function (err, result) {
+                    logger.log(common.formatString('Creating question directory: {0} {1}', [questionToAdd._id, err ? err : 'ok']));
                 });
 
                 return callback(null, questionId);

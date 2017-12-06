@@ -99,13 +99,14 @@ $('#option-attempt').click(function(evt) {
 // Change leaderboard based on type (Overall, Points, Accuracy, Attemtps)
 var displayNewLeaderboard = function(type) {
     boardType = type;
-    setPodiumImages();
     sortLeaderBoard(type.name);
+    setPodiumImages();    
     displayLeaderboard(studentLeaderList);
 }
 
 var setPodiumImages = function() {
-    $('#first').attr('src','img/logo.png');
-    $('#second').attr('src','img/logo.png');
-    $('#third').attr('src','img/logo.png');
+    var date = new Date();
+    $('#first').attr('src','/profilePicture/' + studentLeaderList[0].picture + '?' + date);
+    $('#second').attr('src','/profilePicture/' + studentLeaderList[1].picture + '?' + date);
+    $('#third').attr('src','/profilePicture/' + studentLeaderList[2].picture + '?' + date);
 }

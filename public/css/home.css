@@ -13,3 +13,11 @@ li {
     -o-user-select: none;
     user-select: none;
 }
+
+.profile-picture {
+    display: inline-flex;
+    max-width: 60%;
+    width: 150px !important;
+    height: 150px !important;
+    border-radius: 50%;
+}

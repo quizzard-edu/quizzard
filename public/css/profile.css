@@ -8,9 +8,9 @@
   height: 200px !important;
 }
 
-.picure-size {
-  max-width: 200px;
-  max-height: 200px;
+.picture-size {
+  width: inherit !important;
+  height: inherit !important;
 }
 
 .profile-list {

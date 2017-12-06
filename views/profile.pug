@@ -20,14 +20,7 @@ block content
             .col.s12
             .fixed-action-btn.horizontal.profile-picture
               a.btn-floating.btn-large.grey.profile-circle
-                img.picure-size(src='/img/logo.png')
-              ul.profile-list
-                li
-                  a.btn-floating.red
-                    i.material-icons delete
-                li
-                  a.btn-floating.blue
-                    i.material-icons backup
+                img.picture-size(src='/profilePicture/' + user.picture)
               h4#userId #{user.username}
             .col.s1
             #viewForm
@@ -68,6 +61,13 @@ block content
                   .input-field.col.s12
                     input#email.validate(type='email', name='newemail', value=user.email, disabled=!editEmailEnabled)
                     label(for='email') New Email
+                .row
+                  .file-field.input-field
+                    .btn
+                      span Picture
+                      input(type='file', accept='.jpg, .jpeg, .png')#profile-picture-input
+                    .file-path-wrapper
+                      input.file-path.validate(type='text', placeholder='Select your profile picture')
                 .row
                   hr
                 .row

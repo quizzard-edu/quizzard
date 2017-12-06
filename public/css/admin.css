@@ -12,6 +12,11 @@
     user-select:none
 }
 
+.accounts-menu-button{
+    position: inherit !important;
+    z-index: 1;
+}
+
 .select-wrapper span.caret {
     color: initial;
     position: absolute;

@@ -235,6 +235,15 @@ const errors = Object.freeze({
     8000: 'Failed to add feedback',
     8001: 'Failed to get feedback',
     8002: 'Failed to remove all feedback',
+
+    //9000 virtual file system
+    9000: 'A system error has occured',
+    9001: 'Failed to upload',
+    9002: 'Failed to upload',
+    9003: 'Failed to find file',
+    9004: 'Failed to upload',
+    9005: 'Permission denied',
+    9006: 'Permission denied'
 });
 
 function getErrorFromResponse(data) {

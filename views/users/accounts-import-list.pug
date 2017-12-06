@@ -14,6 +14,7 @@
                 tr
                   th Included
                   th Username
+                  th Password
                   th First Name
                   th Last Name
                   th Email
@@ -25,6 +26,7 @@
                         input.checked(id='cb-' + s.username type='checkbox' checked=true)
                         label.visbox(for='cb-' + s.username)
                     td #{s.username}
+                    td #{s.password}
                     td #{s.fname}
                     td #{s.lname}
                     td #{s.email}
