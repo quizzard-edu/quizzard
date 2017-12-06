@@ -31,8 +31,7 @@ and `mongodb` installed.
   ```
 
 2. Configure server settings and SSL Certification
-
-  Note: To run this application locally you do not have to change any configuration settings.
+   * Note: To run this application locally you do not have to change any configuration settings.
 
   Go to server/config.js
     1. Change the https and http ports.
