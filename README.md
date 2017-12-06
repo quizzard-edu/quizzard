@@ -52,7 +52,7 @@ and `mongodb` installed.
   To generate your own Self-Signed Certificate, Run the following script on your shell (terminal):
   - Note: Make sure to have openssl installed on your shell.
     ```
-      sh scripts/certificateGenerator
+    $ sh scripts/certificateGenerator
     ```
 
 3. To secure MongoDB authentication and advanced firewall rules follow the steps provided under [doc/MongoDb-Security](quizzard/doc/MongoDb-Security.md).
