@@ -575,9 +575,9 @@ exports.voteReply = function (replyId, vote, userId, callback) {
                     });
                 }
             }
-
-            return callback(common.getError(3016), null);
         }
+
+        return callback(common.getError(3016), null);
     });
 }
 
@@ -636,7 +636,7 @@ exports.updateUserSubmissionTime = function(userId, question, callback){
             }
             return callback(null,'success');
         });
-        
+
     } else {
         update.$push = {'userSubmissionTime': {'userId':userId, submissionTime: currentDate}};
         db.updateQuestionByQuery(query, update, function (err, result){
@@ -649,8 +649,8 @@ exports.updateUserSubmissionTime = function(userId, question, callback){
 }
 /**
  * Changes visibilty of all questions based on the changeValue
- * @param {boolean} changeValue 
- * @param {funciton} callback 
+ * @param {boolean} changeValue
+ * @param {funciton} callback
  */
 exports.changeAllVisibility = function(changeValue, callback) {
     // Gets the list of students

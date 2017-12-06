@@ -21,11 +21,12 @@ each itemComment, indexReply in comments
       hr.divider
       .row
         p.comment-text !{highlightMentionedUser(itemComment['comment'])}
-    .col.s12
-      .row
-        i.medium.material-icons.cursor-pointer.view-replies-button(id='viewReplies_' + itemComment['_id'], onclick='repliesSection("#viewReplies_" + "'+itemComment['_id']+'")') expand_more
+        if itemComment['replies'].length > 3 || itemComment['replies'].length === 0
+          i.medium.material-icons.cursor-pointer.view-replies-button(id='viewReplies_' + itemComment['_id'], onclick='repliesSection("#viewReplies_" + "'+itemComment['_id']+'")') expand_more
+        else
+          i.medium.material-icons.cursor-pointer.view-replies-button(id='viewReplies_' + itemComment['_id'], onclick='repliesSection("#viewReplies_" + "'+itemComment['_id']+'")') expand_less
 
-    .hidden.animated(id='replies_' + itemComment['_id'])
+    animated(id='replies_' + itemComment['_id'] class=(itemComment['replies'].length > 3 || itemComment['replies'].length === 0) ? 'hidden' : '')
       each itemReply, indexReply in itemComment['replies']
         .col.s11.reply
           .row.identification-section

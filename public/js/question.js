@@ -15,7 +15,7 @@ $(function () {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                if (data['code'] !== 3011) {
+                if (jsonResponse['code'] !== 3011) {
                     failSnackbar(getErrorFromResponse(jsonResponse));
                 }
             }
@@ -102,12 +102,12 @@ var sendAnswerRequest = function(ans) {
                 swal('Question is Locked', 'Please try again in ' + data['responseText'], 'warning');
             } else if (data['status'] === 500) {
                 failSnackbar('Something went wrong!');
-            } else if (data['status'] === 405) {            
+            } else if (data['status'] === 405) {
                 $('#hint').removeClass('hidden');
-                swal({ 
+                swal({
                     title: "Incorrect",
                     text: "Sorry, that\'s the wrong answer",
-                    type: "error" 
+                    type: "error"
                 },
                 function(){
                     location.reload();

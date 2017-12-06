@@ -129,10 +129,7 @@ var repliesSection = function(replyObjectId) {
     } else {
         visibilityChange.removeClass('fadeInDown');
         visibilityChange.addClass('fadeOutUp');
-
-        setTimeout(function() {
-            visibilityChange.addClass('hidden');
-        }, 350);
+        visibilityChange.addClass('hidden');
 
         replyObject.html('hexpand_more');
         notHidden.splice(notHidden.indexOf(visibilityChangeId), 1);
@@ -220,11 +217,15 @@ var getDiscussionBoard = function () {
             $('#discussion').html(data);
             unCollapseReplies();
         },
-        error: function(data){
+        error: function(data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar('Something went wrong');
+                if (jsonResponse['code'] !== 3011) {
+                    failSnackbar(getErrorFromResponse(jsonResponse));
+                }
             }
         }
     });
