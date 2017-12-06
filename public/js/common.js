@@ -237,13 +237,13 @@ const errors = Object.freeze({
     8002: 'Failed to remove all feedback',
 
     //9000 virtual file system
-    9000: 'virtual file system is corrupted',
-    9001: 'failed to add to the virtual file system',
-    9002: 'error trying to find item in virtual file system',
-    9003: 'can not find item in virtual file system',
-    9004: 'can not add item in virtual file system',
-    9005: 'file permissions are not set properly',
-    9006: 'user does not have permission to access resources'
+    9000: 'A system error has occured',
+    9001: 'Failed to upload',
+    9002: 'Failed to upload',
+    9003: 'Failed to find file',
+    9004: 'Failed to upload',
+    9005: 'Permission denied',
+    9006: 'Permission denied'
 });
 
 function getErrorFromResponse(data) {
