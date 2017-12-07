@@ -21,7 +21,7 @@ const fs = require('fs');
 var httpsPort = 8080;
 var httpPort = 8000;
 var hostName = '127.0.0.1';
-var maxAge = 60 * 60 * 1000 * 2;
+var maxSessionAge = 60 * 60 * 1000 * 2;
 
 var ssl_options = {
   key: fs.readFileSync('./keys/private.key'),
@@ -32,4 +32,4 @@ exports.httpsPort = httpsPort;
 exports.httpPort = httpPort;
 exports.hostName = hostName;
 exports.ssl_options = ssl_options;
-exports.maxAge = maxAge;
+exports.maxAge = maxSessionAge;
