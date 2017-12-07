@@ -1,7 +1,5 @@
 /*
-db.js
-
-Copyright (C) 2016  Alexei Frolov, Larry Zhang
+Copyright (C) 2016
 Developed at University of Toronto
 
 This program is free software: you can redistribute it and/or modify
@@ -717,7 +715,7 @@ exports.addFeedback = function(feedback, callback) {
             logger.error('Failed to add feedback');
             return callback(common.getError(8000), null);
         }
-        
+
         return callback(null, 'success');
     });
 }
@@ -728,7 +726,7 @@ exports.getFeedback = function(callback) {
             logger.error('Failed to get feedback');
             return callback(common.getError(8001), res);
         }
-        
+
         return callback(null, res);
     });
 }
