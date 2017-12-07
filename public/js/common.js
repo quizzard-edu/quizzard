@@ -246,6 +246,8 @@ const errors = Object.freeze({
     9006: 'Permission denied'
 });
 
+const defaultError = 'A system error has occured';
+
 function getErrorFromResponse(data) {
-    return errors[data['code']]
+    return errors[data['code']] || defaultError;
 }

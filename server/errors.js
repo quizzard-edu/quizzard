@@ -119,3 +119,6 @@ const errors = Object.freeze({
     9006: 'user does not have permission to access resources'
 });
 exports.errors = errors;
+
+const defaultError = 'unknown error';
+exports.defaultError = defaultError;

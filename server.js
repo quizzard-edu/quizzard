@@ -79,9 +79,9 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     rolling: true,
-    cookie: { 
+    cookie: {
         secure: true,
-        maxAge: config.maxAge 
+        maxAge: config.maxAge
     }
 }));
 
@@ -460,7 +460,7 @@ app.get('/questionlist', function (req, res) {
                         }
                         return 'UNKNOWN';
                     },
-                    isActive : request.active 
+                    isActive : request.active
                  });
 
                  return res.status(200).send(html);
@@ -572,6 +572,14 @@ app.get('/statistics', function (req, res) {
                 return res.status(500).send(common.getError(2003));
             }
 
+            questionslist.forEach(question => {
+      	        var first = studentslist.find(student => {
+                    return student._id === question.firstAnswer;
+                });
+
+                question['firstAnswerDisplay'] = (first) ? `${first.fname} ${first.lname}` : 'Not Answered';
+            });
+
             var html = statisticsPug({
                 students: studentslist,
                 questions: questionslist
@@ -611,44 +619,58 @@ app.get('/question', function (req, res) {
             }
         }
         questions.isUserLocked(userId, questionFound, function (err, isLocked, waitTimeMessage, waitTimeinMiliSeconds) {
-            if(err) {
+            if (err) {
                 logger.error(err);
                 return res.status(500).send(common.getError(3006));
             }
 
-            return res.status(200).render('question-view', {
-                user: req.session.user,
-                question: questionFound,
-                answered: (answeredList.indexOf(userId) !== -1),
-                isAdmin : function () {
-                    return req.session.user.type === common.userTypes.ADMIN;
-                },
-                hasQrating: hasQrating,
-                getQuestionForm: function () {
-                    switch (questionFound.type) {
-                        case common.questionTypes.REGULAR.value:
-                            return regexFormPug({studentQuestionForm:true})
-                        case common.questionTypes.MULTIPLECHOICE.value:
-                            return mcFormPug({studentQuestionForm:true, question:questionFound})
-                        case common.questionTypes.TRUEFALSE.value:
-                            return tfFormPug({studentQuestionForm:true, question:questionFound})
-                        case common.questionTypes.CHOOSEALL.value:
-                            return chooseAllFormPug({studentQuestionForm:true, question:questionFound})
-                        case common.questionTypes.MATCHING.value:
-                            // randomize the order of the matching
-                            questionFound.leftSide = common.randomizeList(questionFound.leftSide);
-                            questionFound.rightSide = common.randomizeList(questionFound.rightSide);
-                            return matchingFormPug({studentQuestionForm:true, question:questionFound})
-                        case common.questionTypes.ORDERING.value:
-                            // randomize the order of ordering question
-                            questionFound.answer = common.randomizeList(questionFound.answer);
-                            return orderingFormPug({studentQuestionForm:true, question:questionFound})
-                        default:
-                            break;
-                    }
-                },
-                isLocked: isLocked,
-                waitTime: waitTimeinMiliSeconds
+            users.getStudentsList(function (err, studentslist) {
+                if (err) {
+                    logger.error(err);
+                    return res.status(500).send(common.getError(2003));
+                }
+
+                var first = studentslist.find(student => {
+                    return student._id === questionFound.firstAnswer;
+                });
+
+                var firstAnswerDisplay = (first) ? `${first.fname} ${first.lname}` : 'Not Answered';
+
+                return res.status(200).render('question-view', {
+                    user: req.session.user,
+                    question: questionFound,
+                    firstAnswerDisplay: firstAnswerDisplay,
+                    answered: (answeredList.indexOf(userId) !== -1),
+                    isAdmin : function () {
+                        return req.session.user.type === common.userTypes.ADMIN;
+                    },
+                    hasQrating: hasQrating,
+                    getQuestionForm: function () {
+                        switch (questionFound.type) {
+                            case common.questionTypes.REGULAR.value:
+                                return regexFormPug({studentQuestionForm:true})
+                            case common.questionTypes.MULTIPLECHOICE.value:
+                                return mcFormPug({studentQuestionForm:true, question:questionFound})
+                            case common.questionTypes.TRUEFALSE.value:
+                                return tfFormPug({studentQuestionForm:true, question:questionFound})
+                            case common.questionTypes.CHOOSEALL.value:
+                                return chooseAllFormPug({studentQuestionForm:true, question:questionFound})
+                            case common.questionTypes.MATCHING.value:
+                                // randomize the order of the matching
+                                questionFound.leftSide = common.randomizeList(questionFound.leftSide);
+                                questionFound.rightSide = common.randomizeList(questionFound.rightSide);
+                                return matchingFormPug({studentQuestionForm:true, question:questionFound})
+                            case common.questionTypes.ORDERING.value:
+                                // randomize the order of ordering question
+                                questionFound.answer = common.randomizeList(questionFound.answer);
+                                return orderingFormPug({studentQuestionForm:true, question:questionFound})
+                            default:
+                                break;
+                        }
+                    },
+                    isLocked: isLocked,
+                    waitTime: waitTimeinMiliSeconds
+                });
             });
         });
     });
@@ -874,7 +896,7 @@ app.post('/updateUserPicture', function (req, res) {
             return res.status(500).send(common.getError(6003));
         }
 
-        logger.log(common.formatString('Uploaded: {0}', [fileName]));        
+        logger.log(common.formatString('Uploaded: {0}', [fileName]));
         users.updateUserPicture(req.session.user._id, fileName, function (err, result) {
             if (err) {
                 logger.error(err);

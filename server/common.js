@@ -25,7 +25,9 @@ const errorFile = require('./errors');
 // <Global Constants> ------------------------------------------
 // Common errors
 const errors = errorFile.errors;
+const defaultError = errorFile.defaultError;
 exports.errors = errors;
+exports.defaultError = defaultError;
 
 // common path shared across the backend
 const vfsTree = Object.freeze({
@@ -151,7 +153,7 @@ exports.questionAttributes = questionAttributes;
 var getError = function(errorCode) {
     return {
        code: errorCode,
-       message: errors[errorCode]
+       message: errors[errorCode] || defaultError
     }
 }
 exports.getError = getError;
@@ -191,8 +193,8 @@ exports.getIdsListFromJSONList = getIdsListFromJSONList;
 
 /**
  * return a number as the sum of all numbers in a list
- * 
- * @param {list} list 
+ *
+ * @param {list} list
  */
 var sumListOfNumbers = function (list) {
     return list.reduce((x, y) => {
