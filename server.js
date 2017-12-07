@@ -572,6 +572,14 @@ app.get('/statistics', function (req, res) {
                 return res.status(500).send(common.getError(2003));
             }
 
+            questionslist.forEach(question => {
+      	       var first = studentslist.find(student => {
+                 return student._id === question.firstAnswer;
+               });
+
+               question['firstAnswerDisplay'] = (first) ? `${first.fname} ${first.lname}` : 'Not Answered';
+             });
+
             var html = statisticsPug({
                 students: studentslist,
                 questions: questionslist
