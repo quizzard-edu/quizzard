@@ -27,7 +27,7 @@ block content
             | !{getQuestionForm()}
             if isLocked
               #lockQuestion
-                div.h3 Question is Locked Please try again in 
+                div.h3 Question is Locked Please try again in
                   #clockdiv
                     div
                       span.days
@@ -60,7 +60,7 @@ block content
             if question.correctAttemptsCount === 0
               p.sidebar-item#first-answer You could be the first person to correctly answer this question!
             else
-              p.sidebar-item#first-answer #{question.firstAnswer} was the first person to answer this question.
+              p.sidebar-item#first-answer <b>#{firstAnswerDisplay}</b> was the first person to answer this question.
             h4.sidebar-item#hint.hidden Hint: #{question.hint}
           if answered && !hasQrating && !isAdmin()
             .card-action
@@ -73,7 +73,7 @@ block content
             #discussion
 
   include alert
-  
+
   if isLocked
     block scripts
       script(src='/js/questionLock.js')

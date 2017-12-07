@@ -985,7 +985,7 @@ var initSummernote = function () {
 }
 
 /**
- * Updates the visibility of all questions, based on the changeValue 
+ * Updates the visibility of all questions, based on the changeValue
  * @param {boolean} changeValue true if user is showing all questions, false if user is hiding all questions
  */
 var updateAllVisibility = function (changeValue) {
