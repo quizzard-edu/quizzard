@@ -118,7 +118,7 @@ var prepareQuestionData = function(question, callback) {
 exports.addQuestion = function(question, callback) {
     prepareQuestionData(question, function(err, questionToAdd) {
         if (err) {
-            return callback(common.getError(3021), null)
+            return callback(err, null)
         }
 
         // validate constant question attributes

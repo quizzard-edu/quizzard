@@ -96,6 +96,12 @@ const errors = Object.freeze({
     3021: 'failed to prepare question data',
     3022: 'invalid question attributes',
     3023: 'failed to remove question',
+    3024: '',
+    3025: 'failed to remove question',
+    3026: 'failed to remove question',
+    3027: 'failed to remove question',
+    3028: 'failed to remove question',
+    3029: 'failed to remove question',
 
     //4000 class
     4000: 'failed to check if the class is active',

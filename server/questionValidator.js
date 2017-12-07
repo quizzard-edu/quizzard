@@ -35,6 +35,14 @@ exports.questionCreationValidation = function(info) {
     return validateQuestionAttributesByType(info,info.type);
 }
 
+var validateDefaultQuestionValues = function(questionData){
+    if (questionData.minpoints < 0 
+        || questionData.minpoints > questionData.maxpoints 
+        || questionData.maxpoints < 0){
+        return 'something';
+    }
+}
+
 /*Validate all fields that will be modified*/
 exports.validateAttributeFields = function(question,type) {
     var extraAttributes = false;
