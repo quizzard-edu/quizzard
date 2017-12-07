@@ -792,7 +792,7 @@ var resetAllSettings = function (callback) {
                 return callback(common.getError(7002), null);
             }
 
-            return callback(null, 'ok');
+            return callback(null, defaultSettings);
         });
     });
 }
@@ -815,13 +815,17 @@ var getAllSettings = function (callback) {
     settingsCollection.findOne({}, function (err, obj) {
         if (err) {
             return callback (common.getError(7003), null);
+        } 
+        else if (!obj) {
+            resetAllSettings(function(err, result){
+                if (err){
+                    return callback(err, null)
+                }
+                return callback(null, result);
+            });
+        } else {
+            return callback (null, obj);
         }
-
-        if (!obj) {
-            return callback (common.getError(7004), null);
-        }
-
-        return callback (null, obj);
     });
 }
 
