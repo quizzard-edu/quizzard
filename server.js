@@ -79,9 +79,9 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     rolling: true,
-    cookie: { 
+    cookie: {
         secure: true,
-        maxAge: config.maxAge 
+        maxAge: config.maxAge
     }
 }));
 
@@ -460,7 +460,7 @@ app.get('/questionlist', function (req, res) {
                         }
                         return 'UNKNOWN';
                     },
-                    isActive : request.active 
+                    isActive : request.active
                  });
 
                  return res.status(200).send(html);
@@ -874,7 +874,7 @@ app.post('/updateUserPicture', function (req, res) {
             return res.status(500).send(common.getError(6003));
         }
 
-        logger.log(common.formatString('Uploaded: {0}', [fileName]));        
+        logger.log(common.formatString('Uploaded: {0}', [fileName]));
         users.updateUserPicture(req.session.user._id, fileName, function (err, result) {
             if (err) {
                 logger.error(err);
