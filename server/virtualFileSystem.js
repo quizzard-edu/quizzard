@@ -45,11 +45,11 @@ var mkdir = function (parentPath, directoryName, directoryPermissions, callback)
 
     db.addToVirtualFileSystem(fileObject, function (err, result) {
         if (err) {
-            return callback(getError(9004), null);
+            return callback(common.getError(9004), null);
         }
 
         fs.mkdir(fullPath, function (err) {
-            return callback(err ? getError(1007) : null, err ? null : fileObject);
+            return callback(err ? common.getError(1007) : null, err ? null : fileObject);
         });
     });
 }
@@ -65,7 +65,7 @@ exports.mkdir = mkdir;
 var rmdir = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     fs.rmdir(fullPath, function (err) {
-        return callback(err ? getError(1012) : null, err ? null : 'ok');
+        return callback(err ? common.getError(1012) : null, err ? null : 'ok');
     });
 }
 exports.rmdir = rmdir;
@@ -80,7 +80,7 @@ exports.rmdir = rmdir;
 var rmrf = function (parentPath, directoryName, callback) {
     var fullPath = path.join(parentPath, directoryName);
     rimraf(fullPath, function (err) {
-        return callback(err ? getError(1010) : null, err ? null : 'ok');
+        return callback(err ? common.getError(1010) : null, err ? null : 'ok');
     });
 }
 exports.rmrf = rmrf;
@@ -122,11 +122,11 @@ var writeFile = function (fileObj, callback) {
 
     db.addToVirtualFileSystem(fileObject, function (err, result) {
         if (err) {
-            return callback(getError(9004), null);
+            return callback(common.getError(9004), null);
         }
 
         fs.writeFile(fullPath, fileObj.fileData, function (err) {
-            return callback(err ? getError(1013) : null, err ? null : fileObject);
+            return callback(err ? common.getError(1013) : null, err ? null : fileObject);
         });
     });
 }

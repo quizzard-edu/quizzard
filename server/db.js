@@ -47,7 +47,7 @@ var nextQuestionNumber = 0;
 exports.initialize = function(callback) {
     db.open(function(err, db) {
         if (err) {
-            logger.error(common.getError(1004));
+            logger.error(common.getError(1004).message);
             return callback(err, null);
         }
 
