@@ -326,6 +326,7 @@ var displayQuestionTable = function () {
 
             $(document).ready(function () {
                 $('#questionsTable').DataTable({
+                  order: [[ 1, "asc" ]],
                   bLengthChange: false,
                   searching: true,
                   ordering:  true,
