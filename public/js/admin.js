@@ -944,6 +944,8 @@ var getQuestionsTopicsList = function () {
 /* Initialize the summernote and all its sub modal */
 var initSummernote = function () {
     $('#qtext').summernote({ height: 100 });
+    $('#question-edit-form > div:nth-child(2) > label').remove();
+    $('div.note-btn-group.btn-group button').addClass('customSummernoteButton');
     $('div.note-btn-group.btn-group.note-insert button').unbind();
     $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
     $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
@@ -986,7 +988,7 @@ var initSummernote = function () {
             $('#mediaModal1').modal('close');
         });
     });
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').prop('disabled', true)
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').prop('disabled', true);
     $('div.note-btn-group.btn-group.note-view button:nth-child(3)').click(function () {
         $('#mediaModal3').modal('open');
         $('#mediaModal3 > div > div > div.modal-header > button').click(function () {
