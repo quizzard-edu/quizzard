@@ -66,6 +66,15 @@ var displayAccountsTable = function () {
             });
 
             $('#usersSwitch').prop('checked', usersTableActive);
+
+            $(document).ready(function () {
+                $('#manageAcccountsTable').DataTable({
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+            });
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
@@ -314,6 +323,15 @@ var displayQuestionTable = function () {
             $('#question-creation-button').click(function (evt) {
                 displayQuestionForm();
             });
+
+            $(document).ready(function () {
+                $('#questionsTable').DataTable({
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+            });
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
@@ -418,6 +436,21 @@ var displayStatistics = function () {
             $('#option-accounts').removeClass('active');
             $('#option-questions').removeClass('active');
             $('#option-settings').removeClass('active');
+
+            $(document).ready(function () {
+                $('#questionsStatisticsTable').DataTable({
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+                $('#studentStatisticsTable').DataTable({
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+            });
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;

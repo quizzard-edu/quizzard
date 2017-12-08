@@ -19,7 +19,7 @@ block styles
               span.lever
               | Active
       .card-action
-        table.bordered.centered
+        table.bordered#questionsTable
           thead
             tr
               if isActive
@@ -38,7 +38,7 @@ block styles
               th Title
               th Topic
               th Type
-              th Action
+              th(data-orderable="false") Action
           tbody
             each q in questions
               tr
