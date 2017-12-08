@@ -996,7 +996,7 @@ var initSummernote = function () {
     $('.modal').modal({
         dismissible: false
     });
-    $('#question-edit-form > div:nth-child(2) > div.note-editor.note-frame.panel.panel-default .modal').each(function ( i ) {
+    $('div.note-editor.note-frame.panel.panel-default .modal').each(function ( i ) {
         $(this).attr('id', 'mediaModal' + i);
         $('#mediaModal' + i +'> div > div').removeClass('modal-content');
     });
