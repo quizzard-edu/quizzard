@@ -17,3 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 $(".button-collapse").sideNav();
+
+$(".button-collapse.right").sideNav({
+    edge: 'right', // Choose the horizontal origin
+});
