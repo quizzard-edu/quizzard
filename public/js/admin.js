@@ -319,13 +319,13 @@ var displayQuestionTable = function () {
 
             $('#question-option-button').click(() => {
                 const optionDiv = $('#question-option-div');
-                const optionButton = $('#question-option-button');
+                const optionIcon = $('#question-option-icon');
                 if (optionDiv.hasClass('hidden')) {
                     optionDiv.removeClass('hidden');
-                    optionButton.text('keyboard_arrow_up');
+                    optionIcon.html('keyboard_arrow_up');
                 } else {
                     optionDiv.addClass('hidden');
-                    optionButton.text('keyboard_arrow_down');
+                    optionIcon.html('keyboard_arrow_down');
                 }
             });
 
