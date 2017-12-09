@@ -46,6 +46,8 @@ var fetchLeaderboard = function() {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }

@@ -32,6 +32,8 @@ $(function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 if (jsonResponse['code'] !== 3011) {
                     failSnackbar(getErrorFromResponse(jsonResponse));
@@ -114,6 +116,8 @@ var sendAnswerRequest = function(ans) {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else if (data['status'] === 400){
                 failSnackbar(data['responseText']);
             } else if (data['status'] === 423){

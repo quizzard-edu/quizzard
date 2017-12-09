@@ -46,6 +46,8 @@ var getQuestionsTopicsList = function () {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             }
         }
     });
@@ -96,6 +98,8 @@ var resetDefault = function() {
 
                 if (data['status'] === 401) {
                     window.location.href = '/';
+                } else if (data['status'] === 404) {
+                    window.location.href = '/page-not-found';
                 } else {
                     failSnackbar(getErrorFromResponse(jsonResponse));
                 }
@@ -146,6 +150,8 @@ var save = function() {
 
                 if (data['status'] === 401) {
                     window.location.href = '/';
+                } else if (data['status'] === 404) {
+                    window.location.href = '/page-not-found';
                 } else {
                     failSnackbar(getErrorFromResponse(jsonResponse));
                 }
