@@ -482,6 +482,30 @@ var displayStatistics = function () {
             $('#option-questions').removeClass('active');
             $('#option-settings').removeClass('active');
 
+            $('#accounts-option-button').click(() => {
+                const optionDiv = $('#accounts-option-div');
+                const optionIcon = $('#accounts-option-icon');
+                if (optionDiv.hasClass('hidden')) {
+                    optionDiv.removeClass('hidden');
+                    optionIcon.html('keyboard_arrow_up');
+                } else {
+                    optionDiv.addClass('hidden');
+                    optionIcon.html('keyboard_arrow_down');
+                }
+            });
+
+            $('#questions-option-button').click(() => {
+                const optionDiv = $('#questions-option-div');
+                const optionIcon = $('#questions-option-icon');
+                if (optionDiv.hasClass('hidden')) {
+                    optionDiv.removeClass('hidden');
+                    optionIcon.html('keyboard_arrow_up');
+                } else {
+                    optionDiv.addClass('hidden');
+                    optionIcon.html('keyboard_arrow_down');
+                }
+            });
+
             $(document).ready(function () {
                 $('#questionsStatisticsTable').DataTable({
                   bLengthChange: false,
