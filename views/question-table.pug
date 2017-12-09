@@ -24,17 +24,15 @@ block styles
       .card-action.hidden#question-option-div
         if isActive
           .row
-            h6.left Visiblity:
-              br
+            h6.left Visiblity: &nbsp&nbsp
               a.btn.customAdminButton(onClick='updateAllVisibility(false)') Hide All
               a.btn.customAdminButton(onClick='updateAllVisibility(true)') Show All
-              br
-              .switch
-                label
-                  | Display
-                  input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
-                  span.lever
-                  | Edit
+            .switch.left.customSwitch
+              label
+                | Display
+                input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
+                span.lever
+                | Edit
       .card-action
         table.bordered#questionsTable
           thead

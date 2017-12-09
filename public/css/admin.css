@@ -75,3 +75,7 @@ div.note-editor.note-frame.panel.panel-default{
     padding: 0 1rem;
     margin: 0;
 }
+
+.customSwitch {
+    padding: 15px;
+}
