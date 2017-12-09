@@ -10,10 +10,10 @@ if answerForm
         hr
         .col.s5
           .card.white
-            textarea.form-control(name='matchLeft'+index, placeholder='Enter Left Side', rows='3', required)
+            textarea.form-control(name='matchLeft'+index, placeholder='Enter Left Side', rows='3', style="resize: vertical", required)
         .col.s5
           .card.white
-            textarea.form-control(name='matchRight'+index, placeholder='Enter Right Side', rows='3', required)
+            textarea.form-control(name='matchRight'+index, placeholder='Enter Right Side', rows='3', style="resize: vertical", required)
         .col.s2
           a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
             i.tiny.material-icons close
@@ -56,10 +56,10 @@ else if adminQuestionEdit
         hr
         .col.s5
           .card.white
-            textarea.form-control(name='matchLeft'+index, placeholder='Enter Left Side', rows='3', required)=item
+            textarea.form-control(name='matchLeft'+index, placeholder='Enter Left Side', rows='3', style="resize: vertical", required)=item
         .col.s5
           .card.white
-            textarea.form-control(name='matchRight'+index, placeholder='Enter Right Side', rows='3', required)=question.rightSide[index]
+            textarea.form-control(name='matchRight'+index, placeholder='Enter Right Side', rows='3', style="resize: vertical", required)=question.rightSide[index]
         .col.s2
           a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
             i.tiny.material-icons close
