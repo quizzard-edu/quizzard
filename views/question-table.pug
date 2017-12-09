@@ -23,17 +23,18 @@ block styles
             i.material-icons#question-option-icon keyboard_arrow_down
       .card-action.hidden#question-option-div
         if isActive
-          h6 Visiblity
-            br
-            .chip(onClick='updateAllVisibility(false)') Hide All
-            .chip(onClick='updateAllVisibility(true)') Show All
-            br
-            .switch
-              label
-                | Display
-                input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
-                span.lever
-                | Edit
+          .row
+            h6.left Visiblity:
+              br
+              a.btn.customAdminButton(onClick='updateAllVisibility(false)') Hide All
+              a.btn.customAdminButton(onClick='updateAllVisibility(true)') Show All
+              br
+              .switch
+                label
+                  | Display
+                  input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
+                  span.lever
+                  | Edit
       .card-action
         table.bordered#questionsTable
           thead
