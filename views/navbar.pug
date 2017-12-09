@@ -1,7 +1,10 @@
 .navbar-fixed
   nav
     .nav-wrapper
-      a.navbarLink.brand-logo.center(href='#!') Quizzard
+      if user.type === 0
+        a.navbarLink.brand-logo.center(href='/admin') Quizzard
+      else
+        a.navbarLink.brand-logo.center(href='/home') Quizzard
       a.navbarLink.button-collapse(href='#', data-activates='mobile')
         i.material-icons menu
       ul.left.hide-on-med-and-down
@@ -27,27 +30,49 @@
           a.navbarLink(href='/profile') Profile
         li#nav-logout
           a.navbarLink(href='/logout') Logout
+      a.navbarLink.button-collapse.right(href='#', data-activates='mobile2')
+        img.icon-img(src='/profilePicture/' + user.picture)
 ul#mobile.side-nav
   if user.type === 0
     li#nav-home
-      a.navbarLinkHidden(href='/admin') Administration
+      a.navbarLinkHidden(href='/admin')
+        i.material-icons security
+        | Administration
   else
     li#nav-home
-      a.navbarLinkHidden(href='/home') Questions
+      a.navbarLinkHidden(href='/home')
+        i.material-icons whatshot
+        | Questions
   li#nav-leaderboard
-    a.navbarLinkHidden(href='/leaderboard') Leaderboard
+    a.navbarLinkHidden(href='/leaderboard')
+      i.material-icons list
+      | Leaderboard
   li#nav-analytics
-    a.navbarLinkHidden(href='/analytics') Analytics
+    a.navbarLinkHidden(href='/analytics')
+      i.material-icons trending_up
+      |  Analytics
   if user.type === 0
     li#nav-feedback-view
-      a.navbarLinkHidden(href='/feedback') View Feedback
+      a.navbarLinkHidden(href='/feedback')
+        i.material-icons library_books
+        | View Feedback
   li#nav-about
-    a.navbarLinkHidden(href='/about') About
+    a.navbarLinkHidden(href='/about')
+        i.material-icons help
+        | About
+
+ul#mobile2.side-nav
   li#nav-profile
-    a.navbarLinkHidden(href='#' onclick='userFeedback();') Submit Feedback
+    a.navbarLinkHidden(href='#' onclick='userFeedback();')
+      i.material-icons feedback
+      | Submit Feedback
   li#nav-profile
-    a.navbarLinkHidden(href='/profile') Profile
+    a.navbarLinkHidden(href='/profile')
+      i.material-icons account_circle
+      | Profile
   li#nav-logout
-    a.navbarLinkHidden(href='/logout') Logout
+    a.navbarLinkHidden(href='/logout')
+      i.material-icons exit_to_app
+      | Logout
 
 include feedback-popup

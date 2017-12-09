@@ -20,7 +20,8 @@ ol {
 }
 
 #questionItem {
-  margin-left: 30px; 
+  margin-left: 30px;
+  word-wrap: break-word;
 }
 
 #icon2 {
