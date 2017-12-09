@@ -25,14 +25,14 @@
             span.lever
             | Active
       .card-action
-        table.bordered
+        table.bordered#manageAcccountsTable
           thead
             tr
               th Username
               th First Name
               th Last Name
               th Email
-              th Action
+              th(data-orderable="false") Action
           tbody
             each s in students
               tr
