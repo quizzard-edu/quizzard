@@ -18,22 +18,28 @@ block styles
               input(id='questionSwitch', type='checkbox', onClick='toggleQuestionSwitch()')
               span.lever
               | Active
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light#question-option-button
+            i.material-icons keyboard_arrow_down
+      .card-action.hidden#question-option-div
+        if isActive
+          h6 Visiblity
+            br
+            .chip(onClick='updateAllVisibility(false)') Hide All
+            .chip(onClick='updateAllVisibility(true)') Show All
+            br
+            .switch
+              label
+                | Display
+                input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
+                span.lever
+                | Edit
       .card-action
         table.bordered#questionsTable
           thead
             tr
               if isActive
                 th Visiblity
-                  br
-                  .chip(onClick='updateAllVisibility(false)') Hide All
-                  .chip(onClick='updateAllVisibility(true)') Show All
-                  br
-                  .switch
-                    label
-                      | Display
-                      input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
-                      span.lever
-                      | Edit
               th ID
               th Title
               th Topic
