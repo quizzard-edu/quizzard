@@ -1,14 +1,14 @@
 .navbar-fixed
   nav
     .nav-wrapper
-      if user.type === 0
+      if isAdmin
         a.navbarLink.brand-logo.center(href='/admin') Quizzard
       else
         a.navbarLink.brand-logo.center(href='/home') Quizzard
       a.navbarLink.button-collapse(href='#', data-activates='mobile')
         i.material-icons menu
       ul.left.hide-on-med-and-down
-        if user.type === 0
+        if isAdmin
           li#nav-home
             a.navbarLink(href='/admin') Administration
         else
@@ -18,7 +18,7 @@
           a.navbarLink(href='/leaderboard') Leaderboard
         li#nav-analytics
           a.navbarLink(href='/analytics') Analytics
-        if user.type === 0
+        if isAdmin
           li#nav-feedback-view
             a.navbarLink(href='/feedback') View Feedback
       ul.right.hide-on-med-and-down
@@ -33,7 +33,7 @@
       a.navbarLink.button-collapse.right(href='#', data-activates='mobile2')
         img.icon-img(src='/profilePicture/' + user.picture)
 ul#mobile.side-nav
-  if user.type === 0
+  if isAdmin
     li#nav-home
       a.navbarLinkHidden(href='/admin')
         i.material-icons security
@@ -51,7 +51,7 @@ ul#mobile.side-nav
     a.navbarLinkHidden(href='/analytics')
       i.material-icons trending_up
       |  Analytics
-  if user.type === 0
+  if isAdmin
     li#nav-feedback-view
       a.navbarLinkHidden(href='/feedback')
         i.material-icons library_books

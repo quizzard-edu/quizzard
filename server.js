@@ -213,6 +213,7 @@ app.get('/home', function (req, res) {
 
             return res.status(200).render('home', {
                 user: userFound,
+                isAdmin: userFound.type === common.userTypes.ADMIN,
                 questions: results,
                 getQuestionIcon: function (type) {
                     for (var i in common.questionTypes) {
@@ -233,7 +234,10 @@ app.get('/leaderboard', function (req, res) {
         return res.redirect('/');
     }
 
-    return res.render('leaderboard', { user: req.session.user });
+    return res.render('leaderboard', {
+        user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
+    });
 });
 
 /* Display the admin page. */
@@ -246,7 +250,10 @@ app.get('/admin', function (req,res) {
         return res.redirect('/home');
     }
 
-    return res.render('admin', { user: req.session.user });
+    return res.render('admin', {
+        user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
+    });
 });
 
 /* Display the about page. */
@@ -255,7 +262,10 @@ app.get('/about', function (req,res) {
         return res.redirect('/');
     }
 
-    return res.render('about', { user: req.session.user });
+    return res.render('about', {
+        user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
+    });
 });
 
 /* Fetch and render the leaderboard table.*/
@@ -413,6 +423,7 @@ app.get('/accounteditform', function (req, res) {
 
         var html = accountEditPug({
             user: student,
+            isAdmin: student.type === common.userTypes.ADMIN,
             cdate: student.ctime
         });
 
@@ -571,7 +582,7 @@ app.get('/statistics', function (req, res) {
             }
 
             questionslist.forEach(question => {
-      	        var first = studentslist.find(student => {
+                  var first = studentslist.find(student => {
                     return student._id === question.firstAnswer;
                 });
 
@@ -636,6 +647,7 @@ app.get('/question', function (req, res) {
 
                 return res.status(200).render('question-view', {
                     user: req.session.user,
+                    isAdmin: req.session.user.type === common.userTypes.ADMIN,
                     question: questionFound,
                     firstAnswerDisplay: firstAnswerDisplay,
                     answered: (answeredList.indexOf(userId) !== -1),
@@ -969,6 +981,7 @@ app.post('/usermod', function (req, res) {
 
             var html = accountEditPug({
                 user: userFound,
+                isAdmin: userFound.type === common.userTypes.ADMIN,
                 cdate: creationDate(userFound.ctime)
             });
 
@@ -1416,6 +1429,7 @@ app.get('/accountsExportForm', function (req, res) {
 
         return res.status(200).render('users/accounts-export-form', {
             user: req.session.user,
+            isAdmin: req.session.user.type === common.userTypes.ADMIN,
             students: studentsList
         });
     });
@@ -1432,7 +1446,8 @@ app.get('/accountsImportForm', function (req, res) {
     }
 
     return res.status(200).render('users/accounts-import-form', {
-        user: req.session.user
+        user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
     });
 });
 
@@ -1659,6 +1674,7 @@ app.get('/analytics', function (req, res) {
 
     return res.status(200).render('analytics', {
         user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN,
         isAdmin : function () {
             return req.session.user.type === common.userTypes.ADMIN;
         }
@@ -1690,6 +1706,7 @@ app.get('/profile', function (req, res) {
 
         return res.status(200).render('profile', {
             user: user,
+            isAdmin: req.session.user.type === common.userTypes.ADMIN,
             editNamesEnabled: allSettings.student.editNames,
             editEmailEnabled: allSettings.student.editEmail,
             editPasswordEnabled: allSettings.student.editPassword
@@ -1892,7 +1909,8 @@ app.get('/feedback', function(req, res){
 
             return res.status(201).render('feedback-view', {
                 content: data,
-                user: req.session.user
+                user: req.session.user,
+                isAdmin: req.session.user.type === common.userTypes.ADMIN
             });
         });
     })
