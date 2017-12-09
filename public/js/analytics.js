@@ -23,7 +23,16 @@ $(function () {
   $('#nav-analytics').addClass('active');
 
   // Loads the Student statistics by default
-  displayStudentStatistics(null);
+  if ($('#class-analytics-card').length) {
+    $('#class-analytics-card').removeClass('hidden');
+    displayClassStatistics();
+  } else {
+    $('#student-analytics-card').removeClass('hidden');
+    $('#student-analytics-data-cards').removeClass('hidden');
+    if (!$('#class-analytics-card').length) {
+      displayStudentStatistics(null);
+    }
+  }
 
   // Loads the list of students so that the instructor can select one
   getStudentList();
@@ -32,12 +41,19 @@ $(function () {
     studentList[students[s]] = null;
   }
 
+  initAutoComplete();
+});
+
+/**
+ * init autocomplete
+ */
+var initAutoComplete = function () {
   // Setting up the autocomplete search for the student IDs
   $('#autocomplete-input').autocomplete({
     data: studentList,
     limit: 20,
     onAutocomplete: function (val) {
-      $('#student-analytics-card').removeClass('hidden');
+      $('#student-analytics-data-cards').removeClass('hidden');
       displayStudentStatistics(val.split(' ')[0]);
     },
     minLength: 1,
@@ -49,15 +65,27 @@ $(function () {
 
     for (var s in studentList) {
       if (s.split(' ')[0].toLowerCase() === autocompleteValue.split(' ')[0].toLowerCase()) {
-        $('#student-analytics-card').removeClass('hidden');
+        $('#student-analytics-data-cards').removeClass('hidden');
         displayStudentStatistics(autocompleteValue.split(' ')[0]);
         return;
       }
     }
 
-    $('#student-analytics-card').addClass('hidden');
+    $('#student-analytics-data-cards').addClass('hidden');
   });
-});
+
+  const autocompleteValue = $('#autocomplete-input').val();
+  
+  for (var s in studentList) {
+    if (s.split(' ')[0].toLowerCase() === autocompleteValue.split(' ')[0].toLowerCase()) {
+      $('#student-analytics-data-cards').removeClass('hidden');
+      displayStudentStatistics(autocompleteValue.split(' ')[0]);
+      return;
+    }
+  }
+
+  $('#student-analytics-data-cards').addClass('hidden');
+}
 
 /**
 * Gets the list of student IDs
@@ -80,6 +108,9 @@ var getStudentList = function () {
 * Switching to class statistics tab
 */
 $('#option-class').click(function (evt) {
+  $('#student-analytics-card').addClass('hidden');
+  $('#class-analytics-card').removeClass('hidden');
+
   displayClassStatistics();
 });
 
@@ -87,8 +118,10 @@ $('#option-class').click(function (evt) {
 * Switching to student statistics tab
 */
 $('#option-student').click(function (evt) {
-  const autocompleteValue = $('#autocomplete-input').val() || '';
-  displayStudentStatistics(autocompleteValue.split(' ')[0]);
+  $('#student-analytics-card').removeClass('hidden');
+  $('#class-analytics-card').addClass('hidden');
+
+  initAutoComplete();
 });
 
 /**
@@ -97,13 +130,6 @@ $('#option-student').click(function (evt) {
 * Calls requested charts to update
 */
 var displayClassStatistics = function () {
-  // Card visibilty
-  $('#student-analytics-card').addClass('hidden');
-  $('#studentSelector').addClass('hidden');
-  $('#class-analytics-card').removeClass('hidden');
-
-  $('#studentAnalyticsHeader').addClass('hidden');
-
   var path = '/adminAnalytics';
 
   // Class Statistics
@@ -131,13 +157,6 @@ var displayClassStatistics = function () {
 * Calls requested charts to update
 */
 var displayStudentStatistics = function (studentId) {
-  // Card visibilty
-  $('#student-analytics-card').removeClass('hidden');
-  $('#studentSelector').removeClass('hidden');
-  $('#class-analytics-card').addClass('hidden');
-
-  $('#studentAnalyticsHeader').removeClass('hidden');
-
   var path = studentId ? '/studentAnalytics?studentId=' + studentId : '/studentAnalytics';
 
   // Request statistics
