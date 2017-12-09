@@ -65,6 +65,18 @@ var displayAccountsTable = function () {
                 displayImportAccountsForm();
             });
 
+            $('#account-option-button').click(() => {
+                const optionDiv = $('#account-option-div');
+                const optionIcon = $('#account-option-icon');
+                if (optionDiv.hasClass('hidden')) {
+                    optionDiv.removeClass('hidden');
+                    optionIcon.html('keyboard_arrow_up');
+                } else {
+                    optionDiv.addClass('hidden');
+                    optionIcon.html('keyboard_arrow_down');
+                }
+            });
+
             $('#usersSwitch').prop('checked', usersTableActive);
 
             $(document).ready(function () {
@@ -316,6 +328,18 @@ var displayQuestionTable = function () {
             $('#option-accounts').removeClass('active');
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
+
+            $('#question-option-button').click(() => {
+                const optionDiv = $('#question-option-div');
+                const optionIcon = $('#question-option-icon');
+                if (optionDiv.hasClass('hidden')) {
+                    optionDiv.removeClass('hidden');
+                    optionIcon.html('keyboard_arrow_up');
+                } else {
+                    optionDiv.addClass('hidden');
+                    optionIcon.html('keyboard_arrow_down');
+                }
+            });
 
             $('.visbox').hide();
             $('#questionSwitch').prop('checked', questionTableActive);
