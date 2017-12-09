@@ -56,10 +56,10 @@ block styles
                 td #{q.topic}
                 td #{questionType(q.type)}
                 td
-                  button.btn.btn-default.view-button(id='view-' + q._id, name=q.number, type='button', aria-label='View')
+                  button.btn.btn-default.view-button.customAdminButton(id='view-' + q._id, name=q.number, type='button', aria-label='View')
                     i.material-icons remove_red_eye
                   if isActive
-                    button.btn.btn-default.edit-button(id='edit-' + q._id, name=q.number, type='button', aria-label='Edit')
+                    button.btn.btn-default.edit-button.customAdminButton(id='edit-' + q._id, name=q.number, type='button', aria-label='Edit')
                       i.material-icons edit
-                    button.btn.btn-default.delete-button(id='delete-' + q._id, name=q.number, type='button', aria-label='Delete')
+                    button.btn.btn-default.delete-button.customAdminButton(id='delete-' + q._id, name=q.number, type='button', aria-label='Delete')
                       i.material-icons close

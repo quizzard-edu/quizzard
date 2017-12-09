@@ -68,3 +68,10 @@ div.note-editor.note-frame.panel.panel-default{
     border: 1px solid #eaeaea;
     border-radius: 0px;
 }
+
+.customAdminButton {
+    background-color: #ffffff;
+    color: #464646;
+    padding: 0 1rem;
+    margin: 0;
+}
