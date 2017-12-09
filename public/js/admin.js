@@ -66,6 +66,15 @@ var displayAccountsTable = function () {
             });
 
             $('#usersSwitch').prop('checked', usersTableActive);
+
+            $(document).ready(function () {
+                $('#manageAcccountsTable').DataTable({
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+            });
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
@@ -314,6 +323,16 @@ var displayQuestionTable = function () {
             $('#question-creation-button').click(function (evt) {
                 displayQuestionForm();
             });
+
+            $(document).ready(function () {
+                $('#questionsTable').DataTable({
+                  order: [[ 1, "asc" ]],
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+            });
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
@@ -418,6 +437,21 @@ var displayStatistics = function () {
             $('#option-accounts').removeClass('active');
             $('#option-questions').removeClass('active');
             $('#option-settings').removeClass('active');
+
+            $(document).ready(function () {
+                $('#questionsStatisticsTable').DataTable({
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+                $('#studentStatisticsTable').DataTable({
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+            });
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
@@ -944,7 +978,7 @@ var getQuestionsTopicsList = function () {
 /* Initialize the summernote and all its sub modal */
 var initSummernote = function () {
     $('#qtext').summernote({ height: 100 });
-    $('div.note-btn-group.btn-group button').addClass('customSummernoteButton');
+    $('div.note-btn-group.btn-group button').unbind('mouseenter mouseleave').addClass('customSummernoteButton');
     $('div.note-btn-group.btn-group.note-insert button').unbind();
     $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
     $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
@@ -987,7 +1021,7 @@ var initSummernote = function () {
             $('#mediaModal1').modal('close');
         });
     });
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').prop('disabled', true);
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').remove();
     $('div.note-btn-group.btn-group.note-view button:nth-child(3)').click(function () {
         $('#mediaModal3').modal('open');
         $('#mediaModal3 > div > div > div.modal-header > button').click(function () {

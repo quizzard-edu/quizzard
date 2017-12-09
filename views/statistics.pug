@@ -5,7 +5,7 @@
         h5.card-title Users Statistics
         h6 Examine information about users' statistics.
       .card-action
-        table.bordered
+        table.bordered#studentStatisticsTable
           thead
             tr
               th Username
@@ -20,7 +20,7 @@
                 td #{s.totalAttemptsCount}
                 td #{s.correctAttemptsCount}
                 if s.totalAttemptsCount === 0
-                  td 0%
+                  td 0.00%
                 else
                   td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%
                 td #{s.points}
@@ -31,7 +31,7 @@
         h5.card-title Questions Statistics
         h6 Examine information about questions' statistics.
       .card-action
-        table.bordered
+        table.bordered#questionsStatisticsTable
           thead
             tr
               th ID
@@ -52,7 +52,7 @@
                 td #{q.totalAttemptsCount}
                 td #{q.correctAttemptsCount}
                 if q.totalAttemptsCount === 0
-                  td 0%
+                  td 0.00%
                 else
                   td #{((q.correctAttemptsCount / q.totalAttemptsCount) * 100).toFixed(2)}%
                 td #{q.firstAnswerDisplay}
