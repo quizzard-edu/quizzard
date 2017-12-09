@@ -413,6 +413,8 @@ var displayQuestionForm = function () {
         error: function (data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar('Something went wrong, please try again later!');
             }
