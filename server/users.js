@@ -497,13 +497,14 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
                 // Adds the current student to the mini leaderboard
                 if (currentStudent._id === userid) {
                     // Row full of ... to show that student is not in the top 3
-                    var emptyStudent = {
-                        displayName: '...',
-                        points:'...',
-                        userRank: '...'
+                    if (student.userRank !== leaderboardList[leaderboardList.length - 1].userRank + 1) {
+                        var emptyStudent = {
+                            displayName: '...',
+                            points:'...',
+                            userRank: '...'
+                        }
+                        leaderboardList.push(emptyStudent);
                     }
-
-                    leaderboardList.push(emptyStudent);
                     leaderboardList.push(student);
                 }
 
@@ -521,6 +522,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
                 var currentStudent = studentlist[i];
 
                 var student = {
+                    userRank: -1,
                     id: currentStudent._id,
                     displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
                     picture: currentStudent.picture,

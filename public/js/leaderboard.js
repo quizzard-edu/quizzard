@@ -82,9 +82,12 @@ var displayLeaderboard = function(studentLeaderList) {
     //studentLeaderList.forEach((studentObject, index) => {
     for (var index = 0; index < studentLeaderList.length; index++){
         studentObject = studentLeaderList[index];
+        
         if (index + 1 > leaderboardLimit) {
-
             if (currentStudentIndex + 1 > leaderboardLimit) {
+                // if (currentStudent.userRank !== studentLeaderList[currentStudentIndex - 1].userRank){
+                //     fillRow(-1, emptyStudent, studentLeaderList);
+                // }
                 fillRow(-1, emptyStudent, studentLeaderList);
                 fillRow(currentStudentIndex, currentStudent, studentLeaderList);
             }
@@ -152,6 +155,7 @@ var fillRow = function (index, studentObject, leaderboardList) {
     if (index === 0) {
         rank = 1;
         prevRank = rank;
+        studentObject.userRank = rank;
         leaderboardRow.find('#rank').html(rank);
     } else if (index === -1) {
         rank = '...';
@@ -159,10 +163,12 @@ var fillRow = function (index, studentObject, leaderboardList) {
     } else {
         if (leaderboardList[index - 1][boardType.name] === studentObject[boardType.name]) {
             rank = prevRank;
+            studentObject.userRank = rank;
             leaderboardRow.find('#rank').html(rank);
         } else {
             rank = index + 1;
             prevRank = rank;
+            studentObject.userRank = rank;
             leaderboardRow.find('#rank').html(rank);
         }
     }
