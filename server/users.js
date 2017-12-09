@@ -467,7 +467,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
         }
 
         var leaderboardList = [];
-
+        
         if (smallBoard) {
             var rank;
             var prevRank;
@@ -496,6 +496,14 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
 
                 // Adds the current student to the mini leaderboard
                 if (currentStudent._id === userid) {
+                    // Row full of ... to show that student is not in the top 3
+                    var emptyStudent = {
+                        displayName: '...',
+                        points:'...',
+                        userRank: '...'
+                    }
+
+                    leaderboardList.push(emptyStudent);
                     leaderboardList.push(student);
                 }
 
@@ -508,12 +516,12 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
 
         else {
             // This is the number of people that will be shown on the leaderboard
-            leaderboardLimit = settings.getLeaderboardLimit();
 
-            for (var i = 0; i < leaderboardLimit; ++i) {
+            for (var i = 0; i < studentlist.length; ++i) {
                 var currentStudent = studentlist[i];
 
                 var student = {
+                    id: currentStudent._id,
                     displayName:`${currentStudent.fname} ${currentStudent.lname[0]}.`,
                     picture: currentStudent.picture,
                     points:currentStudent.points,
@@ -529,9 +537,10 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
                         ((currentStudent.correctAttemptsCount/currentStudent.totalAttemptsCount) +
                         (currentStudent.points/currentStudent.totalAttemptsCount))).toFixed(2)
                 }
-
                 leaderboardList.push(student);
             }
+            // Row full of ... to show that student is not in leaderboard
+            //leaderboardList.push(emptyStudent);
         }
         return callback(err, leaderboardList);
     });

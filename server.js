@@ -276,6 +276,7 @@ app.get('/leaderboard-table', function (req, res) {
             const leaderboardRowHTML = leaderboardRowPug();
             return res.status(200).send({
                 leaderboardList: leaderboardList,
+                leaderboardLimit: settings.getLeaderboardLimit(),
                 leaderboardTableHTML: leaderboardTableHTML,
                 leaderboardRowHTML: leaderboardRowHTML,
                 userId: req.session.user._id
