@@ -121,10 +121,10 @@ var sendAnswerRequest = function(ans) {
             } else if (data['status'] === 500) {
                 failSnackbar('Something went wrong!');
             } else if (data['status'] === 405) {
-                $('#hint').removeClass('hidden');
                 swal({
+                    html: true,
                     title: "Incorrect",
-                    text: "Sorry, that\'s the wrong answer",
+                    text: "Sorry, that\'s the wrong answer<br><br><b id='hint'>Hint: " + data.responseJSON.hint + "</b>",
                     type: "error"
                 },
                 function(){
