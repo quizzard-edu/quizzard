@@ -78,3 +78,8 @@ div.note-editor.note-frame.panel.panel-default{
 .customSwitch {
     padding: 15px;
 }
+
+.customSettingsButton {
+    padding: 0 0.5rem;
+    margin: 0;
+}
