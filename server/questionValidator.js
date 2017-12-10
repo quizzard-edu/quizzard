@@ -51,7 +51,7 @@ exports.questionCreationValidation = function(info) {
 /**
  * validate default question values
  *
- * @param {*} questionData
+ * @param {number} questionData
  */
 var validateDefaultQuestionValues = function(questionData){
     if ('minpoints' in questionData && 'maxpoints' in questionData){
@@ -244,8 +244,8 @@ var orderingAttributeValidator = function(question) {
  * Validate specific value to it's attributeType in DB
  *
  * @param {*} valueToCheck
- * @param {*} key
- * @param {*} attributeType
+ * @param {string} key
+ * @param {string} attributeType
  */
 var validateAttributeType = function(valueToCheck, key, attributeType) {
     return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;
@@ -255,8 +255,8 @@ exports.validateAttributeType = validateAttributeType;
 /**
  * Validate all attributes in Object being passed and has correct field types
  *
- * @param {*} objectToCheck
- * @param {*} attributeType
+ * @param {object} objectToCheck
+ * @param {string} attributeType
  */
 var validateAllAttributesInGroup = function(objectToCheck, attributeType) {
     for (var key in common.questionAttributes[attributeType]) {
@@ -270,8 +270,8 @@ var validateAllAttributesInGroup = function(objectToCheck, attributeType) {
 /**
  * Validate an Array object to contain specific value types
  *
- * @param {*} arrayObject
- * @param {*} typeOfvalue
+ * @param {list} arrayObject
+ * @param {string} typeOfvalue
  */
 var validateArrayObject = function(arrayObject,typeOfvalue) {
     for (var i = 0; i < arrayObject.length; i++) {
