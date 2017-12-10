@@ -286,6 +286,7 @@ app.get('/leaderboard-table', function (req, res) {
             const leaderboardRowHTML = leaderboardRowPug();
             return res.status(200).send({
                 leaderboardList: leaderboardList,
+                leaderboardLimit: settings.getLeaderboardLimit(),
                 leaderboardTableHTML: leaderboardTableHTML,
                 leaderboardRowHTML: leaderboardRowHTML,
                 userId: req.session.user._id
@@ -1009,7 +1010,7 @@ app.put('/questionadd', function (req, res) {
     questions.addQuestion(req.body, function (err, qId) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(3007));
+            return res.status(500).send(err);
         }
 
         if (req.body.rating && parseInt(req.body.rating) > 0 && parseInt(req.body.rating) < 6) {
@@ -1041,7 +1042,7 @@ app.post('/questionmod', function (req, res) {
     questions.updateQuestionById(qid, q, function (err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(3020));
+            return res.status(500).send(err);
         }
         return res.status(200).send(result);
     });
@@ -1771,7 +1772,7 @@ app.post('/updateSettings', function (req, res) {
     settings.updateSettings(req.body.settings, function (err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(7001));
+            return res.status(500).send(err);
         }
 
         return res.status(200).send('ok');

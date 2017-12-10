@@ -90,7 +90,7 @@ const questionTypes = Object.freeze({
     tf         : {value: 'True and False', icon: 'check_circle'},
     matching   : {value: 'Matching', icon: 'dashboard'},
     ca         : {value: 'Choose All', icon: 'format_list_bulleted'},
-    ordering   : {value: 'Ordering', icon: 'format_list_bulleted'}
+    ordering   : {value: 'Ordering', icon: 'swap_vert'}
 })
 
 // This is the function.
@@ -223,6 +223,9 @@ const errors = Object.freeze({
     3021: 'Failed to get question data',
     3022: 'Invalid question attributes',
     3023: 'Failed to remove question',
+    3024: 'Minimum points must be less than or equal to Max points',
+    3025: 'Question needs two or more answer options',
+    3026: 'Question needs an answer',
 
     //4000 class
     4000: 'A system error has occured',

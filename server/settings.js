@@ -28,7 +28,13 @@ var allSettings = {};
  * @param {function} callback
  */
 exports.resetAllSettings = function (callback) {
-    db.resetAllSettings (callback);
+    db.resetAllSettings (function(err, object){
+        if (err){
+            return callback(err);
+        }
+        allSettings = object;
+        return callback(null,'success');
+    });
 }
 
 /**
@@ -372,14 +378,20 @@ exports.updateSettings = function (updateObject, callback) {
 
     if ('minPoints' in updateObject
         && parseInt(updateObject.minPoints)
-        && parseInt(updateObject.minPoints) >= 10) {
+        && parseInt(updateObject.minPoints) >= 0) {
         updateQuery.$set['question.defaultMinPoints'] = allSettings.question.defaultMinPoints = parseInt(updateObject.minPoints);
     }
 
     if ('maxPoints' in updateObject
         && parseInt(updateObject.maxPoints)
-        && parseInt(updateObject.maxPoints) >= 100) {
+        && parseInt(updateObject.minPoints) >= 0) {
         updateQuery.$set['question.defaultMaxPoints'] = allSettings.question.defaultMaxPoints = parseInt(updateObject.maxPoints);
+    }
+
+    if ('minPoints' in updateObject && 'maxPoints' in updateObject){
+        if (parseInt(updateObject.minPoints) > parseInt(updateObject.maxPoints)){
+            return callback(common.getError(3024),null)
+        };
     }
 
     if ('allowTimeout' in updateObject

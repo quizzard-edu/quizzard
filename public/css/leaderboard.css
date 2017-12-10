@@ -60,6 +60,10 @@ li.silver {
     transform: scale(0.60);
 }
 
+.gold {
+    font-weight: bold;
+} 
+
 li img {
     display: inline-flex;
     max-width: 60%;
