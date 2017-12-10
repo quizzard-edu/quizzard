@@ -77,6 +77,8 @@ var editProfile = function(id) {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -117,6 +119,8 @@ var uploadProfilePicture = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }

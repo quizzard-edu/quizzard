@@ -720,7 +720,7 @@ app.post('/submitanswer', function (req, res) {
                 points = Math.floor(Math.max(question.minpoints, question.maxpoints/Math.cbrt(question.correctAttemptsCount + 1)));
             }
 
-            var response = {text: text, points: points};
+            var response = {text: text, points: points, hint: question.hint};
 
             if (req.session.user.type === common.userTypes.ADMIN) {
                 return res.status(status).send(response);
