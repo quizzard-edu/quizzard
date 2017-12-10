@@ -20,12 +20,21 @@ const common = require('./common.js');
 
 const successMsg = {success:true, err:'Validation Passed'}
 const failMsg = {success:false, err:common.getError(3022)}
-/*Send back specific error message by question type*/
+
+/**
+ * Send back specific error message by question type
+ *
+ * @param {string} message
+ */
 var qTypeFailMsg = function(message) {
     return {success:false, err:message};
 }
 
-/*Validate all question fields on first entry to db*/
+/**
+ * Validate all question fields on first entry to db
+ *
+ * @param {*} info
+ */
 exports.questionCreationValidation = function(info) {
     for (var key in common.questionAttributes.DEFAULT) {
         if (!(key in info) || !validateAttributeType(info[key], key, 'DEFAULT')) {
@@ -39,6 +48,11 @@ exports.questionCreationValidation = function(info) {
     return validateQuestionAttributesByType(info,info.type);
 }
 
+/**
+ * validate default question values
+ *
+ * @param {*} questionData
+ */
 var validateDefaultQuestionValues = function(questionData){
     if ('minpoints' in questionData && 'maxpoints' in questionData){
         if (questionData.minpoints < 0
@@ -50,7 +64,12 @@ var validateDefaultQuestionValues = function(questionData){
     return successMsg;
 }
 
-/*Validate all fields that will be modified*/
+/**
+ * Validate all fields that will be modified
+ *
+ * @param {object} question
+ * @param {*} type
+ */
 exports.validateAttributeFields = function(question,type) {
     var extraAttributes = false;
 
@@ -79,6 +98,12 @@ exports.validateAttributeFields = function(question,type) {
     return successMsg;
 }
 
+/**
+ * validate question attributes by type
+ *
+ * @param {object} question
+ * @param {*} type
+ */
 var validateQuestionAttributesByType = function(question, type) {
     var result;
 
@@ -112,6 +137,11 @@ var validateQuestionAttributesByType = function(question, type) {
     return result;
 }
 
+/**
+ * regex attribute validator
+ *
+ * @param {object} question
+ */
 var regexAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'REGULAR')) {
         return qTypeFailMsg(commmon.getError(3022));
@@ -119,6 +149,11 @@ var regexAttributeValidator = function(question) {
     return successMsg;
 }
 
+/**
+ * multiple choice attribute validator
+ *
+ * @param {object} question
+ */
 var multipleChoiceAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'MULTIPLECHOICE')) {
         return qTypeFailMsg(commmon.getError(3022));
@@ -132,6 +167,11 @@ var multipleChoiceAttributeValidator = function(question) {
     return successMsg;
 }
 
+/**
+ * true and false attribute validator
+ *
+ * @param {object} question
+ */
 var trueAndFalseAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'TRUEFALSE')) {
         return qTypeFailMsg(commmon.getError(3022));
@@ -142,6 +182,11 @@ var trueAndFalseAttributeValidator = function(question) {
     return successMsg;
 }
 
+/**
+ * matching attribute validator
+ *
+ * @param {object} question
+ */
 var matchingAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'MATCHING')) {
         return qTypeFailMsg(commmon.getError(3022));
@@ -155,6 +200,11 @@ var matchingAttributeValidator = function(question) {
     return successMsg;
 }
 
+/**
+ * choose all attribute validator
+ *
+ * @param {object} question
+ */
 var chooseAllAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'CHOOSEALL')) {
         return qTypeFailMsg(commmon.getError(3022));
@@ -172,6 +222,11 @@ var chooseAllAttributeValidator = function(question) {
     return successMsg;
 }
 
+/**
+ * ordering attribute validator
+ *
+ * @param {object} question
+ */
 var orderingAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'ORDERING')) {
         return qTypeFailMsg(commmon.getError(3022));
@@ -184,13 +239,25 @@ var orderingAttributeValidator = function(question) {
     }
     return successMsg;
 }
-/*Validate specific value to it's attributeType in DB*/
+
+/**
+ * Validate specific value to it's attributeType in DB
+ *
+ * @param {*} valueToCheck
+ * @param {*} key
+ * @param {*} attributeType
+ */
 var validateAttributeType = function(valueToCheck, key, attributeType) {
     return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;
 }
 exports.validateAttributeType = validateAttributeType;
 
-/*Validate all attributes in Object being passed and has correct field types*/
+/**
+ * Validate all attributes in Object being passed and has correct field types
+ *
+ * @param {*} objectToCheck
+ * @param {*} attributeType
+ */
 var validateAllAttributesInGroup = function(objectToCheck, attributeType) {
     for (var key in common.questionAttributes[attributeType]) {
         if (!(key in objectToCheck) || !validateAttributeType(objectToCheck[key], key, attributeType)) {
@@ -200,7 +267,12 @@ var validateAllAttributesInGroup = function(objectToCheck, attributeType) {
     return true;
 }
 
-/*Validate an Array object to contain specific value types*/
+/**
+ * Validate an Array object to contain specific value types
+ *
+ * @param {*} arrayObject
+ * @param {*} typeOfvalue
+ */
 var validateArrayObject = function(arrayObject,typeOfvalue) {
     for (var i = 0; i < arrayObject.length; i++) {
         if (!validateAttributeType(arrayObject[i],typeOfvalue,'DATATYPES')) {

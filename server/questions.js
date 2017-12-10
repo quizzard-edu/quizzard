@@ -23,7 +23,11 @@ const questionValidator = require('./questionValidator.js');
 const settings = require('./settings.js');
 const vfs = require('./virtualFileSystem.js');
 
-/*Preparing data on update/edit of a question */
+/**
+ * Preparing data on update/edit of a question
+ *
+ * @param {object} question
+ */
 var questionUpdateParser = function(question) {
     var updatedQuestion = question;
 
@@ -42,7 +46,12 @@ var questionUpdateParser = function(question) {
     return updatedQuestion;
 }
 
-/*Prepare question data on first pass to DB*/
+/**
+ * Prepare question data on first pass to DB
+ *
+ * @param {object} question
+ * @param {function} callback
+ */
 var prepareQuestionData = function(question, callback) {
     // prepare regular data
     var currentDate = common.getDate();
@@ -110,11 +119,14 @@ var prepareQuestionData = function(question, callback) {
     return callback(null, questionToAdd);
 }
 
-/*
-* Insert a new question into the database.
-* The question object passed to the function should have
-* the text, topic, type, answer, minpoints, maxpoints and hint set.
-*/
+/**
+ * Insert a new question into the database.
+ * The question object passed to the function should have
+ * the text, topic, type, answer, minpoints, maxpoints and hint set.
+ *
+ * @param {object} question
+ * @param {function} callback
+ */
 exports.addQuestion = function(question, callback) {
     prepareQuestionData(question, function(err, questionToAdd) {
         if (err) {
@@ -141,11 +153,24 @@ exports.addQuestion = function(question, callback) {
     })
 }
 
-/* Replace a question in the database with the provided question object. */
+/**
+ * Replace a question in the database with the provided question object.
+ *
+ * @param {string} questionId
+ * @param {object} info
+ * @param {function} callback
+ */
 exports.updateQuestionById = function(questionId, info, callback) {
     updateQuestionById(questionId, info, callback);
 }
 
+/**
+ * Replace a question in the database with the provided question object.
+ *
+ * @param {string} questionId
+ * @param {object} info
+ * @param {function} callback
+ */
 var updateQuestionById = function(qId, infoToUpdate, callback) {
     // Get Type of question and validate it
     lookupQuestionById(qId, function(err, question) {
@@ -164,7 +189,12 @@ var updateQuestionById = function(qId, infoToUpdate, callback) {
     });
 }
 
-/* Deactivate the question with ID qid from the database. */
+/**
+ * Deactivate the question with ID qid from the database.
+ *
+ * @param {string} questionId
+ * @param {function} callback
+ */
 exports.deleteQuestion = function(questionId, callback) {
     lookupQuestionById(questionId, function(err, questionObj){
         if (err) {
@@ -187,17 +217,34 @@ exports.deleteQuestion = function(questionId, callback) {
     });
 }
 
-/* Extract a question object from the database using its ID. */
+/**
+ * Extract a question object from the database using its ID.
+ *
+ * @param {string} questionId
+ * @param {function} callback
+ */
 exports.lookupQuestionById = function(questionId, callback) {
     lookupQuestionById(questionId, callback);
 }
 
-// lookup question in database
+/**
+ * lookup question in database
+ *
+ * @param {string} questionId
+ * @param {function} callback
+ */
 var lookupQuestionById = function(questionId, callback) {
     db.lookupQuestion({_id: questionId}, callback);
 }
 
-// adding rating to question collection
+/**
+ * adding rating to question collection
+ *
+ * @param {string} questionId
+ * @param {string} userId
+ * @param {number} rating
+ * @param {function} callback
+ */
 exports.submitRating = function (questionId, userId, rating, callback) {
     var currentDate = common.getDate();
     var query = {_id: questionId};
@@ -215,17 +262,36 @@ exports.submitRating = function (questionId, userId, rating, callback) {
     });
 }
 
-// get all questions list
+/**
+ * get all questions list
+ *
+ * @param {function} callback
+ */
 exports.getAllQuestionsList = function(callback) {
     db.getQuestionsList({}, {number: 1}, callback);
 }
 
-// get all questions list by Query
+/**
+ * get all questions list by Query
+ *
+ * @param {object} findQuery
+ * @param {object} sortQuery
+ * @param {function} callback
+ */
 exports.getAllQuestionsByQuery = function(findQuery, sortQuery, callback) {
     db.getQuestionsList(findQuery, sortQuery, callback);
 }
 
-// submit answer
+/**
+ * submit answer
+ *
+ * @param {string} questionId
+ * @param {string} userId
+ * @param {boolean} correct
+ * @param {number} points
+ * @param {*} answer
+ * @param {function} callback
+ */
 exports.submitAnswer = function(questionId, userId, correct, points, answer, callback) {
     var currentDate = common.getDate();
     var query = {_id: questionId};
@@ -263,7 +329,12 @@ exports.submitAnswer = function(questionId, userId, correct, points, answer, cal
     });
 }
 
-// verify answer based on type
+/**
+ * verify answer based on type
+ *
+ * @param {object} question
+ * @param {*} answer
+ */
 exports.verifyAnswer = function(question, answer) {
     if (answer) {
         switch (question.type) {
@@ -280,6 +351,12 @@ exports.verifyAnswer = function(question, answer) {
     return false;
 }
 
+/**
+ * verify choose all question answer
+ *
+ * @param {object} question
+ * @param {*} answer
+ */
 var verifyChooseAllQuestionAnswer = function(question,answer) {
     if (!questionValidator.validateAttributeType(answer,'answer','CHOOSEALL') ||
         !questionValidator.validateArrayObject(answer,'String')) {
@@ -288,6 +365,12 @@ var verifyChooseAllQuestionAnswer = function(question,answer) {
     return question.answer.sort().join(',') === answer.sort().join(',');
 }
 
+/**
+ * verify matching question answer
+ *
+ * @param {object} question
+ * @param {*} answer
+ */
 var verifyMatchingQuestionAnswer = function(question, answer) {
     if (!questionValidator.validateAttributeType(answer,'Array','DATATYPES') ||
         !questionValidator.validateArrayObject(answer,'Array') ||
@@ -314,7 +397,13 @@ var verifyMatchingQuestionAnswer = function(question, answer) {
     }
     return false;
 }
-// Check if answer submitted is correct for Ordering question Type
+
+/**
+ * Check if answer submitted is correct for Ordering question Type
+ *
+ * @param {object} question
+ * @param {*} answer
+ */
 var verifyOrderingQuestionAnswer = function(question,answer) {
     if (!questionValidator.validateAttributeType(answer,'answer','ORDERING') ||
         !questionValidator.validateArrayObject(answer,'String')) {
@@ -322,7 +411,15 @@ var verifyOrderingQuestionAnswer = function(question,answer) {
     }
     return question.answer.join(',') === answer.join(',');
 }
-// add comment to question by id with user and comment
+
+/**
+ * add comment to question by id with user and comment
+ *
+ * @param {string} questionId
+ * @param {string} userId
+ * @param {string} comment
+ * @param {function} callback
+ */
 exports.addComment = function (questionId, userId, comment, callback) {
     var currentDate = common.getDate();
     var query = {_id: questionId};
@@ -347,7 +444,14 @@ exports.addComment = function (questionId, userId, comment, callback) {
     });
 }
 
-// add reply to comment by id with user and reply
+/**
+ * add reply to comment by id with user and reply
+ *
+ * @param {string} commentId
+ * @param {string} userId
+ * @param {string} reply
+ * @param {function} callback
+ */
 exports.addReply = function (commentId, userId, reply, callback) {
     var currentDate = common.getDate();
     var query = {'comments._id': commentId};
@@ -372,15 +476,21 @@ exports.addReply = function (commentId, userId, reply, callback) {
     });
 }
 
-/*
-The way votes work:
-if the user already voted up, then if they vote up again the previous vote
-will get cancelled. Same for vote down.
-if the user already voted up, then vote down the previous vote gets removed
-and the new vote gets added.
-if they never voted before, just add the vote
-*/
-// vote on a comment
+/**
+ * vote on a comment
+ *
+ * The way votes work:
+ * if the user already voted up, then if they vote up again the previous vote
+ * will get cancelled. Same for vote down.
+ * if the user already voted up, then vote down the previous vote gets removed
+ * and the new vote gets added.
+ * if they never voted before, just add the vote
+ *
+ * @param {string} commentId
+ * @param {number} vote
+ * @param {string} userId
+ * @param {function} callback
+ */
 exports.voteComment = function (commentId, vote, userId, callback) {
     var query = {'comments._id': commentId};
     var update = {};
@@ -466,7 +576,14 @@ exports.voteComment = function (commentId, vote, userId, callback) {
     });
 }
 
-// vote on a reply
+/**
+ * vote on a reply
+ *
+ * @param {string} replyId
+ * @param {number} vote
+ * @param {string} userId
+ * @param {function} callback
+ */
 exports.voteReply = function (replyId, vote, userId, callback) {
     var query = {'comments.replies._id': replyId};
     var update = {};
@@ -579,6 +696,13 @@ exports.voteReply = function (replyId, vote, userId, callback) {
     });
 }
 
+/**
+ * check if the user is locked from answering the question
+ *
+ * @param {string} userId
+ * @param {object} question
+ * @param {function} callback
+ */
 exports.isUserLocked = function(userId, question, callback){
     if (!settings.getQuestionTimeoutEnabled()){
         return callback(null,false,null);
@@ -611,7 +735,13 @@ exports.isUserLocked = function(userId, question, callback){
     return callback(null,false,null);
 }
 
-/*Updates the Users Submission time for a Question*/
+/**
+ * Updates the Users Submission time for a Question
+ *
+ * @param {string} userId
+ * @param {object} question
+ * @param {function} callback
+ */
 exports.updateUserSubmissionTime = function(userId, question, callback){
     var query = {_id:question._id};
     var update = {};
@@ -645,8 +775,10 @@ exports.updateUserSubmissionTime = function(userId, question, callback){
         });
     }
 }
+
 /**
  * Changes visibilty of all questions based on the changeValue
+ *
  * @param {boolean} changeValue
  * @param {funciton} callback
  */
