@@ -43,16 +43,6 @@ block styles
             .col-sm-10
               input.form-control#qhint(type='text' name='hint' placeholder='New hint' value=question.hint)
           .form-group.row
-            label.col-sm-2.col-form-label(for='successmsg') Message
-            .col-sm-10
-              input.form-control#successmsg(type='text' name='successMessage' placeholder='New message' aria-describedby='success-msg-help' value=question.successMessage)
-            .row
-              .col-sm-2
-              p.col-sm-10.form-text.text-muted#success-msg-help
-                | This is a message that will be displayed to the user after they
-                | successfully answer a question. It can be used to provide additional
-                | information on the topic.
-          .form-group.row
             label.col-sm-2.col-form-label(for='qrating') Question Difficulty
             .left
               include rating
