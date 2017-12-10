@@ -37,6 +37,8 @@ var emptyStudent = {
 var currentStudentId;
 var currentStudent;
 var currentStudentIndex;
+var prevRank;
+var rank;
 
 /* Get HTML for the complete leaderboard table from the server and display it. */
 var fetchLeaderboard = function() {
@@ -71,8 +73,7 @@ var fetchLeaderboard = function() {
 fetchLeaderboard();
 
 var displayLeaderboard = function(studentLeaderList) {
-    var prevRank;
-    var rank;
+    
 
     getCurrentStudent();
     $('#leaderboardBody').html('');
@@ -84,12 +85,13 @@ var displayLeaderboard = function(studentLeaderList) {
         studentObject = studentLeaderList[index];
         
         if (index + 1 > leaderboardLimit) {
-            if (currentStudentIndex + 1 > leaderboardLimit) {
-                // if (currentStudent.userRank !== studentLeaderList[currentStudentIndex - 1].userRank){
-                //     fillRow(-1, emptyStudent, studentLeaderList);
-                // }
-                fillRow(-1, emptyStudent, studentLeaderList);
+            if (currentStudentIndex  + 1 > leaderboardLimit) {
+                if (rank !== studentLeaderList[currentStudentIndex - 1].userRank){
+                    fillRow(-1, emptyStudent, studentLeaderList);
+                }
+
                 fillRow(currentStudentIndex, currentStudent, studentLeaderList);
+                leaderboardRow.attr('class', '.currentUser');
             }
             break;
         }
@@ -173,7 +175,12 @@ var fillRow = function (index, studentObject, leaderboardList) {
         }
     }
     // This give colour to rows where the student's rank is in the top 3
-    leaderboardRow.attr('class', `rank-${(rank <= 3 || rank === '...') ? rank : 'default'}`);
+    if (studentObject.id === currentStudentId && rank > 3){
+        leaderboardRow.attr('class', 'currentUser');
+    } else {
+        leaderboardRow.attr('class', `rank-${(rank <= 3 || rank === '...') ? rank : 'default'}`);
+    }
+    
     leaderboardRow.find('#displayName').html(studentObject.displayName);
 
     // If the accuracy leaderboard is being displayed, add a % sign
