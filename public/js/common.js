@@ -90,7 +90,7 @@ const questionTypes = Object.freeze({
     tf         : {value: 'True and False', icon: 'check_circle'},
     matching   : {value: 'Matching', icon: 'dashboard'},
     ca         : {value: 'Choose All', icon: 'format_list_bulleted'},
-    ordering   : {value: 'Ordering', icon: 'format_list_bulleted'}
+    ordering   : {value: 'Ordering', icon: 'swap_vert'}
 })
 
 // This is the function.
