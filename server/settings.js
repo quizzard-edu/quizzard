@@ -374,7 +374,7 @@ exports.updateSettings = function (updateObject, callback) {
     if ('limitedLeaderboard' in updateObject
         && (updateObject.limitedLeaderboard === 'false'
         || updateObject.limitedLeaderboard === 'true')) {
-        updateQuery.$set['general.limitedLeaderboard'] = allSettings.general.limitedLeaderboard = (updateObject.limitedLeaderboard === 'true');
+        updateQuery.$set['general.leaderboardLimited'] = allSettings.general.leaderboardLimited = (updateObject.limitedLeaderboard === 'true');
     }
 
     if ('studentsOnLeaderboard' in updateObject
