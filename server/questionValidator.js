@@ -33,7 +33,7 @@ var qTypeFailMsg = function(message) {
 /**
  * Validate all question fields on first entry to db
  *
- * @param {*} info
+ * @param {object} info
  */
 exports.questionCreationValidation = function(info) {
     for (var key in common.questionAttributes.DEFAULT) {
@@ -68,7 +68,7 @@ var validateDefaultQuestionValues = function(questionData){
  * Validate all fields that will be modified
  *
  * @param {object} question
- * @param {*} type
+ * @param {string} type
  */
 exports.validateAttributeFields = function(question,type) {
     var extraAttributes = false;
@@ -102,7 +102,7 @@ exports.validateAttributeFields = function(question,type) {
  * validate question attributes by type
  *
  * @param {object} question
- * @param {*} type
+ * @param {string} type
  */
 var validateQuestionAttributesByType = function(question, type) {
     var result;
