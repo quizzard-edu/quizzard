@@ -52,9 +52,9 @@
 .hiddenEye {
     color: rgb(238, 110, 115);
     line-height: 0;
-    padding-top: 25px;
+    padding-top: 30px;
     display: flex;
-    padding-left: 46px;
+    padding-left: 19px;
 }
 
 .customSummernoteButton {
