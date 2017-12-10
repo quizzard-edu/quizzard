@@ -52,6 +52,8 @@ var voteClickComment = function(icon, vote) {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -95,6 +97,8 @@ var voteClickReply = function(icon, vote) {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -181,6 +185,8 @@ var comment = function() {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar('Something went wrong');
             }
@@ -214,6 +220,8 @@ var reply = function(commentId) {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar('Something went wrong');
             }
@@ -240,6 +248,8 @@ var getDiscussionBoard = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 if (jsonResponse['code'] !== 3011) {
                     failSnackbar(getErrorFromResponse(jsonResponse));
@@ -276,6 +286,8 @@ $(function () {
         error: function(data){
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar('something went wrong');
             }

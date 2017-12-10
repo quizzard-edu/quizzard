@@ -65,13 +65,36 @@ var displayAccountsTable = function () {
                 displayImportAccountsForm();
             });
 
+            $('#account-option-button').click(() => {
+                const optionDiv = $('#account-option-div');
+                const optionIcon = $('#account-option-icon');
+                if (optionDiv.hasClass('hidden')) {
+                    optionDiv.removeClass('hidden');
+                    optionIcon.html('keyboard_arrow_up');
+                } else {
+                    optionDiv.addClass('hidden');
+                    optionIcon.html('keyboard_arrow_down');
+                }
+            });
+
             $('#usersSwitch').prop('checked', usersTableActive);
+
+            $(document).ready(function () {
+                $('#manageAcccountsTable').DataTable({
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+            });
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -96,6 +119,8 @@ var displayExportAccountsForm = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -118,6 +143,8 @@ var displayImportAccountsForm = function () {
         error: function (data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar('Something went wrong, please try again later!');
             }
@@ -152,6 +179,8 @@ var submitExportForm = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -190,6 +219,8 @@ var submitImportForm = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -239,6 +270,8 @@ var submitImportList = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
                 displayAccountsTable();
@@ -287,6 +320,8 @@ var displayAccountForm = function () {
         error: function (data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar('Something went wrong, please try again later!');
             }
@@ -308,11 +343,33 @@ var displayQuestionTable = function () {
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
 
+            $('#question-option-button').click(() => {
+                const optionDiv = $('#question-option-div');
+                const optionIcon = $('#question-option-icon');
+                if (optionDiv.hasClass('hidden')) {
+                    optionDiv.removeClass('hidden');
+                    optionIcon.html('keyboard_arrow_up');
+                } else {
+                    optionDiv.addClass('hidden');
+                    optionIcon.html('keyboard_arrow_down');
+                }
+            });
+
             $('.visbox').hide();
             $('#questionSwitch').prop('checked', questionTableActive);
 
             $('#question-creation-button').click(function (evt) {
                 displayQuestionForm();
+            });
+
+            $(document).ready(function () {
+                $('#questionsTable').DataTable({
+                  order: [[ 1, "asc" ]],
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
             });
         },
         error: function (data) {
@@ -320,6 +377,8 @@ var displayQuestionTable = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -378,6 +437,8 @@ var displayQuestionForm = function () {
         error: function (data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar('Something went wrong, please try again later!');
             }
@@ -399,6 +460,8 @@ var getQuestionFormAnswer = function (form) {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -418,12 +481,29 @@ var displayStatistics = function () {
             $('#option-accounts').removeClass('active');
             $('#option-questions').removeClass('active');
             $('#option-settings').removeClass('active');
+
+            $(document).ready(function () {
+                $('#questionsStatisticsTable').DataTable({
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+                $('#studentStatisticsTable').DataTable({
+                  bLengthChange: false,
+                  searching: true,
+                  ordering:  true,
+                  paging: true
+                });
+            });
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -448,6 +528,8 @@ var displaySettings = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -499,6 +581,8 @@ var deactivateUser = function (id, username) {
 
                 if (data['status'] === 401) {
                     window.location.href = '/';
+                } else if (data['status'] === 404) {
+                    window.location.href = '/page-not-found';
                 } else {
                     failSnackbar(getErrorFromResponse(jsonResponse));
                 }
@@ -534,6 +618,8 @@ var activateUser = function (id, username) {
 
                 if (data['status'] === 401) {
                     window.location.href = '/';
+                } else if (data['status'] === 404) {
+                    window.location.href = '/page-not-found';
                 } else {
                     failSnackbar(getErrorFromResponse(jsonResponse));
                 }
@@ -563,6 +649,8 @@ var editUser = function (id) {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -592,6 +680,8 @@ var submitUserForm = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -630,6 +720,8 @@ var submitEditForm = function (id) {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -678,6 +770,8 @@ var updateVisibility = function (qid, questionNumber) {
 
                         if (data['status'] === 401) {
                             window.location.href = '/';
+                        } else if (data['status'] === 404) {
+                            window.location.href = '/page-not-found';
                         } else {
                             // Toast notification
                             $('#checked-' + qid).prop('checked', !question['visible']);
@@ -766,6 +860,8 @@ var submitQuestionForm = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else if ([3022,3024,3025,3026].indexOf(jsonResponse['code'])) {
                 warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
@@ -796,6 +892,8 @@ var deleteQuestion = function (qid, questionNumber) {
             error: function (data) {
                 if (data['status'] === 401) {
                     window.location.href = '/';
+                } else if (data['status'] === 404) {
+                    window.location.href = '/page-not-found';
                 } else {
                     failSnackbar('Coud not remove question from the database');
                 }
@@ -830,6 +928,8 @@ var editQuestion = function (qid, questionNumber) {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -864,6 +964,8 @@ var submitQEditForm = function (qid, questionNumber) {
             var jsonResponse = data.responseJSON;
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else if ([3022,3024,3025,3026].indexOf(jsonResponse['code'])) {
                 warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
@@ -889,6 +991,8 @@ var submitQuestionRating = function (rating, qid) {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -934,6 +1038,8 @@ var getQuestionsTopicsList = function () {
         error: function (data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             }
         }
     });
@@ -943,6 +1049,7 @@ var getQuestionsTopicsList = function () {
 /* Initialize the summernote and all its sub modal */
 var initSummernote = function () {
     $('#qtext').summernote({ height: 100 });
+    $('div.note-btn-group.btn-group button').unbind('mouseenter mouseleave').addClass('customSummernoteButton');
     $('div.note-btn-group.btn-group.note-insert button').unbind();
     $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
     $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
@@ -985,7 +1092,7 @@ var initSummernote = function () {
             $('#mediaModal1').modal('close');
         });
     });
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').prop('disabled', true)
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').remove();
     $('div.note-btn-group.btn-group.note-view button:nth-child(3)').click(function () {
         $('#mediaModal3').modal('open');
         $('#mediaModal3 > div > div > div.modal-header > button').click(function () {
@@ -995,7 +1102,7 @@ var initSummernote = function () {
     $('.modal').modal({
         dismissible: false
     });
-    $('.modal').each(function ( i ) {
+    $('div.note-editor.note-frame.panel.panel-default .modal').each(function ( i ) {
         $(this).attr('id', 'mediaModal' + i);
         $('#mediaModal' + i +'> div > div').removeClass('modal-content');
     });
@@ -1040,6 +1147,8 @@ var updateAllVisibility = function (changeValue) {
                         var jsonResponse = data.responseJSON;
                         if (data['status'] === 401) {
                             window.location.href = '/';
+                        } else if (data['status'] === 404) {
+                            window.location.href = '/page-not-found';
                         } else {
                             failSnackbar(getErrorFromResponse(jsonResponse));
                         }

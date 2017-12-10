@@ -57,7 +57,6 @@ block content
               p.sidebar-item#first-answer You could be the first person to correctly answer this question!
             else
               p.sidebar-item#first-answer <b>#{firstAnswerDisplay}</b> was the first person to answer this question.
-            h4.sidebar-item#hint.hidden Hint: #{question.hint}
           if answered && !hasQrating && !isAdmin()
             .card-action
               h5.sidebar-item.hide-on-med-down#rating Please rate this question's difficulty:

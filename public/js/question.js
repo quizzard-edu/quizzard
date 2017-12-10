@@ -32,6 +32,8 @@ $(function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else {
                 if (jsonResponse['code'] !== 3011) {
                     failSnackbar(getErrorFromResponse(jsonResponse));
@@ -114,6 +116,8 @@ var sendAnswerRequest = function(ans) {
         error: function(data) {
             if (data['status'] === 401) {
                 window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
             } else if (data['status'] === 400){
                 failSnackbar(data['responseText']);
             } else if (data['status'] === 423){
@@ -121,10 +125,10 @@ var sendAnswerRequest = function(ans) {
             } else if (data['status'] === 500) {
                 failSnackbar('Something went wrong!');
             } else if (data['status'] === 405) {
-                $('#hint').removeClass('hidden');
                 swal({
+                    html: true,
                     title: "Incorrect",
-                    text: "Sorry, that\'s the wrong answer",
+                    text: "Sorry, that\'s the wrong answer<br><br><b id='hint'>Hint: " + data.responseJSON.hint + "</b>",
                     type: "error"
                 },
                 function(){

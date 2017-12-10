@@ -11,3 +11,10 @@
   text-decoration: none;
   color: black;
 }
+
+.icon-img {
+  width: 60px !important;
+  height: 60px !important;
+  padding: 10px;
+  border-radius: 50%;
+}

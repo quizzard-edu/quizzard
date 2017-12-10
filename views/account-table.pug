@@ -2,37 +2,34 @@
   .col.s12
     .card.center
       .card-image
-        .fixed-action-btn.horizontal.click-to-toggle.right.accounts-menu-button
-          a.btn-floating.btn-large.red
-            i.material-icons menu
-          ul
-            li
-              a.btn-floating.waves-effect.waves-light#account-import-button
-                i.material-icons cloud_upload
-            li
-              a.btn-floating.waves-effect.waves-light#account-export-button
-                i.material-icons cloud_download
-            li
-              a.btn-floating.waves-effect.waves-light#account-creation-button
-                i.material-icons person_add
+        a.btn-floating.halfway-fab.waves-effect.waves-light#account-creation-button
+          i.material-icons person_add
       .card-content
         h5.card-title Manage Accounts
         h6 Add, modify or delete students' accounts.
         .switch
-          label
-            | InActive
-            input(id='usersSwitch', type='checkbox', onClick='toggleUsersSwitch()')
-            span.lever
-            | Active
+            label
+              | InActive
+              input(id='usersSwitch', type='checkbox', onClick='toggleUsersSwitch()')
+              span.lever
+              | Active
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light#account-option-button
+            i.material-icons#account-option-icon keyboard_arrow_down
+      .card-action.hidden#account-option-div
+          a.btn.customAdminButton#account-import-button Import &nbsp
+            i.material-icons cloud_upload
+          a.btn.customAdminButton#account-export-button Export &nbsp
+            i.material-icons cloud_download
       .card-action
-        table.bordered
+        table.bordered#manageAcccountsTable
           thead
             tr
               th Username
               th First Name
               th Last Name
               th Email
-              th Action
+              th(data-orderable="false") Action
           tbody
             each s in students
               tr
@@ -41,11 +38,11 @@
                 td #{s.lname}
                 td #{s.email}
                 td
-                  button.btn.btn-default.edit-button(id='edit-' + s._id type='button' aria-label='Edit', name=s.username)
+                  button.btn.btn-default.edit-button.col.s12.l6.customAdminButton(id='edit-' + s._id type='button' aria-label='Edit', name=s.username)
                     span.glyphicon.glyphicon-pencil(aria-hidden='true')
                   if (s.active)
-                    button.btn.btn-default.deactivate-button(id='deactivate-' + s._id type='button' aria-label='Delete', name=s.username)
+                    button.btn.btn-default.deactivate-button.col.s12.l6.customAdminButton(id='deactivate-' + s._id type='button' aria-label='Delete', name=s.username)
                       i.material-icons close
                   else
-                    button.btn.btn-default.activate-button(id='activate-' + s._id type='button' aria-label='Delete', name=s.username)
+                    button.btn.btn-default.activate-button.col.s12.l6.customAdminButton(id='activate-' + s._id type='button' aria-label='Delete', name=s.username)
                       i.material-icons check
