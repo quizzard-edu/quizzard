@@ -21,3 +21,18 @@ li {
     height: 150px !important;
     border-radius: 50%;
 }
+
+.firstFire{
+    float: right;
+    color: rgb(238, 110, 115);
+}
+
+.secondFire {
+    color: rgb(252, 77, 86);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.homeBtn {
+    padding: 0 2.5rem;
+}
