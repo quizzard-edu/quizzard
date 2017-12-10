@@ -96,6 +96,9 @@ const errors = Object.freeze({
     3021: 'failed to prepare question data',
     3022: 'invalid question attributes',
     3023: 'failed to remove question',
+    3024: 'minimum points must be less than or equal to Max points',
+    3025: 'question needs two or more answer options',
+    3026: 'question needs an answer',
 
     //4000 class
     4000: 'failed to check if the class is active',
