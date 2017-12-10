@@ -17,10 +17,10 @@ li
       .switch
         label
           | Disabled
-          input(type='checkbox', id='limitedLeaderboard', name='limitedLeaderboard', checked=limitedLeaderboard, onclick="$('#limitRow').toggleClass('hidden');")
+          input(type='checkbox', id='limitedLeaderboard', name='limitedLeaderboard', checked=!generalLeaderboardLimited, onclick="$('#limitRow').toggleClass('hidden');")
           span.lever
           | Enabled
-    if limitedLeaderboard
+    if !generalLeaderboardLimited
       .row.hidden#limitRow
         label(for='leaderboardStudents') How many students to show in leaderboard:
         br

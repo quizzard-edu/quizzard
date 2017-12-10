@@ -55,6 +55,29 @@ exports.setClassActive = function (isActive, callback) {
 }
 
 /**
+ * get the true of false if the leader board is set to a limit
+ *
+ * @param {funtion} callback
+ */
+exports.getLeaderboardLimited = function () {
+    return allSettings.general.leaderboardLimited;
+}
+
+/**
+ * set leaderboard limit
+ *
+ * @param {number} limit
+ * @param {funtion} callback
+ */
+exports.setLeaderboardLimited = function (limited, callback) {
+    if (common.getVariableType(limited) !== '[object Boolean]') {
+        return callback(common.getError(1011), null);
+    }
+
+    updateSettings({$set: {'general.leaderboardLimited': limit}}, callback);
+}
+
+/**
  * get the limit of rows on the leaderboard
  *
  * @param {funtion} callback

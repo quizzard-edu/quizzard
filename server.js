@@ -1711,6 +1711,7 @@ app.get('/settings', function (req, res) {
 
     var html = settingsPug({
         generalActive: allSettings.general.active,
+        generalLeaderboardLimited: allSettings.general.leaderboardLimited,
         generalLeaderboardLimit: allSettings.general.leaderboardLimit,
         studentEditNames: allSettings.student.editNames,
         studentEditEmail: allSettings.student.editEmail,

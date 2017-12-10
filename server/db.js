@@ -770,6 +770,7 @@ var resetAllSettings = function (callback) {
         defaultSettings['discussionboard'] = {};
 
         defaultSettings.general['active'] = true;
+        defaultSettings.general['leaderboardLimited'] = false;
         defaultSettings.general['leaderboardLimit'] = 3;
 
         defaultSettings.student['editNames'] = true;
