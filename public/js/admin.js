@@ -766,7 +766,7 @@ var submitQuestionForm = function () {
 
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (jsonResponse['code'] === 3022) {
+            } else if ([3022,3024,3025,3026].indexOf(jsonResponse['code'])) {
                 warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
@@ -862,10 +862,9 @@ var submitQEditForm = function (qid, questionNumber) {
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
-
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (jsonResponse['code'] === 3022) {
+            } else if ([3022,3024,3025,3026].indexOf(jsonResponse['code'])) {
                 warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));

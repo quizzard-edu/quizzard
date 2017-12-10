@@ -136,7 +136,7 @@ exports.addQuestion = function(question, callback) {
                 return callback(null, questionId);
             });
         } else{
-            return callback(common.getError(3022), null)
+            return callback(result.err, null)
         }
     })
 }
@@ -155,11 +155,11 @@ var updateQuestionById = function(qId, infoToUpdate, callback) {
         infoToUpdate = questionUpdateParser(infoToUpdate);
 
         // validate each field that will be updated
-        var result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
+        const result = questionValidator.validateAttributeFields(infoToUpdate, question.type);
         if (result.success) {
             db.updateQuestionById(qId, infoToUpdate, callback);
         } else {
-            return callback(common.getError(3022), null)
+            return callback(result.err, null)
         }
     });
 }
