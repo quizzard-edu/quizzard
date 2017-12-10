@@ -25,6 +25,7 @@ const failMsg = {success:false, err:common.getError(3022)}
  * Send back specific error message by question type
  *
  * @param {string} message
+ * @returns {object}
  */
 var qTypeFailMsg = function(message) {
     return {success:false, err:message};
@@ -34,6 +35,7 @@ var qTypeFailMsg = function(message) {
  * Validate all question fields on first entry to db
  *
  * @param {object} info
+ * @returns {object}
  */
 exports.questionCreationValidation = function(info) {
     for (var key in common.questionAttributes.DEFAULT) {
@@ -52,6 +54,7 @@ exports.questionCreationValidation = function(info) {
  * validate default question values
  *
  * @param {number} questionData
+ * @returns {object}
  */
 var validateDefaultQuestionValues = function(questionData){
     if ('minpoints' in questionData && 'maxpoints' in questionData){
@@ -69,6 +72,7 @@ var validateDefaultQuestionValues = function(questionData){
  *
  * @param {object} question
  * @param {string} type
+ * @returns {object}
  */
 exports.validateAttributeFields = function(question,type) {
     var extraAttributes = false;
@@ -103,6 +107,7 @@ exports.validateAttributeFields = function(question,type) {
  *
  * @param {object} question
  * @param {string} type
+ * @returns {object}
  */
 var validateQuestionAttributesByType = function(question, type) {
     var result;
@@ -141,6 +146,7 @@ var validateQuestionAttributesByType = function(question, type) {
  * regex attribute validator
  *
  * @param {object} question
+ * @returns {object}
  */
 var regexAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'REGULAR')) {
@@ -153,6 +159,7 @@ var regexAttributeValidator = function(question) {
  * multiple choice attribute validator
  *
  * @param {object} question
+ * @returns {object}
  */
 var multipleChoiceAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'MULTIPLECHOICE')) {
@@ -171,6 +178,7 @@ var multipleChoiceAttributeValidator = function(question) {
  * true and false attribute validator
  *
  * @param {object} question
+ * @returns {object}
  */
 var trueAndFalseAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'TRUEFALSE')) {
@@ -186,6 +194,7 @@ var trueAndFalseAttributeValidator = function(question) {
  * matching attribute validator
  *
  * @param {object} question
+ * @returns {object}
  */
 var matchingAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'MATCHING')) {
@@ -204,6 +213,7 @@ var matchingAttributeValidator = function(question) {
  * choose all attribute validator
  *
  * @param {object} question
+ * @returns {object}
  */
 var chooseAllAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'CHOOSEALL')) {
@@ -226,6 +236,7 @@ var chooseAllAttributeValidator = function(question) {
  * ordering attribute validator
  *
  * @param {object} question
+ * @returns {object}
  */
 var orderingAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'ORDERING')) {
@@ -246,6 +257,7 @@ var orderingAttributeValidator = function(question) {
  * @param {*} valueToCheck
  * @param {string} key
  * @param {string} attributeType
+ * @returns {boolean}
  */
 var validateAttributeType = function(valueToCheck, key, attributeType) {
     return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;
@@ -257,6 +269,7 @@ exports.validateAttributeType = validateAttributeType;
  *
  * @param {object} objectToCheck
  * @param {string} attributeType
+ * @returns {boolean}
  */
 var validateAllAttributesInGroup = function(objectToCheck, attributeType) {
     for (var key in common.questionAttributes[attributeType]) {
@@ -272,6 +285,7 @@ var validateAllAttributesInGroup = function(objectToCheck, attributeType) {
  *
  * @param {list} arrayObject
  * @param {string} typeOfvalue
+ * @returns {boolean}
  */
 var validateArrayObject = function(arrayObject,typeOfvalue) {
     for (var i = 0; i < arrayObject.length; i++) {
