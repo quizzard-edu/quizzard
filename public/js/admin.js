@@ -706,6 +706,8 @@ var submitUserForm = function () {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
+            } else if (jsonResponse.code === 2019) {
+                warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }

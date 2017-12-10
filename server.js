@@ -595,7 +595,7 @@ app.get('/statistics', function (req, res) {
             }
 
             questionslist.forEach(question => {
-                  var first = studentslist.find(student => {
+                var first = studentslist.find(student => {
                     return student._id === question.firstAnswer;
                 });
 
@@ -795,8 +795,8 @@ app.put('/useradd', function (req, res) {
 
     users.addStudent(req.body, function (err, result) {
         if (err) {
-            logger.error(err);
-            return res.status(500).send(common.getError(2007));
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
         }
 
         return res.status(201).send('User created');
@@ -980,27 +980,38 @@ app.post('/usermod', function (req, res) {
     }
 
     var userId = req.body._id;
-    users.updateStudentById(userId, req.body, function (err, result) {
+    users.getUserByUsername(req.body.username, function (err, userFound) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(2012));
+            return res.status(500).send(common.getError(2001));
         }
 
-        users.getStudentById(userId, function (err, userFound) {
-            if (err || !userFound) {
+        if (userFound && userId !== userFound._id) {
+            logger.error(err);
+            return res.status(500).send(common.getError(2019));
+        }
+
+        users.updateStudentById(userId, req.body, function (err, result) {
+            if (err) {
                 logger.error(err);
-                return res.status(500).send(common.getError(2001));
+                return res.status(500).send(common.getError(2012));
             }
 
-            var html = accountEditPug({
-                user: userFound,
-                isAdmin: userFound.type === common.userTypes.ADMIN,
-                cdate: creationDate(userFound.ctime)
-            });
+            users.getStudentById(userId, function (err, userFound) {
+                if (err || !userFound) {
+                    logger.error(err);
+                    return res.status(500).send(common.getError(2001));
+                }
 
-            return res.status(200).send({
-                result: result,
-                html: html
+                var html = accountEditPug({
+                    user: userFound,
+                    cdate: creationDate(userFound.ctime)
+                });
+
+                return res.status(200).send({
+                    result: result,
+                    html: html
+                });
             });
         });
     });
