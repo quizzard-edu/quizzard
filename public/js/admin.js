@@ -746,7 +746,7 @@ var submitQuestionForm = function () {
     }
 
     if (parseInt($('#qminpoints').val()) > parseInt($('#qmaxpoints').val())) {
-        failSnackbar('Minimum points must be less than or equal to max points');
+        warningSnackbar('Minimum points must be less than or equal to max points');
         return;
     }
 
