@@ -2,12 +2,18 @@
     background-color: rgba(238, 110, 115,0.7);
 }
 
+.currentUser {
+    background-color: rgba(238, 110, 115,0.7);
+}
+
 .rank-1 {
     background-color: rgba(255,215,0,0.7);
+    font-weight: bold;
 }
 
 .rank-1:hover {
     background-color: #ceb004;
+    font-weight: bold;
 }
 
 .rank-2 {

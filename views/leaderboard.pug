@@ -33,7 +33,7 @@ block content
             a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right(onclick='fetchLeaderboard()')
               i.material-icons autorenew
           .card-content
-            h4.center Leaderboard
+            h4.center#leaderboardName Leaderboard
           .card-action
             .podium
               p
@@ -43,12 +43,15 @@ block content
                 li.gold
                   img#first(alt='First Place', src='')
                   img#trophy(src='img/first_trophy.png')
+                  h4#firstPlaceName
                 li.silver
                   img#second(alt='Second Place', src='')
                   img#trophy(src='img/second_trophy.png')
+                  p#secondPlaceName
                 li.bronze
                   img#third(alt='Third Place', src='')
                   img#trophy(src='img/third_trophy.png')
+                  p#thirdPlaceName
             .leaderboard-content
 
 block scripts

@@ -18,11 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const common = require('./common.js');
 
-const successMsg = {success:true, msg:'Validation Passed'}
-const failMsg = {success:false, msg:'Fields types are Incorrect'}
+const successMsg = {success:true, err:'Validation Passed'}
+const failMsg = {success:false, err:common.getError(3022)}
 /*Send back specific error message by question type*/
 var qTypeFailMsg = function(message) {
-    return {success:false,msg:message};
+    return {success:false, err:message};
 }
 
 /*Validate all question fields on first entry to db*/
@@ -32,7 +32,22 @@ exports.questionCreationValidation = function(info) {
             return failMsg;
         }
     }
+    const result = validateDefaultQuestionValues(info);
+    if(!result.success){
+        return result;
+    }
     return validateQuestionAttributesByType(info,info.type);
+}
+
+var validateDefaultQuestionValues = function(questionData){
+    if ('minpoints' in questionData && 'maxpoints' in questionData){
+        if (questionData.minpoints < 0 
+            || questionData.minpoints > questionData.maxpoints 
+            || questionData.maxpoints < 0){
+            return qTypeFailMsg(common.getError(3024));
+        }
+    }
+    return successMsg;
 }
 
 /*Validate all fields that will be modified*/
@@ -49,6 +64,12 @@ exports.validateAttributeFields = function(question,type) {
         } else {
             extraAttributes = true;
         }
+    }
+    
+    const result = validateDefaultQuestionValues(question);
+    console.log(result)
+    if(!result.success){
+        return result;
     }
 
     // check by question type to validate the extra fields
@@ -93,73 +114,73 @@ var validateQuestionAttributesByType = function(question, type) {
 
 var regexAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'REGULAR')) {
-        return qTypeFailMsg('Incorrect question answer field!');
+        return qTypeFailMsg(commmon.getError(3022));
     }
     return successMsg;
 }
 
 var multipleChoiceAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'MULTIPLECHOICE')) {
-        return qTypeFailMsg('Incorrect question answer fields!');
+        return qTypeFailMsg(commmon.getError(3022));
     }
     if (!validateArrayObject(question.choices,'String')) {
         return failMsg;
     }
     if (question.choices.length < 2) {
-        return qTypeFailMsg('Need 2 or more options for Multiple Choice Question!');
+        return qTypeFailMsg(common.getError(3025));
     }
     return successMsg;
 }
 
 var trueAndFalseAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'TRUEFALSE')) {
-        return qTypeFailMsg('Please select answer True or False!');
+        return qTypeFailMsg(commmon.getError(3022));
     }
     if (question.answer !== 'true' && question.answer !== 'false' ) {
-        return qTypeFailMsg('Answer can only be True or False!');
+        return qTypeFailMsg(common.getError(3026));
     }
     return successMsg;
 }
 
 var matchingAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'MATCHING')) {
-        return qTypeFailMsg('Incorrect question answer fields!');
+        return qTypeFailMsg(commmon.getError(3022));
     }
     if (!validateArrayObject(question.leftSide,'String') || !validateArrayObject(question.rightSide,'String')) {
         return failMsg;
     }
     if (question.leftSide.length < 2 || question.rightSide.length < 2) {
-        return qTypeFailMsg('Need 2 or more matching options!');
+        return qTypeFailMsg(common.getError(3025));
     }
     return successMsg;
 }
 
 var chooseAllAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'CHOOSEALL')) {
-        return qTypeFailMsg('Incorrect question answer fields!');
+        return qTypeFailMsg(commmon.getError(3022));
     }
     if (!validateArrayObject(question.choices,'String') || !validateArrayObject(question.answer,'String')) {
         return failMsg;
     }
     if (question.choices.length < 2) {
-        return qTypeFailMsg('Need 2 or more options!');
+        return qTypeFailMsg(common.getError(3025));
     }
 
     if (question.answer.length < 1) {
-        return qTypeFailMsg('Please select an answer for this Question!');
+        return qTypeFailMsg(common.getError(3026));
     }
     return successMsg;
 }
 
 var orderingAttributeValidator = function(question) {
     if (!validateAllAttributesInGroup(question,'ORDERING')) {
-        return qTypeFailMsg('Incorrect question answer fields!');
+        return qTypeFailMsg(commmon.getError(3022));
     }
     if (!validateArrayObject(question.answer,'String')) {
         return failMsg;
     }
     if (question.answer.length < 2) {
-        return qTypeFailMsg('Need 2 or more ordering options!');
+        return qTypeFailMsg(common.getError(3025));
     }
     return successMsg;
 }

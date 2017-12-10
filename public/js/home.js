@@ -165,7 +165,11 @@ var displayLeaderboard = function(studentLeaderList, userId) {
     $('#criteriaName').html('Points');
     studentLeaderList.forEach((studentObject, index) => {
         // This give colour to rows where the student's rank is in the top 3 and the current student.
-        leaderboardRow.attr('class', `rank-${studentObject.userRank <= 3 ? studentObject.userRank : 'user'}`);
+        if (studentObject.userRank !== '...'){
+            leaderboardRow.attr('class', `rank-${studentObject.userRank <= 3 ? studentObject.userRank : 'user'}`);
+        } else {
+            leaderboardRow.attr('class', '');
+        }
         leaderboardRow.find('#rank').html(studentObject.userRank);
         leaderboardRow.find('#displayName').html(studentObject.displayName);
         leaderboardRow.find('#criteria').html(studentObject.points);

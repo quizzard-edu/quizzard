@@ -168,7 +168,7 @@ var getUsersList = function(findQuery, sortQuery, callback){
  * @param {function} callback
  */
 exports.getStudentsListSorted = function(lim, callback){
-    usersCollection.find({type: common.userTypes.STUDENT})
+    usersCollection.find({type: common.userTypes.STUDENT, active:{$ne: false}})
             .sort({points: -1})
             .limit(lim)
             .toArray(function(err, docs) {

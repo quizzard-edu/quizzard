@@ -24,6 +24,21 @@ var leaderboardRow;
 var leaderboardTable;
 var studentLeaderList;
 var podiumScore;
+var leaderboardLimit;
+// Row full of ... to show that student is not in leaderboard
+var emptyStudent = {
+    displayName:'...',
+    points:'...',
+    points:'...',
+    accuracy:'...',
+    attempt:'...',
+    overall:'...'
+}
+var currentStudentId;
+var currentStudent;
+var currentStudentIndex;
+var prevRank;
+var rank;
 
 /* Get HTML for the complete leaderboard table from the server and display it. */
 var fetchLeaderboard = function() {
@@ -35,6 +50,8 @@ var fetchLeaderboard = function() {
             smallBoard: false
         },
         success: function(data) {
+            currentStudentId = data.userId;
+            leaderboardLimit = data.leaderboardLimit;
             leaderboardTable = $(data.leaderboardTableHTML);
             leaderboardRow = $(data.leaderboardRowHTML);
             studentLeaderList = data.leaderboardList;
@@ -58,39 +75,33 @@ var fetchLeaderboard = function() {
 fetchLeaderboard();
 
 var displayLeaderboard = function(studentLeaderList) {
-    var prevRank;
-    var rank;
+    
 
+    getCurrentStudent();
     $('#leaderboardBody').html('');
     $('#criteriaName').html(boardType.displayName);
     podiumScore = studentLeaderList[0][boardType.name];
     $('#topScore').html(podiumScore + ((boardType === leaderboardTypes.ACCURACYBOARD) ? '%' : ''));
-    studentLeaderList.forEach((studentObject, index) => {
-        // Students with the same number of points get the same rank
-        if (index === 0) {
-            rank = 1;
-            prevRank = rank;
-            leaderboardRow.find('#rank').html(rank);
-        } else {
-            if (studentLeaderList[index - 1][boardType.name] === studentObject[boardType.name]) {
-                rank = prevRank;
-                leaderboardRow.find('#rank').html(rank);
-            } else {
-                rank = index + 1;
-                prevRank = rank;
-                leaderboardRow.find('#rank').html(rank);
+    for (var index = 0; index < studentLeaderList.length; index++){
+        studentObject = studentLeaderList[index];
+        
+        // Number of students in the leaderboard cannot be greaeter than the leaderboardlimit
+        if (index + 1 > leaderboardLimit) {
+            // Adds the current student to the leaderboard if theyre index is larger than the leaderboard limit
+            if (currentStudentIndex  + 1 > leaderboardLimit) {
+                // If the student is not the next person in the leaderboard list add a row of ...
+                if (rank !== studentLeaderList[currentStudentIndex - 1].userRank){
+                    fillRow(-1, emptyStudent, studentLeaderList);
+                }
+
+                fillRow(currentStudentIndex, currentStudent, studentLeaderList);
+                leaderboardRow.attr('class', '.currentUser');
             }
+            break;
         }
-        // This give colour to rows where the student's rank is in the top 3
-        leaderboardRow.attr('class', `rank-${rank <= 3 ? rank : 'default'}`);
-        leaderboardRow.find('#displayName').html(studentObject.displayName);
 
-        // If the accuracy leaderboard is being displayed, add a % sign
-        leaderboardRow.find('#criteria').html(studentObject[boardType.name] +
-            ((boardType === leaderboardTypes.ACCURACYBOARD) ? '%' : ''));
-
-        $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
-    });
+        fillRow(index, studentObject, studentLeaderList);
+    }
 }
 
 // Sort the list of students based on the citeria (Overall, Points, Accuracy, or Attempts)
@@ -119,14 +130,70 @@ $('#option-attempt').click(function(evt) {
 // Change leaderboard based on type (Overall, Points, Accuracy, Attemtps)
 var displayNewLeaderboard = function(type) {
     boardType = type;
+    $('#leaderboardName').html(`${boardType.displayName} Leaderboard`);
     sortLeaderBoard(type.name);
-    setPodiumImages();
+    setPodium();
     displayLeaderboard(studentLeaderList);
 }
 
-var setPodiumImages = function() {
+// Sets the images and names for the students displayed in the podium
+var setPodium = function() {
     var date = new Date();
     $('#first').attr('src','/profilePicture/' + studentLeaderList[0].picture + '?' + date);
+    $('#firstPlaceName').html(studentLeaderList[0].displayName);
     $('#second').attr('src','/profilePicture/' + studentLeaderList[1].picture + '?' + date);
+    $('#secondPlaceName').html(studentLeaderList[1].displayName);
     $('#third').attr('src','/profilePicture/' + studentLeaderList[2].picture + '?' + date);
+    $('#thirdPlaceName').html(studentLeaderList[2].displayName);
+}
+
+// Gets the current student and their index in the leaderboard
+var getCurrentStudent = function () {
+    studentLeaderList.forEach((studentObject, index) => {
+        if (studentObject.id === currentStudentId){
+            currentStudent = studentObject;
+            currentStudentIndex = index;
+            return false;
+        }
+    });
+    
+}
+
+// Fills leadeboard row with information
+var fillRow = function (index, studentObject, leaderboardList) {
+    // Students with the same number of points get the same rank
+    if (index === 0) {
+        rank = 1;
+        prevRank = rank;
+        studentObject.userRank = rank;
+        leaderboardRow.find('#rank').html(rank);
+    } else if (index === -1) {
+        rank = '...';
+        leaderboardRow.find('#rank').html(rank);
+    } else {
+        if (leaderboardList[index - 1][boardType.name] === studentObject[boardType.name]) {
+            rank = prevRank;
+            studentObject.userRank = rank;
+            leaderboardRow.find('#rank').html(rank);
+        } else {
+            rank = index + 1;
+            prevRank = rank;
+            studentObject.userRank = rank;
+            leaderboardRow.find('#rank').html(rank);
+        }
+    }
+    // This give colour to rows where the student's rank is in the top 3
+    if (studentObject.id === currentStudentId && rank > 3){
+        leaderboardRow.attr('class', 'currentUser');
+    } else {
+        leaderboardRow.attr('class', `rank-${(rank <= 3 || rank === '...') ? rank : 'default'}`);
+    }
+    
+    leaderboardRow.find('#displayName').html(studentObject.displayName);
+
+    // If the accuracy leaderboard is being displayed, add a % sign
+    leaderboardRow.find('#criteria').html(studentObject[boardType.name] +
+        ((boardType === leaderboardTypes.ACCURACYBOARD) ? '%' : ''));
+
+    $('#leaderboardBody').append(leaderboardRow[0].outerHTML);
 }

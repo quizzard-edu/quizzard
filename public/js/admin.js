@@ -832,7 +832,7 @@ var collectQuestionFormData = function (form) {
     return question;
 }
 
-/* Process submitted question edit form. */
+/* Process submiting new question */
 var submitQuestionForm = function () {
     if ($('#qtext').summernote('isEmpty')) {
         failSnackbar('Please enter a question body in the editor.');
@@ -840,7 +840,7 @@ var submitQuestionForm = function () {
     }
 
     if (parseInt($('#qminpoints').val()) > parseInt($('#qmaxpoints').val())) {
-        failSnackbar('Minimum points must be less than or equal to max points');
+        warningSnackbar('Minimum points must be less than or equal to max points');
         return;
     }
 
@@ -862,7 +862,7 @@ var submitQuestionForm = function () {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
-            } else if (jsonResponse['code'] === 3022) {
+            } else if ([3022,3024,3025,3026].indexOf(jsonResponse['code'])) {
                 warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
@@ -962,12 +962,11 @@ var submitQEditForm = function (qid, questionNumber) {
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
-
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
-            } else if (jsonResponse['code'] === 3022) {
+            } else if ([3022,3024,3025,3026].indexOf(jsonResponse['code'])) {
                 warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
