@@ -1674,10 +1674,7 @@ app.get('/analytics', function (req, res) {
 
     return res.status(200).render('analytics', {
         user: req.session.user,
-        isAdmin: req.session.user.type === common.userTypes.ADMIN,
-        isAdmin : function () {
-            return req.session.user.type === common.userTypes.ADMIN;
-        }
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
     });
 });
 
