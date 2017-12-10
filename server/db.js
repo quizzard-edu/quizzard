@@ -358,7 +358,6 @@ var updateUserById = function(userId, info, callback){
     update.$push = {};
 
     if ('username' in info) {
-        query = {$and:[{_id: userId}, {username: {$ne: info.username}}]};
         update.$set.username = info.username;
     }
 
