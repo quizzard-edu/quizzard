@@ -19,7 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var cancelling = false;
 
 $(function () {
-    $('#nav-feedback-view').addClass('active');
+    if (window.location.pathname === '/feedback') {
+        $('#nav-feedback-view').addClass('active');
+    }
 });
 
 function userFeedback() {
