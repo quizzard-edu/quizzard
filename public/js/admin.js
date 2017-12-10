@@ -738,7 +738,7 @@ var collectQuestionFormData = function (form) {
     return question;
 }
 
-/* Process submitted question edit form. */
+/* Process submiting new question */
 var submitQuestionForm = function () {
     if ($('#qtext').summernote('isEmpty')) {
         failSnackbar('Please enter a question body in the editor.');

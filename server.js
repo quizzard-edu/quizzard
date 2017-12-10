@@ -1757,7 +1757,7 @@ app.post('/updateSettings', function (req, res) {
     settings.updateSettings(req.body.settings, function (err, result) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(7001));
+            return res.status(500).send(err);
         }
 
         return res.status(200).send('ok');
