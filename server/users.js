@@ -516,8 +516,6 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
         }
 
         else {
-            // This is the number of people that will be shown on the leaderboard
-
             for (var i = 0; i < studentlist.length; ++i) {
                 var currentStudent = studentlist[i];
 
@@ -541,8 +539,6 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
                 }
                 leaderboardList.push(student);
             }
-            // Row full of ... to show that student is not in leaderboard
-            //leaderboardList.push(emptyStudent);
         }
         return callback(err, leaderboardList);
     });

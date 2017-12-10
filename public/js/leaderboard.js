@@ -82,12 +82,14 @@ var displayLeaderboard = function(studentLeaderList) {
     $('#criteriaName').html(boardType.displayName);
     podiumScore = studentLeaderList[0][boardType.name];
     $('#topScore').html(podiumScore + ((boardType === leaderboardTypes.ACCURACYBOARD) ? '%' : ''));
-    //studentLeaderList.forEach((studentObject, index) => {
     for (var index = 0; index < studentLeaderList.length; index++){
         studentObject = studentLeaderList[index];
         
+        // Number of students in the leaderboard cannot be greaeter than the leaderboardlimit
         if (index + 1 > leaderboardLimit) {
+            // Adds the current student to the leaderboard if theyre index is larger than the leaderboard limit
             if (currentStudentIndex  + 1 > leaderboardLimit) {
+                // If the student is not the next person in the leaderboard list add a row of ...
                 if (rank !== studentLeaderList[currentStudentIndex - 1].userRank){
                     fillRow(-1, emptyStudent, studentLeaderList);
                 }
@@ -97,6 +99,7 @@ var displayLeaderboard = function(studentLeaderList) {
             }
             break;
         }
+
         fillRow(index, studentObject, studentLeaderList);
     }
 }
@@ -129,11 +132,12 @@ var displayNewLeaderboard = function(type) {
     boardType = type;
     $('#leaderboardName').html(`${boardType.displayName} Leaderboard`);
     sortLeaderBoard(type.name);
-    setPodiumImages();
+    setPodium();
     displayLeaderboard(studentLeaderList);
 }
 
-var setPodiumImages = function() {
+// Sets the images and names for the students displayed in the podium
+var setPodium = function() {
     var date = new Date();
     $('#first').attr('src','/profilePicture/' + studentLeaderList[0].picture + '?' + date);
     $('#firstPlaceName').html(studentLeaderList[0].displayName);
@@ -143,6 +147,7 @@ var setPodiumImages = function() {
     $('#thirdPlaceName').html(studentLeaderList[2].displayName);
 }
 
+// Gets the current student and their index in the leaderboard
 var getCurrentStudent = function () {
     studentLeaderList.forEach((studentObject, index) => {
         if (studentObject.id === currentStudentId){
@@ -154,6 +159,7 @@ var getCurrentStudent = function () {
     
 }
 
+// Fills leadeboard row with information
 var fillRow = function (index, studentObject, leaderboardList) {
     // Students with the same number of points get the same rank
     if (index === 0) {
