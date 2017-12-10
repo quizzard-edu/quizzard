@@ -67,16 +67,6 @@ li.silver {
     font-weight: bold;
 } 
 
- .firstPlaceText {
-    background: -webkit-linear-gradient(-90deg, rgb(253,218,134) 0, rgb(225,157,60) 100%), rgb(253, 218, 134);
-    background: -moz-linear-gradient(180deg, rgb(253,218,134) 0, rgb(225,157,60) 100%), rgb(253, 218, 134);
-    background: linear-gradient(180deg, rgb(253,218,134) 0, rgb(225,157,60) 100%), rgb(253, 218, 134);
-    border-radius: 50px;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.09),
-      -1px -1px 0 rgba(255, 220, 0, 0.670);
-    font-size:2em;
-}
-
 li img {
     display: inline-flex;
     max-width: 60%;
