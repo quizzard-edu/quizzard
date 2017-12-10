@@ -32,3 +32,7 @@ li {
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
 }
+
+.homeBtn {
+    padding: 0 2.5rem;
+}
