@@ -25,6 +25,8 @@ var leaderboardTable;
 var studentLeaderList;
 var podiumScore;
 var leaderboardLimit;
+var studentsCount;
+
 // Row full of ... to show that student is not in leaderboard
 var emptyStudent = {
     displayName:'...',
@@ -50,6 +52,7 @@ var fetchLeaderboard = function() {
             smallBoard: false
         },
         success: function(data) {
+            studentsCount = data.studentsCount;
             currentStudentId = data.userId;
             leaderboardLimit = data.leaderboardLimit;
             leaderboardTable = $(data.leaderboardTableHTML);

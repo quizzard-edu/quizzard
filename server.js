@@ -277,21 +277,28 @@ app.get('/leaderboard-table', function (req, res) {
     if (req.query.smallBoard === 'true') {
         smallBoard = true;
     }
-    users.getLeaderboard(req.session.user._id, smallBoard, function (err, leaderboardList) {
 
+    users.getStudentsListSorted(0, function (err, list) {
         if (err) {
             return res.status(500).send(common.getError(2020));
-        } else {
+        }
+
+        users.getLeaderboard(req.session.user._id, smallBoard, function (err, leaderboardList) {
+            if (err) {
+                return res.status(500).send(common.getError(2020));
+            }
+
             const leaderboardTableHTML = leaderboardTablePug();
             const leaderboardRowHTML = leaderboardRowPug();
             return res.status(200).send({
+                studentsCount: list.length,
                 leaderboardList: leaderboardList,
                 leaderboardLimit: settings.getLeaderboardLimit(),
                 leaderboardTableHTML: leaderboardTableHTML,
                 leaderboardRowHTML: leaderboardRowHTML,
                 userId: req.session.user._id
             });
-        }
+        });
     });
 });
 

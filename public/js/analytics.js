@@ -172,9 +172,6 @@ var displayClassStatistics = function () {
 var displayStudentStatistics = function (studentId) {
   var path = studentId ? '/studentAnalytics?studentId=' + studentId : '/studentAnalytics';
 
-  // Request statistics
-  // Student and Class Statistics
-
   // questions answered analytics
   getQuestionsAnsweredStudentAndClass(path);
   getCorrectAttemptsOverTime(path);
