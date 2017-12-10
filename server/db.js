@@ -814,7 +814,7 @@ var getAllSettings = function (callback) {
     settingsCollection.findOne({}, function (err, obj) {
         if (err) {
             return callback (common.getError(7003), null);
-        } 
+        }
         else if (!obj) {
             resetAllSettings(function(err, result){
                 if (err){

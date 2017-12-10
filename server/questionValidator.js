@@ -41,8 +41,8 @@ exports.questionCreationValidation = function(info) {
 
 var validateDefaultQuestionValues = function(questionData){
     if ('minpoints' in questionData && 'maxpoints' in questionData){
-        if (questionData.minpoints < 0 
-            || questionData.minpoints > questionData.maxpoints 
+        if (questionData.minpoints < 0
+            || questionData.minpoints > questionData.maxpoints
             || questionData.maxpoints < 0){
             return qTypeFailMsg(common.getError(3024));
         }
@@ -65,7 +65,7 @@ exports.validateAttributeFields = function(question,type) {
             extraAttributes = true;
         }
     }
-    
+
     const result = validateDefaultQuestionValues(question);
     console.log(result)
     if(!result.success){

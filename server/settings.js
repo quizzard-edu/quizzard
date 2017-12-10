@@ -371,6 +371,12 @@ exports.updateSettings = function (updateObject, callback) {
         updateQuery.$set['general.active'] = allSettings.general.active = (updateObject.classActive === 'true');
     }
 
+    if ('limitedLeaderboard' in updateObject
+        && (updateObject.limitedLeaderboard === 'false'
+        || updateObject.limitedLeaderboard === 'true')) {
+        updateQuery.$set['general.limitedLeaderboard'] = allSettings.general.limitedLeaderboard = (updateObject.limitedLeaderboard === 'true');
+    }
+
     if ('studentsOnLeaderboard' in updateObject
         && parseInt(updateObject.studentsOnLeaderboard)
         && parseInt(updateObject.studentsOnLeaderboard) >= 3) {
@@ -441,6 +447,7 @@ exports.updateSettings = function (updateObject, callback) {
             || updateObject.allowDislikes === 'true')) {
         updateQuery.$set['discussionboard.dislikesEnabled'] = allSettings.discussionboard.dislikesEnabled = (updateObject.allowDislikes === 'true');
     }
+
     updateSettings(updateQuery, callback);
 }
 

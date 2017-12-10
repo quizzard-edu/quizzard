@@ -129,6 +129,7 @@ var save = function() {
             data: {
                 settings: {
                     classActive: $('#classActive').is(':checked'),
+                    limitedLeaderboar: $('#limitedLeaderboard').is(':checked'),
                     studentsOnLeaderboard: $('#leaderboardStudents').val(),
                     allowEditName: $('#allowEditName').is(':checked'),
                     allowEditEmail: $('#allowEditEmail').is(':checked'),

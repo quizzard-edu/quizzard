@@ -467,7 +467,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
         }
 
         var leaderboardList = [];
-        
+
         if (smallBoard) {
             var rank;
             var prevRank;
