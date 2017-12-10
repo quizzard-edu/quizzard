@@ -560,6 +560,18 @@ app.get('/questionedit', function (req, res) {
     });
 });
 
+/**
+ * check if the user is an admin
+ */
+app.get('/isAdmin', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var errCode = req.session.user.type === common.userTypes.ADMIN ? 200 : 500;
+    return res.status(errCode).send('ok');
+});
+
 /* Send the application statistics HTML. */
 app.get('/statistics', function (req, res) {
     if (!req.session.user) {

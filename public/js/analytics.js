@@ -18,18 +18,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var students;
 var studentList;
+var isAdmin;
 
 $(function () {
   $('#nav-analytics').addClass('active');
 
+  $.ajax({
+    type: 'GET',
+    async: false,
+    url: '/isAdmin',
+    success: function (data) {
+      isAdmin = true;
+    },
+    error: function (data) {
+      isAdmin = false;
+    }
+  });
+
   // Loads the Student statistics by default
-  if ($('#class-analytics-card').length) {
+  if (isAdmin) {
     $('#class-analytics-card').removeClass('hidden');
     displayClassStatistics();
   } else {
     $('#student-analytics-card').removeClass('hidden');
     $('#student-analytics-data-cards').removeClass('hidden');
-    if (!$('#class-analytics-card').length) {
+    if (!isAdmin) {
       displayStudentStatistics(null);
     }
   }
