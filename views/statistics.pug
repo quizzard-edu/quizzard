@@ -4,55 +4,65 @@
       .card-content
         h5.card-title Users Statistics
         h6 Examine information about users' statistics.
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light#accounts-option-button
+            i.material-icons#accounts-option-icon keyboard_arrow_up
       .card-action
-        table.bordered#studentStatisticsTable
-          thead
-            tr
-              th Username
-              th Questions Attempted
-              th Correct Answers
-              th Success Rate
-              th Points
-          tbody
-            each s in students
+        #accounts-option-div
+          br
+          table.bordered#studentStatisticsTable
+            thead
               tr
-                td #{s.username}
-                td #{s.totalAttemptsCount}
-                td #{s.correctAttemptsCount}
-                if s.totalAttemptsCount === 0
-                  td 0.00%
-                else
-                  td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%
-                td #{s.points}
+                th Username
+                th Questions Attempted
+                th Correct Answers
+                th Success Rate
+                th Points
+            tbody
+              each s in students
+                tr
+                  td #{s.username}
+                  td #{s.totalAttemptsCount}
+                  td #{s.correctAttemptsCount}
+                  if s.totalAttemptsCount === 0
+                    td 0.00%
+                  else
+                    td #{((s.correctAttemptsCount / s.totalAttemptsCount) * 100).toFixed(2)}%
+                  td #{s.points}
 .row
   .col.s12
     .card.center
       .card-content
         h5.card-title Questions Statistics
         h6 Examine information about questions' statistics.
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light#questions-option-button
+            i.material-icons#questions-option-icon keyboard_arrow_up
       .card-action
-        table.bordered#questionsStatisticsTable
-          thead
-            tr
-              th ID
-              th Title
-              th Min Points
-              th Max Points
-              th Total Attempts
-              th Correct Answers
-              th Success Rate
-              th First Answer
-          tbody
-            each q in questions
+        #questions-option-div
+          br
+          table.bordered#questionsStatisticsTable
+            thead
               tr
-                td #{q.number}
-                td #{q.title}
-                td #{q.minpoints}
-                td #{q.maxpoints}
-                td #{q.totalAttemptsCount}
-                td #{q.correctAttemptsCount}
-                if q.totalAttemptsCount === 0
-                  td 0.00%
-                else
-                  td #{((q.correctAttemptsCount / q.totalAttemptsCount) * 100).toFixed(2)}%
-                td #{q.firstAnswerDisplay}
+                th ID
+                th Title
+                th Min Points
+                th Max Points
+                th Total Attempts
+                th Correct Answers
+                th Success Rate
+                th First Answer
+            tbody
+              each q in questions
+                tr
+                  td #{q.number}
+                  td #{q.title}
+                  td #{q.minpoints}
+                  td #{q.maxpoints}
+                  td #{q.totalAttemptsCount}
+                  td #{q.correctAttemptsCount}
+                  if q.totalAttemptsCount === 0
+                    td 0.00%
+                  else
+                    td #{((q.correctAttemptsCount / q.totalAttemptsCount) * 100).toFixed(2)}%
+                  td #{q.firstAnswerDisplay}

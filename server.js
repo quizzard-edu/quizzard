@@ -213,6 +213,7 @@ app.get('/home', function (req, res) {
 
             return res.status(200).render('home', {
                 user: userFound,
+                isAdmin: userFound.type === common.userTypes.ADMIN,
                 questions: results,
                 getQuestionIcon: function (type) {
                     for (var i in common.questionTypes) {
@@ -233,7 +234,10 @@ app.get('/leaderboard', function (req, res) {
         return res.redirect('/');
     }
 
-    return res.render('leaderboard', { user: req.session.user });
+    return res.render('leaderboard', {
+        user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
+    });
 });
 
 /* Display the admin page. */
@@ -246,7 +250,10 @@ app.get('/admin', function (req,res) {
         return res.redirect('/home');
     }
 
-    return res.render('admin', { user: req.session.user });
+    return res.render('admin', {
+        user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
+    });
 });
 
 /* Display the about page. */
@@ -255,7 +262,10 @@ app.get('/about', function (req,res) {
         return res.redirect('/');
     }
 
-    return res.render('about', { user: req.session.user });
+    return res.render('about', {
+        user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
+    });
 });
 
 /* Fetch and render the leaderboard table.*/
@@ -267,14 +277,21 @@ app.get('/leaderboard-table', function (req, res) {
     if (req.query.smallBoard === 'true') {
         smallBoard = true;
     }
-    users.getLeaderboard(req.session.user._id, smallBoard, function (err, leaderboardList) {
 
+    users.getStudentsListSorted(0, function (err, list) {
         if (err) {
             return res.status(500).send(common.getError(2020));
-        } else {
+        }
+
+        users.getLeaderboard(req.session.user._id, smallBoard, function (err, leaderboardList) {
+            if (err) {
+                return res.status(500).send(common.getError(2020));
+            }
+
             const leaderboardTableHTML = leaderboardTablePug();
             const leaderboardRowHTML = leaderboardRowPug();
             return res.status(200).send({
+                studentsCount: list.length,
                 leaderboardList: leaderboardList,
                 leaderboardLimited: settings.getLeaderboardLimited(),
                 leaderboardLimit: settings.getLeaderboardLimit(),
@@ -282,7 +299,7 @@ app.get('/leaderboard-table', function (req, res) {
                 leaderboardRowHTML: leaderboardRowHTML,
                 userId: req.session.user._id
             });
-        }
+        });
     });
 });
 
@@ -415,6 +432,7 @@ app.get('/accounteditform', function (req, res) {
 
         var html = accountEditPug({
             user: student,
+            isAdmin: student.type === common.userTypes.ADMIN,
             cdate: student.ctime
         });
 
@@ -550,6 +568,18 @@ app.get('/questionedit', function (req, res) {
     });
 });
 
+/**
+ * check if the user is an admin
+ */
+app.get('/isAdmin', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var errCode = req.session.user.type === common.userTypes.ADMIN ? 200 : 500;
+    return res.status(errCode).send('ok');
+});
+
 /* Send the application statistics HTML. */
 app.get('/statistics', function (req, res) {
     if (!req.session.user) {
@@ -573,7 +603,7 @@ app.get('/statistics', function (req, res) {
             }
 
             questionslist.forEach(question => {
-      	        var first = studentslist.find(student => {
+                var first = studentslist.find(student => {
                     return student._id === question.firstAnswer;
                 });
 
@@ -638,6 +668,7 @@ app.get('/question', function (req, res) {
 
                 return res.status(200).render('question-view', {
                     user: req.session.user,
+                    isAdmin: req.session.user.type === common.userTypes.ADMIN,
                     question: questionFound,
                     firstAnswerDisplay: firstAnswerDisplay,
                     answered: (answeredList.indexOf(userId) !== -1),
@@ -772,8 +803,8 @@ app.put('/useradd', function (req, res) {
 
     users.addStudent(req.body, function (err, result) {
         if (err) {
-            logger.error(err);
-            return res.status(500).send(common.getError(2007));
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
         }
 
         return res.status(201).send('User created');
@@ -957,26 +988,38 @@ app.post('/usermod', function (req, res) {
     }
 
     var userId = req.body._id;
-    users.updateStudentById(userId, req.body, function (err, result) {
+    users.getUserByUsername(req.body.username, function (err, userFound) {
         if (err) {
             logger.error(err);
-            return res.status(500).send(common.getError(2012));
+            return res.status(500).send(common.getError(2001));
         }
 
-        users.getStudentById(userId, function (err, userFound) {
-            if (err || !userFound) {
+        if (userFound && userId !== userFound._id) {
+            logger.error(err);
+            return res.status(500).send(common.getError(2019));
+        }
+
+        users.updateStudentById(userId, req.body, function (err, result) {
+            if (err) {
                 logger.error(err);
-                return res.status(500).send(common.getError(2001));
+                return res.status(500).send(common.getError(2012));
             }
 
-            var html = accountEditPug({
-                user: userFound,
-                cdate: creationDate(userFound.ctime)
-            });
+            users.getStudentById(userId, function (err, userFound) {
+                if (err || !userFound) {
+                    logger.error(err);
+                    return res.status(500).send(common.getError(2001));
+                }
 
-            return res.status(200).send({
-                result: result,
-                html: html
+                var html = accountEditPug({
+                    user: userFound,
+                    cdate: creationDate(userFound.ctime)
+                });
+
+                return res.status(200).send({
+                    result: result,
+                    html: html
+                });
             });
         });
     });
@@ -1418,6 +1461,7 @@ app.get('/accountsExportForm', function (req, res) {
 
         return res.status(200).render('users/accounts-export-form', {
             user: req.session.user,
+            isAdmin: req.session.user.type === common.userTypes.ADMIN,
             students: studentsList
         });
     });
@@ -1434,7 +1478,8 @@ app.get('/accountsImportForm', function (req, res) {
     }
 
     return res.status(200).render('users/accounts-import-form', {
-        user: req.session.user
+        user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
     });
 });
 
@@ -1661,9 +1706,7 @@ app.get('/analytics', function (req, res) {
 
     return res.status(200).render('analytics', {
         user: req.session.user,
-        isAdmin : function () {
-            return req.session.user.type === common.userTypes.ADMIN;
-        }
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
     });
 });
 
@@ -1692,6 +1735,7 @@ app.get('/profile', function (req, res) {
 
         return res.status(200).render('profile', {
             user: user,
+            isAdmin: req.session.user.type === common.userTypes.ADMIN,
             editNamesEnabled: allSettings.student.editNames,
             editEmailEnabled: allSettings.student.editEmail,
             editPasswordEnabled: allSettings.student.editPassword
@@ -1895,7 +1939,8 @@ app.get('/feedback', function(req, res){
 
             return res.status(201).render('feedback-view', {
                 content: data,
-                user: req.session.user
+                user: req.session.user,
+                isAdmin: req.session.user.type === common.userTypes.ADMIN
             });
         });
     })

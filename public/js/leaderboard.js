@@ -26,6 +26,8 @@ var studentLeaderList;
 var podiumScore;
 var leaderboardLimit;
 var leaderboardLimited;
+var studentsCount;
+
 // Row full of ... to show that student is not in leaderboard
 var emptyStudent = {
     displayName:'...',
@@ -51,6 +53,7 @@ var fetchLeaderboard = function() {
             smallBoard: false
         },
         success: function(data) {
+            studentsCount = data.studentsCount;
             currentStudentId = data.userId;
             leaderboardLimited = data.leaderboardLimited;
             leaderboardLimit = data.leaderboardLimit;
@@ -84,7 +87,7 @@ var displayLeaderboard = function(studentLeaderList) {
     $('#topScore').html(podiumScore + ((boardType === leaderboardTypes.ACCURACYBOARD) ? '%' : ''));
 
     if (!leaderboardLimited) {
-        leaderboardLimit = 99999;
+        leaderboardLimit = studentsCount;
     }
 
     for (var index = 0; index < studentLeaderList.length; index++){

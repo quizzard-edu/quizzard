@@ -368,9 +368,13 @@ var displayQuestionTable = function () {
                   bLengthChange: false,
                   searching: true,
                   ordering:  true,
-                  paging: true
+                  paging: true,
+                  fnDrawCallback : function () {
+                    toggleButtonVisibility(null);
+                  }
                 });
             });
+            
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
@@ -481,6 +485,30 @@ var displayStatistics = function () {
             $('#option-accounts').removeClass('active');
             $('#option-questions').removeClass('active');
             $('#option-settings').removeClass('active');
+
+            $('#accounts-option-button').click(() => {
+                const optionDiv = $('#accounts-option-div');
+                const optionIcon = $('#accounts-option-icon');
+                if (optionDiv.hasClass('hidden')) {
+                    optionDiv.removeClass('hidden');
+                    optionIcon.html('keyboard_arrow_up');
+                } else {
+                    optionDiv.addClass('hidden');
+                    optionIcon.html('keyboard_arrow_down');
+                }
+            });
+
+            $('#questions-option-button').click(() => {
+                const optionDiv = $('#questions-option-div');
+                const optionIcon = $('#questions-option-icon');
+                if (optionDiv.hasClass('hidden')) {
+                    optionDiv.removeClass('hidden');
+                    optionIcon.html('keyboard_arrow_up');
+                } else {
+                    optionDiv.addClass('hidden');
+                    optionIcon.html('keyboard_arrow_down');
+                }
+            });
 
             $(document).ready(function () {
                 $('#questionsStatisticsTable').DataTable({
@@ -682,6 +710,8 @@ var submitUserForm = function () {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
+            } else if (jsonResponse.code === 2019) {
+                warningSnackbar(getErrorFromResponse(jsonResponse));
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }
@@ -1133,8 +1163,6 @@ var updateAllVisibility = function (changeValue) {
                         changeValue: changeValue
                     },
                     success: function(data) {
-                        // Changes the checkboxes and icons match the new visibility
-                        $('.checked').prop('checked', changeValue);
                         if (changeValue) {
                             $('.hiddenEye').html('visibility');
                             warningSnackbar('All questions are now VISIBLE.');
@@ -1142,6 +1170,7 @@ var updateAllVisibility = function (changeValue) {
                             $('.hiddenEye').html('visibility_off');
                             warningSnackbar('All questions are now HIDDEN.');
                         }
+                        displayQuestionTable();
                     },
                     error: function(data) {
                         var jsonResponse = data.responseJSON;
@@ -1158,3 +1187,4 @@ var updateAllVisibility = function (changeValue) {
         }
     );
 }
+
