@@ -60,9 +60,9 @@ exports.addAdmin = function (user, callback) {
 
         db.addAdmin(userToAdd, function (err, userObj) {
             if(err){
-                if (err === 'failure') {
+                if (err.code === 2014) {
                     logger.error(common.formatString('Failed to create admin {0}, database issue', [userToAdd.username]));
-                } else if (err === 'exists') {
+                } else if (err.code === 2019) {
                     logger.error(common.formatString('Admin {0} already exists', [userToAdd.username]));
                 }
                 return callback(common.getError(2005), null);
@@ -123,9 +123,9 @@ exports.addStudent = function (user, callback) {
 
         db.addStudent(userToAdd, function (err, userObj) {
             if (err) {
-                if (err === 'failure') {
+                if (err.code === 2014) {
                     logger.error(common.formatString('Failed to create student {0}, database issue', [userToAdd.username]));
-                } else if (err === 'exists') {
+                } else if (err.code === 2019) {
                     logger.error(common.formatString('Student {0} already exists', [userToAdd.username]));
                 }
 
