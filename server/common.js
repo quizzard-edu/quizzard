@@ -148,6 +148,12 @@ exports.questionAttributes = questionAttributes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
+/**
+ * return an object of error code and message
+ *
+ * @param {number} errorCode
+ * @return {object}
+ */
 var getError = function(errorCode) {
     return {
        code: errorCode,

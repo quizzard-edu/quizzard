@@ -22,7 +22,11 @@ const common = require('./common.js');
 var dateStamp;
 var logger;
 
-// print a normal message
+/**
+ * print a normal message
+ * 
+ * @param {string} text 
+ */
 exports.log = function (text) {
     init();
 
@@ -30,7 +34,11 @@ exports.log = function (text) {
     console.log(txt);
 }
 
-// print an error message
+/**
+ * print an error message
+ * 
+ * @param {string} text 
+ */
 exports.error = function (text) {
     init();
 
@@ -38,7 +46,9 @@ exports.error = function (text) {
     console.error(txt);
 }
 
-// initiate the logging with file
+/**
+ * initiate the logging with file
+ */
 var init = function () {
     var currentDate = common.getDateByFormat('YYYY-MM-DD');
     if (!process.env.DEBUG && dateStamp !== currentDate) {

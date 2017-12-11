@@ -293,6 +293,7 @@ app.get('/leaderboard-table', function (req, res) {
             return res.status(200).send({
                 studentsCount: list.length,
                 leaderboardList: leaderboardList,
+                leaderboardLimited: settings.getLeaderboardLimited(),
                 leaderboardLimit: settings.getLeaderboardLimit(),
                 leaderboardTableHTML: leaderboardTableHTML,
                 leaderboardRowHTML: leaderboardRowHTML,
@@ -1756,6 +1757,7 @@ app.get('/settings', function (req, res) {
 
     var html = settingsPug({
         generalActive: allSettings.general.active,
+        generalLeaderboardLimited: allSettings.general.leaderboardLimited,
         generalLeaderboardLimit: allSettings.general.leaderboardLimit,
         studentEditNames: allSettings.student.editNames,
         studentEditEmail: allSettings.student.editEmail,

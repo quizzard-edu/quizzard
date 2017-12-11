@@ -467,7 +467,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
         }
 
         var leaderboardList = [];
-        
+
         if (smallBoard) {
             var rank;
             var prevRank;
@@ -513,9 +513,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
                     leaderboardList.push(student);
                 }
             }
-        }
-
-        else {
+        } else {
             for (var i = 0; i < studentlist.length; ++i) {
                 var currentStudent = studentlist[i];
 

@@ -770,6 +770,7 @@ var resetAllSettings = function (callback) {
         defaultSettings['discussionboard'] = {};
 
         defaultSettings.general['active'] = true;
+        defaultSettings.general['leaderboardLimited'] = false;
         defaultSettings.general['leaderboardLimit'] = 3;
 
         defaultSettings.student['editNames'] = true;
@@ -813,7 +814,7 @@ var getAllSettings = function (callback) {
     settingsCollection.findOne({}, function (err, obj) {
         if (err) {
             return callback (common.getError(7003), null);
-        } 
+        }
         else if (!obj) {
             resetAllSettings(function (err, result) {
                 if (err) {
