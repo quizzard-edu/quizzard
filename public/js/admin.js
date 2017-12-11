@@ -368,9 +368,13 @@ var displayQuestionTable = function () {
                   bLengthChange: false,
                   searching: true,
                   ordering:  true,
-                  paging: true
+                  paging: true,
+                  fnDrawCallback : function () {
+                    toggleButtonVisibility(null);
+                  }
                 });
             });
+            
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
@@ -1159,8 +1163,6 @@ var updateAllVisibility = function (changeValue) {
                         changeValue: changeValue
                     },
                     success: function(data) {
-                        // Changes the checkboxes and icons match the new visibility
-                        $('.checked').prop('checked', changeValue);
                         if (changeValue) {
                             $('.hiddenEye').html('visibility');
                             warningSnackbar('All questions are now VISIBLE.');
@@ -1168,6 +1170,7 @@ var updateAllVisibility = function (changeValue) {
                             $('.hiddenEye').html('visibility_off');
                             warningSnackbar('All questions are now HIDDEN.');
                         }
+                        displayQuestionTable();
                     },
                     error: function(data) {
                         var jsonResponse = data.responseJSON;
@@ -1184,3 +1187,4 @@ var updateAllVisibility = function (changeValue) {
         }
     );
 }
+
