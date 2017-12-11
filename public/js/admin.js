@@ -19,7 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var usersTableActive = true;
 var questionTableActive = true;
 var autocompleteTopics;
-var allVisibilityStatus;
 
 $(function () {
     /* show the account table by default */
@@ -1120,7 +1119,6 @@ var initSummernote = function () {
  * @param {boolean} changeValue true if user is showing all questions, false if user is hiding all questions
  */
 var updateAllVisibility = function (changeValue) {
-    allVisibilityStatus = changeValue;
     swal({
         type: 'warning',
         title: 'Visibilty Change',
