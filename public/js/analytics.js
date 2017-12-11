@@ -88,7 +88,7 @@ var initAutoComplete = function () {
   });
 
   const autocompleteValue = $('#autocomplete-input').val();
-  
+
   for (var s in studentList) {
     if (s.split(' ')[0].toLowerCase() === autocompleteValue.split(' ')[0].toLowerCase()) {
       $('#student-analytics-data-cards').removeClass('hidden');
@@ -160,8 +160,10 @@ var displayClassStatistics = function () {
 
   getClassPointsPerTopicVsClass(path);
   getClassAccuracyPerTopicVsClass(path);
+  getClassRatingPerTopicVsClass(path);
   getClassPointsPerTypeVsClass(path);
   getClassAccuracyPerTypeVsClass(path);
+  getClassRatingPerTypeVsClass(path);
 }
 
 /**
@@ -927,6 +929,30 @@ var getClassAccuracyPerTopicVsClass = function (path) {
   });
 }
 
+var getClassRatingPerTopicVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classRatingPerTopicVsClass'
+    },
+    success: function (data) {
+      data.id = '#classRatingPerTopicVsClass';
+      createClassRadarChart(data);
+      createTable('#classRatingPerTopicVsClassTable', ['Topic', 'Class'], [data.labels, data.classData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 404) {
+        window.location.href = '/page-not-found';
+      } else {
+        noDataCanvas('#classRatingPerTopicVsClass');
+      }
+    }
+  });
+}
+
 var getClassPointsPerTypeVsClass = function (path) {
   $.ajax({
     type: 'GET',
@@ -976,6 +1002,33 @@ var getClassAccuracyPerTypeVsClass = function (path) {
         window.location.href = '/page-not-found';
       } else {
         noDataCanvas('#classAccuracyPerTypeVsClass');
+      }
+    }
+  });
+}
+
+var getClassRatingPerTypeVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classRatingPerTypeVsClass'
+    },
+    success: function (data) {
+      data.id = '#classRatingPerTypeVsClass';
+      data.labels = data.labels.map(item => {
+        return questionTypes[item].value;
+      });
+      createClassRadarChart(data);
+      createTable('#classRatingPerTypeVsClassTable', ['Type', 'Class'], [data.labels, data.classData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 404) {
+        window.location.href = '/page-not-found';
+      } else {
+        noDataCanvas('#classRatingPerTypeVsClass');
       }
     }
   });
