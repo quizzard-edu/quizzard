@@ -8,36 +8,22 @@ block title
 
 block content
   include navbar
-
   br
-  if (isAdmin())
+  if isAdmin
     .container
       .row
         .col.s12
           .row
             ul.tabs
               li.tab.col.s6
-                a.noLineLink.active#option-student(href='#') Student Analytics
+                a.noLineLink.active#option-class(href='#') Class Analytics
               li.tab.col.s6
-                a.noLineLink#option-class(href='#') Class Analytics
-  .container
-    .row
-      .col.s12
-        .card#studentSelector
-          if (isAdmin())
-            .container
-              .row
-                .col.s12
-                  .row
-                    .input-field.col.s11
-                      input#autocomplete-input.autocomplete(type='text')
-                      label(for='autocomplete-input') Select a student by ID
-                    .input-field.col.s1
-                      i.material-icons.cursor-pointer(onClick=" $('#autocomplete-input').val(''); displayStudentStatistics(null);") close
-    .row
-      .col.s12
-        include student-analytics
+                a.noLineLink#option-student(href='#') Student Analytics
+  .row
+    .col.s12
+      if isAdmin
         include class-analytics
+      include student-analytics
 
 block scripts
   script(src='/lib/charts/Chart.min.js')

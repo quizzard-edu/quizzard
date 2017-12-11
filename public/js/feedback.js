@@ -18,6 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var cancelling = false;
 
+$(function () {
+    if (window.location.pathname === '/feedback') {
+        $('#nav-feedback-view').addClass('active');
+    }
+});
+
 function userFeedback() {
     $('.collapsible').collapsible();
 

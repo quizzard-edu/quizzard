@@ -42,8 +42,8 @@ var nextQuestionNumber = 0;
  *
  * @param {function} callback
  */
-exports.initialize = function(callback) {
-    db.open(function(err, db) {
+exports.initialize = function (callback) {
+    db.open(function (err, db) {
         if (err) {
             logger.error(common.getError(1004).message);
             return callback(err, null);
@@ -57,7 +57,7 @@ exports.initialize = function(callback) {
         settingsCollection = db.collection('settings');
         vfsCollection = db.collection('virtualFileSystem');
 
-        getNextQuestionNumber(function() {
+        getNextQuestionNumber(function () {
             logger.log(common.formatString('next question number: {0}', [nextQuestionNumber]));
             return callback(err, null);
         });
@@ -70,7 +70,7 @@ exports.initialize = function(callback) {
  * @param {object} student
  * @param {function} callback
  */
-exports.addStudent = function(student, callback){
+exports.addStudent = function (student, callback) {
     addUser(student, callback);
 }
 
@@ -80,7 +80,7 @@ exports.addStudent = function(student, callback){
  * @param {object} admin
  * @param {function} callback
  */
-exports.addAdmin = function(admin, callback){
+exports.addAdmin = function (admin, callback) {
     addUser(admin, callback);
 }
 
@@ -90,8 +90,8 @@ exports.addAdmin = function(admin, callback){
  * @param {object} user
  * @param {function} callback
  */
-var addUser = function(user, callback) {
-    usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function(err, obj) {
+var addUser = function (user, callback) {
+    usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function (err, obj) {
         if (err) {
             logger.error(err);
             return callback(common.getError(2014), null);
@@ -101,7 +101,7 @@ var addUser = function(user, callback) {
             return callback(common.getError(2019), null);
         }
 
-        usersCollection.insert(user, function(err, res) {
+        usersCollection.insert(user, function (err, res) {
             return callback(err, user);
         });
     });
@@ -112,7 +112,7 @@ var addUser = function(user, callback) {
  *
  * @param {function} callback
  */
-exports.getAdminsList = function(callback) {
+exports.getAdminsList = function (callback) {
     getUsersList({type: common.userTypes.ADMIN}, {username: 1}, callback);
 }
 
@@ -121,7 +121,7 @@ exports.getAdminsList = function(callback) {
  *
  * @param {function} callback
  */
-exports.getStudentsList = function(callback) {
+exports.getStudentsList = function (callback) {
     getUsersList({type: common.userTypes.STUDENT}, {username: 1}, callback);
 }
 
@@ -130,7 +130,7 @@ exports.getStudentsList = function(callback) {
  *
  * @param {function} callback
  */
-exports.getUsersList = function(callback) {
+exports.getUsersList = function (callback) {
     getUsersList({}, {username: 1}, callback);
 }
 
@@ -140,7 +140,7 @@ exports.getUsersList = function(callback) {
  * @param {string} status
  * @param {function} callback
  */
-exports.getStudentsListWithStatus = function(status, callback) {
+exports.getStudentsListWithStatus = function (status, callback) {
     getUsersList({type: common.userTypes.STUDENT, active: status}, {username: 1}, callback);
 }
 
@@ -151,8 +151,8 @@ exports.getStudentsListWithStatus = function(status, callback) {
  * @param {object} sortQuery
  * @param {function} callback
  */
-var getUsersList = function(findQuery, sortQuery, callback){
-    usersCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
+var getUsersList = function (findQuery, sortQuery, callback) {
+    usersCollection.find(findQuery).sort(sortQuery).toArray(function (err, docs) {
         if (err) {
             return callback(common.getError(2013), []);
         }
@@ -167,11 +167,11 @@ var getUsersList = function(findQuery, sortQuery, callback){
  * @param {int} lim
  * @param {function} callback
  */
-exports.getStudentsListSorted = function(lim, callback){
+exports.getStudentsListSorted = function (lim, callback) {
     usersCollection.find({type: common.userTypes.STUDENT, active:{$ne: false}})
             .sort({points: -1})
             .limit(lim)
-            .toArray(function(err, docs) {
+            .toArray(function (err, docs) {
         if (err) {
             return callback(common.getError(2015), null);
         }
@@ -186,7 +186,7 @@ exports.getStudentsListSorted = function(lim, callback){
  * @param {string} userId
  * @param {function} callback
  */
-exports.getUserById = function(userId, callback) {
+exports.getUserById = function (userId, callback) {
     getUserById(userId, callback);
 }
 
@@ -198,8 +198,8 @@ exports.getUserById = function(userId, callback) {
  * @param {string} pass
  * @param {function} callback
  */
-exports.checkLogin = function(userId, pass, callback) {
-    usersCollection.findOne({username : userId}, function(err, obj) {
+exports.checkLogin = function (userId, pass, callback) {
+    usersCollection.findOne({username : userId}, function (err, obj) {
         if (err) {
             logger.error(err);
             return callback(common.getError(2014), null);
@@ -213,7 +213,7 @@ exports.checkLogin = function(userId, pass, callback) {
             return callback('userNotActive', null);
         }
 
-        validatePassword(obj, pass, function(err, valid) {
+        validatePassword(obj, pass, function (err, valid) {
             if (err) {
                 return callback(common.getError(1005), null);
             }
@@ -235,8 +235,8 @@ exports.checkLogin = function(userId, pass, callback) {
  * @param {string} pass
  * @param {function} callback
  */
-var validatePassword = function(userobj, pass, callback) {
-    bcrypt.compare(pass, userobj.password, function(err, obj) {
+var validatePassword = function (userobj, pass, callback) {
+    bcrypt.compare(pass, userobj.password, function (err, obj) {
         callback(err, obj);
     });
 }
@@ -246,8 +246,8 @@ var validatePassword = function(userobj, pass, callback) {
  *
  * @param {function} callback
  */
-exports.removeAllUsers = function(callback) {
-    usersCollection.remove({}, function(err, obj) {
+exports.removeAllUsers = function (callback) {
+    usersCollection.remove({}, function (err, obj) {
         if (err) {
             logger.error(err);
             return callback(common.getError(1008), null);
@@ -264,7 +264,7 @@ exports.removeAllUsers = function(callback) {
  * @param {string} studentId
  * @param {function} callback
  */
-exports.getStudentById = function(studentId, callback) {
+exports.getStudentById = function (studentId, callback) {
     getUserById(studentId, callback);
 }
 
@@ -274,7 +274,7 @@ exports.getStudentById = function(studentId, callback) {
  * @param {string} adminId
  * @param {function} callback
  */
-exports.getAdminById = function(adminId, callback) {
+exports.getAdminById = function (adminId, callback) {
     getUserById(adminId, callback);
 }
 
@@ -284,7 +284,7 @@ exports.getAdminById = function(adminId, callback) {
  * @param {string} userId
  * @param {function} callback
  */
-var getUserById = function(userId, callback){
+var getUserById = function (userId, callback) {
     getUserObject({_id : userId}, callback);
 }
 
@@ -294,8 +294,8 @@ var getUserById = function(userId, callback){
  * @param {object} findQuery
  * @param {function} callback
  */
-var getUserObject = function(findQuery, callback){
-    usersCollection.findOne(findQuery, function(err, obj) {
+var getUserObject = function (findQuery, callback) {
+    usersCollection.findOne(findQuery, function (err, obj) {
         if (err) {
             logger.error(err);
             return callback(common.getError(2017), null);
@@ -313,7 +313,7 @@ exports.getUserObject = getUserObject;
  * @param {object} info
  * @param {function} callback
  */
-exports.updateUserById = function(userId, info, callback){
+exports.updateUserById = function (userId, info, callback) {
     updateUserById(userId, info, callback);
 }
 
@@ -324,7 +324,7 @@ exports.updateUserById = function(userId, info, callback){
  * @param {object} info
  * @param {function} callback
  */
-exports.updateStudentById = function(userId, info, callback){
+exports.updateStudentById = function (userId, info, callback) {
     updateUserById(userId, info, callback);
 }
 
@@ -335,7 +335,7 @@ exports.updateStudentById = function(userId, info, callback){
  * @param {object} info
  * @param {function} callback
  */
-exports.updateAdminById = function(userId, info, callback){
+exports.updateAdminById = function (userId, info, callback) {
     updateUserById(userId, info, callback);
 }
 
@@ -346,7 +346,7 @@ exports.updateAdminById = function(userId, info, callback){
  * @param {object} info
  * @param {function} callback
  */
-var updateUserById = function(userId, info, callback){
+var updateUserById = function (userId, info, callback) {
     var currentDate = new Date().toString();
     var query = { _id : userId };
     var update = {};
@@ -410,7 +410,7 @@ var updateUserById = function(userId, info, callback){
     }
 
     if (typeof info.newPassword === 'undefined') {
-        usersCollection.update(query, update, function(err, obj) {
+        usersCollection.update(query, update, function (err, obj) {
             if (err) {
                 logger.error(err);
                 return callback(common.getError(2018), null);
@@ -432,7 +432,7 @@ var updateUserById = function(userId, info, callback){
  * @param {string} password
  * @param {function} callback
  */
-exports.updateUserPassword = function(query, update, password, callback) {
+exports.updateUserPassword = function (query, update, password, callback) {
     updateUserPassword(query, update, password, callback);
 }
 
@@ -444,8 +444,8 @@ exports.updateUserPassword = function(query, update, password, callback) {
  * @param {string} password
  * @param {function} callback
  */
-var updateUserPassword = function(query, update, password, callback) {
-    bcrypt.hash(password, 11, function(err, hash) {
+var updateUserPassword = function (query, update, password, callback) {
+    bcrypt.hash(password, 11, function (err, hash) {
         if (err) {
             logger.error(err);
             return callback(common.getError(1009), null);
@@ -457,7 +457,7 @@ var updateUserPassword = function(query, update, password, callback) {
             update.$set = {password: hash};
         }
 
-        usersCollection.update(query, update, function(err, obj) {
+        usersCollection.update(query, update, function (err, obj) {
             if (err) {
                 logger.error(err);
                 return callback(common.getError(2018), null);
@@ -476,7 +476,7 @@ var updateUserPassword = function(query, update, password, callback) {
  * @param {function} callback
  */
 exports.updateUserByQuery = function (query, update, callback) {
-    usersCollection.update(query, update, function(err, obj) {
+    usersCollection.update(query, update, function (err, obj) {
         return callback(err, obj);
     });
 }
@@ -488,9 +488,9 @@ exports.updateUserByQuery = function (query, update, callback) {
  * @param {object} question
  * @param {function} callback
  */
-exports.addQuestion = function(question, callback) {
+exports.addQuestion = function (question, callback) {
     question.number = ++nextQuestionNumber;
-    questionsCollection.insert(question, function(err, res) {
+    questionsCollection.insert(question, function (err, res) {
         if (err) {
             logger.error(err);
             return callback(common.getError(3018), null);
@@ -505,8 +505,8 @@ exports.addQuestion = function(question, callback) {
  *
  * @param {function} callback
  */
-exports.removeAllQuestions = function(callback) {
-    questionsCollection.remove({}, function(err, res) {
+exports.removeAllQuestions = function (callback) {
+    questionsCollection.remove({}, function (err, res) {
         if (err) {
             logger.error(err);
             return callback(common.getError(1008), null);
@@ -524,8 +524,8 @@ exports.removeAllQuestions = function(callback) {
  *
  * @param {function} callback
  */
-var getNextQuestionNumber = function(callback) {
-      questionsCollection.find().sort({number: -1}).limit(1).toArray(function(err, docs) {
+var getNextQuestionNumber = function (callback) {
+      questionsCollection.find().sort({number: -1}).limit(1).toArray(function (err, docs) {
         if (err) {
             logger.error(err);
             process.exit(1);
@@ -543,10 +543,10 @@ var getNextQuestionNumber = function(callback) {
  * @param {object} sortQuery
  * @param {function} callback
  */
-exports.getQuestionsList = function(findQuery, sortQuery, callback) {
+exports.getQuestionsList = function (findQuery, sortQuery, callback) {
     var query = findQuery;
     query['deleted'] = {$ne: true};
-    questionsCollection.find(query).sort(sortQuery).toArray(function(err, docs) {
+    questionsCollection.find(query).sort(sortQuery).toArray(function (err, docs) {
         if (err) {
             return callback(common.getError(3017), null);
         }
@@ -566,8 +566,8 @@ exports.getQuestionsList = function(findQuery, sortQuery, callback) {
  * @param {object} sortQuery
  * @param {function} callback
  */
-exports.getQuestionsListforAdmin = function(findQuery, sortQuery, callback) {
-    questionsCollection.find(findQuery).sort(sortQuery).toArray(function(err, docs) {
+exports.getQuestionsListforAdmin = function (findQuery, sortQuery, callback) {
+    questionsCollection.find(findQuery).sort(sortQuery).toArray(function (err, docs) {
         if (err) {
             return callback(common.getError(3017), null);
         }
@@ -586,10 +586,10 @@ exports.getQuestionsListforAdmin = function(findQuery, sortQuery, callback) {
  * @param {object} findQuery
  * @param {function} callback
  */
-exports.lookupQuestion = function(findQuery, callback) {
+exports.lookupQuestion = function (findQuery, callback) {
     var query = findQuery;
     query['deleted'] = {$ne: true};
-    questionsCollection.findOne(query, function(err, question) {
+    questionsCollection.findOne(query, function (err, question) {
         if (err) {
             return callback(common.getError(3019), null);
         }
@@ -611,7 +611,7 @@ exports.lookupQuestion = function(findQuery, callback) {
  * @param {object} request
  * @param {function} callback
  */
-exports.updateQuestionById = function(questionId, request, callback) {
+exports.updateQuestionById = function (questionId, request, callback) {
     var currentDate = new Date().toString();
     var query = {_id: questionId};
     var update = {};
@@ -686,7 +686,7 @@ exports.updateQuestionById = function(questionId, request, callback) {
         delete update.$inc;
     }
 
-    questionsCollection.update(query, update, function(err, info) {
+    questionsCollection.update(query, update, function (err, info) {
         if (err) {
             return callback(common.getError(3020), null);
         }
@@ -703,14 +703,14 @@ exports.updateQuestionById = function(questionId, request, callback) {
  * @param {function} callback
  */
 exports.updateQuestionByQuery = function (query, update, callback) {
-    questionsCollection.update(query, update, function(err, obj) {
+    questionsCollection.update(query, update, function (err, obj) {
         return callback(err, obj);
     });
 }
 
 // add feedback to feedback collections directly using a query
-exports.addFeedback = function(feedback, callback) {
-    feedbackCollection.insert(feedback, function(err, res) {
+exports.addFeedback = function (feedback, callback) {
+    feedbackCollection.insert(feedback, function (err, res) {
         if (err) {
             logger.error('Failed to add feedback');
             return callback(common.getError(8000), null);
@@ -720,8 +720,8 @@ exports.addFeedback = function(feedback, callback) {
     });
 }
 
-exports.getFeedback = function(callback) {
-    feedbackCollection.find().sort({time: -1}).toArray(function(err, res) {
+exports.getFeedback = function (callback) {
+    feedbackCollection.find().sort({time: -1}).toArray(function (err, res) {
         if (err) {
             logger.error('Failed to get feedback');
             return callback(common.getError(8001), res);
@@ -731,8 +731,8 @@ exports.getFeedback = function(callback) {
     });
 }
 
-exports.removeAllFeedback = function(callback) {
-    feedbackCollection.remove({}, function(err, result) {
+exports.removeAllFeedback = function (callback) {
+    feedbackCollection.remove({}, function (err, result) {
         if (err) {
             return callback(common.getError(8002), null);
         }
@@ -815,8 +815,8 @@ var getAllSettings = function (callback) {
             return callback (common.getError(7003), null);
         } 
         else if (!obj) {
-            resetAllSettings(function(err, result){
-                if (err){
+            resetAllSettings(function (err, result) {
+                if (err) {
                     return callback(err, null)
                 }
                 return callback(null, result);
@@ -833,7 +833,7 @@ var getAllSettings = function (callback) {
  * @param {function} callback
  */
 exports.removeAnalytics = function (callback) {
-    analyticsCollection.remove({}, function(err, obj) {
+    analyticsCollection.remove({}, function (err, obj) {
         if (err) {
             logger.error(err);
             return callback(common.getError(1008), null);
@@ -858,7 +858,7 @@ exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback)
     var query = {_id: studentId};
     var update = {};
 
-    analyticsCollection.findOne(query, function(err, student) {
+    analyticsCollection.findOne(query, function (err, student) {
         if (err) {
             return callback(err, null);
         }
@@ -872,7 +872,7 @@ exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback)
             update._id = studentId;
             update.dates = [{date: date, info: info}];
 
-            analyticsCollection.insert(update, function(err, obj){
+            analyticsCollection.insert(update, function (err, obj) {
                 if (err) {
                     return callback(err, null);
                 }
@@ -888,7 +888,7 @@ exports.addStudentAnalyticsWithDate = function (studentId, date, info, callback)
             info.accuracyDelta = (info.accuracy - student.dates[student.dates.length-1].info.accuracy).toFixed(2);
             update.$push = {dates: {date: date, info: info}};
 
-            analyticsCollection.update(query, update, function(err, info) {
+            analyticsCollection.update(query, update, function (err, info) {
                 if (err) {
                     return callback(err, null);
                 }
