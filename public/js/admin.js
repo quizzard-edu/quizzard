@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var usersTableActive = true;
 var questionTableActive = true;
 var autocompleteTopics;
+var allVisibilityStatus;
 
 $(function () {
     /* show the account table by default */
@@ -368,9 +369,13 @@ var displayQuestionTable = function () {
                   bLengthChange: false,
                   searching: true,
                   ordering:  true,
-                  paging: true
+                  paging: true,
+                  fnDrawCallback : function () {
+                    toggleButtonVisibility(null);
+                  }
                 });
             });
+            
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
@@ -1113,6 +1118,7 @@ var initSummernote = function () {
  * @param {boolean} changeValue true if user is showing all questions, false if user is hiding all questions
  */
 var updateAllVisibility = function (changeValue) {
+    allVisibilityStatus = changeValue;
     swal({
         type: 'warning',
         title: 'Visibilty Change',
@@ -1133,8 +1139,6 @@ var updateAllVisibility = function (changeValue) {
                         changeValue: changeValue
                     },
                     success: function(data) {
-                        // Changes the checkboxes and icons match the new visibility
-                        $('.checked').prop('checked', changeValue);
                         if (changeValue) {
                             $('.hiddenEye').html('visibility');
                             warningSnackbar('All questions are now VISIBLE.');
@@ -1142,6 +1146,7 @@ var updateAllVisibility = function (changeValue) {
                             $('.hiddenEye').html('visibility_off');
                             warningSnackbar('All questions are now HIDDEN.');
                         }
+                        displayQuestionTable();
                     },
                     error: function(data) {
                         var jsonResponse = data.responseJSON;
@@ -1158,3 +1163,4 @@ var updateAllVisibility = function (changeValue) {
         }
     );
 }
+
