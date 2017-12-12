@@ -939,7 +939,7 @@ var getClassRatingPerTopicVsClass = function (path) {
     success: function (data) {
       data.id = '#classRatingPerTopicVsClass';
       createRatingRadarChart(data);
-      createTable('#classRatingPerTopicVsClassTable', ['Topic', 'me', 'Class'], [data.labels, data.adminsData, data.studentsData]);
+      createTable('#classRatingPerTopicVsClassTable', ['Topic', 'Me', 'Class'], [data.labels, data.adminsData, data.studentsData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
@@ -1020,7 +1020,7 @@ var getClassRatingPerTypeVsClass = function (path) {
         return questionTypes[item].value;
       });
       createRatingRadarChart(data);
-      createTable('#classRatingPerTypeVsClassTable', ['Topic', 'me', 'Class'], [data.labels, data.adminsData, data.studentsData]);
+      createTable('#classRatingPerTypeVsClassTable', ['Type', 'Me', 'Class'], [data.labels, data.adminsData, data.studentsData]);
     },
     error: function (data) {
       if (data['status'] === 401) {
