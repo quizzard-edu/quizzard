@@ -371,8 +371,7 @@ var displayQuestionTable = function () {
                   paging: true,
                   fnDrawCallback : function () {
                     toggleButtonVisibility(null);
-                  },
-                  responsive: true
+                  }
                 });
             });
             
