@@ -1613,47 +1613,73 @@ var getClassRatingPerTopicVsClass = function (query, callback) {
  * @param {function} callback
  */
 var getClassRatingPerTypeVsClass = function (query, callback) {
-    questions.getAllQuestionsByQuery({}, {type: 1}, function(err, questionsList) {
+    users.getStudentsList(function (err, studentsList) {
         if (err) {
             return callback(err, null);
         }
 
-        if (!questionsList || !questionsList[0]) {
-            return callback('no questions available', null);
+        var studentsObject = {};
+        for (var j = 0; j < studentsList.length; j++) {
+            studentsObject[studentsList[j]._id] = studentsList[j].type;
         }
 
-        var classData = [];
-        var labels = [];
-        var currentType = questionsList[0].type;
-        var classPoints = 0;
-        var classCount = 0;
+        questions.getAllQuestionsByQuery({}, {type: 1}, function(err, questionsList) {
+            if (err) {
+                return callback(err, null);
+            }
+    
+            if (!questionsList || !questionsList[0]) {
+                return callback('no questions available', null);
+            }
+    
+            var adminsData = [];
+            var studentsData = [];
+            var labels = [];
+            var currentType = questionsList[0].type;
+            var adminsRating = 0;
+            var studentsRating = 0;
+            var adminsCount = 0;
+            var studentsCount = 0;
+    
+            for (var i = 0; i < questionsList.length; i++) {
+                var question = questionsList[i];
+    
+                if (question.type !== currentType) {
+                    labels.push(currentType);
+                    adminsData.push((adminsCount === 0) ? 0 : (adminsRating / adminsCount).toFixed(2));
+                    studentsRating.push((studentsCount === 0) ? 0 : (studentsRating / studentsCount).toFixed(2));
+                    adminsCount = 0;
+                    studentsCount = 0;
+                    adminsRating = 0;
+                    studentsRating = 0;
+                    currentType = question.type;
+                }
+    
+                for (var j = 0; j < question.ratings.length; j++) {
+                    var userObject = question.ratings[j];
 
-        for (var i = 0; i < questionsList.length; i++) {
-            var question = questionsList[i];
-
-            if (question.type !== currentType) {
+                    if (studentsObject[userObject.userId] === common.userTypes.ADMIN) {
+                        adminsRating += userObject.rating;
+                        adminsCount ++;
+                    } else {
+                        studentsRating += userObject.rating;
+                        studentsCount ++;
+                    }                    
+                }
+            }
+    
+            if (questionsList.length > 0) {
+                currentType = questionsList[questionsList.length-1].type;
                 labels.push(currentType);
-                classData.push((classCount === 0) ? 0 : (classPoints / classCount).toFixed(0));
-                classPoints = 0;
-                classCount = 0;
-                currentType = question.type;
+                adminsData.push((adminsCount === 0) ? 0 : (adminsRating / adminsCount).toFixed(2));
+                studentsRating.push((studentsCount === 0) ? 0 : (studentsRating / studentsCount).toFixed(2));
             }
-
-            for (var j = 0; j < question.correctAttempts.length; j++) {
-                classPoints = question.correctAttempts[j].points;
-                classCount ++;
-            }
-        }
-
-        if (questionsList.length > 0) {
-            currentType = questionsList[questionsList.length-1].type;
-            labels.push(currentType);
-            classData.push((classCount === 0) ? 0 : (classPoints / classCount).toFixed(0));
-        }
-
-        return callback(null, {
-            classData: classData,
-            labels: labels
+    
+            return callback(null, {
+                adminsData: adminsData,
+                studentsData: studentsData,
+                labels: labels
+            });
         });
     });
 }
