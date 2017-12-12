@@ -499,7 +499,7 @@ app.get('/questionlist', function (req, res) {
                 })
 
                 return res.status(200).send({
-                     html: questionListPug(),
+                     html: (questionsList.length) ? questionListPug() : '<p class=\'center\'>There are no questions available here at this time.</p>',
                      questionsList: returnQuestionsList
                 });
             }

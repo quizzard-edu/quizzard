@@ -27,12 +27,12 @@ const datagenInfo = require('./datagenInfo.js');
 // constants to control the genereated data
 
 const numberOfEachQuestion = {
-    'regular': 4,
-    'multipleChoice': 4,
-    'trueFalse': 4,
-    'matching': 4,
-    'chooseAll': 4,
-    'ordering': 4
+    'regular': 0,
+    'multipleChoice': 0,
+    'trueFalse': 0,
+    'matching': 0,
+    'chooseAll': 0,
+    'ordering': 0
 };
 
 const adminsCount = 2;

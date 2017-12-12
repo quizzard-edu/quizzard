@@ -35,6 +35,11 @@ $(function () {
 $('#nav-home').addClass('active');
 
 var sortQuestionsList = function(criteria = currentCriteria) {
+    if (!questionsList.length) {
+        $('#questionsList').html('');
+        $('#questionsList').append(questionsListHTML[0].outerHTML);
+        return;
+    }
     $('#sortButton').html(`Sort By: ${criteria.display}`);
     currentCriteria = criteria;
 
