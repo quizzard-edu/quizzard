@@ -82,6 +82,7 @@
 
 .date {
     padding-left: 20px;
+    display: inherit;
 }
 
 .cursor-pointer {
