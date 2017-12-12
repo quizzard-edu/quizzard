@@ -119,9 +119,9 @@ only screen and (max-width: 760px),
 	#questionsTable td:nth-of-type(2):before { content: "ID: "; font-weight: bold; }
 	#questionsTable td:nth-of-type(3):before { content: "Title: "; font-weight: bold; }
 	#questionsTable td:nth-of-type(4):before { content: "Topic: "; font-weight: bold; }
-    #questionsTable td:nth-of-type(5):before { content: "Type: "; font-weight: bold; }
+	#questionsTable td:nth-of-type(5):before { content: "Type: "; font-weight: bold; }
 
-    #manageAcccountsTable td:nth-of-type(1):before { content: "Username: "; font-weight: bold; }
+	#manageAcccountsTable td:nth-of-type(1):before { content: "Username: "; font-weight: bold; }
 	#manageAcccountsTable td:nth-of-type(2):before { content: "First Name: "; font-weight: bold; }
 	#manageAcccountsTable td:nth-of-type(3):before { content: "Last Name: "; font-weight: bold; }
     #manageAcccountsTable td:nth-of-type(4):before { content: "Email: "; font-weight: bold; }
