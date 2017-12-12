@@ -113,7 +113,7 @@ secureServer.listen(config.httpsPort,function () {
             if (err) {
                 process.exit(1);
             }
-            analytics.initialize(function(err, result) {
+            analytics.initialize(function (err, result) {
                 if (err) {
                     process.exit(1);
                 }
@@ -461,7 +461,7 @@ app.get('/questionlist', function (req, res) {
         and make changes to question-table.pug*/
         request.active = true;
 
-        users.getQuestionsListByUser(request, function(err, questionsList) {
+        users.getQuestionsListByUser(request, function (err, questionsList) {
             if (err) {
                 return res.status(500).send(common.getError(3000));
             }
@@ -1092,7 +1092,7 @@ app.post('/questiondel', function (req, res) {
         return res.status(403).send(common.getError(1002));
     }
 
-    questions.deleteQuestion(req.body.qid, function(err, result){
+    questions.deleteQuestion(req.body.qid, function (err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send(err);
@@ -1872,7 +1872,7 @@ app.get('/adminAnalytics', function (req,res) {
 });
 
 /* submit course feedback coming from students*/
-app.post('/submitFeedback', function(req, res){
+app.post('/submitFeedback', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1883,7 +1883,7 @@ app.post('/submitFeedback', function(req, res){
 
     logger.log(common.formatString('Feedback from {0} regarding {1}', [req.session.user._id, req.body.subject]));
 
-    users.addFeedback(req.session.user._id, req.body.subject, req.body.message, function(err, result) {
+    users.addFeedback(req.session.user._id, req.body.subject, req.body.message, function (err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(8000));
@@ -1894,7 +1894,7 @@ app.post('/submitFeedback', function(req, res){
 });
 
 /* get feed back for the admin's `View Feedback` page*/
-app.get('/feedback', function(req, res){
+app.get('/feedback', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1905,7 +1905,7 @@ app.get('/feedback', function(req, res){
 
     logger.log(common.formatString('Getting feedback for {0}', [req.session.user.username]));
 
-    users.getFeedback(function(err, result) {
+    users.getFeedback(function (err, result) {
         if (err) {
             logger.error(err);
             return res.status(500).send(common.getError(8001));
@@ -1947,8 +1947,8 @@ app.get('/feedback', function(req, res){
 });
 
 /* allow the admin to clear all the feedback*/
-app.post('/removeAllFeedback', function(req, res) {
-    db.removeAllFeedback(function(err, result) {
+app.post('/removeAllFeedback', function (req, res) {
+    db.removeAllFeedback(function (err, result) {
         if (err) {
             return callback(common.getError(8002), null);
         }
@@ -1958,7 +1958,7 @@ app.post('/removeAllFeedback', function(req, res) {
 });
 
 /* Changes Visibilty of All Questions */
-app.post('/changeAllVisibility', function(req, res) {
+app.post('/changeAllVisibility', function (req, res) {
     if (!req.session.user) {
         return res.redirect('/');
     }
@@ -1967,7 +1967,7 @@ app.post('/changeAllVisibility', function(req, res) {
         res.status(403).send(common.getError(1002));
     }
 
-    questions.changeAllVisibility(req.body.changeValue, function(err, result) {
+    questions.changeAllVisibility(req.body.changeValue, function (err, result) {
         if (err) {
             logger.error(err);
             res.status(500).send(common.getError(3020));
