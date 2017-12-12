@@ -1603,7 +1603,75 @@ var getClassAccuracyPerTopicVsClass = function(query, callback) {
  * @param {function} callback
  */
 var getClassRatingPerTopicVsClass = function (query, callback) {
+    users.getStudentsList(function (err, studentsList) {
+        if (err) {
+            return callback(err, null);
+        }
 
+        var studentsObject = {};
+        for (var j = 0; j < studentsList.length; j++) {
+            studentsObject[studentsList[j]._id] = studentsList[j].type;
+        }
+
+        questions.getAllQuestionsByQuery({}, {topic: 1}, function(err, questionsList) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            if (!questionsList || !questionsList[0]) {
+                return callback('no questions available', null);
+            }
+
+            var adminsData = [];
+            var studentsData = [];
+            var labels = [];
+            var currentTopic = questionsList[0].topic;
+            var adminsRating = 0;
+            var studentsRating = 0;
+            var adminsCount = 0;
+            var studentsCount = 0;
+
+            for (var i = 0; i < questionsList.length; i++) {
+                var question = questionsList[i];
+
+                if (question.topic !== currentTopic) {
+                    labels.push(currentTopic);
+                    adminsData.push((adminsCount === 0) ? 0 : (adminsRating / adminsCount).toFixed(2));
+                    studentsData.push((studentsCount === 0) ? 0 : (studentsRating / studentsCount).toFixed(2));
+                    adminsCount = 0;
+                    studentsCount = 0;
+                    adminsRating = 0;
+                    studentsRating = 0;
+                    currentTopic = question.topic;
+                }
+
+                for (var j = 0; j < question.ratings.length; j++) {
+                    var userObject = question.ratings[j];
+
+                    if (studentsObject[userObject.userId] === common.userTypes.ADMIN) {
+                        adminsRating += userObject.rating;
+                        adminsCount ++;
+                    } else {
+                        studentsRating += userObject.rating;
+                        studentsCount ++;
+                    }
+                }
+            }
+
+            if (questionsList.length > 0) {
+                currentTopic = questionsList[questionsList.length-1].topic;
+                labels.push(currentTopic);
+                adminsData.push((adminsCount === 0) ? 0 : (adminsRating / adminsCount).toFixed(2));
+                studentsData.push((studentsCount === 0) ? 0 : (studentsRating / studentsCount).toFixed(2));
+            }
+
+            return callback(null, {
+                adminsData: adminsData,
+                studentsData: studentsData,
+                labels: labels
+            });
+        });
+    });
 }
 
 /**
@@ -1627,11 +1695,11 @@ var getClassRatingPerTypeVsClass = function (query, callback) {
             if (err) {
                 return callback(err, null);
             }
-    
+
             if (!questionsList || !questionsList[0]) {
                 return callback('no questions available', null);
             }
-    
+
             var adminsData = [];
             var studentsData = [];
             var labels = [];
@@ -1640,21 +1708,21 @@ var getClassRatingPerTypeVsClass = function (query, callback) {
             var studentsRating = 0;
             var adminsCount = 0;
             var studentsCount = 0;
-    
+
             for (var i = 0; i < questionsList.length; i++) {
                 var question = questionsList[i];
-    
+
                 if (question.type !== currentType) {
                     labels.push(currentType);
                     adminsData.push((adminsCount === 0) ? 0 : (adminsRating / adminsCount).toFixed(2));
-                    studentsRating.push((studentsCount === 0) ? 0 : (studentsRating / studentsCount).toFixed(2));
+                    studentsData.push((studentsCount === 0) ? 0 : (studentsRating / studentsCount).toFixed(2));
                     adminsCount = 0;
                     studentsCount = 0;
                     adminsRating = 0;
                     studentsRating = 0;
                     currentType = question.type;
                 }
-    
+
                 for (var j = 0; j < question.ratings.length; j++) {
                     var userObject = question.ratings[j];
 
@@ -1664,17 +1732,17 @@ var getClassRatingPerTypeVsClass = function (query, callback) {
                     } else {
                         studentsRating += userObject.rating;
                         studentsCount ++;
-                    }                    
+                    }
                 }
             }
-    
+
             if (questionsList.length > 0) {
                 currentType = questionsList[questionsList.length-1].type;
                 labels.push(currentType);
                 adminsData.push((adminsCount === 0) ? 0 : (adminsRating / adminsCount).toFixed(2));
-                studentsRating.push((studentsCount === 0) ? 0 : (studentsRating / studentsCount).toFixed(2));
+                studentsData.push((studentsCount === 0) ? 0 : (studentsRating / studentsCount).toFixed(2));
             }
-    
+
             return callback(null, {
                 adminsData: adminsData,
                 studentsData: studentsData,
