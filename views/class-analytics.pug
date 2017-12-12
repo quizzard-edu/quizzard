@@ -128,7 +128,7 @@
     .row
       .row
         .col.s12
-          h5.header-style#studentAnalyticsHeader &nbsp Question Type Analytics
+          h5.header-style#studentAnalyticsHeader &nbsp Question Points Distribution Analytics
       .col.s12.m6
         h5 Class Question Type Points
         .card.radar.padding-top-10.padding-left-10
@@ -140,22 +140,6 @@
                 i.material-icons.right close
               #classPointsPerTypeVsClassTable
       .col.s12.m6
-        h5 Class Question Type Accuracy
-        .card.radar.padding-top-10.padding-left-10
-          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
-              i.material-icons.blue filter_list
-          canvas#classAccuracyPerTypeVsClass
-          .card-reveal
-              .card-title
-                i.material-icons.right close
-              #classAccuracyPerTypeVsClassTable
-
-  .card.white.padding-left-10.padding-right-10
-    .row
-      .row
-        .col.s12
-          h5.header-style#studentAnalyticsHeader &nbsp Question Topic Analytics
-      .col.s12.m6
         h5 Class Question Topic Points
         .card.radar.padding-top-10.padding-left-10
           a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
@@ -165,6 +149,22 @@
               .card-title
                 i.material-icons.right close
               #classPointsPerTopicVsClassTable
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#studentAnalyticsHeader &nbsp Question Accuracy Distribution Analytics
+      .col.s12.m6
+        h5 Class Question Type Accuracy
+        .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
+          canvas#classAccuracyPerTypeVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classAccuracyPerTypeVsClassTable
       .col.s12.m6
         h5 Class Question Topic Accuracy
         .card.radar.padding-top-10.padding-left-10
@@ -175,3 +175,29 @@
               .card-title
                 i.material-icons.right close
               #classAccuracyPerTopicVsClassTable
+
+  .card.white.padding-left-10.padding-right-10
+    .row
+      .row
+        .col.s12
+          h5.header-style#studentAnalyticsHeader &nbsp Question Rating Distribution Analytics
+      .col.s12.m6
+        h5 Class Question Type Rating
+        .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
+          canvas#classRatingPerTypeVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classRatingPerTypeVsClassTable
+      .col.s12.m6
+        h5 Class Question Topic Rating
+        .card.radar.padding-top-10.padding-left-10
+          a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right.activator
+              i.material-icons.blue filter_list
+          canvas#classRatingPerTopicVsClass
+          .card-reveal
+              .card-title
+                i.material-icons.right close
+              #classRatingPerTopicVsClassTable

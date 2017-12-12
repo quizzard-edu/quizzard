@@ -83,3 +83,61 @@ div.note-editor.note-frame.panel.panel-default{
     padding: 0 0.5rem;
     margin: 0;
 }
+
+#questionform  button {
+    margin-top: 10px; 
+}
+
+td {
+    word-break: break-all;
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 760px) and (max-device-width: 1024px) {
+
+    table, thead, tbody, th, td, tr {
+        display: block; 
+    }
+
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tr { border: 1px solid #ccc; }
+
+    td {
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 50%; 
+        word-break: break-all;
+    }
+
+    #questionsTable td:nth-of-type(2):before { content: "ID: "; font-weight: bold; }
+    #questionsTable td:nth-of-type(3):before { content: "Title: "; font-weight: bold; }
+    #questionsTable td:nth-of-type(4):before { content: "Topic: "; font-weight: bold; }
+    #questionsTable td:nth-of-type(5):before { content: "Type: "; font-weight: bold; }
+
+    #manageAcccountsTable td:nth-of-type(1):before { content: "Username: "; font-weight: bold; }
+    #manageAcccountsTable td:nth-of-type(2):before { content: "First Name: "; font-weight: bold; }
+    #manageAcccountsTable td:nth-of-type(3):before { content: "Last Name: "; font-weight: bold; }
+    #manageAcccountsTable td:nth-of-type(4):before { content: "Email: "; font-weight: bold; }
+
+    #studentStatisticsTable td:nth-of-type(1):before { content: "Username: "; font-weight: bold; }
+    #studentStatisticsTable td:nth-of-type(2):before { content: "Questions Attempted: "; font-weight: bold; }
+    #studentStatisticsTable td:nth-of-type(3):before { content: "Correct Answers: "; font-weight: bold; }
+    #studentStatisticsTable td:nth-of-type(4):before { content: "Success Rate: "; font-weight: bold; }
+    #studentStatisticsTable td:nth-of-type(5):before { content: "Points: "; font-weight: bold; }    
+
+    #questionsStatisticsTable td:nth-of-type(1):before { content: "ID: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(2):before { content: "Title: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(3):before { content: "Min Points: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(4):before { content: "Max Points: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(5):before { content: "Total Attempts: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(6):before { content: "Correct Answers: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(7):before { content: "Success Rate: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(8):before { content: "First Answer: "; font-weight: bold; }
+}

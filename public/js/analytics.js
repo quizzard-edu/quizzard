@@ -88,7 +88,7 @@ var initAutoComplete = function () {
   });
 
   const autocompleteValue = $('#autocomplete-input').val();
-  
+
   for (var s in studentList) {
     if (s.split(' ')[0].toLowerCase() === autocompleteValue.split(' ')[0].toLowerCase()) {
       $('#student-analytics-data-cards').removeClass('hidden');
@@ -160,8 +160,10 @@ var displayClassStatistics = function () {
 
   getClassPointsPerTopicVsClass(path);
   getClassAccuracyPerTopicVsClass(path);
+  getClassRatingPerTopicVsClass(path);
   getClassPointsPerTypeVsClass(path);
   getClassAccuracyPerTypeVsClass(path);
+  getClassRatingPerTypeVsClass(path);
 }
 
 /**
@@ -927,6 +929,30 @@ var getClassAccuracyPerTopicVsClass = function (path) {
   });
 }
 
+var getClassRatingPerTopicVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classRatingPerTopicVsClass'
+    },
+    success: function (data) {
+      data.id = '#classRatingPerTopicVsClass';
+      createRatingRadarChart(data);
+      createTable('#classRatingPerTopicVsClassTable', ['Topic', 'Me', 'Class'], [data.labels, data.adminsData, data.studentsData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 404) {
+        window.location.href = '/page-not-found';
+      } else {
+        noDataCanvas('#classRatingPerTopicVsClass');
+      }
+    }
+  });
+}
+
 var getClassPointsPerTypeVsClass = function (path) {
   $.ajax({
     type: 'GET',
@@ -976,6 +1002,33 @@ var getClassAccuracyPerTypeVsClass = function (path) {
         window.location.href = '/page-not-found';
       } else {
         noDataCanvas('#classAccuracyPerTypeVsClass');
+      }
+    }
+  });
+}
+
+var getClassRatingPerTypeVsClass = function (path) {
+  $.ajax({
+    type: 'GET',
+    url: path,
+    data: {
+      type: 'classRatingPerTypeVsClass'
+    },
+    success: function (data) {
+      data.id = '#classRatingPerTypeVsClass';
+      data.labels = data.labels.map(item => {
+        return questionTypes[item].value;
+      });
+      createRatingRadarChart(data);
+      createTable('#classRatingPerTypeVsClassTable', ['Type', 'Me', 'Class'], [data.labels, data.adminsData, data.studentsData]);
+    },
+    error: function (data) {
+      if (data['status'] === 401) {
+        window.location.href = '/';
+      } else if (data['status'] === 404) {
+        window.location.href = '/page-not-found';
+      } else {
+        noDataCanvas('#classRatingPerTypeVsClass');
       }
     }
   });
@@ -1261,6 +1314,61 @@ var maximum = function (data) {
   });
 
   return Math.max(studentD, classD) + 10;
+}
+
+var createRatingRadarChart = function (data) {
+  var ctx = $(data.id);
+  ctx[0].width = ctx[0].width;
+  var config2 = {
+    type: 'radar',
+    data: {
+      datasets: [
+        {
+          data: data.studentsData,
+          backgroundColor: colours.blueBackO,
+          borderColor: colours.blueMatt,
+          pointBorderColor: colours.blueMatt,
+          label: 'Me',
+          borderWidth: 4,
+          pointHoverBackgroundColor: colours.white,
+          pointBackgroundColor: colours.blueBack,
+          pointHoverBorderColor: colours.blueMatt,
+          pointRadius: 4,
+        },
+        {
+          data: data.adminsData,
+          backgroundColor: colours.pinkLightO,
+          borderColor: colours.pinkHot,
+          pointBorderColor: colours.pinkHot,
+          label: 'Class',
+          borderWidth: 4,
+          pointHoverBackgroundColor: colours.white,
+          pointBackgroundColor: colours.pinkLight,
+          pointHoverBorderColor: colours.pinkHot,
+          pointRadius: 4,
+        }
+      ],
+      labels: data.labels
+    },
+    options: {
+      maintainAspectRatio: false,
+      responsive: true,
+      scales: {
+        yAxes: [{
+          display: false
+        }],
+        xAxes: [{
+          display: false
+        }]
+      },
+      layout: {
+        padding: {
+          bottom: 20
+        }
+      }
+    }
+  };
+  new Chart(ctx, config2);
 }
 
 var createRadarChart = function (data) {
