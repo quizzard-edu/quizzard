@@ -497,7 +497,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
                 // Adds the current student to the mini leaderboard
                 if (currentStudent._id === userid) {
                     // Row full of ... to show that student is not in the top 3
-                    if (student.userRank !== leaderboardList[leaderboardList.length - 1].userRank + 1) {
+                    if (student.userRank !== 1 && student.userRank !== leaderboardList[leaderboardList.length - 1].userRank + 1) {
                         var emptyStudent = {
                             displayName: '...',
                             points:'...',
