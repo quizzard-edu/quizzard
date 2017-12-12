@@ -1603,7 +1603,7 @@ var getClassAccuracyPerTopicVsClass = function(query, callback) {
  * @param {function} callback
  */
 var getClassRatingPerTopicVsClass = function (query, callback) {
-    users.getStudentsList(function (err, studentsList) {
+    users.getUsersList(function (err, studentsList) {
         if (err) {
             return callback(err, null);
         }
@@ -1681,7 +1681,7 @@ var getClassRatingPerTopicVsClass = function (query, callback) {
  * @param {function} callback
  */
 var getClassRatingPerTypeVsClass = function (query, callback) {
-    users.getStudentsList(function (err, studentsList) {
+    users.getUsersList(function (err, studentsList) {
         if (err) {
             return callback(err, null);
         }
