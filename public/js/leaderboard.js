@@ -60,8 +60,17 @@ var fetchLeaderboard = function() {
             leaderboardTable = $(data.leaderboardTableHTML);
             leaderboardRow = $(data.leaderboardRowHTML);
             studentLeaderList = data.leaderboardList;
-            $('.leaderboard-content').html(leaderboardTable);
-            displayNewLeaderboard(boardType);
+            if (studentLeaderList.length >= 3){
+                $('.leaderboard-content').html(leaderboardTable);
+                displayNewLeaderboard(boardType);
+            } else {
+                $('#leaderboardName').html(`${boardType.displayName} Leaderboard`);
+                $('#first').hide();
+                $('#second').hide();
+                $('#third').hide();
+                $('#scoreTitle').hide();
+                $(".podium").html('There are currently less than 3 students enrolled in the class, the leaderboard will be displayed when more students have been enrolled.');
+            }
         },
         error: function(data){
             var jsonResponse = data.responseJSON;
@@ -149,10 +158,13 @@ var setPodium = function() {
     var date = new Date();
     $('#first').attr('src','/profilePicture/' + studentLeaderList[0].picture + '?' + date);
     $('#firstPlaceName').html(studentLeaderList[0].displayName);
+    $('#firstTrophy').attr('src', 'img/first_trophy.png');
     $('#second').attr('src','/profilePicture/' + studentLeaderList[1].picture + '?' + date);
     $('#secondPlaceName').html(studentLeaderList[1].displayName);
+    $('#secondTrophy').attr('src', 'img/second_trophy.png');
     $('#third').attr('src','/profilePicture/' + studentLeaderList[2].picture + '?' + date);
     $('#thirdPlaceName').html(studentLeaderList[2].displayName);
+    $('#thirdTrophy').attr('src', 'img/third_trophy.png');
 }
 
 // Gets the current student and their index in the leaderboard

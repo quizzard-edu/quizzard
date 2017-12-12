@@ -1292,6 +1292,7 @@ var createRankChart = function (data) {
       },
       layout: {
         padding: {
+          left: 10,
           right: 20,
           bottom: 20
         }
