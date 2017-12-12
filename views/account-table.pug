@@ -39,12 +39,12 @@
                 td #{s.fname}
                 td #{s.lname}
                 td #{s.email}
-                td
-                  button.btn.btn-default.edit-button.col.s12.l6.customAdminButton(id='edit-' + s._id type='button' aria-label='Edit', name=s.username)
+                td(style='min-width: 150px; text-align: center')
+                  button.btn.btn-default.edit-button.l4.customAdminButton(id='edit-' + s._id type='button' aria-label='Edit', name=s.username)
                     span.glyphicon.glyphicon-pencil(aria-hidden='true')
                   if (s.active)
-                    button.btn.btn-default.deactivate-button.col.s12.l6.customAdminButton(id='deactivate-' + s._id type='button' aria-label='Delete', name=s.username)
+                    button.btn.btn-default.deactivate-button.l4.customAdminButton(id='deactivate-' + s._id type='button' aria-label='Delete', name=s.username)
                       i.material-icons close
                   else
-                    button.btn.btn-default.activate-button.col.s12.l6.customAdminButton(id='activate-' + s._id type='button' aria-label='Delete', name=s.username)
+                    button.btn.btn-default.activate-button.l4.customAdminButton(id='activate-' + s._id type='button' aria-label='Delete', name=s.username)
                       i.material-icons check

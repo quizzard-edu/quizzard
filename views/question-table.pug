@@ -1,5 +1,6 @@
 block styles
   link(rel='stylesheet' href='/css/admin.css')
+  link(rel='stylesheet' href='/css/question-table.css')
 
 .row
   .col.s12
@@ -52,20 +53,20 @@ block styles
                   td.center
                     p
                       if q.visible
-                        i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()') visibility
+                        i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()', style='padding-top: 10px;') visibility
                       else
-                        i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()') visibility_off
+                        i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()', style='padding-top: 10px;') visibility_off
                       input.checked(id='checked-' + q._id, name=q.number, type='checkbox', checked=q.visible)
                       label.visbox(for='checked-' + q._id, name=q.number)
                 td #{q.number}
                 td #{q.title}
                 td #{q.topic}
-                td #{questionType(q.type)}
-                td
-                  button.btn.btn-default.view-button.col.s12.l4.customAdminButton(id='view-' + q._id, name=q.number, type='button', aria-label='View')
+                td(style='word-break: unset') #{questionType(q.type)}
+                td(style='min-width: 150px; text-align: center')
+                  button.btn.btn-default.view-button.l4.customAdminButton(id='view-' + q._id, name=q.number, type='button', aria-label='View')
                     i.material-icons open_in_browser
                   if isActive
-                    button.btn.btn-default.edit-button.col.s12.l4.customAdminButton(id='edit-' + q._id, name=q.number, type='button', aria-label='Edit')
+                    button.btn.btn-default.edit-button.l4.customAdminButton(id='edit-' + q._id, name=q.number, type='button', aria-label='Edit')
                       i.material-icons edit
-                    button.btn.btn-default.delete-button.col.s12.l4.customAdminButton(id='delete-' + q._id, name=q.number, type='button', aria-label='Delete')
+                    button.btn.btn-default.delete-button.l4.customAdminButton(id='delete-' + q._id, name=q.number, type='button', aria-label='Delete')
                       i.material-icons close
