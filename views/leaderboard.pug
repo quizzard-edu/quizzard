@@ -27,7 +27,7 @@ block content
               a.noLineLink#option-attempt(href='#') Points Per Attempt
   .container
     .row
-      .col.s12
+      .col.s12.m12
         .card.center
           .card-image
             a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right(onclick='fetchLeaderboard()')
@@ -36,21 +36,21 @@ block content
             h4.center#leaderboardName Leaderboard
           .card-action
             .podium
-              p
+              p#scoreTitle
                 | Top Score : 
                 span.score#topScore
               ol
                 li.gold
                   img#first(alt='First Place', src='')
-                  img#trophy(src='img/first_trophy.png')
+                  img#firstTrophy
                   h4#firstPlaceName
-                li.silver
+                li.silver.hide-on-small-only
                   img#second(alt='Second Place', src='')
-                  img#trophy(src='img/second_trophy.png')
+                  img#secondTrophy
                   p#secondPlaceName
-                li.bronze
+                li.bronze.hide-on-small-only
                   img#third(alt='Third Place', src='')
-                  img#trophy(src='img/third_trophy.png')
+                  img#thirdTrophy
                   p#thirdPlaceName
             .leaderboard-content
 

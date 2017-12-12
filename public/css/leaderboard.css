@@ -20,6 +20,7 @@ img#first {
     max-width: 60%;
     width: 250px !important;
     border-radius: 50%;
+    padding-bottom: 10px;
 }
 
 
@@ -28,6 +29,7 @@ img#second {
     max-width: 60%;
     width: 200px !important;
     border-radius: 50%;
+    padding-bottom: 10px;
 }
 
 img#third {
@@ -35,6 +37,7 @@ img#third {
     max-width: 60%;
     width: 150px !important;
     border-radius: 50%;
+    padding-bottom: 10px;
 }
 
 
