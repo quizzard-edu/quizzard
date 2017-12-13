@@ -23,6 +23,7 @@ var autocompleteTopics;
 $(function () {
     /* show the account table by default */
     displayQuestionTable();
+    $.fn.dataTable.ext.errMode = 'none';
 });
 
 /* set home as the active navbar element */
