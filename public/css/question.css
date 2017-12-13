@@ -61,4 +61,5 @@
 
 #hint{
   font-size: 1.64rem;
+  word-break: break-all;
 }

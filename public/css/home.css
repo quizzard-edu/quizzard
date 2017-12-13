@@ -16,7 +16,7 @@ li {
 
 .profile-picture {
     display: inline-flex;
-    max-width: 60%;
+    max-width: 100%;
     width: 150px !important;
     height: 150px !important;
     border-radius: 50%;
