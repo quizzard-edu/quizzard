@@ -2,12 +2,12 @@ if answerForm
   .form-group.col.s12
     - for (var index = 1; index <= 4; index++)
       .row
-        .input-field.col.s1
+        .input-field.col.s2.m1.l1
           input(type='checkbox', name='checkButton', id='option'+index)
           label(for='option'+index)
-        .input-field.col.s10
+        .input-field.col.s8.m10.l10
           input.form-control(type='text', name='option'+index, placeholder='Enter Answer Here', required)
-        .input-field.col.s1
+        .input-field.col.s2.m1.l1
           a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
             i.tiny.material-icons close
 
@@ -27,15 +27,15 @@ else if adminQuestionEdit
   .form-group.col.s12
     each option, i in question.choices
       .row
-        .input-field.col.s1
+        .input-field.col.s2.m1.l1
           if (question.answer.indexOf(option) > -1)
             input(type='checkbox', name='checkButton', id=i, value='option'+i, checked)
           else
             input(type='checkbox', name='checkButton', id=i, value='option'+i)
           label(for=i)
-        .input-field.col.s10
+        .input-field.col.s8.m10.l10
           input.form-control(type='text', name='option'+i, placeholder='Enter New Answer Here', required, value=option)
-        .input-field.col.s1
+        .input-field.col.s2.m1.l1
         a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
           i.tiny.material-icons close
   #addMoreAnswersButton
