@@ -17,3 +17,7 @@ i.icon-3 {
 i.icon-4 {
   color: red;
 }
+
+.new-class {
+  font-size: 35px !important;
+}

@@ -34,11 +34,11 @@ block content
               | Feedback for Quizzard's Developers
             .collapsible-body
               p Please visit the following page to submit your feedback:
-              a(href='https://quizzard-edu.github.io/quizzard/feedback.html', target='_blank') Quizzard Feedback
+              a(href='https://quizzard-edu.github.io/quizzard/feedback.html', target='_blank', onclick='cancelling=true; $("#feedback").modal("close");') Quizzard Feedback
         
       else
         p Please visit the following page to submit your feedback:
-        a(href='https://quizzard-edu.github.io/quizzard/feedback.html', target='_blank') Quizzard Feedback
+        a(href='https://quizzard-edu.github.io/quizzard/feedback.html', target='_blank', onclick='cancelling=true; $("#feedback").modal("close");') Quizzard Feedback
 
 block scripts
   script(src='/js/feedback.js')
