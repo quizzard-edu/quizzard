@@ -35,7 +35,7 @@ exports.addAdmin = function (user, callback) {
         return callback(common.getError(2005), null);
     }
 
-    bcrypt.hash(user.password, 11, function(err, hash) {
+    bcrypt.hash(user.password, 11, function (err, hash) {
         if (err) {
             logger.error(err);
             return callback(common.getError(1009), null);
@@ -59,7 +59,7 @@ exports.addAdmin = function (user, callback) {
         userToAdd.ratings = [];
 
         db.addAdmin(userToAdd, function (err, userObj) {
-            if(err){
+            if(err) {
                 if (err.code === 2014) {
                     logger.error(common.formatString('Failed to create admin {0}, database issue', [userToAdd.username]));
                 } else if (err.code === 2019) {
@@ -244,7 +244,7 @@ exports.checkLogin = function (username, pass, callback) {
  * @param {string} userId
  * @param {function} callback
  */
-exports.getUserById = function (userId, callback){
+exports.getUserById = function (userId, callback) {
     db.getUserById(userId, callback);
 }
 
@@ -359,7 +359,7 @@ exports.getQuestionsListByUser = function (request, callback) {
         if (typeof request.active !== 'boolean') {
             return callback(common.getError(1000), null);
         }
-        db.getQuestionsListforAdmin({'deleted':{$ne:request.active}}, sortQuery, function (err, docs){
+        db.getQuestionsListforAdmin({'deleted':{$ne:request.active}}, sortQuery, function (err, docs) {
             return callback(err, docs);
         });
     }
@@ -460,7 +460,7 @@ exports.updateProfile = function (userId, request, callback) {
  * @param {function} callback
  */
 exports.getLeaderboard = function (userid, smallBoard, callback) {
-    getStudentsListSorted(0, function(err, studentlist) {
+    getStudentsListSorted(0, function (err, studentlist) {
         if (err) {
             logger.error('Leaderboard error: ' + err);
             return callback(common.getError(2020), []);
@@ -548,7 +548,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
  * @param {function} callback
  */
 exports.getFullLeaderboard = function (callback) {
-    getStudentsListSorted(0, function(err, studentlist) {
+    getStudentsListSorted(0, function (err, studentlist) {
         if (err) {
             logger.error('Leaderboard error: ' + err);
             return callback(common.getError(2020), []);
@@ -587,7 +587,7 @@ exports.getFullLeaderboard = function (callback) {
  * @param {string} message
  * @param {funciton} callback
  */
-exports.addFeedback = function(uuid, subject, message, callback) {
+exports.addFeedback = function (uuid, subject, message, callback) {
 
     if (!uuid || !subject || !message) {
         logger.error('Failed to add user feedback, missing requirements');
@@ -601,7 +601,7 @@ exports.addFeedback = function(uuid, subject, message, callback) {
     feedback.message = message;
     feedback.time = common.getDate();
 
-    db.addFeedback(feedback, function(err, result) {
+    db.addFeedback(feedback, function (err, result) {
         if (err) {
             return callback(common.getError(8000), null);
         }
