@@ -16,9 +16,15 @@ block content
           .row
             ul.tabs
               li.tab.col.s6
-                a.noLineLink.active#option-class(href='#') Class Analytics
+                a.noLineLink.active#option-class(href='#')
+                  i.material-icons.tab-icon.hide-on-med-and-up group
+                  |
+                  .hide-on-small-only Class Analytics
               li.tab.col.s6
-                a.noLineLink#option-student(href='#') Student Analytics
+                a.noLineLink.active#option-student(href='#')
+                  i.material-icons.tab-icon.hide-on-med-and-up person
+                  |
+                  .hide-on-small-only Student Analytics
   .row
     .col.s12
       if isAdmin

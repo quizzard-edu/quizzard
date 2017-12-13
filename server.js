@@ -1924,16 +1924,18 @@ app.get('/feedback', function (req, res) {
 
             var data = [];
             var tempData = {};
-            result.forEach(feedbackItem => {
-                tempData.fullname = usersList[feedbackItem.uuid][0];
-                tempData.username = usersList[feedbackItem.uuid][1];
-                tempData.subject = feedbackItem.subject;
-                tempData.message = feedbackItem.message;
-                tempData.time = feedbackItem.time;
+            if (usersList) {
+                result.forEach(feedbackItem => {
+                    tempData.fullname = usersList[feedbackItem.uuid][0];
+                    tempData.username = usersList[feedbackItem.uuid][1];
+                    tempData.subject = feedbackItem.subject;
+                    tempData.message = feedbackItem.message;
+                    tempData.time = feedbackItem.time;
 
-                data.push(tempData);
-                tempData = {}
-            });
+                    data.push(tempData);
+                    tempData = {}
+                });
+            }
 
             data = data.length === 0 ? null : data;
 

@@ -17,3 +17,7 @@ i.icon-3 {
 i.icon-4 {
   color: red;
 }
+
+.rating-star-size {
+  font-size: 35px !important;
+}

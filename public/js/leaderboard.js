@@ -101,7 +101,7 @@ var displayLeaderboard = function(studentLeaderList) {
 
     for (var index = 0; index < studentLeaderList.length; index++){
         studentObject = studentLeaderList[index];
-        
+
         // Number of students in the leaderboard cannot be greaeter than the leaderboardlimit
         if (index + 1 > leaderboardLimit) {
             // Adds the current student to the leaderboard if theyre index is larger than the leaderboard limit
@@ -176,7 +176,7 @@ var getCurrentStudent = function () {
             return false;
         }
     });
-    
+
 }
 
 // Fills leadeboard row with information
@@ -208,7 +208,7 @@ var fillRow = function (index, studentObject, leaderboardList) {
     } else {
         leaderboardRow.attr('class', `rank-${(rank <= 3 || rank === '...') ? rank : 'default'}`);
     }
-    
+
     leaderboardRow.find('#displayName').html(studentObject.displayName);
 
     // If the accuracy leaderboard is being displayed, add a % sign

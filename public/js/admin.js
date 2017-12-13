@@ -374,7 +374,7 @@ var displayQuestionTable = function () {
                   }
                 });
             });
-            
+
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
@@ -1187,4 +1187,3 @@ var updateAllVisibility = function (changeValue) {
         }
     );
 }
-

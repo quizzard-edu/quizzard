@@ -18,13 +18,25 @@ block content
         .row
           ul.tabs
             li.tab.col.s3
-              a.noLineLink.active#option-overall(href='#') Overall
+              a.noLineLink.active#option-overall(href='#')
+                i.material-icons.tab-icon.hide-on-large-only language
+                |
+                .hide-on-med-and-down Overall
             li.tab.col.s3
-              a.noLineLink#option-points(href='#') Total Points
+              a.noLineLink#option-points(href='#')
+                i.material-icons.tab-icon.hide-on-large-only bubble_chart
+                |
+                .hide-on-med-and-down Total Points
             li.tab.col.s3
-              a.noLineLink#option-accuracy(href='#') Accuracy
+              a.noLineLink#option-accuracy(href='#')
+                i.material-icons.tab-icon.hide-on-large-only gps_fixed
+                |
+                .hide-on-med-and-down Accuracy
             li.tab.col.s3
-              a.noLineLink#option-attempt(href='#') Points Per Attempt
+              a.noLineLink#option-attempt(href='#')
+                i.material-icons.tab-icon.hide-on-large-only gps_off
+                |
+                .hide-on-med-and-down Points Per Attempt
   .container
     .row
       .col.s12.m12
@@ -37,7 +49,7 @@ block content
           .card-action
             .podium
               p#scoreTitle
-                | Top Score : 
+                | Top Score :
                 span.score#topScore
               ol
                 li.gold

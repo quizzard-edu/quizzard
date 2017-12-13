@@ -7,10 +7,10 @@
             .row
               .col.s12
                 .row
-                  .input-field.col.s11
+                  .input-field.col.s10
                     input#autocomplete-input.autocomplete(type='text')
                     label(for='autocomplete-input') Select a student by ID
-                  .input-field.col.s1
+                  .input-field.col.s2
                     i.material-icons.cursor-pointer(onClick=" $('#autocomplete-input').val(''); initAutoComplete();") close
   .hidden#student-analytics-data-cards
     .card.white.padding-left-10.padding-right-10
@@ -163,14 +163,14 @@
             .card#studentPointsCard
               .card-content.purple-card.white-text
                 .col.s12
-                  i.material-icons.background-round.mt-5 bubble_chart
+                  i.material-icons.background-round.mt-5 gps_off
                   p Your Points/Attempt
                 .col.s12
                     h5#studentperAttempt
             .card#classPointsCard
               .card-content.purple-card.white-text
                 .col.s12
-                  i.material-icons.background-round.mt-5 bubble_chart
+                  i.material-icons.background-round.mt-5 gps_off
                   p Class Points/Attempt
                 .col.s12
                     h5#classPerAttempt
@@ -206,14 +206,14 @@
             .card#studentPointsCard
               .card-content.lime-card.white-text
                 .col.s12
-                  i.material-icons.background-round.mt-5 bubble_chart
+                  i.material-icons.background-round.mt-5 language
                   p Your Overall Score
                 .col.s12
                     h5#studentOverall
             .card#classPointsCard
               .card-content.lime-card.white-text
                 .col.s12
-                  i.material-icons.background-round.mt-5 bubble_chart
+                  i.material-icons.background-round.mt-5 language
                   p Class Overall Score
                 .col.s12
                     h5#classOverall
