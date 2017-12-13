@@ -5,9 +5,9 @@ if answerForm
         .input-field.col.s2.m1.l1
           input(type='checkbox', name='checkButton', id='option'+index)
           label(for='option'+index)
-        .input-field.col.s8.m10.l10
+        .input-field.col.s8.m9.l10
           input.form-control(type='text', name='option'+index, placeholder='Enter Answer Here', required)
-        .input-field.col.s2.m1.l1
+        .input-field.col.s2.m2.l1
           a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
             i.tiny.material-icons close
 
@@ -33,9 +33,9 @@ else if adminQuestionEdit
           else
             input(type='checkbox', name='checkButton', id=i, value='option'+i)
           label(for=i)
-        .input-field.col.s8.m10.l10
+        .input-field.col.s8.m9.l10
           input.form-control(type='text', name='option'+i, placeholder='Enter New Answer Here', required, value=option)
-        .input-field.col.s2.m1.l1
+        .input-field.col.s2.m2.l1
         a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().remove()')
           i.tiny.material-icons close
   #addMoreAnswersButton
