@@ -20,37 +20,47 @@ var rls = require('readline-sync');
 var db = require('./../server/db.js');
 var users = require('./../server/users.js');
 var common = require('./../server/common.js');
+var logger = require('./../server/log.js');
 
-var setupAdminAccount = function(accid, pass) {
+var setupAdminAccount = function (accid, pass) {
     var acc = {
         username: accid,
         password: pass,
-        fname: 'Root',
-        lname: 'User',
-        email: common.formatString('{0}@mail.utoronto.ca', [accid])
+        fname: accid,
+        lname: accid,
+        email: common.formatString('{0}@temp.email', [accid])
     };
 
-    db.initialize(function() {
-        users.addAdmin(acc, function(err, res) {
-            if (err == 'failure') {
-                console.log('Could not create account. Please try again.');
+    db.initialize(function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            process.exit(1);
+        }
+
+        users.addAdmin(acc, function (err, res) {
+            if (err) {
+                if (err.code === 2014) {
+                    logger.error('Could not create account. Please try again.');
+                    process.exit(1);
+                } else if (err.code === 2019) {
+                    logger.error('Account with username exists.');
+                    process.exit(1);
+                }
+                logger.error(JSON.stringify(err));
                 process.exit(1);
-            } else if (err == 'exists') {
-                console.log('Account with username `%s\' exists.', accid);
-                process.exit(1);
-            } else {
-                console.log('Administrator account `%s\' created.', accid);
-                process.exit(0);
             }
+
+            logger.log('Administrator account created.');
+            process.exit(0);
         });
     });
 }
 
-var interactiveSetup = function() {
+var interactiveSetup = function () {
     var user, pass, pass2;
 
-    console.log('Quizzard server setup\n');
-    console.log('Creating administrator account.');
+    logger.log('Quizzard server setup\n');
+    logger.log('Creating administrator account.');
 
     user = rls.question('Please enter username: ');
     pass = rls.question('Enter password: ', {
@@ -63,7 +73,7 @@ var interactiveSetup = function() {
     });
 
     if (pass != pass2) {
-        console.log('Passwords do not match.');
+        logger.error('Passwords do not match.');
         process.exit(1);
     }
     setupAdminAccount(user, pass);
