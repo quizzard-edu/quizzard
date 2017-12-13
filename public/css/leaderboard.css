@@ -2,7 +2,7 @@ div.podium {
     display: inline-block;
     width: auto;
     text-align: center;
-    padding: 35px;    
+    padding: 35px;
 }
 
 div.podium p {
@@ -65,7 +65,7 @@ li.silver {
 
 .gold {
     font-weight: bold;
-} 
+}
 
 li img {
     display: inline-flex;
@@ -88,4 +88,9 @@ li.silver .score {
 
 li.bronze .score {
     background-color: rgba(140,120,83,0.7);
+}
+
+.tab-icon{
+  vertical-align: middle;
+  color: rgb(238, 110, 115);
 }

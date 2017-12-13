@@ -41,7 +41,7 @@
     border-left: 4px solid transparent;
 }
 
-.input-field label {   
+.input-field label {
     pointer-events: auto;
 }
 
@@ -85,19 +85,24 @@ div.note-editor.note-frame.panel.panel-default{
 }
 
 #questionform  button {
-    margin-top: 10px; 
+    margin-top: 10px;
 }
 
 td {
     word-break: break-all;
 }
 
-@media 
+.tab-icon{
+  vertical-align: middle;
+  color: rgb(238, 110, 115);
+}
+
+@media
 only screen and (max-width: 760px),
 (min-device-width: 760px) and (max-device-width: 1024px) {
 
     table, thead, tbody, th, td, tr {
-        display: block; 
+        display: block;
     }
 
     thead tr {
@@ -110,9 +115,9 @@ only screen and (max-width: 760px),
 
     td {
         border: none;
-        border-bottom: 1px solid #eee; 
+        border-bottom: 1px solid #eee;
         position: relative;
-        padding-left: 50%; 
+        padding-left: 50%;
         word-break: break-all;
     }
 
@@ -130,7 +135,7 @@ only screen and (max-width: 760px),
     #studentStatisticsTable td:nth-of-type(2):before { content: "Questions Attempted: "; font-weight: bold; }
     #studentStatisticsTable td:nth-of-type(3):before { content: "Correct Answers: "; font-weight: bold; }
     #studentStatisticsTable td:nth-of-type(4):before { content: "Success Rate: "; font-weight: bold; }
-    #studentStatisticsTable td:nth-of-type(5):before { content: "Points: "; font-weight: bold; }    
+    #studentStatisticsTable td:nth-of-type(5):before { content: "Points: "; font-weight: bold; }
 
     #questionsStatisticsTable td:nth-of-type(1):before { content: "ID: "; font-weight: bold; }
     #questionsStatisticsTable td:nth-of-type(2):before { content: "Title: "; font-weight: bold; }
