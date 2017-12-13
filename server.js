@@ -933,6 +933,7 @@ app.post('/updateUserPicture', function (req, res) {
                 logger.error(err);
                 return res.status(500).send(common.getError(6003));
             }
+            req.session.user.picture = fileName;
             return res.status(200).send(fileName);
         });
     });

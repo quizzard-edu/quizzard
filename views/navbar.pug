@@ -31,7 +31,7 @@
         li#nav-logout
           a.navbarLink(href='/logout') Logout
       a.navbarLink.button-collapse.right(href='#', data-activates='mobile2')
-        img.icon-img(src='/profilePicture/' + user.picture)
+        img.icon-img(src='/profilePicture/' + user.picture +  '?' + new Date())
 ul#mobile.side-nav
   if isAdmin
     li.full-width#nav-home

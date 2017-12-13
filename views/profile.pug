@@ -20,7 +20,7 @@ block content
             .col.s12
             .fixed-action-btn.horizontal.profile-picture
               a.btn-floating.btn-large.grey.profile-circle
-                img.picture-size(src='/profilePicture/' + user.picture)
+                img.picture-size(src='/profilePicture/' + user.picture +  '?' + new Date())
               h4#userId #{user.username}
             .col.s1
             #viewForm
