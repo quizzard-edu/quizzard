@@ -199,6 +199,12 @@ var submitImportForm = function () {
         return;
     }
 
+    var fileNameSplit = $('#import-form-input').val().split('.');
+    if (fileNameSplit[fileNameSplit.length - 1] !== 'csv') {
+        warningSnackbar('File format must be csv!');
+        return;
+    }
+
     formData.append('usercsv', files[0]);
 
     $.ajax({
