@@ -54,7 +54,7 @@ var questionUpdateParser = function(question) {
  */
 var prepareQuestionData = function(question, callback) {
     // prepare regular data
-    var currentDate = common.getDate();
+    var currentDate = common.getDateByFormat('YYYY-MM-DD');
     var questionToAdd = {};
 
     questionToAdd._id = common.getUUID();
