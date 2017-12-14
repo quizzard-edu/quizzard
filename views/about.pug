@@ -11,11 +11,88 @@ block content
   include navbar
 
   .container
-    h3.text-center Quizzard
+    .row
+      .col.s12
+        .card
+          .card-title
+            h4#title What is Quizzard?
+          .card-action
+            p Quizzard is a web-based quizzing application, designed to allow students to practice concepts learned in class, through a game like environment.
+        .card
+          .card-title
+            h4#title Who are we?
+          .card-action
+            p Quizzard's development started at and has been supported by the University of Toronto Mississauga. Below is a list of the contributors so far.
+            ol
+              li Alexei Frolov: since September 2016
+              li Larry Yueli Zhang: since September 2016
+              li Ramy Esteero: since September 2017
+              li Mohammed Khan: since September 2017
+              li Darshan Mehta: since September 2017
+              li Mohamed Mohamed: since September 2017
+              li Ahmed Qarmout: since September 2017
+            p Supervisor: Larry Yueli Zhang
+        .card
+          .card-title 
+            h4#title General Information
+          .card-action
+            .row
+              .col.l2.m3.s12
+                 i.material-icons.large whatshot
+              .col.l10.m9.s12
+                h5 Questions
+                p The amount of points recieved upon answering a question correctly depends on how many people have already answered the question. The maximum and minimum amount of points recieved is provided by the instructor.
+                | There are 6 question types:
+                ol
+                  li Choose All
+                  li Matching
+                  li Multiple Choice
+                  li Ordering
+                  li Regular
+                  li True and False
+                p Answering a question inncorecty will display a hint if provided by the instructor. You will also be locked out of the question for an amount of time that is set by the instructor.
+                | Answering a question correctly allows the student to rate the question's difficulty.
+            .row
+              hr
+              .col.l2.m3.s12
+                 i.material-icons.large trending_up
+              .col.l10.m9.s12
+                h5 Analytics
+                p Here is were you monitor your daily preformance with respect to the class.
+                | There are many things that can be seen in the analytics, such as :
+                ol
+                  li Questions Answered
+                  li Accuracy
+                  li Points
+                  li Points Per Attempt
+                  li Overall Points
+                  li Question Points Distribution
+                  li Question Accuracy Distribution
+                p This will display your score VS. the average score of the class, and your ranking in the class in all the above categories. Daily analytics are updated at midnight.
+            .row
+              hr
+              .col.l2.m3.s12
+                 i.material-icons.large list
+              .col.l10.m9.s12
+                h5 Leaderboard
+                p 
+                | There are four types of leaderboards; Overall, Points, Accuracy, and Points Per Attempt.
+                | The leaderboard is only displayed when there are 3 or more students enrolled in the course.
+                | The amount of students that appear on the leaderboard is controlled by the course instructor, however, you will always be able to see your rank in the leaderboard.
+            .row
+              hr
+              .col.l2.m3.s12
+                 i.material-icons.large feedback
+              .col.l10.m9.s12
+                h5 Feedback
+                p 
+                | There are two types of feedback, feedback for the course instructor and feedback for the Quizzard developers.
+                | Students are able to submit feedback that only the instructor is able to view. Both students and instructors are able
+                | to submit feedback for the developers. 
+    
+    p.text-center Quizzard is licensed under the GNU General Public License v3.0.
+    p.text-center Copyright &copy; 2016
 
-    p.text-center Quizzard is a thing.
-    p.text-center Quizzard is licensed under the $LICENSE.
-    p.text-center Copyright &copy; 2016 Alexei Frolov
 
 block scripts
   script(src='/js/about.js')
