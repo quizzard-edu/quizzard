@@ -1561,8 +1561,11 @@ app.post('/accountsImportFile', function (req, res) {
     }
 
     var uploadedFile = req.files.usercsv;
+    var nameSplit = uploadedFile.name.split('.');
     if (!uploadedFile || uploadedFile.mimetype !== 'text/csv') {
-        return res.status(400).send(common.getError(6002));
+        if (nameSplit.length !== 2 || nameSplit[1].toLowerCase() !== 'csv') {
+            return res.status(400).send(common.getError(6002));
+        }
     }
 
     var fileName = common.getUUID();
@@ -1642,7 +1645,7 @@ app.post('/accountsImportList', function (req, res) {
             total++;
 
             if (err) {
-                if (err === 'exists') {
+                if (err.code === 2019) {
                     exist++;
                 } else {
                     failed++;
