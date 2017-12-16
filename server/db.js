@@ -773,8 +773,8 @@ var resetAllSettings = function (callback) {
         defaultSettings.general['leaderboardLimited'] = false;
         defaultSettings.general['leaderboardLimit'] = 3;
 
-        defaultSettings.student['editNames'] = true;
-        defaultSettings.student['editEmail'] = true;
+        defaultSettings.student['editNames'] = false;
+        defaultSettings.student['editEmail'] = false;
         defaultSettings.student['editPassword'] = true;
 
         defaultSettings.question['defaultTopic'] = null;

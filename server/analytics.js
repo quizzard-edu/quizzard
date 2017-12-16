@@ -159,7 +159,7 @@ var getAnalytics = function(callback) {
         points: 0,
         accuracy: 0
     };
-    var currentDate = common.getDateByFormat('YYYY-MM-DD');
+    var currentDate = common.getDateFormatedMinutesAgo('YYYY-MM-DD', 1);
 
     users.getFullLeaderboard(function (err, leaderboardList) {
         if (err) {
