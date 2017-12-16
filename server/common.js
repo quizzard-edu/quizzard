@@ -237,10 +237,22 @@ exports.getDate = getDate;
 *
 * @return {date}
 */
-var getDateObject = function(){
+var getDateObject = function () {
     return new Date();
 }
 exports.getDateObject = getDateObject;
+
+/**
+* return the current date
+*
+* @param {number} mins
+* @param {string} format
+* @return {string}
+*/
+var getDateFormatedMinutesAgo = function (format, mins) {
+    return date().subtract(mins, "minutes").format(format);
+}
+exports.getDateFormatedMinutesAgo = getDateFormatedMinutesAgo;
 
 /**
 * return the time in "<0> days, <0> hours, <0> minutes, <0> seconds" format
