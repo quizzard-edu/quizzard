@@ -33,25 +33,29 @@ var totalStudentsCount = 0;
  * @param {function} callback
  */
 exports.initialize = function(callback) {
-    var d = new Date();
-    var h = d.getHours();
-    var m = d.getMinutes();
-    var s = d.getSeconds();
-    var secondsTilMidNight = ((24 * 60 * 60) - (h * 60 * 60) - (m * 60) - s) * 1000;
-
-    setTimeout(function () {
+    if (process.env.DEBUG) {
         getAnalytics(callback);
-        setInterval(function () {
-            getAnalytics(callback);
-        }, analyticsTimeInterval);
-    }, secondsTilMidNight);
+    } else {
+        var d = new Date();
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var s = d.getSeconds();
+        var secondsTilMidNight = ((24 * 60 * 60) - (h * 60 * 60) - (m * 60) - s) * 1000;
 
-    users.getStudentsList(function (err, studentsList) {
-        if (err) {
-            logger.error(err);
-        }
-        totalStudentsCount = studentsList.length;
-    });
+        setTimeout(function () {
+            getAnalytics(callback);
+            setInterval(function () {
+                getAnalytics(callback);
+            }, analyticsTimeInterval);
+        }, secondsTilMidNight);
+
+        users.getStudentsList(function (err, studentsList) {
+            if (err) {
+                logger.error(err);
+            }
+            totalStudentsCount = studentsList.length;
+        });
+    }
 }
 
 /**
@@ -163,6 +167,11 @@ var getAnalytics = function(callback) {
             return callback(err, null);
         }
 
+        if (!leaderboardList || leaderboardList.length === 0) {
+            logger.log('Finished updating analytics. Status: warning. (No students available/active)');
+            return callback(null, 'ok');
+        }
+
         var classCorrectAttemptsCount = 0;
         var classWrongAttemptsCount = 0;
         var classTotalAttemptsCount = 0;
@@ -240,7 +249,7 @@ var getAnalytics = function(callback) {
                         }
 
                         studentsCount++;
-                        if (studentsCount === studentsList.length-1) {
+                        if (studentsCount === studentsList.length) {
                             classObject.points = studentsCount === 0 ? 0 :  (classPoints / studentsCount).toFixed(0);
                             classObject.accuracy = classCorrectAttemptsCount === 0 ? 0 :  ((classCorrectAttemptsCount / classTotalAttemptsCount) * 100).toFixed(2);
 
@@ -264,7 +273,7 @@ var getAnalytics = function(callback) {
                                         return callback(err, null);
                                     }
 
-                                    logger.log('Finished updating analytics, everything looks fine.');
+                                    logger.log('Finished updating analytics. Status: ok.');
                                     return callback(null, 'ok');
                                 }
                             );
