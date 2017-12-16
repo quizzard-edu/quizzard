@@ -1,6 +1,7 @@
 extends layout
 
 block styles
+  link(rel='stylesheet' href='/lib/summernote/summernote.css')
   link(rel='stylesheet' href='/css/question.css')
   link(rel='stylesheet' href='/css/sidebar.css')
   link(rel='stylesheet' href='/css/discussion.css')
@@ -48,7 +49,7 @@ block content
             h4.qtext #{question.title}
           .card-action
             .summernote#questionBody
-            h5.qtext !{question.text}
+            h5
             | !{getQuestionForm()}
             if isLocked
               #lockQuestion
@@ -80,6 +81,7 @@ block content
 
 
 block scripts
+  script(src='/lib/summernote/summernote.min.js')
   script(src='/lib/datatables/jquery.dataTables.min.js')
   script(src='/js/common.js')
   script(src='/js/question.js')

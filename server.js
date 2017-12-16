@@ -509,6 +509,27 @@ app.get('/questionlist', function (req, res) {
     });
 });
 
+/* get questione body by id  */
+app.get('/questioneBody', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    var qId = req.query.questionid;
+    questions.lookupQuestionById(qId, function (err, question) {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send(common.getError(3002));
+        }
+
+        if (!question) {
+            return res.status(400).send(common.getError(3003));
+        }
+
+        return res.status(200).send(question.text);
+    });
+});
+
 /* Send the question editing form HTML. */
 app.get('/questionedit', function (req, res) {
     if (!req.session.user) {
@@ -535,19 +556,19 @@ app.get('/questionedit', function (req, res) {
             getQuestionForm: function () {
                 switch (question.type) {
                     case common.questionTypes.REGULAR.value:
-                        return regexFormPug({adminQuestionEdit:true, question:question})
+                        return regexFormPug({adminQuestionEdit:true, question:question});
                     case common.questionTypes.MULTIPLECHOICE.value:
-                        return mcFormPug({adminQuestionEdit:true, question:question})
+                        return mcFormPug({adminQuestionEdit:true, question:question});
                     case common.questionTypes.TRUEFALSE.value:
-                        return tfFormPug({adminQuestionEdit:true, question:question})
+                        return tfFormPug({adminQuestionEdit:true, question:question});
                     case common.questionTypes.CHOOSEALL.value:
-                        return chooseAllFormPug({adminQuestionEdit:true, question:question})
+                        return chooseAllFormPug({adminQuestionEdit:true, question:question});
                     case common.questionTypes.MATCHING.value:
-                        return matchingFormPug({adminQuestionEdit:true, question:question})
+                        return matchingFormPug({adminQuestionEdit:true, question:question});
                     case common.questionTypes.ORDERING.value:
-                        return orderingFormPug({adminQuestionEdit:true, question:question})
+                        return orderingFormPug({adminQuestionEdit:true, question:question});
                     default:
-                        return res.redirect('/')
+                        return res.redirect('/');
                         break;
                 }
             }
