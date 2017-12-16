@@ -183,18 +183,20 @@ exports.updateAdminById = function (userId, info, callback) {
  *
  * @param {function} callback
  */
-exports.getAdminsList = function (callback) {
+var getAdminsList = function (callback) {
     db.getAdminsList(callback);
 }
+exports.getAdminsList = getAdminsList;
 
 /**
  * get students list
  *
  * @param {function} callback
  */
-exports.getStudentsList = function (callback) {
+var getStudentsList = function (callback) {
     db.getStudentsList(callback);
 }
+exports.getStudentsList = getStudentsList;
 
 /**
  * get students list with status
@@ -202,18 +204,20 @@ exports.getStudentsList = function (callback) {
  * @param {boolean} active
  * @param {function} callback
  */
-exports.getStudentsListWithStatus = function (active, callback) {
+var getStudentsListWithStatus = function (active, callback) {
     db.getStudentsListWithStatus(active, callback);
 }
+exports.getStudentsListWithStatus = getStudentsListWithStatus;
 
 /**
  * get users list
  *
  * @param {function} callback
  */
-exports.getUsersList = function (callback) {
+var getUsersList = function (callback) {
     db.getUsersList(callback);
 }
+exports.getUsersList = getUsersList;
 
 /**
  * Return an array of users in the database, sorted by rank.
@@ -548,7 +552,7 @@ exports.getLeaderboard = function (userid, smallBoard, callback) {
  * @param {function} callback
  */
 exports.getFullLeaderboard = function (callback) {
-    getStudentsListSorted(0, function (err, studentlist) {
+    getStudentsList(function (err, studentlist) {
         if (err) {
             logger.error('Leaderboard error: ' + err);
             return callback(common.getError(2020), []);

@@ -208,7 +208,7 @@ var getAnalytics = function(callback) {
         var pointsSum = common.sumListOfNumbers(common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'points'), 'points'));
         var correctAttemptsSum = common.sumListOfNumbers(common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'correctAttemptsCount'), 'correctAttemptsCount'));
 
-        users.getStudentsListSorted(0, function (err, studentsList) {
+        users.getStudentsList(function (err, studentsList) {
             if (err) {
                 logger.error(err);
                 return callback(err, null);
