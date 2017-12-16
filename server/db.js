@@ -206,11 +206,11 @@ exports.checkLogin = function (userId, pass, callback) {
         }
 
         if (!obj) {
-            return callback('userNotExist', null);
+            return callback(common.getError(2021), null);
         }
 
         if (!obj.active) {
-            return callback('userNotActive', null);
+            return callback(common.getError(2022), null);
         }
 
         validatePassword(obj, pass, function (err, valid) {

@@ -70,6 +70,8 @@ const errors = Object.freeze({
     2018: 'failed to update user',
     2019: 'user already exists',
     2020: 'failed to get leaderboard',
+    2021: 'account does not exists',
+    2022: 'account is not active',
 
     //3000 question
     3000: 'failed to get question list by user',
