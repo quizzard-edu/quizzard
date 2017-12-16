@@ -140,25 +140,25 @@ exports.joinPath = path.join;
 exports.removeVirtualFileSystem = function (callback) {
     rmrf(common.vfsTree.HOME, 'Users', function (err, result) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(2016), null);
         }
 
         mkdir(common.vfsTree.HOME, 'Users', common.vfsPermission.SYSTEM, function (err, result) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return callback(common.getError(1007), null);
             }
 
             rmrf(common.vfsTree.HOME, 'Questions', function (err, result) {
                 if (err) {
-                    logger.error(err);
+                    logger.error(JSON.stringify(err));
                     return callback(common.getError(1010), null);
                 }
 
                 mkdir(common.vfsTree.HOME, 'Questions', common.vfsPermission.SYSTEM, function (err, result) {
                     if (err) {
-                        logger.error(err);
+                        logger.error(JSON.stringify(err));
                         return callback(common.getError(1007), null);
                     }
 

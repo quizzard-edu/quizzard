@@ -20,6 +20,31 @@ var questionId = window.location.href.split('?_id=')[1];
 var notHidden = [];
 
 $(function () {
+    questionId
+    $.ajax({
+        type: 'GET',
+        url: '/questioneBody',
+        data: { questionid: questionId },
+        success: function(data) {
+            $('#questionBody').summernote('disable');
+            $('#questionBody').summernote('code', data);
+            $('div.note-btn-group.btn-group button').remove();
+        },
+        error: function(data){
+            var jsonResponse = data.responseJSON;
+
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
+            } else {
+                if (jsonResponse['code'] !== 3011) {
+                    failSnackbar(getErrorFromResponse(jsonResponse));
+                }
+            }
+        }
+    });
+
     $.ajax({
         type: 'GET',
         url: '/getDiscussionBoard',

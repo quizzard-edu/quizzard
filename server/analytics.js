@@ -51,7 +51,7 @@ exports.initialize = function(callback) {
 
         users.getStudentsList(function (err, studentsList) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
             }
             totalStudentsCount = studentsList.length;
         });
@@ -163,7 +163,7 @@ var getAnalytics = function(callback) {
 
     users.getFullLeaderboard(function (err, leaderboardList) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(err, null);
         }
 
@@ -210,7 +210,7 @@ var getAnalytics = function(callback) {
 
         users.getStudentsList(function (err, studentsList) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return callback(err, null);
             }
 
@@ -244,7 +244,7 @@ var getAnalytics = function(callback) {
                     row,
                     function (err, result) {
                         if (err) {
-                            logger.error(err);
+                            logger.error(JSON.stringify(err));
                             return callback(err, null);
                         }
 
@@ -269,7 +269,7 @@ var getAnalytics = function(callback) {
                                 classObject,
                                 function (err, result) {
                                     if (err) {
-                                        logger.error(err);
+                                        logger.error(JSON.stringify(err));
                                         return callback(err, null);
                                     }
 
@@ -376,7 +376,7 @@ var getQuestionsAnsweredVsClass = function(query, callback) {
 var getOverallVsClass = function(query, callback) {
     users.getFullLeaderboard(function(err, leaderboardList) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(err, null);
         }
 
@@ -408,7 +408,7 @@ var getOverallVsClass = function(query, callback) {
 var getPointsPerAttemptVsClass = function(query, callback) {
     users.getFullLeaderboard(function(err, leaderboardList) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(err, null);
         }
 
