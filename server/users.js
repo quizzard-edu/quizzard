@@ -555,7 +555,7 @@ exports.getFullLeaderboard = function (callback) {
         }
 
         var leaderboardList = [];
-        for (var i = 0; i < studentlist.length; ++i) {
+        for (var i = 0; i < studentlist.length; i++) {
             var currentStudent = studentlist[i];
             var student = {
                 _id:currentStudent._id,

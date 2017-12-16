@@ -41,14 +41,14 @@ exports.initialize = function(callback) {
         var m = d.getMinutes();
         var s = d.getSeconds();
         var secondsTilMidNight = ((24 * 60 * 60) - (h * 60 * 60) - (m * 60) - s) * 1000;
-    
+
         setTimeout(function () {
             getAnalytics(callback);
             setInterval(function () {
                 getAnalytics(callback);
             }, analyticsTimeInterval);
         }, secondsTilMidNight);
-    
+
         users.getStudentsList(function (err, studentsList) {
             if (err) {
                 logger.error(err);
@@ -208,7 +208,7 @@ var getAnalytics = function(callback) {
         var pointsSum = common.sumListOfNumbers(common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'points'), 'points'));
         var correctAttemptsSum = common.sumListOfNumbers(common.getIdsListFromJSONList(sortLeaderBoard(leaderboardList, 'correctAttemptsCount'), 'correctAttemptsCount'));
 
-        users.getStudentsList(function (err, studentsList) {
+        users.getStudentsListSorted(0, function (err, studentsList) {
             if (err) {
                 logger.error(err);
                 return callback(err, null);
@@ -249,7 +249,7 @@ var getAnalytics = function(callback) {
                         }
 
                         studentsCount++;
-                        if (studentsCount === studentsList.length-1) {
+                        if (studentsCount === studentsList.length) {
                             classObject.points = studentsCount === 0 ? 0 :  (classPoints / studentsCount).toFixed(0);
                             classObject.accuracy = classCorrectAttemptsCount === 0 ? 0 :  ((classCorrectAttemptsCount / classTotalAttemptsCount) * 100).toFixed(2);
 
