@@ -15,7 +15,31 @@ block content
   br
   .container
     .row.center
-      .col.s12.m6.l7
+      .col.s12
+        ul.collapsible(data-collapsible='accordion')
+          li
+            .collapsible-header
+              i.material-icons info
+              | General Information
+            .collapsible-body
+              h5 Topic: #{question.topic}
+              span.sidebar-item This question has been attempted&nbsp
+              if answered || isAdmin()
+                span.sidebar-item #{question.totalAttemptsCount}
+              else
+                span.sidebar-item#attempts #{question.totalAttemptsCount}
+              span.sidebar-item &nbsptimes.
+              if question.correctAttemptsCount === 0
+                p.sidebar-item#first-answer You could be the first person to correctly answer this question!
+              else
+                p.sidebar-item#first-answer <b>#{firstAnswerDisplay}</b> was the first person to answer this question.
+              if answered && !hasQrating && !isAdmin()
+                h5.sidebar-item.hide-on-med-down#rating Please rate this question's difficulty:
+                include rating
+                .container
+                  button.btn.btn-lg.btn-primary.btn-block#rateQuestion Rate
+      .row
+      .col.s12
         .card
           .card-image
             a.btn-floating.halfway-fab.waves-effect.waves-light.red.left(href='/')
@@ -23,6 +47,7 @@ block content
           .card-content
             h4.qtext #{question.title}
           .card-action
+            .summernote#questionBody
             h5.qtext !{question.text}
             | !{getQuestionForm()}
             if isLocked
@@ -41,31 +66,9 @@ block content
                     div
                       span.seconds
                       .smalltext Seconds
-
-      .col.s12.m6.l5
-        .card
-          .card-content
-            h4.sidebar-item#topic #{question.topic}
-          .card-action
-            span.sidebar-item This question has been attempted&nbsp
-            if answered || isAdmin()
-              span.sidebar-item #{question.totalAttemptsCount}
-            else
-              span.sidebar-item#attempts #{question.totalAttemptsCount}
-            span.sidebar-item &nbsptimes.
-            if question.correctAttemptsCount === 0
-              p.sidebar-item#first-answer You could be the first person to correctly answer this question!
-            else
-              p.sidebar-item#first-answer <b>#{firstAnswerDisplay}</b> was the first person to answer this question.
-          if answered && !hasQrating && !isAdmin()
-            .card-action
-              h5.sidebar-item.hide-on-med-down#rating Please rate this question's difficulty:
-              include rating
-              button.btn.btn-lg.btn-primary.btn-block#rateQuestion Rate
-
       .row
         .col.s12
-            #discussion
+          #discussion
 
   include alert
 
