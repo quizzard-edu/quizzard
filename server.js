@@ -155,7 +155,7 @@ app.post('/login', function (req, res) {
 
     users.checkLogin(username, password, function (err, user) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(403).send(common.getError(2000));
         }
 
@@ -201,13 +201,13 @@ app.get('/home', function (req, res) {
     var request = { user : req.session.user, questionsStatus : 'unanswered' };
     users.getQuestionsListByUser(request, function (err, results) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3000));
         }
 
         users.getStudentById(req.session.user._id, function (err, userFound) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(2001));
             }
 
@@ -518,7 +518,7 @@ app.get('/questioneBody', function (req, res) {
     var qId = req.query.questionid;
     questions.lookupQuestionById(qId, function (err, question) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3002));
         }
 
@@ -543,7 +543,7 @@ app.get('/questionedit', function (req, res) {
     var qId = req.query.questionid;
     questions.lookupQuestionById(qId, function (err, question) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3002));
         }
 
@@ -613,13 +613,13 @@ app.get('/statistics', function (req, res) {
 
     questions.getAllQuestionsList(function (err, questionslist) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3004));
         }
 
         users.getStudentsList(function (err, studentslist) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(2003));
             }
 
@@ -650,7 +650,7 @@ app.get('/question', function (req, res) {
     const userId = req.session.user._id;
     questions.lookupQuestionById(req.query._id, function (err, questionFound) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3002));
         }
 
@@ -671,13 +671,13 @@ app.get('/question', function (req, res) {
         }
         questions.isUserLocked(userId, questionFound, function (err, isLocked, waitTimeMessage, waitTimeinMiliSeconds) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(3006));
             }
 
             users.getStudentsList(function (err, studentslist) {
                 if (err) {
-                    logger.error(err);
+                    logger.error(JSON.stringify(err));
                     return res.status(500).send(common.getError(2003));
                 }
 
@@ -740,7 +740,7 @@ app.post('/submitanswer', function (req, res) {
 
     questions.lookupQuestionById(questionId,function (err, question) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3002));
         }
 
@@ -752,7 +752,7 @@ app.post('/submitanswer', function (req, res) {
         // check if question is locked for the student
         questions.isUserLocked(userId, question, function (err, isLocked, waitTimeMessage, waitTimeinMiliSeconds) {
             if(err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(3006));
             }
 
@@ -781,19 +781,19 @@ app.post('/submitanswer', function (req, res) {
 
             users.submitAnswer(userId, questionId, isCorrect, points, answer, function (err, result) {
                 if(err) {
-                    logger.error(err);
+                    logger.error(JSON.stringify(err));
                     return res.status(500).send(common.getError(3006));
                 }
 
                 questions.submitAnswer(questionId, userId, isCorrect, points, answer, function (err, result) {
                     if(err) {
-                        logger.error(err);
+                        logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
                     }
 
                     questions.updateUserSubmissionTime(userId, question, function (err, result) {
                         if(err) {
-                            logger.error(err);
+                            logger.error(JSON.stringify(err));
                             return res.status(500).send(err);
                         }
 
@@ -848,7 +848,7 @@ app.post('/setUserStatus', function (req, res) {
 
     users.setUserStatus(req.body.userid, req.body.active === 'true' , function (err, result) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(2008));
         }
 
@@ -872,7 +872,7 @@ app.post('/profilemod', function (req, res) {
     var userId = req.session.user._id;
     users.getUserById(userId, function (err, userObj) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(2006));
         }
 
@@ -882,7 +882,7 @@ app.post('/profilemod', function (req, res) {
 
         users.checkLogin(userObj.username, req.body.currentpasswd, function (err, user) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(2010));
             }
 
@@ -906,7 +906,7 @@ app.post('/profilemod', function (req, res) {
             if (user) {
                 users.updateProfile(userId, req.body, function (err, result) {
                     if (err) {
-                        logger.error(err);
+                        logger.error(JSON.stringify(err));
                         return res.status(500).send(common.getError(2011));
                     }
 
@@ -944,14 +944,14 @@ app.post('/updateUserPicture', function (req, res) {
 
     vfs.writeFile(fileObject, function (err, fileObj) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(6003));
         }
 
         logger.log(common.formatString('Uploaded: {0}', [fileName]));
         users.updateUserPicture(req.session.user._id, fileName, function (err, result) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(6003));
             }
             req.session.user.picture = fileName;
@@ -973,7 +973,7 @@ app.get('/profilePicture/:pictureId', function (req, res) {
         var defaultImagePath = common.formatString('{0}/public/img/{1}', [__dirname, 'account_circle.png']);
         return res.sendFile(defaultImagePath, function (err) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
             }
         });
     }
@@ -990,7 +990,7 @@ app.get('/profilePicture/:pictureId', function (req, res) {
 
         return res.sendFile(fileObj.path, function (err) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
             }
         });
     });
@@ -1012,24 +1012,24 @@ app.post('/usermod', function (req, res) {
     var userId = req.body._id;
     users.getUserByUsername(req.body.username, function (err, userFound) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(2001));
         }
 
         if (userFound && userId !== userFound._id) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(2019));
         }
 
         users.updateStudentById(userId, req.body, function (err, result) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(2012));
             }
 
             users.getStudentById(userId, function (err, userFound) {
                 if (err || !userFound) {
-                    logger.error(err);
+                    logger.error(JSON.stringify(err));
                     return res.status(500).send(common.getError(2001));
                 }
 
@@ -1062,7 +1062,7 @@ app.put('/questionadd', function (req, res) {
 
     questions.addQuestion(req.body, function (err, qId) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
 
@@ -1094,7 +1094,7 @@ app.post('/questionmod', function (req, res) {
 
     questions.updateQuestionById(qid, q, function (err, result) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
         return res.status(200).send(result);
@@ -1116,7 +1116,7 @@ app.post('/questiondel', function (req, res) {
 
     questions.deleteQuestion(req.body.qid, function (err, result) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
         return res.status(200).send();
@@ -1143,13 +1143,13 @@ var submitQuestionRating = function (req, res) {
 
     questions.submitRating(questionId, userId, rating, function (err, result) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3009));
         }
 
         users.submitRating(userId, questionId, rating, function (err, result) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(3009));
             }
 
@@ -1175,7 +1175,7 @@ app.get('/getDiscussionBoard', function (req, res) {
     var questionId = req.query.questionId;
     questions.lookupQuestionById(questionId, function (err, question) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3019));
         }
 
@@ -1195,7 +1195,7 @@ app.get('/getDiscussionBoard', function (req, res) {
 
         users.getUsersList((err, userObj) => {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(2002));
             }
 
@@ -1280,7 +1280,7 @@ app.post('/addCommentToQuestion', function (req, res) {
 
     questions.addComment(questionId, userId, comment, function (err, question) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3012));
         }
 
@@ -1300,7 +1300,7 @@ app.post('/addReplyToComment', function (req, res) {
 
     questions.addReply(commentId, userId, reply, function (err, question) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3013));
         }
 
@@ -1326,7 +1326,7 @@ app.post('/voteOnComment', function (req, res) {
 
     questions.voteComment(commentId, vote, userId, function (err, value) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3015));
         }
 
@@ -1352,7 +1352,7 @@ app.post('/voteOnReply', function (req, res) {
 
     questions.voteReply(replyId, vote, userId, function (err, value) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3016));
         }
 
@@ -1369,7 +1369,7 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
     var questionId = req.query.questionId;
     questions.lookupQuestionById(questionId, function (err, question) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3002));
         }
 
@@ -1379,7 +1379,7 @@ app.get('/usersToMentionInDiscussion', function (req, res) {
 
         users.getUsersList(function (err, usersList) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(2013));
             }
 
@@ -1426,7 +1426,7 @@ app.get('/questionsListofTopics', function (req, res) {
 
     questions.getAllQuestionsList(function (err, docs) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(3017));
         }
 
@@ -1453,7 +1453,7 @@ app.get('/studentsListofIdsNames', function (req, res) {
 
     users.getStudentsList(function (err, studentList) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(2003));
         }
 
@@ -1477,7 +1477,7 @@ app.get('/accountsExportForm', function (req, res) {
 
     users.getStudentsList(function (err, studentsList) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(2003));
         }
 
@@ -1558,7 +1558,7 @@ app.post('/accountsExportFile', function (req, res) {
                     };
                     vfs.writeFile(fileObject, function (err, result) {
                         if (err) {
-                            logger.error(err);
+                            logger.error(JSON.stringify(err));
                             return res.status(500).send(common.getError(6001));
                         }
                         return res.status(200).render('users/accounts-export-complete', {
@@ -1600,7 +1600,7 @@ app.post('/accountsImportFile', function (req, res) {
     };
     vfs.writeFile(fileObject, function (err, fileObj) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(6003));
         }
 
@@ -1617,7 +1617,7 @@ app.post('/accountsImportFile', function (req, res) {
             importedList.push(userObj);
         }).on('done', function (err) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(6004));
             }
 
@@ -1717,7 +1717,7 @@ app.get('/downloadExportFile', function (req, res) {
 
         return res.download(fileObj.path, file, function (err) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
             }
         });
     });
@@ -1744,7 +1744,7 @@ app.get('/profile', function (req, res) {
 
     users.getUserById(req.session.user._id, function (err, user) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(7005));
         }
 
@@ -1828,7 +1828,7 @@ app.post('/updateSettings', function (req, res) {
 
     settings.updateSettings(req.body.settings, function (err, result) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
 
@@ -1910,7 +1910,7 @@ app.post('/submitFeedback', function (req, res) {
 
     users.addFeedback(req.session.user._id, req.body.subject, req.body.message, function (err, result) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(8000));
         }
 
@@ -1932,13 +1932,13 @@ app.get('/feedback', function (req, res) {
 
     users.getFeedback(function (err, result) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(8001));
         }
 
         users.getUsersList((err, userObj) => {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).render(common.getError(2002));
             }
 
@@ -1996,7 +1996,7 @@ app.post('/changeAllVisibility', function (req, res) {
 
     questions.changeAllVisibility(req.body.changeValue, function (err, result) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             res.status(500).send(common.getError(3020));
         }
         return res.status(200).send(result);

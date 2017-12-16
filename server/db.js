@@ -93,7 +93,7 @@ exports.addAdmin = function (admin, callback) {
 var addUser = function (user, callback) {
     usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function (err, obj) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(2014), null);
         }
 
@@ -201,7 +201,7 @@ exports.getUserById = function (userId, callback) {
 exports.checkLogin = function (userId, pass, callback) {
     usersCollection.findOne({username : userId}, function (err, obj) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(2014), null);
         }
 
@@ -249,7 +249,7 @@ var validatePassword = function (userobj, pass, callback) {
 exports.removeAllUsers = function (callback) {
     usersCollection.remove({}, function (err, obj) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(1008), null);
         }
 
@@ -297,7 +297,7 @@ var getUserById = function (userId, callback) {
 var getUserObject = function (findQuery, callback) {
     usersCollection.findOne(findQuery, function (err, obj) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(2017), null);
         }
 
@@ -412,7 +412,7 @@ var updateUserById = function (userId, info, callback) {
     if (typeof info.newPassword === 'undefined') {
         usersCollection.update(query, update, function (err, obj) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return callback(common.getError(2018), null);
             }
 
@@ -447,7 +447,7 @@ exports.updateUserPassword = function (query, update, password, callback) {
 var updateUserPassword = function (query, update, password, callback) {
     bcrypt.hash(password, 11, function (err, hash) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(1009), null);
         }
 
@@ -459,7 +459,7 @@ var updateUserPassword = function (query, update, password, callback) {
 
         usersCollection.update(query, update, function (err, obj) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return callback(common.getError(2018), null);
             }
 
@@ -492,7 +492,7 @@ exports.addQuestion = function (question, callback) {
     question.number = ++nextQuestionNumber;
     questionsCollection.insert(question, function (err, res) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(3018), null);
         }
 
@@ -508,7 +508,7 @@ exports.addQuestion = function (question, callback) {
 exports.removeAllQuestions = function (callback) {
     questionsCollection.remove({}, function (err, res) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(1008), null);
         }
 
@@ -527,7 +527,7 @@ exports.removeAllQuestions = function (callback) {
 var getNextQuestionNumber = function (callback) {
       questionsCollection.find().sort({number: -1}).limit(1).toArray(function (err, docs) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             process.exit(1);
         }
 
@@ -836,7 +836,7 @@ var getAllSettings = function (callback) {
 exports.removeAnalytics = function (callback) {
     analyticsCollection.remove({}, function (err, obj) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(1008), null);
         }
 
@@ -932,7 +932,7 @@ exports.updateSettings = function (findQuery, updateQuery, callback) {
 exports.removeVirtualFileSystem = function (callback) {
     vfsCollection.remove({}, function (err, result) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(9000), null);
         }
 

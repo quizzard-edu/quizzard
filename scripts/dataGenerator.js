@@ -230,7 +230,7 @@ var answerQuestionRegular = function (questionId) {
 
         checkAnswer(questionId, studentId, answer, function (err, correct) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
             } else {
                 logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct? 'correctly' : 'incorrectly', studentId]));
             }
@@ -320,7 +320,7 @@ var answerQuestionMultipleChoice = function (questionId) {
 
         checkAnswer(questionId, studentId, answer, function (err, correct) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
             } else {
                 logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct ? 'correctly' : 'incorrectly', studentId]));
             }
@@ -409,7 +409,7 @@ var answerQuestionTrueFalse = function (questionId) {
 
         checkAnswer(questionId, studentId, answer, function (err, correct) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
             } else {
                 logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct ? 'correctly' : 'incorrectly', studentId]));
             }
@@ -500,7 +500,7 @@ var answerQuestionMatching = function (questionId) {
 
         checkAnswer(questionId, studentId, answer, function (err, correct) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
             } else {
                 logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct ? 'correctly' : 'incorrectly', studentId]));
             }
@@ -590,7 +590,7 @@ var answerQuestionChooseAll = function (questionId) {
 
         checkAnswer(questionId, studentId, answer, function (err, correct) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
             } else {
                 logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct ? 'correctly' : 'incorrectly', studentId]));
             }
@@ -679,7 +679,7 @@ var answerQuestionOrdering = function (questionId) {
 
         checkAnswer(questionId, studentId, answer, function (err, correct) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
             } else {
                 logger.log(common.formatString('Questions {0} answered {1} by {2}', [questionId, correct ? 'correctly' : 'incorrectly', studentId]));
             }
@@ -1003,7 +1003,7 @@ var rateQuestion = function (questionId, userId, rating, callback) {
 
     db.lookupQuestion({ number: questionId }, function (err, question) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
         } else if (!question) {
             logger.error('Could not find the question');
         } else {

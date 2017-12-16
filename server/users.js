@@ -37,7 +37,7 @@ exports.addAdmin = function (user, callback) {
 
     bcrypt.hash(user.password, 11, function (err, hash) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(1009), null);
         }
 
@@ -92,7 +92,7 @@ exports.addStudent = function (user, callback) {
 
     bcrypt.hash(user.password, 11, function (err, hash) {
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(1009), null);
         }
 

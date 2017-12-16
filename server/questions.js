@@ -198,7 +198,7 @@ var updateQuestionById = function(qId, infoToUpdate, callback) {
 exports.deleteQuestion = function(questionId, callback) {
     lookupQuestionById(questionId, function(err, questionObj){
         if (err) {
-            logger.error(err);
+            logger.error(JSON.stringify(err));
             return callback(common.getError(3023), null);
         }
 
@@ -208,7 +208,7 @@ exports.deleteQuestion = function(questionId, callback) {
 
         db.updateQuestionByQuery(query, update, function(err, res){
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return callback(common.getError(3023), null);
             }
             logger.log(common.formatString('Question {0} deleted from database.', [questionId]));
