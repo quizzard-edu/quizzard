@@ -864,7 +864,9 @@ app.post('/profilemod', function (req, res) {
         return res.redirect('/');
     }
 
-    if (req.body.newpassword !== req.body.confirmpassword) {
+    var profileObj = req.body;
+
+    if (profileObj.newpassword !== profileObj.confirmpassword) {
         logger.log('Confirm password doesn\'t match');
         return res.status(400).send(common.getError(1003));
     }
@@ -880,7 +882,7 @@ app.post('/profilemod', function (req, res) {
             return res.status(400).send(common.getError(2009));
         }
 
-        users.checkLogin(userObj.username, req.body.currentpasswd, function (err, user) {
+        users.checkLogin(userObj.username, profileObj.currentpasswd, function (err, user) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(common.getError(2010));
@@ -894,17 +896,23 @@ app.post('/profilemod', function (req, res) {
             const allSettings = settings.getAllSettings();
 
             if (user.type === common.userTypes.STUDENT && (
-                (!allSettings.student.editNames && 'newfname' in req.body) ||
-                (!allSettings.student.editNames && 'newlname' in req.body) ||
-                (!allSettings.student.editEmail && 'newemail' in req.body) ||
-                (!allSettings.student.editPassword && 'newpassword' in req.body)
+                (!allSettings.student.editNames && 'newfname' in profileObj) ||
+                (!allSettings.student.editNames && 'newlname' in profileObj) ||
+                (!allSettings.student.editEmail && 'newemail' in profileObj) ||
+                (!allSettings.student.editPassword && 'newpassword' in profileObj)
             )) {
                 logger.error(common.getError(2011).message);
                 return res.status(500).send(common.getError(2011));
             }
 
+            delete profileObj.currentpasswd;
+
+            if (common.isEmptyObject(profileObj)) {
+                return res.status(200).send('ok');
+            }
+
             if (user) {
-                users.updateProfile(userId, req.body, function (err, result) {
+                users.updateProfile(userId, profileObj, function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(common.getError(2011));
@@ -1741,6 +1749,9 @@ app.get('/profile', function (req, res) {
         return res.redirect('/');
     }
     const allSettings = settings.getAllSettings();
+    var editNames = allSettings.student.editNames;
+    var editEmail = allSettings.student.editEmail;
+    var editPassword = allSettings.student.editPassword;
 
     users.getUserById(req.session.user._id, function (err, user) {
         if (err) {
@@ -1753,17 +1764,17 @@ app.get('/profile', function (req, res) {
         }
 
         if (user.type === common.userTypes.ADMIN) {
-            allSettings.student.editNames = true;
-            allSettings.student.editEmail = true;
-            allSettings.student.editPassword = true;
+            editNames = true;
+            editEmail = true;
+            editPassword = true;
         }
 
         return res.status(200).render('profile', {
             user: user,
             isAdmin: req.session.user.type === common.userTypes.ADMIN,
-            editNamesEnabled: allSettings.student.editNames,
-            editEmailEnabled: allSettings.student.editEmail,
-            editPasswordEnabled: allSettings.student.editPassword
+            editNamesEnabled: editNames,
+            editEmailEnabled: editEmail,
+            editPasswordEnabled: editPassword
         });
     });
 });

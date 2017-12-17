@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: common.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: common.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+Copyright (C) 2016
+Developed at University of Toronto
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;http://www.gnu.org/licenses/>.
+*/
+
+const uuidv1 = require('uuid/v1');
+const date = require('moment');
+const errorFile = require('./errors');
+
+// &lt;Global Constants> ------------------------------------------
+// Common errors
+const errors = errorFile.errors;
+const defaultError = errorFile.defaultError;
+exports.errors = errors;
+exports.defaultError = defaultError;
+
+// common path shared across the backend
+const vfsTree = Object.freeze({
+    ROOT            : __dirname + '/..',
+    HOME            : __dirname + '/../FileSystem',
+    USERS           : __dirname + '/../FileSystem/Users',
+    QUESTIONS       : __dirname + '/../FileSystem/Questions'
+});
+exports.vfsTree = vfsTree;
+
+// common permission on files
+const vfsPermission = Object.freeze({
+    PUBLIC          : 'public',
+    OWNER           : 'owner',
+    SYSTEM          : 'system'
+});
+exports.vfsPermission = vfsPermission;
+
+// common item types
+const vfsTypes = Object.freeze({
+    FILE            : 'file',
+    DIRECTORY       : 'directory'
+});
+exports.vfsTypes = vfsTypes;
+
+// all user types
+const userTypes = Object.freeze({
+    ADMIN           : 0,
+    STUDENT         : 1
+});
+exports.userTypes = userTypes;
+
+// all types of visibility status for the dicussionboard
+const discussionboardVisibility = Object.freeze({
+    NONE      : 'NONE',
+    ANSWERED  : 'ANSWERED',
+    ALL       : 'ALL'
+});
+exports.discussionboardVisibility = discussionboardVisibility;
+
+// all question types
+const questionTypes = Object.freeze({
+    MULTIPLECHOICE  : {name: 'Multiple Choice', value: 'mc', template: 'question_types/mc-answer', icon: 'format_list_bulleted'},
+    REGULAR         : {name: 'Regular Question', value: 're', template: 'question_types/regex-answer', icon: 'font_download'},
+    TRUEFALSE       : {name: 'True and False', value: 'tf', template: 'question_types/tf-answer', icon: 'check_circle'},
+    MATCHING        : {name: 'Matching', value: 'matching', template: 'question_types/matching-answer', icon: 'dashboard'},
+    CHOOSEALL       : {name: 'Choose All That Apply', value: 'ca', template: 'question_types/chooseAll-answer', icon: 'format_list_bulleted'},
+    ORDERING        : {name: 'Order the List', value: 'ordering', template: 'question_types/ordering-answer', icon: 'format_list_bulleted'}
+});
+exports.questionTypes = questionTypes;
+
+/* the field to sort by */
+const sortTypes = Object.freeze({
+    SORT_NOSORT    : 0x0,
+    SORT_DEFAULT   : 0x1,
+    SORT_RANDOM    : 0x2,
+    SORT_TOPIC     : 0x4,
+    SORT_POINTS    : 0x8,
+    QUERY_ANSWERED : 0x10,
+    QUERY_ANSONLY  : 0x20
+});
+exports.sortTypes = sortTypes;
+
+// all question attributes of any question object in the database
+const questionAttributes = Object.freeze({
+    DEFAULT: {
+        topic                   : {type:'[object String]'},
+        title                   : {type:'[object String]'},
+        text                    : {type:'[object String]'},
+        hint                    : {type:'[object String]'},
+        minpoints               : {type:'[object Number]'},
+        maxpoints               : {type:'[object Number]'},
+        visible                 : {type:'[object Boolean]'},
+        type                    : {type:'[object String]'}
+    },
+    SERVER: {
+        _id                     : {type:'[object String]'},
+        correctAttempts         : {type:'[object Array]'},
+        wrongAttempts           : {type:'[object Array]'},
+        totalAttempts           : {type:'[object Array]'},
+        correctAttemptsCount    : {type:'[object Number]'},
+        wrongAttemptsCount      : {type:'[object Number]'},
+        totalAttemptsCount      : {type:'[object Number]'},
+        ctime                   : {type:'[object String]'},
+        mtime                   : {type:'[object String]'},
+        ratings                 : {type:'[object Array]'},
+        userSubmissionTime      : {type:'[object Array]'},
+        deleted                 : {type:'[object Boolean]'}
+    },
+    REGULAR:        {
+        answer                  : {type:'[object String]'}
+    },
+    MULTIPLECHOICE: {
+        choices                 : {type:'[object Array]'},
+        answer                  : {type:'[object String]'}
+    },
+    TRUEFALSE: {
+        answer                  : {type:'[object String]'}
+    },
+    MATCHING: {
+        leftSide                : {type:'[object Array]'},
+        rightSide               : {type:'[object Array]'}
+    },
+    CHOOSEALL: {
+        choices                 : {type:'[object Array]'},
+        answer                  : {type:'[object Array]'}
+    },
+    ORDERING: {
+        answer                  : {type:'[object Array]'}
+    },
+    DATATYPES: {
+        Array                   : {type:'[object Array]'},
+        String                  : {type:'[object String]'},
+        Number                  : {type:'[object Number]'},
+        Boolean                 : {type:'[object Boolean]'},
+        Object                  : {type:'[object Object]'}
+    }
+});
+exports.questionAttributes = questionAttributes;
+// &lt;/Global Constants> ------------------------------------------
+
+// &lt;Global Function> --------------------------------------------
+/**
+ * return an object of error code and message
+ *
+ * @param {number} errorCode
+ * @return {object}
+ */
+var getError = function(errorCode) {
+    return {
+       code: errorCode,
+       message: errors[errorCode] || defaultError
+    }
+}
+exports.getError = getError;
+
+/**
+* shuffle the given list and return the result as a new list
+*
+* @return {array}
+*/
+var randomizeList = function (data) {
+    var oldIndex, newIndex, tempHolder;
+
+    for (oldIndex = data.length-1; oldIndex > 0; oldIndex--) {
+        newIndex = Math.floor(Math.random() * (oldIndex + 1));
+        tempHolder = data[oldIndex];
+        data[oldIndex] = data[newIndex];
+        data[newIndex] = tempHolder;
+    }
+
+    return data;
+};
+exports.randomizeList = randomizeList;
+
+/**
+* given a list of JSON objects that have Id as one of their feilds, return a list of Ids
+*
+* @return {array}
+*/
+var getIdsListFromJSONList = function (JSONList, idType) {
+    var list = [];
+    for (i in JSONList) {
+        list.push(JSONList[i][idType]);
+    }
+    return list;
+}
+exports.getIdsListFromJSONList = getIdsListFromJSONList;
+
+/**
+ * return a number as the sum of all numbers in a list
+ *
+ * @param {list} list
+ */
+var sumListOfNumbers = function (list) {
+    return list.reduce((x, y) => {
+        return parseInt(x) + parseInt(y);
+    });
+}
+exports.sumListOfNumbers = sumListOfNumbers;
+
+/**
+* check if json obejct is empty
+*
+* @return {boolean}
+*/
+var isEmptyObject = function (obj) {
+    for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            return false;
+        }
+    }
+    return true;
+}
+exports.isEmptyObject = isEmptyObject;
+
+/**
+* return the current date
+*
+* @return {string}
+*/
+var getDate = function () {
+    return getDateByFormat('YYYY-MM-DD hh:mm:ss A');
+}
+exports.getDate = getDate;
+
+/**
+* return the current date
+*
+* @return {date}
+*/
+var getDateObject = function () {
+    return new Date();
+}
+exports.getDateObject = getDateObject;
+
+/**
+* return the current date
+*
+* @param {number} mins
+* @param {string} format
+* @return {string}
+*/
+var getDateFormatedMinutesAgo = function (format, mins) {
+    return date().subtract(mins, "minutes").format(format);
+}
+exports.getDateFormatedMinutesAgo = getDateFormatedMinutesAgo;
+
+/**
+* return the time in "&lt;0> days, &lt;0> hours, &lt;0> minutes, &lt;0> seconds" format
+*
+* @return {string}
+*/
+var getTime = function(time){
+    const date = new Date(time);
+    var timeString = '';
+    const days = date.getUTCDate()-1;
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
+    if (days){
+        timeString += date.getUTCDate()-1 + " days, ";
+    }
+    if (hours){
+        timeString += date.getUTCHours() + " hours, ";
+    }
+    if (minutes){
+        timeString += date.getUTCMinutes() + " minutes, ";
+    }
+    if (seconds){
+        timeString += date.getUTCSeconds() + " seconds";
+    }
+    return timeString;
+}
+exports.getTime = getTime;
+
+/**
+* return the current date with format
+*
+* @return {string}
+*/
+var getDateByFormat = function (format) {
+    return date().format(format);
+}
+exports.getDateByFormat = getDateByFormat;
+
+/**
+* get a unique Id
+*
+* @return {string}
+*/
+var getUUID = function () {
+    return uuidv1();
+}
+exports.getUUID = getUUID;
+
+/**
+ * get variable type
+ *
+ * @param {*} variable
+ */
+var getVariableType = function (variable) {
+    return Object.prototype.toString.call(variable);
+}
+exports.getVariableType = getVariableType;
+
+/**
+* formating a string based on an array of parts of the string
+*
+* @return {string}
+*/
+var formatString = function (text, args) {
+    var regex = new RegExp('{-?[0-9]+}', 'g');
+    return text.replace(regex, function(item) {
+        var intVal = parseInt(item.substring(1, item.length - 1));
+        var replace;
+        if (intVal >= 0) {
+            replace = args[intVal];
+        } else if (intVal === -1) {
+            replace = '{';
+        } else if (intVal === -2) {
+            replace = '}';
+        } else {
+            replace = '';
+        }
+        return replace;
+    });
+};
+exports.formatString = formatString;
+
+/**
+* Returns a JSON from a list of JSONs given a key, value to search for
+*
+* @param {list} list
+* @param {string} field
+* @param {string} value
+* @return {boolean}
+*/
+var isKeyValuePairInJsonList = function(list, field, value) {
+    for (var i = 0; i &lt; list.length; i++) {
+        if (list[i][field] === value) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isKeyValuePairInJsonList = isKeyValuePairInJsonList;
+// &lt;/Global Function> -----------------------------------------------
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addAdmin">addAdmin</a></li><li><a href="global.html#addComment">addComment</a></li><li><a href="global.html#addFeedback">addFeedback</a></li><li><a href="global.html#addQuestion">addQuestion</a></li><li><a href="global.html#addReply">addReply</a></li><li><a href="global.html#addStudent">addStudent</a></li><li><a href="global.html#addStudentAnalyticsWithDate">addStudentAnalyticsWithDate</a></li><li><a href="global.html#addToVirtualFileSystem">addToVirtualFileSystem</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#changeAllVisibility">changeAllVisibility</a></li><li><a href="global.html#checkLogin">checkLogin</a></li><li><a href="global.html#chooseAllAttributeValidator">chooseAllAttributeValidator</a></li><li><a href="global.html#deleteQuestion">deleteQuestion</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#existsSync">existsSync</a></li><li><a href="global.html#findInVirtualFileSystem">findInVirtualFileSystem</a></li><li><a href="global.html#formatString">formatString</a></li><li><a href="global.html#getAccuracyOverTime">getAccuracyOverTime</a></li><li><a href="global.html#getAccuracyPerTopicVsClass">getAccuracyPerTopicVsClass</a></li><li><a href="global.html#getAccuracyPerTypeVsClass">getAccuracyPerTypeVsClass</a></li><li><a href="global.html#getAccuracyRankOverTime">getAccuracyRankOverTime</a></li><li><a href="global.html#getAccuracyVsClass">getAccuracyVsClass</a></li><li><a href="global.html#getAdminById">getAdminById</a></li><li><a href="global.html#getAdminsList">getAdminsList</a></li><li><a href="global.html#getAllQuestionsByQuery">getAllQuestionsByQuery</a></li><li><a href="global.html#getAllQuestionsList">getAllQuestionsList</a></li><li><a href="global.html#getAllSettings">getAllSettings</a></li><li><a href="global.html#getAnalytics">getAnalytics</a></li><li><a href="global.html#getAttemptRankOverTime">getAttemptRankOverTime</a></li><li><a href="global.html#getAverageRating">getAverageRating</a></li><li><a href="global.html#getChart">getChart</a></li><li><a href="global.html#getClassAccuracy">getClassAccuracy</a></li><li><a href="global.html#getClassAccuracyOverTime">getClassAccuracyOverTime</a></li><li><a href="global.html#getClassAccuracyPerTopicVsClass">getClassAccuracyPerTopicVsClass</a></li><li><a href="global.html#getClassAccuracyPerTypeVsClass">getClassAccuracyPerTypeVsClass</a></li><li><a href="global.html#getClassActive">getClassActive</a></li><li><a href="global.html#getClassAnswered">getClassAnswered</a></li><li><a href="global.html#getClassAnsweredOverTime">getClassAnsweredOverTime</a></li><li><a href="global.html#getClassOverall">getClassOverall</a></li><li><a href="global.html#getClassOverallOverTime">getClassOverallOverTime</a></li><li><a href="global.html#getClassPoints">getClassPoints</a></li><li><a href="global.html#getClassPointsOverTime">getClassPointsOverTime</a></li><li><a href="global.html#getClassPointsPerAttempt">getClassPointsPerAttempt</a></li><li><a href="global.html#getClassPointsPerAttemptOverTime">getClassPointsPerAttemptOverTime</a></li><li><a href="global.html#getClassPointsPerTopicVsClass">getClassPointsPerTopicVsClass</a></li><li><a href="global.html#getClassPointsPerTypeVsClass">getClassPointsPerTypeVsClass</a></li><li><a href="global.html#getClassRating">getClassRating</a></li><li><a href="global.html#getClassRatingPerTopicVsClass">getClassRatingPerTopicVsClass</a></li><li><a href="global.html#getClassRatingPerTypeVsClass">getClassRatingPerTypeVsClass</a></li><li><a href="global.html#getCorrectAttemptRankOverTime">getCorrectAttemptRankOverTime</a></li><li><a href="global.html#getCorrectAttemptsOverTime">getCorrectAttemptsOverTime</a></li><li><a href="global.html#getDate">getDate</a></li><li><a href="global.html#getDateByFormat">getDateByFormat</a></li><li><a href="global.html#getDateFormatedMinutesAgo">getDateFormatedMinutesAgo</a></li><li><a href="global.html#getDateObject">getDateObject</a></li><li><a href="global.html#getDiscussionboardDislikesEnabled">getDiscussionboardDislikesEnabled</a></li><li><a href="global.html#getDiscussionboardVisibilityEnabled">getDiscussionboardVisibilityEnabled</a></li><li><a href="global.html#getError">getError</a></li><li><a href="global.html#getFeedback">getFeedback</a></li><li><a href="global.html#getFullLeaderboard">getFullLeaderboard</a></li><li><a href="global.html#getIdsListFromJSONList">getIdsListFromJSONList</a></li><li><a href="global.html#getLeaderboard">getLeaderboard</a></li><li><a href="global.html#getLeaderboardLimit">getLeaderboardLimit</a></li><li><a href="global.html#getLeaderboardLimited">getLeaderboardLimited</a></li><li><a href="global.html#getNextQuestionNumber">getNextQuestionNumber</a></li><li><a href="global.html#getOverallOverTime">getOverallOverTime</a></li><li><a href="global.html#getOverallRankOverTime">getOverallRankOverTime</a></li><li><a href="global.html#getOverallVsClass">getOverallVsClass</a></li><li><a href="global.html#getPointsOverTime">getPointsOverTime</a></li><li><a href="global.html#getPointsPerAttemptsOverTime">getPointsPerAttemptsOverTime</a></li><li><a href="global.html#getPointsPerAttemptVsClass">getPointsPerAttemptVsClass</a></li><li><a href="global.html#getPointsPerTopicVsClass">getPointsPerTopicVsClass</a></li><li><a href="global.html#getPointsPerTypeVsClass">getPointsPerTypeVsClass</a></li><li><a href="global.html#getPointsRankOverTime">getPointsRankOverTime</a></li><li><a href="global.html#getPointsVsClass">getPointsVsClass</a></li><li><a href="global.html#getQuestionDefaultMaxPoints">getQuestionDefaultMaxPoints</a></li><li><a href="global.html#getQuestionDefaultMinPoints">getQuestionDefaultMinPoints</a></li><li><a href="global.html#getQuestionDefaultTopic">getQuestionDefaultTopic</a></li><li><a href="global.html#getQuestionsAnsweredVsClass">getQuestionsAnsweredVsClass</a></li><li><a href="global.html#getQuestionsList">getQuestionsList</a></li><li><a href="global.html#getQuestionsListByUser">getQuestionsListByUser</a></li><li><a href="global.html#getQuestionsListforAdmin">getQuestionsListforAdmin</a></li><li><a href="global.html#getQuestionTimeoutEnabled">getQuestionTimeoutEnabled</a></li><li><a href="global.html#getQuestionTimeoutPeriod">getQuestionTimeoutPeriod</a></li><li><a href="global.html#getRatingVsClass">getRatingVsClass</a></li><li><a href="global.html#getStudentById">getStudentById</a></li><li><a href="global.html#getStudentEditEmailEnabled">getStudentEditEmailEnabled</a></li><li><a href="global.html#getStudentEditNameEnabled">getStudentEditNameEnabled</a></li><li><a href="global.html#getStudentEditPasswordEnabled">getStudentEditPasswordEnabled</a></li><li><a href="global.html#getStudentsList">getStudentsList</a></li><li><a href="global.html#getStudentsListSorted">getStudentsListSorted</a></li><li><a href="global.html#getStudentsListWithStatus">getStudentsListWithStatus</a></li><li><a href="global.html#getTime">getTime</a></li><li><a href="global.html#getTimeBasedAnalytics">getTimeBasedAnalytics</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#getUserByUsername">getUserByUsername</a></li><li><a href="global.html#getUserObject">getUserObject</a></li><li><a href="global.html#getUsersList">getUsersList</a></li><li><a href="global.html#getUUID">getUUID</a></li><li><a href="global.html#getVariableType">getVariableType</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initialize">initialize</a></li><li><a href="global.html#isEmptyObject">isEmptyObject</a></li><li><a href="global.html#isKeyValuePairInJsonList">isKeyValuePairInJsonList</a></li><li><a href="global.html#isUserLocked">isUserLocked</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#lookupQuestion">lookupQuestion</a></li><li><a href="global.html#lookupQuestionById">lookupQuestionById</a></li><li><a href="global.html#matchingAttributeValidator">matchingAttributeValidator</a></li><li><a href="global.html#mkdir">mkdir</a></li><li><a href="global.html#multipleChoiceAttributeValidator">multipleChoiceAttributeValidator</a></li><li><a href="global.html#orderingAttributeValidator">orderingAttributeValidator</a></li><li><a href="global.html#prepareQuestionData">prepareQuestionData</a></li><li><a href="global.html#qTypeFailMsg">qTypeFailMsg</a></li><li><a href="global.html#questionCreationValidation">questionCreationValidation</a></li><li><a href="global.html#questionUpdateParser">questionUpdateParser</a></li><li><a href="global.html#randomizeList">randomizeList</a></li><li><a href="global.html#regexAttributeValidator">regexAttributeValidator</a></li><li><a href="global.html#removeAllQuestions">removeAllQuestions</a></li><li><a href="global.html#removeAllUsers">removeAllUsers</a></li><li><a href="global.html#removeAnalytics">removeAnalytics</a></li><li><a href="global.html#removeVirtualFileSystem">removeVirtualFileSystem</a></li><li><a href="global.html#resetAllSettings">resetAllSettings</a></li><li><a href="global.html#rmdir">rmdir</a></li><li><a href="global.html#rmrf">rmrf</a></li><li><a href="global.html#setClassActive">setClassActive</a></li><li><a href="global.html#setDiscussionboardDislikesEnabled">setDiscussionboardDislikesEnabled</a></li><li><a href="global.html#setDiscussionboardVisibilityEnabled">setDiscussionboardVisibilityEnabled</a></li><li><a href="global.html#setLeaderboardLimit">setLeaderboardLimit</a></li><li><a href="global.html#setLeaderboardLimited">setLeaderboardLimited</a></li><li><a href="global.html#setQuestionDefaultMinPoints">setQuestionDefaultMinPoints</a></li><li><a href="global.html#setQuestionDefaultTopic">setQuestionDefaultTopic</a></li><li><a href="global.html#setQuestionTimeoutEnabled">setQuestionTimeoutEnabled</a></li><li><a href="global.html#setQuestionTimeoutPeriod">setQuestionTimeoutPeriod</a></li><li><a href="global.html#setStudentEditEmailEnabled">setStudentEditEmailEnabled</a></li><li><a href="global.html#setStudentEditNameEnabled">setStudentEditNameEnabled</a></li><li><a href="global.html#setStudentEditPasswordEnabled">setStudentEditPasswordEnabled</a></li><li><a href="global.html#setUserStatus">setUserStatus</a></li><li><a href="global.html#sortLeaderBoard">sortLeaderBoard</a></li><li><a href="global.html#submitAnswer">submitAnswer</a></li><li><a href="global.html#submitRating">submitRating</a></li><li><a href="global.html#sumListOfNumbers">sumListOfNumbers</a></li><li><a href="global.html#trueAndFalseAttributeValidator">trueAndFalseAttributeValidator</a></li><li><a href="global.html#updateAdminById">updateAdminById</a></li><li><a href="global.html#updateProfile">updateProfile</a></li><li><a href="global.html#updateQuestionById">updateQuestionById</a></li><li><a href="global.html#updateQuestionByQuery">updateQuestionByQuery</a></li><li><a href="global.html#updateSettings">updateSettings</a></li><li><a href="global.html#updateStudentById">updateStudentById</a></li><li><a href="global.html#updateUserById">updateUserById</a></li><li><a href="global.html#updateUserByQuery">updateUserByQuery</a></li><li><a href="global.html#updateUserPassword">updateUserPassword</a></li><li><a href="global.html#updateUserSubmissionTime">updateUserSubmissionTime</a></li><li><a href="global.html#validateAllAttributesInGroup">validateAllAttributesInGroup</a></li><li><a href="global.html#validateArrayObject">validateArrayObject</a></li><li><a href="global.html#validateAttributeFields">validateAttributeFields</a></li><li><a href="global.html#validateAttributeType">validateAttributeType</a></li><li><a href="global.html#validateDefaultQuestionValues">validateDefaultQuestionValues</a></li><li><a href="global.html#validatePassword">validatePassword</a></li><li><a href="global.html#validateQuestionAttributesByType">validateQuestionAttributesByType</a></li><li><a href="global.html#verifyAnswer">verifyAnswer</a></li><li><a href="global.html#verifyChooseAllQuestionAnswer">verifyChooseAllQuestionAnswer</a></li><li><a href="global.html#verifyMatchingQuestionAnswer">verifyMatchingQuestionAnswer</a></li><li><a href="global.html#verifyOrderingQuestionAnswer">verifyOrderingQuestionAnswer</a></li><li><a href="global.html#voteComment">voteComment</a></li><li><a href="global.html#voteReply">voteReply</a></li><li><a href="global.html#writeFile">writeFile</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Dec 16 2017 22:47:56 GMT-0500 (EST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
