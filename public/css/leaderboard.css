@@ -1,8 +1,6 @@
 div.podium {
     display: inline-block;
-    width: auto;
     text-align: center;
-    padding: 35px;
 }
 
 div.podium p {
@@ -15,22 +13,29 @@ div.podium p span.score {
     font-weight: bold;
 }
 
-img#first {
-    height: 250px !important;
-    border-radius: 50%;
+#first, #firstTrophy {
+    display: -webkit-box;
+    height: 175px !important;
+    width: 175px !important;
     padding-bottom: 10px;
 }
 
-img#second {
-    height: 200px !important;
-    border-radius: 50%;
-    padding-bottom: 10px;
-}
-
-img#third {
+#second, #secondTrophy {
+    display: -webkit-box;
     height: 150px !important;
-    border-radius: 50%;
+    width: 150px !important;
     padding-bottom: 10px;
+}
+
+#third, #thirdTrophy {
+    display: -webkit-box;
+    height: 125px !important;
+    width: 125px !important;
+    padding-bottom: 10px;
+}
+
+#first, #second, #third {
+    border-radius: 50%;
 }
 
 ol, li {
@@ -57,11 +62,6 @@ li.silver {
 
 .gold {
     font-weight: bold;
-}
-
-li img {
-    display: inline-flex;
-    max-width: 100%;
 }
 
 li.gold .score {
