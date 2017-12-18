@@ -72,21 +72,6 @@ var initAutoComplete = function () {
     minLength: 1,
   });
 
-  // Showing the analytics automatically
-  $('#autocomplete-input').keyup(function () {
-    const autocompleteValue = $('#autocomplete-input').val();
-
-    for (var s in studentList) {
-      if (s.split(' ')[0].toLowerCase() === autocompleteValue.split(' ')[0].toLowerCase()) {
-        $('#student-analytics-data-cards').removeClass('hidden');
-        displayStudentStatistics(autocompleteValue.split(' ')[0]);
-        return;
-      }
-    }
-
-    $('#student-analytics-data-cards').addClass('hidden');
-  });
-
   const autocompleteValue = $('#autocomplete-input').val();
 
   for (var s in studentList) {
