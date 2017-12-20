@@ -142,12 +142,14 @@ var displayImportAccountsForm = function () {
             });
         },
         error: function (data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -325,12 +327,14 @@ var displayAccountForm = function () {
             });
         },
         error: function (data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -347,12 +351,14 @@ var displayQuestionsExportForm = function () {
             $('#questions-export-back-button').click(() => {displayQuestionTable();});
         },
         error: function (data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -368,18 +374,20 @@ var displayQuestionsImportForm = function () {
             $('#questions-import-back-button').click(() => {displayQuestionTable();});
         },
         error: function (data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
 }
 
-/* Upload a file of users to the server. */
+/* Upload a file of questions to the server. */
 var submitQuestionsImportForm = function () {
     var files = $('#questions-import-form-input').get(0).files;
     var formData = new FormData();
@@ -446,12 +454,14 @@ var submitQuestionsExportForm = function () {
             $('#questions-export-list-back-button').click(() => {displayQuestionTable();});
         },
         error: function (data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -570,12 +580,14 @@ var displayQuestionForm = function () {
             initSummernote();
         },
         error: function (data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });

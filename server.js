@@ -1546,7 +1546,7 @@ app.post('/questionsExportList', function (req, res) {
 
         var finalObject = {};
         for (var i in questionsList) {
-            if (inputQuestionsList.indexOf(questionsList[i]._id) !== -1) {
+            if (inputQuestionsList && inputQuestionsList.indexOf(questionsList[i]._id) !== -1) {
                 finalObject[questionsList[i]._id] = questionsList[i];
             }
         }
