@@ -1497,6 +1497,38 @@ app.get('/accountsExportForm', function (req, res) {
     });
 });
 
+/* Display questions export form */
+app.get('/questionsExportForm', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    questions.getAllQuestionsList(function (err, questionsList) {
+        if (err) {
+            return res.status(500).send(common.getError(3004));
+        }
+
+        return res.status(200).render('questions/questions-export-form', {
+            user: req.session.user,
+            isAdmin: req.session.user.type === common.userTypes.ADMIN,
+            questionsList: questionsList,
+            getQuestionType: (type) => {
+                for (var i in common.questionTypes) {
+                    logger.log(common.questionTypes[i].value + '   ' + type);
+                    if (common.questionTypes[i].value === type) {
+                        return common.questionTypes[i].name;
+                    }
+                }
+                return 'UNKNOWN';
+            }
+        });
+    });
+});
+
 /* Display accounts import form */
 app.get('/accountsImportForm', function (req, res) {
     if (!req.session.user) {
