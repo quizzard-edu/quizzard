@@ -2154,7 +2154,7 @@ app.post('/changeAllVisibility', function (req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        res.status(403).send(common.getError(1002));
+        return res.status(403).send(common.getError(1002));
     }
 
     questions.changeAllVisibility(req.body.changeValue, function (err, result) {
