@@ -344,13 +344,28 @@ var displayQuestionsExportForm = function () {
         url: '/questionsExportForm',
         success: function (data) {
             $('#admin-content').html(data);
+            $('#questions-export-back-button').click(() => {displayQuestionTable();});
+        },
+        error: function (data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
+        }
+    });
+}
 
-            $('#questions-export-back-button').click(() => {displayAccountsTable();});
-
-            $('#userform').submit(function (evt) {
-                evt.preventDefault();
-                submitUserForm();
-            });
+/* Fetch and display the question export list. */
+var submitQuestionsExportForm = function () {
+    $.ajax({
+        type: 'GET',
+        url: '/questionsExportList',
+        success: function (data) {
+            $('#admin-content').html(data);
+            $('#questions-export-list-back-button').click(() => {displayQuestionTable();});
         },
         error: function (data) {
             if (data['status'] === 401) {
@@ -378,8 +393,8 @@ var displayQuestionTable = function () {
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
 
-            $('#questions-import-button').click(() => {displayQuestionsExportForm();});
-            $('#questions-export-button').click(() => {displayQuestionsImportForm();});
+            $('#questions-import-button').click(() => {displayQuestionsImportForm();});
+            $('#questions-export-button').click(() => {displayQuestionsExportForm();});
 
             $('#question-option-button').click(() => {
                 const optionDiv = $('#question-option-div');

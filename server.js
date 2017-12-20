@@ -1518,7 +1518,6 @@ app.get('/questionsExportForm', function (req, res) {
             questionsList: questionsList,
             getQuestionType: (type) => {
                 for (var i in common.questionTypes) {
-                    logger.log(common.questionTypes[i].value + '   ' + type);
                     if (common.questionTypes[i].value === type) {
                         return common.questionTypes[i].name;
                     }
