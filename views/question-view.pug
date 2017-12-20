@@ -1,0 +1,90 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/lib/summernote/summernote.css')
+  link(rel='stylesheet' href='/css/question.css')
+  link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/css/discussion.css')
+  link(rel='stylesheet' href='/lib/atwho/jquery.atwho.min.css')
+  link(rel='stylesheet' href='/css/rating.css')
+
+block title
+  title Quizzard - Question
+
+block content
+  include navbar
+  br
+  .container
+    .row.center
+      .col.s12
+        ul.collapsible(data-collapsible='accordion')
+          li
+            .collapsible-header
+              i.material-icons info
+              | General Information
+            .collapsible-body
+              h5 Topic: #{question.topic}
+              span.sidebar-item This question has been attempted&nbsp
+              if answered || isAdmin()
+                span.sidebar-item #{question.totalAttemptsCount}
+              else
+                span.sidebar-item#attempts #{question.totalAttemptsCount}
+              span.sidebar-item &nbsptimes.
+              if question.correctAttemptsCount === 0
+                p.sidebar-item#first-answer You could be the first person to correctly answer this question!
+              else
+                p.sidebar-item#first-answer <b>#{firstAnswerDisplay}</b> was the first person to answer this question.
+              if answered && !hasQrating && !isAdmin()
+                h5.sidebar-item.hide-on-med-down#rating Please rate this question's difficulty:
+                include rating
+                .container
+                  button.btn.btn-lg.btn-primary.btn-block#rateQuestion Rate
+      .row
+      .col.s12
+        .card
+          .card-image
+            a.btn-floating.halfway-fab.waves-effect.waves-light.red.left(href='/')
+              i.material-icons arrow_back
+          .card-content
+            h4.qtext #{question.title}
+          .card-action
+            .summernote#questionBody
+            h5
+            | !{getQuestionForm()}
+            if isLocked
+              #lockQuestion
+                div.h3 Question is Locked Please try again in
+                  #clockdiv
+                    div
+                      span.days
+                      .smalltext Days
+                    div
+                      span.hours
+                      .smalltext Hours
+                    div
+                      span.minutes
+                      .smalltext Minutes
+                    div
+                      span.seconds
+                      .smalltext Seconds
+      .row
+        .col.s12
+          #discussion
+
+  include alert
+
+  if isLocked
+    block scripts
+      script(src='/js/questionLock.js')
+    script.
+      waitTime = "#{waitTime}";
+
+
+block scripts
+  script(src='/lib/summernote/summernote.min.js')
+  script(src='/lib/datatables/jquery.dataTables.min.js')
+  script(src='/js/common.js')
+  script(src='/js/question.js')
+  script(src='/js/navbar.js')
+  script(src='/js/admin.js')
+  script(src='/js/rating.js')

@@ -1,84 +1,148 @@
-body {
-  padding-top: 70px;
+[type="checkbox"]+label{
+    position:relative;
+    padding-left:35px;
+    cursor:pointer;
+    display:inline-block;
+    height:0px;
+    line-height:25px;
+    font-size:1rem;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none
 }
 
-.admin-body {
-  padding: 10px 20px 10px 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px 4px 4px 4px;
-  -moz-border-radius: 4px 4px 4px 4px;
-  -webkit-border-radius: 4px 4px 4px 4px;
+.accounts-menu-button{
+    position: inherit !important;
+    z-index: 1;
 }
 
-#admin-content {
-  max-height: 750px;
-  overflow-y: auto;
+.select-wrapper span.caret {
+    color: initial;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 10px;
+    margin: auto 0;
+    font-size: 20px;
+    line-height: 10px;
 }
 
-#admin-label {
-  font-size: 18px;
-  text-align: center;
-  margin-bottom: 10px;
-  display: inline-block;
-  width: 100%;
+.caret {
+    display: inline-block;
+    width: auto;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-top: 0px dashed;
+    border-top: 4px solid\9;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
 }
 
-#admin-back {
-  display: inline-block;
-  position: absolute;
+.input-field label {
+    pointer-events: auto;
 }
 
-.form-user {
-  max-width: 600px;
-  padding: 15px;
-  margin: 0 auto;
+.alignTextLeft {
+    text-align: left;
 }
 
-.form-user .form-control {
-  position: relative;
-  height: auto;
-  padding: 10px;
+.hiddenEye {
+    color: rgb(238, 110, 115);
+    line-height: 0;
+    display: flex;
+    display: inherit;
 }
 
-.form-upload {
-  max-width: 300px;
-  padding: 15px;
-  margin: 0 auto;
+.customSummernoteButton {
+    background-color: #ffffff;
+    color: #464646;
+    padding: 0 0.5rem;
+    margin: 0;
 }
 
-.form-user .form-control {
-  position: relative;
-  height: auto;
-  padding: 10px;
+div.note-editor.note-frame.panel.panel-default{
+    border: 1px solid #eaeaea;
+    border-radius: 0px;
 }
 
-.form-edit {
-  max-width: 600px;
-  padding: 15px;
-  margin: 0 auto;
+.customAdminButton {
+    background-color: #ffffff;
+    color: #464646;
+    padding: 0 1rem;
+    margin: 0;
 }
 
-.form-edit .form-control {
-  position: relative;
-  height: auto;
-  padding: 10px;
+.customSwitch {
+    padding: 15px;
 }
 
-th a {
-  color: inherit
+.customSettingsButton {
+    padding: 0 0.5rem;
+    margin: 0;
 }
 
-th a:link {
-  color: inherit;
-  text-decoration: none;
+#questionform  button {
+    margin-top: 10px;
 }
 
-th a:hover {
-  text-decoration: none;
+td {
+    word-break: break-all;
 }
 
-th a:active {
-  color: inherit;
-  text-decoration: none;
+.tab-icon{
+  vertical-align: middle;
+  color: rgb(238, 110, 115);
+}
+
+@media
+only screen and (max-width: 760px),
+(min-device-width: 760px) and (max-device-width: 1024px) {
+
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tr { border: 1px solid #ccc; }
+
+    td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        word-break: break-all;
+    }
+
+    #questionsTable td:nth-of-type(2):before { content: "ID: "; font-weight: bold; }
+    #questionsTable td:nth-of-type(3):before { content: "Title: "; font-weight: bold; }
+    #questionsTable td:nth-of-type(4):before { content: "Topic: "; font-weight: bold; }
+    #questionsTable td:nth-of-type(5):before { content: "Type: "; font-weight: bold; }
+
+    #manageAcccountsTable td:nth-of-type(1):before { content: "Username: "; font-weight: bold; }
+    #manageAcccountsTable td:nth-of-type(2):before { content: "First Name: "; font-weight: bold; }
+    #manageAcccountsTable td:nth-of-type(3):before { content: "Last Name: "; font-weight: bold; }
+    #manageAcccountsTable td:nth-of-type(4):before { content: "Email: "; font-weight: bold; }
+
+    #studentStatisticsTable td:nth-of-type(1):before { content: "Username: "; font-weight: bold; }
+    #studentStatisticsTable td:nth-of-type(2):before { content: "Questions Attempted: "; font-weight: bold; }
+    #studentStatisticsTable td:nth-of-type(3):before { content: "Correct Answers: "; font-weight: bold; }
+    #studentStatisticsTable td:nth-of-type(4):before { content: "Success Rate: "; font-weight: bold; }
+    #studentStatisticsTable td:nth-of-type(5):before { content: "Points: "; font-weight: bold; }
+
+    #questionsStatisticsTable td:nth-of-type(1):before { content: "ID: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(2):before { content: "Title: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(3):before { content: "Min Points: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(4):before { content: "Max Points: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(5):before { content: "Total Attempts: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(6):before { content: "Correct Answers: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(7):before { content: "Success Rate: "; font-weight: bold; }
+    #questionsStatisticsTable td:nth-of-type(8):before { content: "First Answer: "; font-weight: bold; }
 }

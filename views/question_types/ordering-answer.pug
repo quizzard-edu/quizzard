@@ -1,0 +1,48 @@
+block styles
+  link(rel='stylesheet' href='/css/orderingQuestion.css')
+
+if answerForm
+  .form-group.col.s12
+    ol#sortable
+      - for (var index = 1; index <=4; index++)
+        .row
+          li.input-field.col.s10
+            i.material-icons.prefix#icon1 swap_vert
+            i.material-icons.prefix#icon2 swap_vertical_circle
+            input#icon_prefix.validate(type='text', placeholder='Enter Answer Here', name='orderItem'+index, required)
+          .input-field.col.s2
+            a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
+              i.tiny.material-icons close
+  #addMoreAnswersButton
+    a.waves-effect.waves-light.btn(onclick="addOrderingAnswer()") add answer
+
+else if studentQuestionForm
+  form.form-question#order_answerform
+    ol#sortable
+      each item in question.answer
+        .row
+          li.input-field(name='option')
+            i.material-icons.prefix#icon1 swap_vert
+            i.material-icons.prefix#icon2 swap_vertical_circle
+            #questionItem
+              | #{item}
+    button(class='btn btn-lg btn-primary btn-block' type='submit') Submit
+else if adminQuestionEdit
+  .form-group.col.s12
+    ol#sortable
+      each item, i in question.answer
+        .row
+          li.input-field.col.s10
+            i.material-icons.prefix#icon1 swap_vert
+            i.material-icons.prefix#icon2 swap_vertical_circle
+            input#icon_prefix.validate(type='text', name='orderItem'+index, placeholder='Enter Answer Here', required, value=item)
+          .input-field.col.s2
+            a.btn-floating.btn-tiny.waves-effect.waves-light.red(onclick='$(this).parent().parent().remove()')
+              i.tiny.material-icons close
+  #addMoreAnswersButton
+    a.waves-effect.waves-light.btn(onclick="addOrderingAnswer()") add answer
+
+block scripts
+  script(src='/lib/jquery/jquery-ui.js')
+  script(src='/lib/jquery/jquery-touch-punch.js')
+  script(src='/js/ordering-answer.js')

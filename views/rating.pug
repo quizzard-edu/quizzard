@@ -1,0 +1,6 @@
+.rating
+  each _, val in Array(5)
+    i.rating-star-size.material-icons(id='rate'+val onmouseover='highlight(' + val + ')' onmouseout='highlight(rating)' onclick='setRating(' + (val + 1) + ')') star_border
+
+block scripts
+  script(src='/js/rating.js')

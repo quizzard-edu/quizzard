@@ -1,11 +1,82 @@
-body {
-  padding-top: 70px;
+div.podium {
+    display: inline-block;
+    text-align: center;
 }
 
-.container {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px 4px 4px 4px;
-  -moz-border-radius: 4px 4px 4px 4px;
-  -webkit-border-radius: 4px 4px 4px 4px;
+div.podium p {
+    margin-top: 0;
+    color: #000000;
+    font-size: 20px;
+}
+
+div.podium p span.score {
+    font-weight: bold;
+}
+
+#first, #firstTrophy {
+    display: -webkit-box;
+    height: 175px !important;
+    width: 175px !important;
+    padding-bottom: 10px;
+}
+
+#second, #secondTrophy {
+    display: -webkit-box;
+    height: 150px !important;
+    width: 150px !important;
+    padding-bottom: 10px;
+}
+
+#third, #thirdTrophy {
+    display: -webkit-box;
+    height: 125px !important;
+    width: 125px !important;
+    padding-bottom: 10px;
+}
+
+#first, #second, #third {
+    border-radius: 50%;
+}
+
+ol, li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ol {
+    display: flex;
+}
+
+li {
+    display: inline-block;
+}
+
+li.silver {
+    order: -1;
+}
+
+.silver, .bronze {
+    transform: scale(0.60);
+}
+
+.gold {
+    font-weight: bold;
+}
+
+li.gold .score {
+    background-color: rgba(255,215,0,0.7);
+}
+
+li.silver .score {
+    background-color: rgba(192,192,192,0.7);
+}
+
+li.bronze .score {
+    background-color: rgba(140,120,83,0.7);
+}
+
+.tab-icon{
+  vertical-align: middle;
+  color: rgb(238, 110, 115);
 }

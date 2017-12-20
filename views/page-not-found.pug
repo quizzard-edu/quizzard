@@ -1,0 +1,22 @@
+extends layout
+
+block title
+  title Quizzard - 404
+
+block content
+  .navbar-fixed
+    nav
+      .nav-wrapper
+        a.navbarLink.brand-logo.center(href='#!') Quizzard
+  br
+  .container
+    .row
+      .col.s12
+        .card.center
+          .card-content
+            i.large.material-icons cancel
+            p
+              h5 Page Not Found
+              h6 Are you lost, traveller?
+          .card-action
+            a.noLineLink(href='/') Go Home

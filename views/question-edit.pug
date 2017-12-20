@@ -1,51 +1,51 @@
-.question-info.text-center
-  h4.text-center ID #{question.id}
-  h4.text-center #{question.title}
-  p.text-center #{question.basePoints} Points
-  p.text-center Current Answer: #{question.answer}
+block styles
+  link(rel='stylesheet' href='/css/rating.css')
 
-  p#question-edit-result
-
-form.form-edit#question-edit-form
-  .form-group.row
-    label.col-sm-2.col-form-label(for='qtitle') Title
-    .col-sm-10
-      input.form-control#qtitle(type='text' name='title' placeholder='New title'
-                                autofocus)
-
-  .form-group.row
-    label(for='qtext') Question Body
-    .summernote#qtext
-
-  .form-group.row
-    label.col-sm-2.col-form-label(for='qanswer') Answer (regex)
-    .col-sm-10
-      input.form-control#qanswer(type='text' name='answer'
-                                 placeholder='New answer')
-
-  .form-group.row
-    label.col-sm-2.col-form-label(for='qtopic') Topic
-    .col-sm-10
-      input.form-control#qtopic(type='text' name='topic'
-                                placeholder='New topic')
-
-  .form-group.row
-    label.col-sm-2.col-form-label(for='qpoints') Points
-    .col-sm-10
-      input.form-control#qpoints(type='number' name='basePoints'
-                                 placeholder='New point count')
-
-  .form-group.row
-    label.col-sm-2.col-form-label(for='successmsg') Message
-    .col-sm-10
-      input.form-control#successmsg(type='text' name='successMessage'
-                                    placeholder='New message'
-                                    aria-describedby='success-msg-help')
-    .row
-      .col-sm-2
-      p.col-sm-10.form-text.text-muted#success-msg-help
-        | This is a message that will be displayed to the user after they
-        | successfully answer a question. It can be used to provide additional
-        | information on the topic.
-
-  button.btn.btn-lg.btn-primary.btn-block(type='submit') Edit
+.row
+  .col.s12
+    .card.center
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light.red.left#question-edit-back-button
+          i.material-icons arrow_back
+      .card-content
+        h5.card-title Question Edit
+        h6 Modify and update question's information.
+      .card-action
+        form.form-edit#question-edit-form
+          .form-group.row
+            label.col-sm-2.col-form-label(for='qtitle') Title
+            .col-sm-10
+              input.form-control#qtitle(type='text' name='title' placeholder='New title' value=question.title autofocus)
+          .form-group.row
+            .row
+              label.col-sm-2.col-form-label(for='qtext') Question Body
+            .summernote#qtext(value=question.text)
+          .form-group.row
+            label.col-sm-2.col-form-label Visible
+            .col-sm-10
+              input.form-control(id='visible', type='checkbox', checked=question.visible)
+              label.col-sm-2.col-form-label(for='visible')
+          #qAnswer
+            | !{getQuestionForm()}
+          .form-group.row
+            label.col-sm-2.col-form-label(for='qtopic') Topic
+            .col-sm-10
+              .input-field
+                input.form-control#qtopic.autocomplete(type='text' name='topic' placeholder='New topic' value=question.topic autocomplete='off' required)
+          .form-group.row
+            label.col-sm-2.col-form-label(for='qminpoints') Min Points
+            .col-sm-4
+              input.form-control#qminpoints(type='number' name='minpoints' placeholder='New min points' value=question.minpoints min="0")
+            label.col-sm-2.col-form-label(for='qmaxpoints') Max Points
+            .col-sm-4
+              input.form-control#qmaxpoints(type='number' name='maxpoints' placeholder='New max point' value=question.maxpoints min="0")
+          .form-group.row
+            label.col-sm-2.col-form-label(for='qhint') Hint
+            .col-sm-10
+              input.form-control#qhint(type='text' name='hint' placeholder='New hint' value=question.hint)
+          .form-group.row
+            label.col-sm-2.col-form-label(for='qrating') Question Difficulty
+            br
+            .left
+              include rating
+          button.btn.btn-lg.btn-primary.btn-block(type='submit') Update

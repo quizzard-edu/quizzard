@@ -1,0 +1,16 @@
+block style
+  link(rel='stylesheet' href='/css/alert.css')
+
+block content
+  #alert.modal
+    .modal-content
+
+      include checkmark
+
+      h3 Correct
+      if !answered
+        p.center#alertMsg
+        include rating
+      else
+        p Congratulations, you got the question right!
+      button.modal-action.modal-close.btn.btn-info Ok

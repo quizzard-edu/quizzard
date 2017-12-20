@@ -1,0 +1,20 @@
+.profile-picture {
+  margin-top: 20px;
+  position: inherit !important;
+}
+
+.profile-circle {
+  width: 200px !important;
+  height: 200px !important;
+  background-color: #ffffff !important;
+}
+
+.picture-size {
+  width: inherit !important;
+  height: inherit !important;
+}
+
+.profile-list {
+  right: calc(50% + 75px) !important;
+  top: calc(50% + 150px) !important;
+}

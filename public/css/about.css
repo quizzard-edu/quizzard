@@ -1,3 +1,8 @@
-body {
-  padding-top: 70px;
+#title {
+    padding-top: 15px;
+    padding-left: 15px; 
+}
+
+ol {
+    list-style: disc;
 }

@@ -1,0 +1,23 @@
+i.icon-0 {
+  color: lime;
+}
+
+i.icon-1 {
+  color: yellow;
+}
+
+i.icon-2 {
+  color: orange;
+}
+
+i.icon-3 {
+  color: mediumvioletred;
+}
+
+i.icon-4 {
+  color: red;
+}
+
+.rating-star-size {
+  font-size: 35px !important;
+}

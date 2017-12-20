@@ -1,25 +1,78 @@
-table.table
-  thead
-    tr
-      th ID
-      th Title
-      th Topic
-      th Type
-      th Action
-  tbody
-    each q in questions
-      tr
-        td #{q.id}
-        td #{q.title}
-        td #{q.topic}
-        if q.type == 0
-          td Regular
-        else
-          td Multiple Choice
-        td
-          button.btn.btn-default.view-button(id='view-' + q.id type='button' aria-label='View')
-            span.glyphicon.glyphicon-eye-open(aria-hidden='true')
-          button.btn.btn-default.edit-button(id='edit-' + q.id type='button' aria-label='Edit')
-            span.glyphicon.glyphicon-pencil(aria-hidden='true')
-          button.btn.btn-default.delete-button(id='delete-' + q.id type='button' aria-label='Delete')
-            span.glyphicon.glyphicon-remove(aria-hidden='true')
+block styles
+  link(rel='stylesheet' href='/css/admin.css')
+
+.row
+  .col.s12
+    .card.center
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light#question-creation-button
+            i.material-icons playlist_add
+      .card-content
+        h5.card-title Manage Questions
+        h6 Add, modify or delete questions.
+        //remove if statement to turn on deletion feature
+        if false
+          .switch
+            label
+              | Deleted
+              input(id='questionSwitch', type='checkbox', onClick='toggleQuestionSwitch()')
+              span.lever
+              | Active
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light#question-option-button
+            i.material-icons#question-option-icon keyboard_arrow_down
+      .card-action.hidden#question-option-div
+        if isActive
+          .row
+            h6.left Visiblity: &nbsp&nbsp
+              a.btn.customAdminButton(onClick='updateAllVisibility(false)') Hide All
+              a.btn.customAdminButton(onClick='updateAllVisibility(true)') Show All
+            .switch.left.customSwitch
+              label
+                | Display
+                input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
+                span.lever
+                | Edit
+        .row
+          h6.left Questions List: &nbsp&nbsp
+            a.btn.customAdminButton#questions-import-button Import &nbsp
+              i.material-icons cloud_upload
+            span &nbsp&nbsp
+            a.btn.customAdminButton#questions-export-button Export &nbsp
+              i.material-icons cloud_download
+      .card-action
+        br
+        table.bordered#questionsTable
+          thead
+            tr
+              if isActive
+                th(data-orderable="false") Visiblity
+              th ID
+              th Title
+              th Topic
+              th Type
+              th(data-orderable="false") Action
+          tbody
+            each q in questions
+              tr
+                if isActive
+                  td.center
+                    p
+                      if q.visible
+                        i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()', style='padding-top: 10px;') visibility
+                      else
+                        i.material-icons.hiddenEye(id='hiddenEye' + q._id, onClick='visibilitySnackbar()', style='padding-top: 10px;') visibility_off
+                      input.checked(id='checked-' + q._id, name=q.number, type='checkbox', checked=q.visible)
+                      label.visbox(for='checked-' + q._id, name=q.number)
+                td #{q.number}
+                td #{q.title}
+                td #{q.topic}
+                td(style='word-break: unset') #{questionType(q.type)}
+                td(style='min-width: 150px; text-align: center')
+                  button.btn.btn-default.view-button.l4.customAdminButton(id='view-' + q._id, name=q.number, type='button', aria-label='View')
+                    i.material-icons open_in_browser
+                  if isActive
+                    button.btn.btn-default.edit-button.l4.customAdminButton(id='edit-' + q._id, name=q.number, type='button', aria-label='Edit')
+                      i.material-icons edit
+                    button.btn.btn-default.delete-button.l4.customAdminButton(id='delete-' + q._id, name=q.number, type='button', aria-label='Delete')
+                      i.material-icons close

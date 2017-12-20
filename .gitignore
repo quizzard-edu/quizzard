@@ -1,4 +1,4 @@
 node_modules/
-uploads/
-log/
+FileSystem/*
+logs/*
 *.swp

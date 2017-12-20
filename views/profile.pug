@@ -1,0 +1,84 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/css/profile.css')
+
+block content
+  include navbar
+
+  .container
+    .row
+      .col.s12
+        br
+        .card
+          .hidden#cancelButton
+            .card-image
+              a.btn-floating.halfway-fab.waves-effect.waves-light.red.right(onclick='disableEdit()')
+                i.material-icons close
+          .row.center
+            .col.s12
+            .fixed-action-btn.horizontal.profile-picture
+              a.btn-floating.btn-large.grey.profile-circle
+                img.picture-size(src='/profilePicture/' + user.picture +  '?' + new Date())
+              h4#userId #{user.username}
+            .col.s1
+            #viewForm
+              .col.s10
+                .row
+                  .input-field.col.s12
+                    span Fist Name:&nbsp
+                    span #{user.fname}
+                .row
+                  .input-field.col.s12
+                    span Last Name:&nbsp
+                    span #{user.lname}
+                .row
+                  .input-field.col.s12
+                    span Email:&nbsp
+                    span #{user.email}
+                .row
+                  button.waves-effect.waves-light.btn(type='button', onclick='enableEdit()') Edit Information
+                    i.material-icons.right send
+            form.hidden#editForm
+              .col.s10
+                .row
+                  .input-field.col.s6
+                    input#fname(type='text', name='newfname', value=user.fname, disabled=!editNamesEnabled)
+                    label(for='fname') First Name
+                  .input-field.col.s6
+                    input#lname(type='text', name='newlname', value=user.lname, disabled=!editNamesEnabled)
+                    label(for='lname') Last Name
+                .row
+                  .input-field.col.s12
+                    input#passwd.validate(type='password', name='newpassword', disabled=!editPasswordEnabled)
+                    label(for='passwd') New Password
+                .row
+                  .input-field.col.s12
+                    input#confirmpasswd.validate(type='password', name='confirmpassword', disabled=!editPasswordEnabled)
+                    label(for='confirmpasswd') Confirm Password
+                .row
+                  .input-field.col.s12
+                    input#email.validate(type='email', name='newemail', value=user.email, disabled=!editEmailEnabled)
+                    label(for='email') New Email
+                .row
+                  .file-field.input-field
+                    .btn
+                      span Picture
+                      input(type='file', accept='.jpg, .jpeg, .png')#profile-picture-input
+                    .file-path-wrapper
+                      input.file-path.validate(type='text', placeholder='Select your profile picture')
+                .row
+                  hr
+                .row
+                  .input-field.col.s12
+                    input#currentpasswd.validate(type='password', name='currentpasswd' required)
+                    label(for='currentpasswd') Current Password
+                .row
+                  button.waves-effect.waves-light.btn(type='submit') Edit
+                    i.material-icons.right send
+
+block scripts
+  script(src='/js/common.js')
+  script(src='/js/navbar.js')
+  script(src='/js/profile.js')

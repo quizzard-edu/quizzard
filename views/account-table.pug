@@ -1,23 +1,50 @@
-table.table
-  thead
-    tr
-      th
-        a.sort-table#sort-fname(href='#') First Name
-      th
-        a.sort-table#sort-lname(href='#') Last Name
-      th
-        a.sort-table#sort-id(href='#') User ID
-      th Email
-      th Action
-  tbody
-    each s in students
-      tr
-        td #{s.fname}
-        td #{s.lname}
-        td #{s.id}
-        td #{s.email}
-        td
-          button.btn.btn-default.edit-button(id='edit-' + s.id type='button' aria-label='Edit')
-            span.glyphicon.glyphicon-pencil(aria-hidden='true')
-          button.btn.btn-default.delete-button(id='delete-' + s.id type='button' aria-label='Delete')
-            span.glyphicon.glyphicon-remove(aria-hidden='true')
+.row
+  .col.s12
+    .card.center
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light#account-creation-button
+          i.material-icons person_add
+      .card-content
+        h5.card-title Manage Accounts
+        h6 Add, modify or delete students' accounts.
+        .switch
+            label
+              | InActive
+              input(id='usersSwitch', type='checkbox', onClick='toggleUsersSwitch()')
+              span.lever
+              | Active
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light#account-option-button
+            i.material-icons#account-option-icon keyboard_arrow_down
+      .card-action.hidden#account-option-div
+          a.btn.customAdminButton#account-import-button Import &nbsp
+            i.material-icons cloud_upload
+          span &nbsp&nbsp
+          a.btn.customAdminButton#account-export-button Export &nbsp
+            i.material-icons cloud_download
+      .card-action
+        br
+        table.bordered#manageAcccountsTable
+          thead
+            tr
+              th Username
+              th First Name
+              th Last Name
+              th Email
+              th(data-orderable="false") Action
+          tbody
+            each s in students
+              tr
+                td #{s.username}
+                td #{s.fname}
+                td #{s.lname}
+                td #{s.email}
+                td(style='min-width: 150px; text-align: center')
+                  button.btn.btn-default.edit-button.l4.customAdminButton(id='edit-' + s._id type='button' aria-label='Edit', name=s.username)
+                    span.glyphicon.glyphicon-pencil(aria-hidden='true')
+                  if (s.active)
+                    button.btn.btn-default.deactivate-button.l4.customAdminButton(id='deactivate-' + s._id type='button' aria-label='Delete', name=s.username)
+                      i.material-icons close
+                  else
+                    button.btn.btn-default.activate-button.l4.customAdminButton(id='activate-' + s._id type='button' aria-label='Delete', name=s.username)
+                      i.material-icons check

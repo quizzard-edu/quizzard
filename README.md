@@ -30,27 +30,43 @@ and `mongodb` installed.
   $ npm install
   ```
 
-2. You can now launch the server by running
+2. Configure server settings and SSL Certification
+   * Note: To run this application locally you do not have to change any configuration settings.
+    1. Go to [server/config.js](server/config.js)
+    2. Change the https and http ports.
+    3. For `hostName` Enter the public web-address for this website, ex (www.quizzard.com)
+    4. You can change the session expiration time, by default it is set to 2 hours.
+    5. Replace the default self-signed SSL Certificates with your certificates.
+
+  To generate your own Self-Signed Certificate, Run the following script on your shell (terminal):
+  - Note: Make sure to have openssl installed on your shell.
+    ```
+    $ sh scripts/certificateGenerator
+    ```
+
+3. To secure MongoDB authentication and advanced firewall rules follow the steps provided under [doc/MongoDb-Security](quizzard/doc/MongoDb-Security.md).
+   - Note: You can skip this step if you are running this in a local environment (localhost).
+
+4. You can now launch the server by running
 
   ```
   $ npm start
   ```
 
-  You should now be able to access Quizzard by visiting
-  https://localhost:8000 in your browser.
+  If haven't changed any settings you should now be able to access Quizzard by visiting
+  https://localhost:8080 in your browser.
 
-3. The port on which the server runs and the mongodb connection settings can
+5. The port on which the server runs and the mongodb connection settings can
   be modified through the following environment variables:
 
-  * `QUIZZARD_PORT` - the port on which the server listens (default: 8000)
   * `DB_HOST` - mongodb database server address (default: localhost)
   * `DB_PORT` - mongodb connection port (default: 27017)
   * `DB_NAME` - name of appplication's database within mongodb (default: quizzard)
 
-4. Create an admin account for the application by running `node setup.js`.
+6. Create an admin account for the application by running `node setup.js`.
   It will prompt you for a username and password.
 
-5. After you have set up an admin account, load the Quizzard application and log
+7. After you have set up an admin account, load the Quizzard application and log
   in with the account that you created. You now have a working instance of
   Quizzard which you can use.
 

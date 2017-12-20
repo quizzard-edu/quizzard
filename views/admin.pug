@@ -1,10 +1,10 @@
 extends layout
 
 block styles
-  link(rel='stylesheet' href='/lib/sweetalert/sweetalert.css')
   link(rel='stylesheet' href='/lib/summernote/summernote.css')
-  link(rel='stylesheet' href='/css/admin.css')
+  link(rel='stylesheet' href='/lib/datatables/jquery.dataTables.min.css')
   link(rel='stylesheet' href='/css/sidebar.css')
+  link(rel='stylesheet' href='/css/admin.css')
 
 block title
   title Quizzard - Admin
@@ -12,46 +12,40 @@ block title
 block content
   include navbar
 
-  .modal.fade#admin-modal(tabindex='-1' role='dialog' arialabelledby='admin-modal-label'
-                          aria-hidden='true')
-   .modal-dialog.modal-lg
-     .modal-content
-       .modal-header
-         button.close(type='button' data-dismiss='modal' aria-label='Close')
-           span(aria-hidden='true') &times;
-         h4.modal-title.text-center#admin-modal-label
-       .modal-body#admin-modal-body
-
-  .container-fluid
+  br
+  .container
     .row
-      .col-md-2
-        .list-group
-          a.list-group-item#option-accounts(href='#')
-            h4.list-group-item-heading Manage Accounts
-            p.list-group-item-text Add, modify or delete students' accounts.
-          a.list-group-item#option-questions(href='#')
-            h4.list-group-item-heading Manage Questions
-            p.list-group-item-text Add, modify or delete questions.
-          a.list-group-item#option-stats(href='#')
-            h4.list-group-item-heading View Statistics
-            p.list-group-item-text Examine information about application usage.
-          a.list-group-item#option-settings(href='#')
-            h4.list-group-item-heading Global Settings
-            p.list-group-item-text Change application settings.
-      .col-md-8
-        .admin-body
-          .admin-body-top
-            button.btn.btn-default#admin-back(type='button' aria-label='Back')
-              span.glyphicon.glyphicon-arrow-left(aria-hidden='true')
-            h4#admin-label
-          #admin-content
-          button.btn.btn-sm.btn-primary#admin-button
-      .col-md-2
+      .col.s12
+        .row
+          ul.tabs
+            li.tab.col.s3
+              a.noLineLink.active#option-questions(href='#')
+                i.material-icons.tab-icon.hide-on-large-only list
+                |
+                .hide-on-med-and-down Manage Questions
+            li.tab.col.s3
+              a.noLineLink#option-accounts(href='#')
+                i.material-icons.tab-icon.hide-on-large-only person
+                |
+                .hide-on-med-and-down Manage Accounts
+            li.tab.col.s3
+              a.noLineLink#option-stats(href='#')
+                i.material-icons.tab-icon.hide-on-large-only show_chart
+                |
+                .hide-on-med-and-down View Statistics
+            li.tab.col.s3
+              a.noLineLink#option-settings(href='#')
+                i.material-icons.tab-icon.hide-on-large-only settings
+                |
+                .hide-on-med-and-down Global Settings
+  .container
+    .row
+      .col.s12
+        #admin-content
 
 block scripts
-  script(src='/lib/jquery/jquery-3.1.1.min.js')
-  script(src='/lib/bootstrap/js/bootstrap.min.js')
-  script(src='/lib/sweetalert/sweetalert.min.js')
   script(src='/lib/summernote/summernote.min.js')
+  script(src='/lib/datatables/jquery.dataTables.min.js')
+  script(src='/js/common.js')
   script(src='/js/admin.js')
   script(src='/js/navbar.js')

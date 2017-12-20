@@ -1,0 +1,38 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/css/analytics.css')
+
+block title
+  title Quizzard - Analytics
+
+block content
+  include navbar
+  br
+  if isAdmin
+    .container
+      .row
+        .col.s12
+          .row
+            ul.tabs
+              li.tab.col.s6
+                a.noLineLink.active#option-class(href='#')
+                  i.material-icons.tab-icon.hide-on-med-and-up group
+                  |
+                  .hide-on-small-only Class Analytics
+              li.tab.col.s6
+                a.noLineLink.active#option-student(href='#')
+                  i.material-icons.tab-icon.hide-on-med-and-up person
+                  |
+                  .hide-on-small-only Student Analytics
+  .row
+    .col.s12
+      if isAdmin
+        include class-analytics
+      include student-analytics
+
+block scripts
+  script(src='/lib/charts/Chart.min.js')
+  script(src='/js/common.js')
+  script(src='/js/performance.js')
+  script(src='/js/navbar.js')

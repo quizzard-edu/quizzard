@@ -1,12 +1,17 @@
-if questions.length == 0
-  .no-questions
-    h4.text-center You have completed all currently available questions. Well done!
-    p.text-center Check back later for more...
-else
-  each q in questions
-    .row.question-block(id=q.id)
-      .col-sm-8.qleft
-        p.text-center.title #{q.title}
-      .col-sm-4.qright
-        p.topic #{q.topic}
-        p.points #{q.basePoints}
+li.collection-item.avatar.disable-select.question-list-hover(onClick='goToQuestion(this.id)')
+  i.material-icons.circle#icon
+  h6#title
+  .hide-on-large-only
+    p#topic
+    p#type
+    p#time
+    p#attempts
+  .hide-on-med-and-down
+    p.qInfoLeft#topic
+    p.qInfoLeft#type
+    p.qInfoRight#time
+    br
+    p.qInfoRight#attempts
+  a.secondary-content.question-block.noLineLink(style='cursor: pointer;')
+    i.material-icons.small.firstFire.secondFire whatshot
+    p.text-center.title

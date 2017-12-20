@@ -1,47 +1,78 @@
-nav.navbar.navbar-default.navbar-fixed-top
-  .container-fluid
-    .navbar-header
-      .navbar-brand Quizzard
-    .collapse.navbar-collapse
-      ul.nav.navbar-nav
-        if user.admin
+.navbar-fixed
+  nav
+    .nav-wrapper
+      if isAdmin
+        a.navbarLink.brand-logo.center(href='/admin') Quizzard
+      else
+        a.navbarLink.brand-logo.center(href='/home') Quizzard
+      a.navbarLink.button-collapse(href='#', data-activates='mobile')
+        i.material-icons menu
+      ul.left.hide-on-med-and-down
+        if isAdmin
           li#nav-home
-            a(href='/admin') Administration
+            a.navbarLink(href='/admin') Administration
         else
           li#nav-home
-            a(href='/home') Questions
-          li#nav-leaderboard
-            a(href='/leaderboard') Leaderboard
+            a.navbarLink(href='/home') Questions
+        li#nav-leaderboard
+          a.navbarLink(href='/leaderboard') Leaderboard
+        li#nav-analytics
+          a.navbarLink(href='/analytics') Analytics
+        if isAdmin
+          li#nav-feedback-view
+            a.navbarLink(href='/feedback') View Feedback
+      ul.right.hide-on-med-and-down
         li#nav-about
-          a(href='/about') About
-      ul.nav.navbar-nav.navbar-right
-        li#nav-changepass
-          a(href='#') Change password
+          a.navbarLink(href='/about') About
+        li#nav-feedback
+          a.navbarLink(onclick='userFeedback();') Submit Feedback
+        li#nav-profile
+          a.navbarLink(href='/profile') Profile
         li#nav-logout
-          a(href='#') Logout
+          a.navbarLink(href='/logout') Logout
+      a.navbarLink.button-collapse.right(href='#', data-activates='mobile2')
+        img.icon-img(src='/profilePicture/' + user.picture +  '?' + new Date())
+ul#mobile.side-nav
+  if isAdmin
+    li.full-width#nav-home
+      a.navbarLinkHidden(href='/admin')
+        i.material-icons security
+        | Administration
+  else
+    li.full-width#nav-home
+      a.navbarLinkHidden(href='/home')
+        i.material-icons whatshot
+        | Questions
+  li.full-width#nav-leaderboard
+    a.navbarLinkHidden(href='/leaderboard')
+      i.material-icons list
+      | Leaderboard
+  li.full-width#nav-analytics
+    a.navbarLinkHidden(href='/analytics')
+      i.material-icons trending_up
+      |  Analytics
+  if isAdmin
+    li.full-width#nav-feedback-view
+      a.navbarLinkHidden(href='/feedback')
+        i.material-icons library_books
+        | View Feedback
+  li.full-width#nav-about
+    a.navbarLinkHidden(href='/about')
+        i.material-icons help
+        | About
 
-.modal.fade#modal-password(tabindex='-1' role='dialog'
-                           arialabelledby='modal-password-label'
-                           aria-hidden='true')
- .modal-dialog.modal-sm
-   .modal-content
-     .modal-header
-       button.close(type='button' data-dismiss='modal' aria-label='Close')
-         span(aria-hidden='true') &times;
-       h4.modal-title.text-center Change Password
-     .modal-body
-      form.form-changepass#changepass-form
-        p.text-center#changepass-result
-        .form-group#changepass-currpass-group
-          label(for='currpass') Current password
-          input.form-control#currpass(type='password' name='currpass'
-                                      placeholder='Password'
-                                      required autofocus)
-        .form-group
-          label(for='newpass') New password
-          input.form-control#newpass(type='password' name='newpass'
-                                     placeholder='Password' required)
-          label(for='newpass2') Confirm new password
-          input.form-control#newpass2(type='password' name='newpass2'
-                                      placeholder='Password' required)
-        button.btn.btn-sm.btn-primary.btn-block(type='submit') Submit
+ul#mobile2.side-nav
+  li.full-width#nav-feedback
+    a.navbarLinkHidden(href='#' onclick='userFeedback();')
+      i.material-icons feedback
+      | Submit Feedback
+  li.full-width#nav-profile
+    a.navbarLinkHidden(href='/profile')
+      i.material-icons account_circle
+      | Profile
+  li.full-width#nav-logout
+    a.navbarLinkHidden(href='/logout')
+      i.material-icons exit_to_app
+      | Logout
+
+include feedback-popup

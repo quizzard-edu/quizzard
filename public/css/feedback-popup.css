@@ -1,0 +1,66 @@
+#feedback {
+    background-color: white;
+    max-width: 500px;
+    max-height: 555px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.modal-content{
+    background-color: #fff;
+    border: 0px;
+    border-radius: 0px;
+    outline: 0;
+    box-shadow: 0 0px 0px;
+    position: relative;
+    height: 100%;
+}
+
+.modal-content h3 {
+    color: #575757;
+    font-weight: 600;
+    font-size: 30px;
+}
+
+.modal-content p {
+    color: #797979;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.modal-content button {
+    vertical-align: bottom;
+    background-color: #8CD4F5;
+    box-shadow: none !important;
+    border-radius: 5px;
+}
+
+.modal-content button:hover {
+    background-color: #86CCEB;
+}
+
+.row {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+#feedbackArea {
+    max-height: 44px;
+    overflow-y: scroll;
+}
+
+#feedbackBody {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#subjectBox #messageBox {
+    padding-left: 0;
+    padding-right: 5;
+}
+
+#closeFeedback {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}

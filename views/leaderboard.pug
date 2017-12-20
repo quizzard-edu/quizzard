@@ -4,7 +4,6 @@ block styles
   link(rel='stylesheet' href='/css/leaderboard.css')
   link(rel='stylesheet' href='/css/leaderboard-table.css')
   link(rel='stylesheet' href='/css/sidebar.css')
-  link(rel='stylesheet' href='/css/navbar.css')
 
 block title
   title Quizzard - Leaderboard
@@ -12,14 +11,62 @@ block title
 block content
   include navbar
 
+  br
   .container
     .row
-      .col-md-12
-        h4.text-center Leaderboard
-        .leaderboard-content
+      .col.s12
+        .row
+          ul.tabs
+            li.tab.col.s3
+              a.noLineLink.active#option-overall(href='#')
+                i.material-icons.tab-icon.hide-on-large-only language
+                |
+                .hide-on-med-and-down Overall
+            li.tab.col.s3
+              a.noLineLink#option-points(href='#')
+                i.material-icons.tab-icon.hide-on-large-only bubble_chart
+                |
+                .hide-on-med-and-down Total Points
+            li.tab.col.s3
+              a.noLineLink#option-accuracy(href='#')
+                i.material-icons.tab-icon.hide-on-large-only gps_fixed
+                |
+                .hide-on-med-and-down Accuracy
+            li.tab.col.s3
+              a.noLineLink#option-attempt(href='#')
+                i.material-icons.tab-icon.hide-on-large-only gps_off
+                |
+                .hide-on-med-and-down Points Per Attempt
+  .container
+    .row
+      .col.s12.m12
+        .card.center
+          .card-image
+            a.btn-floating.halfway-fab.waves-effect.waves-light.blue.right(onclick='fetchLeaderboard()')
+              i.material-icons autorenew
+          .card-content
+            h4.center#leaderboardName Leaderboard
+          .card-action
+            .podium
+              p#scoreTitle
+                | Top Score :
+                span.score#topScore
+              ol
+                li.gold
+                  img#first(alt='First Place', src='')
+                  img#firstTrophy
+                  h4#firstPlaceName
+                li.silver.hide-on-small-only
+                  img#second(alt='Second Place', src='')
+                  img#secondTrophy
+                  p#secondPlaceName
+                li.bronze.hide-on-small-only
+                  img#third(alt='Third Place', src='')
+                  img#thirdTrophy
+                  p#thirdPlaceName
+            .leaderboard-content
 
 block scripts
-  script(src='/lib/jquery/jquery-3.1.1.min.js')
-  script(src='/lib/bootstrap/js/bootstrap.min.js')
+  script(src='/js/common.js')
   script(src='/js/leaderboard.js')
   script(src='/js/navbar.js')

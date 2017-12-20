@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: questionValidator.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: questionValidator.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+Copyright (C) 2016
+Developed at University of Toronto
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;http://www.gnu.org/licenses/>.
+*/
+
+const common = require('./common.js');
+
+const successMsg = {success:true, err:'Validation Passed'}
+const failMsg = {success:false, err:common.getError(3022)}
+
+/**
+ * Send back specific error message by question type
+ *
+ * @param {string} message
+ * @returns {object}
+ */
+var qTypeFailMsg = function(message) {
+    return {success:false, err:message};
+}
+
+/**
+ * Validate all question fields on first entry to db
+ *
+ * @param {object} info
+ * @returns {object}
+ */
+exports.questionCreationValidation = function(info) {
+    for (var key in common.questionAttributes.DEFAULT) {
+        if (!(key in info) || !validateAttributeType(info[key], key, 'DEFAULT')) {
+            return failMsg;
+        }
+    }
+    const result = validateDefaultQuestionValues(info);
+    if(!result.success){
+        return result;
+    }
+    return validateQuestionAttributesByType(info,info.type);
+}
+
+/**
+ * validate default question values
+ *
+ * @param {number} questionData
+ * @returns {object}
+ */
+var validateDefaultQuestionValues = function(questionData){
+    if ('minpoints' in questionData &amp;&amp; 'maxpoints' in questionData){
+        if (questionData.minpoints &lt; 0
+            || questionData.minpoints > questionData.maxpoints
+            || questionData.maxpoints &lt; 0){
+            return qTypeFailMsg(common.getError(3024));
+        }
+    }
+    return successMsg;
+}
+
+/**
+ * Validate all fields that will be modified
+ *
+ * @param {object} question
+ * @param {string} type
+ * @returns {object}
+ */
+exports.validateAttributeFields = function(question,type) {
+    var extraAttributes = false;
+
+    for (var key in question) {
+        // check const attributes
+        if (key in common.questionAttributes.DEFAULT) {
+            if (!validateAttributeType(question[key], key, 'DEFAULT')) {
+                return failMsg;
+            }
+        // not common field found
+        } else {
+            extraAttributes = true;
+        }
+    }
+
+    const result = validateDefaultQuestionValues(question);
+    console.log(result)
+    if(!result.success){
+        return result;
+    }
+
+    // check by question type to validate the extra fields
+    if (extraAttributes) {
+        return validateQuestionAttributesByType(question,type);
+    }
+    return successMsg;
+}
+
+/**
+ * validate question attributes by type
+ *
+ * @param {object} question
+ * @param {string} type
+ * @returns {object}
+ */
+var validateQuestionAttributesByType = function(question, type) {
+    var result;
+
+    switch (type) {
+        case common.questionTypes.REGULAR.value:
+            result = regexAttributeValidator(question);
+            break;
+
+        case common.questionTypes.MULTIPLECHOICE.value:
+            result = multipleChoiceAttributeValidator(question);
+            break;
+
+        case common.questionTypes.TRUEFALSE.value:
+            result = trueAndFalseAttributeValidator(question);
+            break;
+
+        case common.questionTypes.MATCHING.value:
+            result = matchingAttributeValidator(question);
+            break;
+
+        case common.questionTypes.CHOOSEALL.value:
+            result = chooseAllAttributeValidator(question);
+            break;
+        case common.questionTypes.ORDERING.value:
+            result = orderingAttributeValidator(question);
+            break;
+        default:
+            result = failMsg;
+            break;
+    }
+    return result;
+}
+
+/**
+ * regex attribute validator
+ *
+ * @param {object} question
+ * @returns {object}
+ */
+var regexAttributeValidator = function(question) {
+    if (!validateAllAttributesInGroup(question,'REGULAR')) {
+        return qTypeFailMsg(commmon.getError(3022));
+    }
+    return successMsg;
+}
+
+/**
+ * multiple choice attribute validator
+ *
+ * @param {object} question
+ * @returns {object}
+ */
+var multipleChoiceAttributeValidator = function(question) {
+    if (!validateAllAttributesInGroup(question,'MULTIPLECHOICE')) {
+        return qTypeFailMsg(commmon.getError(3022));
+    }
+    if (!validateArrayObject(question.choices,'String')) {
+        return failMsg;
+    }
+    if (question.choices.length &lt; 2) {
+        return qTypeFailMsg(common.getError(3025));
+    }
+    return successMsg;
+}
+
+/**
+ * true and false attribute validator
+ *
+ * @param {object} question
+ * @returns {object}
+ */
+var trueAndFalseAttributeValidator = function(question) {
+    if (!validateAllAttributesInGroup(question,'TRUEFALSE')) {
+        return qTypeFailMsg(commmon.getError(3022));
+    }
+    if (question.answer !== 'true' &amp;&amp; question.answer !== 'false' ) {
+        return qTypeFailMsg(common.getError(3026));
+    }
+    return successMsg;
+}
+
+/**
+ * matching attribute validator
+ *
+ * @param {object} question
+ * @returns {object}
+ */
+var matchingAttributeValidator = function(question) {
+    if (!validateAllAttributesInGroup(question,'MATCHING')) {
+        return qTypeFailMsg(commmon.getError(3022));
+    }
+    if (!validateArrayObject(question.leftSide,'String') || !validateArrayObject(question.rightSide,'String')) {
+        return failMsg;
+    }
+    if (question.leftSide.length &lt; 2 || question.rightSide.length &lt; 2) {
+        return qTypeFailMsg(common.getError(3025));
+    }
+    return successMsg;
+}
+
+/**
+ * choose all attribute validator
+ *
+ * @param {object} question
+ * @returns {object}
+ */
+var chooseAllAttributeValidator = function(question) {
+    if (!validateAllAttributesInGroup(question,'CHOOSEALL')) {
+        return qTypeFailMsg(commmon.getError(3022));
+    }
+    if (!validateArrayObject(question.choices,'String') || !validateArrayObject(question.answer,'String')) {
+        return failMsg;
+    }
+    if (question.choices.length &lt; 2) {
+        return qTypeFailMsg(common.getError(3025));
+    }
+
+    if (question.answer.length &lt; 1) {
+        return qTypeFailMsg(common.getError(3026));
+    }
+    return successMsg;
+}
+
+/**
+ * ordering attribute validator
+ *
+ * @param {object} question
+ * @returns {object}
+ */
+var orderingAttributeValidator = function(question) {
+    if (!validateAllAttributesInGroup(question,'ORDERING')) {
+        return qTypeFailMsg(commmon.getError(3022));
+    }
+    if (!validateArrayObject(question.answer,'String')) {
+        return failMsg;
+    }
+    if (question.answer.length &lt; 2) {
+        return qTypeFailMsg(common.getError(3025));
+    }
+    return successMsg;
+}
+
+/**
+ * Validate specific value to it's attributeType in DB
+ *
+ * @param {*} valueToCheck
+ * @param {string} key
+ * @param {string} attributeType
+ * @returns {boolean}
+ */
+var validateAttributeType = function(valueToCheck, key, attributeType) {
+    return Object.prototype.toString.call(valueToCheck) === common.questionAttributes[attributeType][key].type;
+}
+exports.validateAttributeType = validateAttributeType;
+
+/**
+ * Validate all attributes in Object being passed and has correct field types
+ *
+ * @param {object} objectToCheck
+ * @param {string} attributeType
+ * @returns {boolean}
+ */
+var validateAllAttributesInGroup = function(objectToCheck, attributeType) {
+    for (var key in common.questionAttributes[attributeType]) {
+        if (!(key in objectToCheck) || !validateAttributeType(objectToCheck[key], key, attributeType)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Validate an Array object to contain specific value types
+ *
+ * @param {list} arrayObject
+ * @param {string} typeOfvalue
+ * @returns {boolean}
+ */
+var validateArrayObject = function(arrayObject,typeOfvalue) {
+    for (var i = 0; i &lt; arrayObject.length; i++) {
+        if (!validateAttributeType(arrayObject[i],typeOfvalue,'DATATYPES')) {
+            return false;
+        }
+    }
+    return true;
+}
+exports.validateArrayObject = validateArrayObject;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addAdmin">addAdmin</a></li><li><a href="global.html#addComment">addComment</a></li><li><a href="global.html#addFeedback">addFeedback</a></li><li><a href="global.html#addQuestion">addQuestion</a></li><li><a href="global.html#addReply">addReply</a></li><li><a href="global.html#addStudent">addStudent</a></li><li><a href="global.html#addStudentAnalyticsWithDate">addStudentAnalyticsWithDate</a></li><li><a href="global.html#addToVirtualFileSystem">addToVirtualFileSystem</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#changeAllVisibility">changeAllVisibility</a></li><li><a href="global.html#checkLogin">checkLogin</a></li><li><a href="global.html#chooseAllAttributeValidator">chooseAllAttributeValidator</a></li><li><a href="global.html#deleteQuestion">deleteQuestion</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#existsSync">existsSync</a></li><li><a href="global.html#findInVirtualFileSystem">findInVirtualFileSystem</a></li><li><a href="global.html#formatString">formatString</a></li><li><a href="global.html#getAccuracyOverTime">getAccuracyOverTime</a></li><li><a href="global.html#getAccuracyPerTopicVsClass">getAccuracyPerTopicVsClass</a></li><li><a href="global.html#getAccuracyPerTypeVsClass">getAccuracyPerTypeVsClass</a></li><li><a href="global.html#getAccuracyRankOverTime">getAccuracyRankOverTime</a></li><li><a href="global.html#getAccuracyVsClass">getAccuracyVsClass</a></li><li><a href="global.html#getAdminById">getAdminById</a></li><li><a href="global.html#getAdminsList">getAdminsList</a></li><li><a href="global.html#getAllQuestionsByQuery">getAllQuestionsByQuery</a></li><li><a href="global.html#getAllQuestionsList">getAllQuestionsList</a></li><li><a href="global.html#getAllSettings">getAllSettings</a></li><li><a href="global.html#getAnalytics">getAnalytics</a></li><li><a href="global.html#getAttemptRankOverTime">getAttemptRankOverTime</a></li><li><a href="global.html#getAverageRating">getAverageRating</a></li><li><a href="global.html#getChart">getChart</a></li><li><a href="global.html#getClassAccuracy">getClassAccuracy</a></li><li><a href="global.html#getClassAccuracyOverTime">getClassAccuracyOverTime</a></li><li><a href="global.html#getClassAccuracyPerTopicVsClass">getClassAccuracyPerTopicVsClass</a></li><li><a href="global.html#getClassAccuracyPerTypeVsClass">getClassAccuracyPerTypeVsClass</a></li><li><a href="global.html#getClassActive">getClassActive</a></li><li><a href="global.html#getClassAnswered">getClassAnswered</a></li><li><a href="global.html#getClassAnsweredOverTime">getClassAnsweredOverTime</a></li><li><a href="global.html#getClassOverall">getClassOverall</a></li><li><a href="global.html#getClassOverallOverTime">getClassOverallOverTime</a></li><li><a href="global.html#getClassPoints">getClassPoints</a></li><li><a href="global.html#getClassPointsOverTime">getClassPointsOverTime</a></li><li><a href="global.html#getClassPointsPerAttempt">getClassPointsPerAttempt</a></li><li><a href="global.html#getClassPointsPerAttemptOverTime">getClassPointsPerAttemptOverTime</a></li><li><a href="global.html#getClassPointsPerTopicVsClass">getClassPointsPerTopicVsClass</a></li><li><a href="global.html#getClassPointsPerTypeVsClass">getClassPointsPerTypeVsClass</a></li><li><a href="global.html#getClassRating">getClassRating</a></li><li><a href="global.html#getClassRatingPerTopicVsClass">getClassRatingPerTopicVsClass</a></li><li><a href="global.html#getClassRatingPerTypeVsClass">getClassRatingPerTypeVsClass</a></li><li><a href="global.html#getCorrectAttemptRankOverTime">getCorrectAttemptRankOverTime</a></li><li><a href="global.html#getCorrectAttemptsOverTime">getCorrectAttemptsOverTime</a></li><li><a href="global.html#getDate">getDate</a></li><li><a href="global.html#getDateByFormat">getDateByFormat</a></li><li><a href="global.html#getDateFormatedMinutesAgo">getDateFormatedMinutesAgo</a></li><li><a href="global.html#getDateObject">getDateObject</a></li><li><a href="global.html#getDiscussionboardDislikesEnabled">getDiscussionboardDislikesEnabled</a></li><li><a href="global.html#getDiscussionboardVisibilityEnabled">getDiscussionboardVisibilityEnabled</a></li><li><a href="global.html#getError">getError</a></li><li><a href="global.html#getFeedback">getFeedback</a></li><li><a href="global.html#getFullLeaderboard">getFullLeaderboard</a></li><li><a href="global.html#getIdsListFromJSONList">getIdsListFromJSONList</a></li><li><a href="global.html#getLeaderboard">getLeaderboard</a></li><li><a href="global.html#getLeaderboardLimit">getLeaderboardLimit</a></li><li><a href="global.html#getLeaderboardLimited">getLeaderboardLimited</a></li><li><a href="global.html#getNextQuestionNumber">getNextQuestionNumber</a></li><li><a href="global.html#getOverallOverTime">getOverallOverTime</a></li><li><a href="global.html#getOverallRankOverTime">getOverallRankOverTime</a></li><li><a href="global.html#getOverallVsClass">getOverallVsClass</a></li><li><a href="global.html#getPointsOverTime">getPointsOverTime</a></li><li><a href="global.html#getPointsPerAttemptsOverTime">getPointsPerAttemptsOverTime</a></li><li><a href="global.html#getPointsPerAttemptVsClass">getPointsPerAttemptVsClass</a></li><li><a href="global.html#getPointsPerTopicVsClass">getPointsPerTopicVsClass</a></li><li><a href="global.html#getPointsPerTypeVsClass">getPointsPerTypeVsClass</a></li><li><a href="global.html#getPointsRankOverTime">getPointsRankOverTime</a></li><li><a href="global.html#getPointsVsClass">getPointsVsClass</a></li><li><a href="global.html#getQuestionDefaultMaxPoints">getQuestionDefaultMaxPoints</a></li><li><a href="global.html#getQuestionDefaultMinPoints">getQuestionDefaultMinPoints</a></li><li><a href="global.html#getQuestionDefaultTopic">getQuestionDefaultTopic</a></li><li><a href="global.html#getQuestionsAnsweredVsClass">getQuestionsAnsweredVsClass</a></li><li><a href="global.html#getQuestionsList">getQuestionsList</a></li><li><a href="global.html#getQuestionsListByUser">getQuestionsListByUser</a></li><li><a href="global.html#getQuestionsListforAdmin">getQuestionsListforAdmin</a></li><li><a href="global.html#getQuestionTimeoutEnabled">getQuestionTimeoutEnabled</a></li><li><a href="global.html#getQuestionTimeoutPeriod">getQuestionTimeoutPeriod</a></li><li><a href="global.html#getRatingVsClass">getRatingVsClass</a></li><li><a href="global.html#getStudentById">getStudentById</a></li><li><a href="global.html#getStudentEditEmailEnabled">getStudentEditEmailEnabled</a></li><li><a href="global.html#getStudentEditNameEnabled">getStudentEditNameEnabled</a></li><li><a href="global.html#getStudentEditPasswordEnabled">getStudentEditPasswordEnabled</a></li><li><a href="global.html#getStudentsList">getStudentsList</a></li><li><a href="global.html#getStudentsListSorted">getStudentsListSorted</a></li><li><a href="global.html#getStudentsListWithStatus">getStudentsListWithStatus</a></li><li><a href="global.html#getTime">getTime</a></li><li><a href="global.html#getTimeBasedAnalytics">getTimeBasedAnalytics</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#getUserByUsername">getUserByUsername</a></li><li><a href="global.html#getUserObject">getUserObject</a></li><li><a href="global.html#getUsersList">getUsersList</a></li><li><a href="global.html#getUUID">getUUID</a></li><li><a href="global.html#getVariableType">getVariableType</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initialize">initialize</a></li><li><a href="global.html#isEmptyObject">isEmptyObject</a></li><li><a href="global.html#isKeyValuePairInJsonList">isKeyValuePairInJsonList</a></li><li><a href="global.html#isUserLocked">isUserLocked</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#lookupQuestion">lookupQuestion</a></li><li><a href="global.html#lookupQuestionById">lookupQuestionById</a></li><li><a href="global.html#matchingAttributeValidator">matchingAttributeValidator</a></li><li><a href="global.html#mkdir">mkdir</a></li><li><a href="global.html#multipleChoiceAttributeValidator">multipleChoiceAttributeValidator</a></li><li><a href="global.html#orderingAttributeValidator">orderingAttributeValidator</a></li><li><a href="global.html#prepareQuestionData">prepareQuestionData</a></li><li><a href="global.html#qTypeFailMsg">qTypeFailMsg</a></li><li><a href="global.html#questionCreationValidation">questionCreationValidation</a></li><li><a href="global.html#questionUpdateParser">questionUpdateParser</a></li><li><a href="global.html#randomizeList">randomizeList</a></li><li><a href="global.html#regexAttributeValidator">regexAttributeValidator</a></li><li><a href="global.html#removeAllQuestions">removeAllQuestions</a></li><li><a href="global.html#removeAllUsers">removeAllUsers</a></li><li><a href="global.html#removeAnalytics">removeAnalytics</a></li><li><a href="global.html#removeVirtualFileSystem">removeVirtualFileSystem</a></li><li><a href="global.html#resetAllSettings">resetAllSettings</a></li><li><a href="global.html#rmdir">rmdir</a></li><li><a href="global.html#rmrf">rmrf</a></li><li><a href="global.html#setClassActive">setClassActive</a></li><li><a href="global.html#setDiscussionboardDislikesEnabled">setDiscussionboardDislikesEnabled</a></li><li><a href="global.html#setDiscussionboardVisibilityEnabled">setDiscussionboardVisibilityEnabled</a></li><li><a href="global.html#setLeaderboardLimit">setLeaderboardLimit</a></li><li><a href="global.html#setLeaderboardLimited">setLeaderboardLimited</a></li><li><a href="global.html#setQuestionDefaultMinPoints">setQuestionDefaultMinPoints</a></li><li><a href="global.html#setQuestionDefaultTopic">setQuestionDefaultTopic</a></li><li><a href="global.html#setQuestionTimeoutEnabled">setQuestionTimeoutEnabled</a></li><li><a href="global.html#setQuestionTimeoutPeriod">setQuestionTimeoutPeriod</a></li><li><a href="global.html#setStudentEditEmailEnabled">setStudentEditEmailEnabled</a></li><li><a href="global.html#setStudentEditNameEnabled">setStudentEditNameEnabled</a></li><li><a href="global.html#setStudentEditPasswordEnabled">setStudentEditPasswordEnabled</a></li><li><a href="global.html#setUserStatus">setUserStatus</a></li><li><a href="global.html#sortLeaderBoard">sortLeaderBoard</a></li><li><a href="global.html#submitAnswer">submitAnswer</a></li><li><a href="global.html#submitRating">submitRating</a></li><li><a href="global.html#sumListOfNumbers">sumListOfNumbers</a></li><li><a href="global.html#trueAndFalseAttributeValidator">trueAndFalseAttributeValidator</a></li><li><a href="global.html#updateAdminById">updateAdminById</a></li><li><a href="global.html#updateProfile">updateProfile</a></li><li><a href="global.html#updateQuestionById">updateQuestionById</a></li><li><a href="global.html#updateQuestionByQuery">updateQuestionByQuery</a></li><li><a href="global.html#updateSettings">updateSettings</a></li><li><a href="global.html#updateStudentById">updateStudentById</a></li><li><a href="global.html#updateUserById">updateUserById</a></li><li><a href="global.html#updateUserByQuery">updateUserByQuery</a></li><li><a href="global.html#updateUserPassword">updateUserPassword</a></li><li><a href="global.html#updateUserSubmissionTime">updateUserSubmissionTime</a></li><li><a href="global.html#validateAllAttributesInGroup">validateAllAttributesInGroup</a></li><li><a href="global.html#validateArrayObject">validateArrayObject</a></li><li><a href="global.html#validateAttributeFields">validateAttributeFields</a></li><li><a href="global.html#validateAttributeType">validateAttributeType</a></li><li><a href="global.html#validateDefaultQuestionValues">validateDefaultQuestionValues</a></li><li><a href="global.html#validatePassword">validatePassword</a></li><li><a href="global.html#validateQuestionAttributesByType">validateQuestionAttributesByType</a></li><li><a href="global.html#verifyAnswer">verifyAnswer</a></li><li><a href="global.html#verifyChooseAllQuestionAnswer">verifyChooseAllQuestionAnswer</a></li><li><a href="global.html#verifyMatchingQuestionAnswer">verifyMatchingQuestionAnswer</a></li><li><a href="global.html#verifyOrderingQuestionAnswer">verifyOrderingQuestionAnswer</a></li><li><a href="global.html#voteComment">voteComment</a></li><li><a href="global.html#voteReply">voteReply</a></li><li><a href="global.html#writeFile">writeFile</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Dec 16 2017 22:47:56 GMT-0500 (EST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

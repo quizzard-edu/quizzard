@@ -1,12 +1,21 @@
-h4.sidebar-item#sidebar-name #{user.fname} #{user.lname}
-h3.sidebar-item#sidebar-points #{user.points} Points
-p.sidebar-item Questions attempted: #{user.attempted}
-p.sidebar-item Questions successfully answered: #{user.answered}
-if user.attempted == 0
-  p.sidebar-item You have not yet attempted any questions.
-else
-  p.sidebar-item You have a #{((user.answered / user.attempted) * 100).toFixed(2)}% success rate.
-
-.leaderboard-sidebar
-  h4.sidebar-item Leaderboard
-  .leaderboard-small
+.row
+  .col.s12.m6
+    .card
+      .card-content.center
+        img.profile-picture(src='/profilePicture/' + user.picture +  '?' + new Date(), alt='Profile Picture')
+        h5.card-title#sidebar-name User Name: #{user.username}
+        h5.card-title#sidebar-name Name: #{user.fname} #{user.lname}
+      .card-action.center
+        h5.sidebar-item#sidebar-points Total Points: #{user.points}
+        p.sidebar-item Total Attemtps: #{user.totalAttemptsCount}
+        p.sidebar-item Questions answered: #{user.correctAttemptsCount}
+        if user.totalAttemptsCount === 0
+          p.sidebar-item You have not yet attempted any questions.
+        else
+          p.sidebar-item You have an accuracy of #{((user.correctAttemptsCount / user.totalAttemptsCount) * 100).toFixed(2)}%.
+  .col.s12.m6.hide-on-small-only
+    .card
+      .card-content
+        h4.center Points Leaderboard
+      .card-action
+        .leaderboard-small
