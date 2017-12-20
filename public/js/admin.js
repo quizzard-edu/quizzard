@@ -360,9 +360,19 @@ var displayQuestionsExportForm = function () {
 
 /* Fetch and display the question export list. */
 var submitQuestionsExportForm = function () {
+    var selected = [];
+    $('div#questionsExportForm input[type=checkbox]').each(function () {
+        if ($(this).is(':checked')) {
+            selected.push($(this).attr('id').substring(3));
+        }
+    });
+
+    $('#admin-content').html(loadingAnimation);
+
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/questionsExportList',
+        data: {questionsList: selected},
         success: function (data) {
             $('#admin-content').html(data);
             $('#questions-export-list-back-button').click(() => {displayQuestionTable();});

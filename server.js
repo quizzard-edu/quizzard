@@ -1528,6 +1528,53 @@ app.get('/questionsExportForm', function (req, res) {
     });
 });
 
+/* Display questions export list */
+app.post('/questionsExportList', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    var inputQuestionsList = req.body.questionsList;
+    questions.getAllQuestionsList(function (err, questionsList) {
+        if (err) {
+            return res.status(500).send(common.getError(3004));
+        }
+
+        var finalObject = {};
+        for (var i in questionsList) {
+            if (inputQuestionsList.indexOf(questionsList[i]._id) !== -1) {
+                finalObject[questionsList[i]._id] = questionsList[i];
+            }
+        }
+
+        var fileName = common.getUUID();
+        var file = fileName + '.quizzard';
+        var quizzardData = JSON.stringify(finalObject);
+        var fileObject = {
+            fileName: fileName,
+            filePath: vfs.joinPath(common.vfsTree.USERS, req.session.user._id),
+            fileExtension: 'quizzard',
+            fileData: quizzardData,
+            filePermissions: common.vfsPermission.OWNER,
+            fileCreator: req.session.user._id
+        };
+
+        vfs.writeFile(fileObject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(common.getError(6001));
+            }
+            return res.status(200).render('questions/questions-export-complete', {
+                file: file
+            });
+        });
+    });
+});
+
 /* Display accounts import form */
 app.get('/accountsImportForm', function (req, res) {
     if (!req.session.user) {
