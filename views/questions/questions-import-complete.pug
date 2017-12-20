@@ -1,0 +1,20 @@
+.row
+  .col.s12
+    .card.center
+      .card-image
+        a.btn-floating.halfway-fab.waves-effect.waves-light.red.left#questions-import-complete-back-button
+          i.material-icons arrow_back
+      .card-content
+        include ../checkmark
+        h5.card-title Import Job Completed
+        h6 Your quizzard file has been imported
+      .card-action
+        .flow-left
+          h5.alignTextLeft &nbsp;Report:
+          h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;Total number of questions added: #{added}
+          h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;Total number of failed attempts: #{failed}
+          h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;Total number of questions processed: #{total}
+        br
+        a.waves-effect.waves-light.btn(href='/') 
+          i.material-icons.left cloud_done
+          | Done 

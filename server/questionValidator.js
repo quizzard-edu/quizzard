@@ -90,7 +90,6 @@ exports.validateAttributeFields = function(question,type) {
     }
 
     const result = validateDefaultQuestionValues(question);
-    console.log(result)
     if(!result.success){
         return result;
     }

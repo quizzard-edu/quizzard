@@ -142,12 +142,14 @@ var displayImportAccountsForm = function () {
             });
         },
         error: function (data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -325,12 +327,141 @@ var displayAccountForm = function () {
             });
         },
         error: function (data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
+            }
+        }
+    });
+}
+
+
+/* Fetch and display the question export form. */
+var displayQuestionsExportForm = function () {
+    $.ajax({
+        type: 'GET',
+        url: '/questionsExportForm',
+        success: function (data) {
+            $('#admin-content').html(data);
+            $('#questions-export-back-button').click(() => {displayQuestionTable();});
+        },
+        error: function (data) {
+            var jsonResponse = data.responseJSON;
+
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
+            }
+        }
+    });
+}
+
+/* Fetch and display the question import form. */
+var displayQuestionsImportForm = function () {
+    $.ajax({
+        type: 'GET',
+        url: '/questionsImportForm',
+        success: function (data) {
+            $('#admin-content').html(data);
+            $('#questions-import-back-button').click(() => {displayQuestionTable();});
+        },
+        error: function (data) {
+            var jsonResponse = data.responseJSON;
+
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
+            }
+        }
+    });
+}
+
+/* Upload a file of questions to the server. */
+var submitQuestionsImportForm = function () {
+    var files = $('#questions-import-form-input').get(0).files;
+    var formData = new FormData();
+
+    if (files.length !== 1) {
+        warningSnackbar('You can only import one file!');
+        return;
+    }
+
+    var fileNameSplit = $('#questions-import-form-input').val().split('.');
+    if (fileNameSplit[fileNameSplit.length - 1] !== 'quizzard') {
+        warningSnackbar('File format must be quizzard!');
+        return;
+    }
+
+    formData.append('questionsquizzard', files[0]);
+
+    $.ajax({
+        type: 'POST',
+        url: '/questionsImportFile/' + fileNameSplit[fileNameSplit.length - 1],
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+            successSnackbar('File uploaded successfully');
+            $('#admin-content').html(data);
+
+            $('#questions-import-complete-back-button').click(function () {
+                displayAccountsTable();
+            });
+        },
+        error: function (data) {
+            var jsonResponse = data.responseJSON;
+
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
+            }
+        }
+    });
+}
+
+
+/* Fetch and display the question export list. */
+var submitQuestionsExportForm = function () {
+    var selected = [];
+    $('div#questionsExportForm input[type=checkbox]').each(function () {
+        if ($(this).is(':checked')) {
+            selected.push($(this).attr('id').substring(3));
+        }
+    });
+
+    $('#admin-content').html(loadingAnimation);
+
+    $.ajax({
+        type: 'POST',
+        url: '/questionsExportList',
+        data: {questionsList: selected},
+        success: function (data) {
+            $('#admin-content').html(data);
+            $('#questions-export-list-back-button').click(() => {displayQuestionTable();});
+        },
+        error: function (data) {
+            var jsonResponse = data.responseJSON;
+
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });
@@ -349,6 +480,9 @@ var displayQuestionTable = function () {
             $('#option-accounts').removeClass('active');
             $('#option-stats').removeClass('active');
             $('#option-settings').removeClass('active');
+
+            $('#questions-import-button').click(() => {displayQuestionsImportForm();});
+            $('#questions-export-button').click(() => {displayQuestionsExportForm();});
 
             $('#question-option-button').click(() => {
                 const optionDiv = $('#question-option-div');
@@ -446,12 +580,14 @@ var displayQuestionForm = function () {
             initSummernote();
         },
         error: function (data) {
+            var jsonResponse = data.responseJSON;
+
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
             } else {
-                failSnackbar('Something went wrong, please try again later!');
+                failSnackbar(getErrorFromResponse(jsonResponse));
             }
         }
     });

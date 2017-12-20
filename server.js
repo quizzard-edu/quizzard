@@ -1497,6 +1497,84 @@ app.get('/accountsExportForm', function (req, res) {
     });
 });
 
+/* Display questions export form */
+app.get('/questionsExportForm', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    questions.getAllQuestionsList(function (err, questionsList) {
+        if (err) {
+            return res.status(500).send(common.getError(3004));
+        }
+
+        return res.status(200).render('questions/questions-export-form', {
+            user: req.session.user,
+            isAdmin: req.session.user.type === common.userTypes.ADMIN,
+            questionsList: questionsList,
+            getQuestionType: (type) => {
+                for (var i in common.questionTypes) {
+                    if (common.questionTypes[i].value === type) {
+                        return common.questionTypes[i].name;
+                    }
+                }
+                return 'UNKNOWN';
+            }
+        });
+    });
+});
+
+/* Display questions export list */
+app.post('/questionsExportList', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    var inputQuestionsList = req.body.questionsList;
+    questions.getAllQuestionsList(function (err, questionsList) {
+        if (err) {
+            return res.status(500).send(common.getError(3004));
+        }
+
+        var finalObject = {};
+        for (var i in questionsList) {
+            if (inputQuestionsList && inputQuestionsList.indexOf(questionsList[i]._id) !== -1) {
+                finalObject[questionsList[i]._id] = questionsList[i];
+            }
+        }
+
+        var fileName = common.getUUID();
+        var file = fileName + '.quizzard';
+        var quizzardData = JSON.stringify(finalObject);
+        var fileObject = {
+            fileName: fileName,
+            filePath: vfs.joinPath(common.vfsTree.USERS, req.session.user._id),
+            fileExtension: 'quizzard',
+            fileData: quizzardData,
+            filePermissions: common.vfsPermission.OWNER,
+            fileCreator: req.session.user._id
+        };
+
+        vfs.writeFile(fileObject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(common.getError(6001));
+            }
+            return res.status(200).render('questions/questions-export-complete', {
+                file: file
+            });
+        });
+    });
+});
+
 /* Display accounts import form */
 app.get('/accountsImportForm', function (req, res) {
     if (!req.session.user) {
@@ -1510,6 +1588,80 @@ app.get('/accountsImportForm', function (req, res) {
     return res.status(200).render('users/accounts-import-form', {
         user: req.session.user,
         isAdmin: req.session.user.type === common.userTypes.ADMIN
+    });
+});
+
+/* Display questions import form */
+app.get('/questionsImportForm', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    return res.status(200).render('questions/questions-import-form', {
+        user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
+    });
+});
+
+// import the questions list file
+app.post('/questionsImportFile/:extension', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    var uploadedFile = req.files.questionsquizzard;
+    if (!uploadedFile || req.params.extension.toLowerCase() !== 'quizzard') {
+        return res.status(400).send(common.getError(6002));
+    }
+
+    var fileName = common.getUUID();
+    var uploadedData = uploadedFile.data;
+    var fileObject = {
+        fileName: fileName,
+        filePath: vfs.joinPath(common.vfsTree.USERS, req.session.user._id),
+        fileExtension: 'quizzard',
+        fileData: uploadedData,
+        filePermissions: common.vfsPermission.OWNER,
+        fileCreator: req.session.user._id
+    };
+    vfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(common.getError(6003));
+        }
+
+        logger.log(common.formatString('Uploaded: {0}', [fileName]));
+
+        var parsedData = JSON.parse(uploadedData);
+        var added = 0;
+        var failed = 0;
+        var total = 0;
+        var length = Object.keys(parsedData).length;
+        for (var i in parsedData) {
+            questions.addQuestion(parsedData[i], function (err, result) {
+                if (err) {
+                    failed++;
+                } else {
+                    added++;
+                }
+                total++;
+                if (length === total) {
+                    return res.status(200).render('questions/questions-import-complete', {
+                        added: added,
+                        failed: failed,
+                        total: total
+                    });
+                }
+            });
+        }
     });
 });
 
@@ -2002,7 +2154,7 @@ app.post('/changeAllVisibility', function (req, res) {
     }
 
     if (req.session.user.type !== common.userTypes.ADMIN) {
-        res.status(403).send(common.getError(1002));
+        return res.status(403).send(common.getError(1002));
     }
 
     questions.changeAllVisibility(req.body.changeValue, function (err, result) {

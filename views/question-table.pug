@@ -33,6 +33,13 @@ block styles
                 input(id='sw' type='checkbox', checked=false, onClick='toggleButtonVisibility(null)')
                 span.lever
                 | Edit
+        .row
+          h6.left Questions List: &nbsp&nbsp
+            a.btn.customAdminButton#questions-import-button Import &nbsp
+              i.material-icons cloud_upload
+            span &nbsp&nbsp
+            a.btn.customAdminButton#questions-export-button Export &nbsp
+              i.material-icons cloud_download
       .card-action
         br
         table.bordered#questionsTable
