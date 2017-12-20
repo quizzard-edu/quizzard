@@ -358,6 +358,74 @@ var displayQuestionsExportForm = function () {
     });
 }
 
+/* Fetch and display the question import form. */
+var displayQuestionsImportForm = function () {
+    $.ajax({
+        type: 'GET',
+        url: '/questionsImportForm',
+        success: function (data) {
+            $('#admin-content').html(data);
+            $('#questions-import-back-button').click(() => {displayQuestionTable();});
+        },
+        error: function (data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
+            } else {
+                failSnackbar('Something went wrong, please try again later!');
+            }
+        }
+    });
+}
+
+/* Upload a file of users to the server. */
+var submitQuestionsImportForm = function () {
+    var files = $('#questions-import-form-input').get(0).files;
+    var formData = new FormData();
+
+    if (files.length !== 1) {
+        warningSnackbar('You can only import one file!');
+        return;
+    }
+
+    var fileNameSplit = $('#questions-import-form-input').val().split('.');
+    if (fileNameSplit[fileNameSplit.length - 1] !== 'quizzard') {
+        warningSnackbar('File format must be quizzard!');
+        return;
+    }
+
+    formData.append('questionsquizzard', files[0]);
+
+    $.ajax({
+        type: 'POST',
+        url: '/questionsImportFile/' + fileNameSplit[fileNameSplit.length - 1],
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+            successSnackbar('File uploaded successfully');
+            $('#admin-content').html(data);
+
+            $('#questions-import-complete-back-button').click(function () {
+                displayAccountsTable();
+            });
+        },
+        error: function (data) {
+            var jsonResponse = data.responseJSON;
+
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/page-not-found';
+            } else {
+                failSnackbar(getErrorFromResponse(jsonResponse));
+            }
+        }
+    });
+}
+
+
 /* Fetch and display the question export list. */
 var submitQuestionsExportForm = function () {
     var selected = [];

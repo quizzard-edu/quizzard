@@ -1591,6 +1591,80 @@ app.get('/accountsImportForm', function (req, res) {
     });
 });
 
+/* Display questions import form */
+app.get('/questionsImportForm', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    return res.status(200).render('questions/questions-import-form', {
+        user: req.session.user,
+        isAdmin: req.session.user.type === common.userTypes.ADMIN
+    });
+});
+
+// import the questions list file
+app.post('/questionsImportFile/:extension', function (req, res) {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+
+    if (req.session.user.type !== common.userTypes.ADMIN) {
+        return res.status(403).send(common.getError(1002));
+    }
+
+    var uploadedFile = req.files.questionsquizzard;
+    if (!uploadedFile || req.params.extension.toLowerCase() !== 'quizzard') {
+        return res.status(400).send(common.getError(6002));
+    }
+
+    var fileName = common.getUUID();
+    var uploadedData = uploadedFile.data;
+    var fileObject = {
+        fileName: fileName,
+        filePath: vfs.joinPath(common.vfsTree.USERS, req.session.user._id),
+        fileExtension: 'quizzard',
+        fileData: uploadedData,
+        filePermissions: common.vfsPermission.OWNER,
+        fileCreator: req.session.user._id
+    };
+    vfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(common.getError(6003));
+        }
+
+        logger.log(common.formatString('Uploaded: {0}', [fileName]));
+
+        var parsedData = JSON.parse(uploadedData);
+        var added = 0;
+        var failed = 0;
+        var total = 0;
+        var length = Object.keys(parsedData).length;
+        for (var i in parsedData) {
+            questions.addQuestion(parsedData[i], function (err, result) {
+                if (err) {
+                    failed++;
+                } else {
+                    added++;
+                }
+                total++;
+                if (length === total) {
+                    return res.status(200).render('questions/questions-import-complete', {
+                        added: added,
+                        failed: failed,
+                        total: total
+                    });
+                }
+            });
+        }
+    });
+});
+
 /* Display accounts export form */
 app.post('/accountsExportFile', function (req, res) {
     if (!req.session.user) {
