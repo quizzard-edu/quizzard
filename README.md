@@ -3,7 +3,8 @@
 ## Contents
 
 0. [Introduction](#introduction)
-1. [Setup](#quick-setup)
+1. [Setup](#setup)
+2. [Feedback](https://quizzard-edu.github.io/quizzard/feedback.html)
 
 ## Introduction
 
