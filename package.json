@@ -1,6 +1,6 @@
 {
   "name": "quizzard",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "Quiz",
   "main": "server.js",
   "directories": {
