@@ -344,6 +344,8 @@ exports.verifyAnswer = function(question, answer) {
                 return verifyChooseAllQuestionAnswer(question,answer);
             case common.questionTypes.ORDERING.value:
                 return verifyOrderingQuestionAnswer(question,answer);
+            case common.questionTypes.REGULAR.value:
+                return (answer.trim().toLowerCase() === question.answer.trim().toLowerCase());
             default:
                 return (answer === question.answer);
         }

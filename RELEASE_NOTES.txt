@@ -1,4 +1,11 @@
 ==========================
+Quizzard v1.0.1 Release Notes
+==========================
+
+Fixed release version.
+Fixed short answer question verification.
+
+==========================
 Quizzard v0.2 Release Notes
 ==========================
 
